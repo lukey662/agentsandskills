@@ -4,7 +4,8 @@
   "description": "Research-backed agents, skills, prompts, checklists, and markdown templates for Next.js and Supabase projects.",
   "type": "module",
   "publishConfig": {
-    "access": "restricted"
+    "access": "restricted",
+    "registry": "https://registry.npmjs.org"
   },
   "bin": {
     "agent-kit": "./dist/index.js"

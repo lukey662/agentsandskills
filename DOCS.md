@@ -63,3 +63,23 @@ Use `ROADMAP.md` as the source of truth for phased implementation status and nex
 ## Release Notes
 
 This is a private package. Before external release, replace the private license, remove internal assumptions, and review all prompts for proprietary content.
+
+## Private NPM Release
+
+Publishing targets the private npm registry package `@afg/next-supabase-agent-kit`.
+
+Prerequisites:
+
+- The npm `@afg` scope exists and the publishing account has access.
+- GitHub secret `NPM_TOKEN` contains a token with publish rights for the `@afg` scope.
+- The version in `package.json` is unique and follows semantic versioning.
+
+Release process:
+
+1. Update `package.json` version in a normal PR.
+2. Let CI pass on `main`.
+3. Create a GitHub Release named `vX.Y.Z`.
+4. The `Release` workflow runs the same quality gates as CI.
+5. The workflow publishes with `npm publish --access restricted`.
+
+Use the manual `workflow_dispatch` dry run before first publishing to verify the release gate without publishing.

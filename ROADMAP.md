@@ -93,8 +93,8 @@ Acceptance:
 - `[x]` Add GitHub Actions workflow.
 - `[x]` CI runs `npm ci`, `npm run typecheck`, `npm test`, `npm run build`, `npm audit --audit-level=moderate`, and `npm pack --dry-run`.
 - `[x]` Add restricted scoped package publishing config.
-- `[ ]` Configure GitHub Packages or private npm publishing.
-- `[ ]` Add release workflow and versioning policy.
+- `[x]` Configure GitHub Packages or private npm publishing.
+- `[x]` Add release workflow and versioning policy.
 - `[ ]` Publish private v0.1 package.
 
 Acceptance:
@@ -130,7 +130,6 @@ Acceptance:
 
 ## Current Next Actions
 
-1. Configure GitHub Packages or private npm publishing.
-2. Add release workflow and versioning policy.
-3. Publish private v0.1 package.
-4. Dogfood the installer on one real Next.js/Supabase project.
+1. Add `NPM_TOKEN` with `@afg` publish rights to GitHub secrets.
+2. Publish private v0.1 package.
+3. Dogfood the installer on one real Next.js/Supabase project.
