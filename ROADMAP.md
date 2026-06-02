@@ -139,8 +139,8 @@ Acceptance:
 
 Latest release evidence:
 
-- CI run `26812474370` passed on commit `e421b2c`.
-- Release dry run `26812524043` passed on commit `e421b2c`; `Publish to private npm` was skipped.
+- CI run `26812834473` passed on commit `71607e1`.
+- Release dry run `26812876401` passed on commit `71607e1`; `Validate npm publish token` and `Publish to private npm` were skipped.
 - Draft release `v0.1.0` exists and targets `main`; it is not published yet.
 - Publish credentials are still missing: repo secrets list does not include `NPM_TOKEN`, local `NPM_TOKEN` is unset, and local `npm whoami` returns `ENEEDAUTH`.
 

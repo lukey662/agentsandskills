@@ -113,6 +113,6 @@ Release process:
 
 Verified release evidence:
 
-- CI run `26812591984` passed on commit `829eeec`.
-- Release dry run `26812524043` passed on commit `e421b2c`; the publish step was skipped.
+- CI run `26812834473` passed on commit `71607e1`.
+- Release dry run `26812876401` passed on commit `71607e1`; npm auth validation and publishing were skipped.
 - Draft release `v0.1.0` exists and is waiting for `NPM_TOKEN` before publication.
