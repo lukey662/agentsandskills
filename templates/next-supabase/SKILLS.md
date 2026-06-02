@@ -52,6 +52,8 @@ Required checks:
 - Design tokens and component patterns are consistent.
 - Avoid generic AI-site defaults.
 - Loading, empty, error, disabled, success, and mobile states are designed.
+- Use the matching `.agent-kit/design-briefs/*` brief for SaaS, admin, marketplace, content, or tool surfaces.
+- Review final desktop and mobile screenshots with `.agent-kit/prompts/screenshot-review.md`.
 
 ## Accessibility WCAG 2.1 AA
 
@@ -82,3 +84,12 @@ Required checks:
 - `DECISIONS.md` records important tradeoffs.
 - `DOCS.md` explains workflows and integration points.
 - `STYLE_GUIDE.md`, `SECURITY.md`, `TESTING.md`, and `DEPLOYMENT.md` stay current.
+
+## Compatibility Profiles
+
+Use `.agent-kit/profiles/*` before feature planning when the project is a SaaS, marketplace, admin app, or content app.
+
+Required checks:
+- The project type's auth, data, design, testing, and handoff risks are named.
+- Agent ownership matches the profile.
+- Missing profile assumptions are recorded in `DECISIONS.md`.

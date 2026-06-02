@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { DEFAULT_CONFIG, LIBRARY_FOLDERS, PACKAGE_NAME, PACKAGE_VERSION, ROOT_DOCS } from "../config/defaults.js";
 import type { InstallManifest, StackProfile } from "../config/types.js";
-import { copyDirectory, copyTextWithConflict, ensureDir, writeText } from "../utils/fs.js";
+import { copyDirectory, copyTextWithConflict, ensureDir, sha256, writeText } from "../utils/fs.js";
 import { findPackageRoot } from "../utils/package-root.js";
 
 export interface InitOptions {
@@ -40,8 +40,13 @@ export function initProject(options: InitOptions): InitResult {
     manifestPath: ".agent-kit/manifest.json"
   };
 
+  const templateHashes: Record<string, string> = {};
+
   for (const doc of ROOT_DOCS) {
-    const copyResult = copyTextWithConflict(join(templateRoot, doc), cwd, doc, {
+    const templatePath = join(templateRoot, doc);
+    templateHashes[doc] = sha256(readFileSync(templatePath, "utf8"));
+
+    const copyResult = copyTextWithConflict(templatePath, cwd, doc, {
       force: Boolean(options.force),
       conflictRoot: join(cwd, ".agent-kit", "conflicts")
     });
@@ -64,7 +69,8 @@ export function initProject(options: InitOptions): InitResult {
     stack,
     installedAt: new Date().toISOString(),
     docs: [...ROOT_DOCS],
-    libraryFolders: [...LIBRARY_FOLDERS]
+    libraryFolders: [...LIBRARY_FOLDERS],
+    templateHashes
   };
 
   writeText(join(cwd, ".agent-kit", "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);

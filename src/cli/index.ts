@@ -1,6 +1,6 @@
 import { Command } from "commander";
 import { addSkill, listSkills } from "../install/add-skill.js";
-import { auditProject } from "../install/audit.js";
+import { createAuditReport } from "../install/audit.js";
 import { diffProject } from "../install/diff.js";
 import { initProject } from "../install/install.js";
 import { discoverRepos } from "../research/discover.js";
@@ -31,15 +31,21 @@ program
 program
   .command("audit")
   .description("Audit an existing project for agent-kit coverage gaps.")
-  .action(() => {
-    const findings = auditProject(process.cwd());
-    for (const finding of findings) {
-      const prefix = finding.level.toUpperCase().padEnd(4);
-      console.log(`${prefix} ${finding.area}: ${finding.message}`);
-      if (finding.remediation) console.log(`     remediation: ${finding.remediation}`);
+  .option("--json", "Print machine-readable JSON output.")
+  .action((options: { json?: boolean }) => {
+    const report = createAuditReport(process.cwd());
+
+    if (options.json) {
+      console.log(JSON.stringify(report, null, 2));
+    } else {
+      for (const finding of report.findings) {
+        const prefix = finding.level.toUpperCase().padEnd(4);
+        console.log(`${prefix} ${finding.area}: ${finding.message}`);
+        if (finding.remediation) console.log(`     remediation: ${finding.remediation}`);
+      }
     }
 
-    if (findings.some((finding) => finding.level === "fail")) {
+    if (report.summary.fail > 0) {
       process.exitCode = 1;
     }
   });

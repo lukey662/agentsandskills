@@ -32,5 +32,7 @@ export const LIBRARY_FOLDERS = [
   "skills",
   "prompts",
   "checklists",
-  "design-adapters"
+  "design-adapters",
+  "design-briefs",
+  "profiles"
 ] as const;

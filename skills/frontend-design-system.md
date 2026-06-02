@@ -32,12 +32,14 @@ Create interfaces that are domain-specific, accessible, polished, and useful. Av
 
 ## Design Adapter Trigger
 
-Use a provider-neutral design brief when:
+Use a provider-neutral design adapter and the matching `design-briefs/*` file when:
 
 - The screen risks looking generic.
 - The product category needs stronger visual direction.
 - The workflow is unclear.
 - A high-stakes UI needs external review.
+
+Use `prompts/screenshot-review.md` after implementation when desktop and mobile screenshots exist.
 
 ## Review Output
 
@@ -48,3 +50,4 @@ Return:
 - Which component states are missing.
 - Which accessibility risks remain.
 - Which provider-neutral design brief should be used next, if any.
+- Which screenshot evidence is still needed before the UI can be accepted.

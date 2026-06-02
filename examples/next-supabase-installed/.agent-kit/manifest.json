@@ -1,0 +1,37 @@
+{
+  "packageName": "@afg/next-supabase-agent-kit",
+  "packageVersion": "0.1.0",
+  "stack": "next-supabase",
+  "installedAt": "2026-06-02T00:00:00.000Z",
+  "docs": [
+    "AGENTS.md",
+    "SKILLS.md",
+    "SPEC.md",
+    "DECISIONS.md",
+    "DOCS.md",
+    "STYLE_GUIDE.md",
+    "SECURITY.md",
+    "TESTING.md",
+    "DEPLOYMENT.md"
+  ],
+  "libraryFolders": [
+    "agents",
+    "skills",
+    "prompts",
+    "checklists",
+    "design-adapters",
+    "design-briefs",
+    "profiles"
+  ],
+  "templateHashes": {
+    "AGENTS.md": "sha256-of-installed-template",
+    "SKILLS.md": "sha256-of-installed-template",
+    "SPEC.md": "sha256-of-installed-template",
+    "DECISIONS.md": "sha256-of-installed-template",
+    "DOCS.md": "sha256-of-installed-template",
+    "STYLE_GUIDE.md": "sha256-of-installed-template",
+    "SECURITY.md": "sha256-of-installed-template",
+    "TESTING.md": "sha256-of-installed-template",
+    "DEPLOYMENT.md": "sha256-of-installed-template"
+  }
+}

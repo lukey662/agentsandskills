@@ -1,0 +1,20 @@
+.
+|-- AGENTS.md
+|-- SKILLS.md
+|-- SPEC.md
+|-- DECISIONS.md
+|-- DOCS.md
+|-- STYLE_GUIDE.md
+|-- SECURITY.md
+|-- TESTING.md
+|-- DEPLOYMENT.md
+`-- .agent-kit
+    |-- manifest.json
+    |-- config.json
+    |-- agents/
+    |-- skills/
+    |-- prompts/
+    |-- checklists/
+    |-- design-adapters/
+    |-- design-briefs/
+    `-- profiles/

@@ -18,6 +18,7 @@ npm run build
 ```bash
 agent-kit init --stack next-supabase
 agent-kit audit
+agent-kit audit --json
 agent-kit diff
 agent-kit update
 agent-kit add skill frontend-design-system
@@ -32,7 +33,8 @@ agent-kit doctor
 - Install strong default docs: `AGENTS.md`, `SKILLS.md`, `SPEC.md`, `DECISIONS.md`, `DOCS.md`, `STYLE_GUIDE.md`, `SECURITY.md`, `TESTING.md`, and `DEPLOYMENT.md`.
 - Enforce clear agent ownership across architecture, Next.js, Supabase/Postgres, security, frontend design, QA, docs, and deployment.
 - Make Supabase Auth, SSR, RLS, migrations, service-role isolation, and IDOR prevention first-class setup concerns.
-- Prevent generic AI-looking frontend output through a dedicated frontend design skill and provider-neutral design briefs.
+- Prevent generic AI-looking frontend output through a dedicated frontend design skill, provider-neutral design adapters, screenshot review prompts, and product-specific design briefs.
+- Provide compatibility profiles for SaaS, marketplaces, admin apps, and content apps.
 - Research 100 high-quality open-source repos and promote repeated best practices into the kit.
 
 ## Delivery Tracker
@@ -60,9 +62,13 @@ From a Next.js + Supabase project:
 ```bash
 npx @afg/next-supabase-agent-kit init --stack next-supabase
 npx @afg/next-supabase-agent-kit audit
+npx @afg/next-supabase-agent-kit audit --json
 ```
 
 The installer preserves existing docs. If a target file already exists and differs from the template, the new template is written to `.agent-kit/conflicts/` unless `--force` is provided.
+New installs record bundled template hashes in `.agent-kit/manifest.json` so future audits can identify stale template docs, local customizations, and missing manifest metadata.
+
+See `examples/next-supabase-installed/` for a compact sample of installed output.
 
 ## Security Position
 

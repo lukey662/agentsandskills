@@ -1,0 +1,19 @@
+{
+  "summary": {
+    "pass": 19,
+    "warn": 0,
+    "fail": 0
+  },
+  "findings": [
+    {
+      "level": "pass",
+      "area": "install",
+      "message": "Agent kit installed at version 0.1.0."
+    },
+    {
+      "level": "pass",
+      "area": "templates",
+      "message": "AGENTS.md matches the current bundled template."
+    }
+  ]
+}

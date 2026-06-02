@@ -57,3 +57,31 @@ Use a dedicated `Release` GitHub Actions workflow. The workflow runs install, ty
 ### Consequences
 
 The release path is repeatable and can be dry-run safely before `NPM_TOKEN` is configured. Actual package publication remains blocked until the GitHub secret contains an npm token with publish rights for the `@afg` scope.
+
+## 2026-06-02 - Use Template Hashes For Install Drift Detection
+
+### Context
+
+Downstream projects can customize installed markdown files. A simple file-diff check cannot distinguish intentional customization from a project still matching an older bundled template.
+
+### Decision
+
+Record `templateHashes` for every root markdown template in `.agent-kit/manifest.json` during install and update. Audit compares the installed hash, current bundled template hash, and local file hash.
+
+### Consequences
+
+Audits can now report current templates, stale installed templates, older manifests without hashes, and locally customized docs. Existing installs remain compatible, but they should run `agent-kit update` to add hash metadata.
+
+## 2026-06-02 - Ship Project Profiles And Design Briefs As Installable Assets
+
+### Context
+
+The kit should prevent generic AI-generated UI and help agents adapt to different Next.js/Supabase product types without requiring bespoke prompting on every project.
+
+### Decision
+
+Add installable `profiles` for SaaS, marketplace, admin app, and content app projects. Add installable `design-briefs` for SaaS, admin dashboards, marketplaces, content apps, and tools, plus a screenshot-review prompt.
+
+### Consequences
+
+Downstream projects get reusable product-type guidance in `.agent-kit/`. Audit and templates now expect design tokens, component states, and anti-generic landing-page rules to be documented.

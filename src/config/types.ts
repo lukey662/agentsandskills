@@ -21,6 +21,7 @@ export interface InstallManifest {
   installedAt: string;
   docs: string[];
   libraryFolders: string[];
+  templateHashes?: Record<string, string>;
 }
 
 export interface AuditFinding {
@@ -28,6 +29,11 @@ export interface AuditFinding {
   area: string;
   message: string;
   remediation?: string;
+}
+
+export interface AuditReport {
+  summary: Record<AuditFinding["level"], number>;
+  findings: AuditFinding[];
 }
 
 export interface RepoCandidate {

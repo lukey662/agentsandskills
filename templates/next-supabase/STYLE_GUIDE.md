@@ -42,6 +42,8 @@ Prefer:
 - Clear density rules for admin, SaaS, and operational tools.
 - Mobile-first responsive layouts.
 
+Use `.agent-kit/design-briefs/*` before designing SaaS, admin dashboard, marketplace, content app, or tool surfaces. Use `.agent-kit/prompts/screenshot-review.md` after implementation to review desktop and mobile screenshots.
+
 ## Design Token Inventory
 
 Define design tokens instead of ad hoc styling.

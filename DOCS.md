@@ -7,7 +7,7 @@ The package has four main subsystems:
 - CLI commands in `src/cli`
 - Install and audit logic in `src/install`
 - GitHub research and repo analysis in `src/research`
-- Static installable assets in `templates`, `agents`, `skills`, `prompts`, `checklists`, and `design-adapters`
+- Static installable assets in `templates`, `agents`, `skills`, `prompts`, `checklists`, `design-adapters`, `design-briefs`, and `profiles`
 
 The CLI reads bundled assets from the package root so the same commands work in local development and after build.
 
@@ -18,6 +18,10 @@ Package-level research decisions are recorded in `DECISIONS.md`.
 `agent-kit init --stack next-supabase` installs root markdown docs and copies library assets into `.agent-kit/`.
 
 Existing files are never overwritten by default. Conflicting template updates are written to `.agent-kit/conflicts/`.
+
+New manifests include `templateHashes` for each root markdown template. `agent-kit audit` uses these hashes to distinguish current templates, stale installed templates, and locally customized docs.
+
+Use `agent-kit audit --json` for machine-readable output in scripts or CI.
 
 ## Research Behavior
 

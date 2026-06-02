@@ -34,8 +34,8 @@ Acceptance:
 - `[x]` Implement `agent-kit update`.
 - `[x]` Implement `agent-kit add skill <name>`.
 - `[x]` Implement `agent-kit doctor`.
-- `[ ]` Add richer stale-template detection using template hashes.
-- `[ ]` Add machine-readable audit output with `--json`.
+- `[x]` Add richer stale-template detection using template hashes.
+- `[x]` Add machine-readable audit output with `--json`.
 
 Acceptance:
 
@@ -48,8 +48,8 @@ Acceptance:
 - `[x]` Add core agents: architect, Next.js, Supabase/Postgres, security, frontend design, QA, docs, deployment, and research.
 - `[x]` Add core skills: Next.js App Router, Supabase Auth/RLS, Postgres migrations, OWASP review, frontend design, accessibility, testing, docs, and deployment.
 - `[x]` Add checklists for OWASP, RLS, frontend quality, accessibility, testing, and deployment.
-- `[ ]` Add example installed output for a sample Next.js/Supabase project.
-- `[ ]` Add compatibility profiles for SaaS, marketplace, admin app, and content app.
+- `[x]` Add example installed output for a sample Next.js/Supabase project.
+- `[x]` Add compatibility profiles for SaaS, marketplace, admin app, and content app.
 
 Acceptance:
 
@@ -60,9 +60,9 @@ Acceptance:
 - `[x]` Add anti-generic-AI-site frontend design skill.
 - `[x]` Add provider-neutral design adapters for Google Stitch, Claude, Figma, and human designers.
 - `[x]` Add frontend-quality checklist.
-- `[ ]` Add example design briefs for SaaS, admin dashboards, marketplaces, content apps, and tools.
-- `[ ]` Add audit checks for missing design tokens, missing states, and generic landing-page patterns.
-- `[ ]` Add screenshot-review prompt for finished UIs.
+- `[x]` Add example design briefs for SaaS, admin dashboards, marketplaces, content apps, and tools.
+- `[x]` Add audit checks for missing design tokens, missing states, and generic landing-page patterns.
+- `[x]` Add screenshot-review prompt for finished UIs.
 
 Acceptance:
 

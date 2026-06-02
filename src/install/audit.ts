@@ -1,7 +1,9 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { ROOT_DOCS } from "../config/defaults.js";
-import type { AuditFinding } from "../config/types.js";
+import type { AuditFinding, AuditReport, StackProfile } from "../config/types.js";
+import { listFilesRecursive, sha256 } from "../utils/fs.js";
+import { findPackageRoot } from "../utils/package-root.js";
 import { readManifest } from "./install.js";
 
 function includesAny(text: string, values: string[]): boolean {
@@ -9,9 +11,146 @@ function includesAny(text: string, values: string[]): boolean {
   return values.some((value) => lower.includes(value.toLowerCase()));
 }
 
+function includesAll(text: string, values: string[]): boolean {
+  const lower = text.toLowerCase();
+  return values.every((value) => lower.includes(value.toLowerCase()));
+}
+
 function readDoc(cwd: string, file: string): string {
   const path = join(cwd, file);
   return existsSync(path) ? readFileSync(path, "utf8") : "";
+}
+
+function readTemplate(stack: StackProfile, file: string): string | null {
+  const path = join(findPackageRoot(), "templates", stack, file);
+  return existsSync(path) ? readFileSync(path, "utf8") : null;
+}
+
+function addTemplateHashFindings(cwd: string, findings: AuditFinding[]): void {
+  const manifest = readManifest(cwd);
+  if (!manifest) return;
+
+  for (const doc of ROOT_DOCS) {
+    const targetPath = join(cwd, doc);
+    if (!existsSync(targetPath)) continue;
+
+    const currentTemplate = readTemplate(manifest.stack, doc);
+    if (!currentTemplate) continue;
+
+    const targetHash = sha256(readFileSync(targetPath, "utf8"));
+    const currentTemplateHash = sha256(currentTemplate);
+    const installedTemplateHash = manifest.templateHashes?.[doc];
+
+    if (!installedTemplateHash) {
+      findings.push({
+        level: "warn",
+        area: "templates",
+        message: `${doc} has no stored template hash in .agent-kit/manifest.json.`,
+        remediation: "Run agent-kit update to refresh manifest metadata and review any conflicts."
+      });
+      continue;
+    }
+
+    if (installedTemplateHash === currentTemplateHash && targetHash === currentTemplateHash) {
+      findings.push({
+        level: "pass",
+        area: "templates",
+        message: `${doc} matches the current bundled template.`
+      });
+      continue;
+    }
+
+    if (installedTemplateHash !== currentTemplateHash && targetHash === installedTemplateHash) {
+      findings.push({
+        level: "warn",
+        area: "templates",
+        message: `${doc} still matches an older installed template hash.`,
+        remediation: "Run agent-kit update and review the generated conflict file before adopting the new template."
+      });
+      continue;
+    }
+
+    if (targetHash === currentTemplateHash) {
+      findings.push({
+        level: "pass",
+        area: "templates",
+        message: `${doc} matches the current template even though manifest metadata is older.`
+      });
+      continue;
+    }
+
+    findings.push({
+      level: "warn",
+      area: "templates",
+      message: `${doc} differs from both the installed template hash and current bundled template.`,
+      remediation: "Review local customizations with agent-kit diff before updating."
+    });
+  }
+}
+
+function readLikelyLandingFiles(cwd: string): string {
+  const candidates = listFilesRecursive(cwd).filter((file) => {
+    const normalized = file.replace(/\\/g, "/");
+    return (
+      /(^|\/)(app|pages|src\/app|src\/pages)\/(page|index)\.(tsx|jsx)$/.test(normalized) ||
+      /(^|\/)components\/.*(hero|landing|marketing).*\.(tsx|jsx)$/i.test(normalized)
+    );
+  });
+
+  return candidates
+    .slice(0, 20)
+    .map((file) => readDoc(cwd, file))
+    .join("\n");
+}
+
+function addFrontendFindings(cwd: string, findings: AuditFinding[]): void {
+  const styleGuide = readDoc(cwd, "STYLE_GUIDE.md");
+
+  if (!includesAny(styleGuide, ["generic AI", "gradient", "design token"])) {
+    findings.push({
+      level: "warn",
+      area: "frontend",
+      message: "STYLE_GUIDE.md does not contain anti-generic-AI-site design guidance.",
+      remediation: "Add rules for task-first screens, design tokens, real states, and non-generic visual direction."
+    });
+  }
+
+  if (!includesAll(styleGuide, ["design token", "color", "typography", "spacing", "radius"])) {
+    findings.push({
+      level: "warn",
+      area: "frontend",
+      message: "STYLE_GUIDE.md is missing a complete design-token inventory.",
+      remediation: "Document semantic color, typography, spacing, radius, motion, and depth decisions."
+    });
+  }
+
+  if (!includesAll(styleGuide, ["loading", "empty", "error", "disabled", "success", "mobile"])) {
+    findings.push({
+      level: "warn",
+      area: "frontend",
+      message: "STYLE_GUIDE.md is missing required component state coverage.",
+      remediation: "Require loading, empty, error, disabled, success, focus, and mobile states for interactive UI."
+    });
+  }
+
+  if (!includesAll(styleGuide, ["landing page", "working app", "task-first"])) {
+    findings.push({
+      level: "warn",
+      area: "frontend",
+      message: "STYLE_GUIDE.md does not explicitly prevent generic landing-page defaults.",
+      remediation: "State when landing pages are inappropriate and require the first screen to show the real product task."
+    });
+  }
+
+  const landingText = readLikelyLandingFiles(cwd);
+  if (landingText && includesAny(landingText, ["bg-gradient", "from-purple", "to-blue", "ai-powered", "supercharge", "revolutionize", "10x"])) {
+    findings.push({
+      level: "warn",
+      area: "frontend",
+      message: "Likely landing or hero files contain generic AI-site visual or copy patterns.",
+      remediation: "Review the first screen for domain-specific hierarchy, restrained tokens, real workflows, and useful states."
+    });
+  }
 }
 
 export function auditProject(cwd: string): AuditFinding[] {
@@ -32,6 +171,8 @@ export function auditProject(cwd: string): AuditFinding[] {
       message: `Agent kit installed at version ${manifest.packageVersion}.`
     });
   }
+
+  addTemplateHashFindings(cwd, findings);
 
   for (const doc of ROOT_DOCS) {
     findings.push(
@@ -72,15 +213,7 @@ export function auditProject(cwd: string): AuditFinding[] {
     });
   }
 
-  const styleGuide = readDoc(cwd, "STYLE_GUIDE.md");
-  if (!includesAny(styleGuide, ["generic AI", "gradient", "design token"])) {
-    findings.push({
-      level: "warn",
-      area: "frontend",
-      message: "STYLE_GUIDE.md does not contain anti-generic-AI-site design guidance.",
-      remediation: "Add rules for task-first screens, design tokens, real states, and non-generic visual direction."
-    });
-  }
+  addFrontendFindings(cwd, findings);
 
   const testing = readDoc(cwd, "TESTING.md");
   if (!includesAny(testing, ["Playwright", "smoke"])) {
@@ -93,4 +226,11 @@ export function auditProject(cwd: string): AuditFinding[] {
   }
 
   return findings;
+}
+
+export function createAuditReport(cwd: string): AuditReport {
+  const findings = auditProject(cwd);
+  const summary: AuditReport["summary"] = { pass: 0, warn: 0, fail: 0 };
+  for (const finding of findings) summary[finding.level] += 1;
+  return { summary, findings };
 }
