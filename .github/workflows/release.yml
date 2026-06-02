@@ -54,7 +54,7 @@ jobs:
         run: npm pack --dry-run
 
       - name: Publish to private npm
-        if: github.event_name == 'release' || inputs.dry_run == false
+        if: github.event_name == 'release' || github.event.inputs.dry_run == 'false'
         run: npm publish --access restricted
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
