@@ -123,9 +123,12 @@ Do not use a bypass-2FA publish token for automation. If npm will not allow Trus
 
 Private install verification is separate from publish authentication. If `NPM_READ_TOKEN` is absent, the workflow publishes and skips the `npx` verification step with an explicit log message.
 
+GitHub secret `NPM_TOKEN` is intentionally unused by the release workflow. Remove it after the npm Trusted Publisher path is confirmed. If install verification is required for this private package, add `NPM_READ_TOKEN` instead.
+
 Verified release evidence:
 
 - CI run `26816316447` passed on commit `586924c`.
 - GitHub Release `v0.1.0` is published.
 - Release run `26816448475` reached `npm publish` and failed with npm `E403` because the npm token requires 2FA bypass for CI publishing.
 - The release workflow now uses Trusted Publishing instead of publish-token authentication.
+- Release run `26819650910` reached `npm publish` with OIDC context available and failed with npm `E404`, which means npm could not find the package or the workflow did not have permission to publish it.
