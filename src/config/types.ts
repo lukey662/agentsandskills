@@ -6,6 +6,12 @@ export interface AgentKitConfig {
   stack: StackProfile;
   projectType: "saas" | "marketplace" | "admin" | "content" | "custom";
   docsMode: "advisory" | "required";
+  agentCouncil: {
+    required: boolean;
+    rosterPath: string;
+    defaultWorkflow: string;
+    coreChangeWorkflow: string;
+  };
   designProviders: DesignProvider[];
   research: {
     maxRepos: number;
@@ -21,6 +27,7 @@ export interface InstallManifest {
   installedAt: string;
   docs: string[];
   libraryFolders: string[];
+  agentRoster?: string;
   templateHashes?: Record<string, string>;
 }
 

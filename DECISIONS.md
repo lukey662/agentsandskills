@@ -72,6 +72,20 @@ Use npm Trusted Publishing through GitHub Actions OIDC for package writes. The `
 
 The release process no longer depends on a long-lived npm publish token. The npm package owner must configure a trusted publisher for `lukey662/agentsandskills`, workflow `release.yml`, environment `npm-publish`, and allowed action `npm publish`. If npm requires the package to exist before trusted publishing can be configured, the first package creation still needs a one-time manual publish with OTP or another npm-approved bootstrap path.
 
+## 2026-06-02 - Make Agent Council Routing Auditable
+
+### Context
+
+The kit already installed human-readable `AGENTS.md` and `SKILLS.md`, but that did not guarantee Planner, Lead Architect, Security Reviewer, QA, and documentation handoffs would be used by default.
+
+### Decision
+
+Ship a structured default council roster at `.agent-kit/agent-roster.json`, backed by `rosters/next-supabase-default-council.json`. Add Planner as a first-class agent, add the Planning and Agent Council skill, and make `agent-kit audit` fail when the roster, required agents, required skill routing, or architect-led core-change workflow is missing.
+
+### Consequences
+
+Installed projects now have a machine-readable agent-to-skill and workflow contract. Agents can read the roster to choose the default workflow, and audits can detect drift when a project removes the planner, skips architect review for core changes, or loses required skill routing.
+
 ## 2026-06-02 - Use Template Hashes For Install Drift Detection
 
 ### Context

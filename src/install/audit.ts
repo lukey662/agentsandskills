@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { ROOT_DOCS } from "../config/defaults.js";
+import { DEFAULT_AGENT_ROSTER_TARGET, ROOT_DOCS } from "../config/defaults.js";
 import type { AuditFinding, AuditReport, StackProfile } from "../config/types.js";
 import { listFilesRecursive, sha256 } from "../utils/fs.js";
 import { findPackageRoot } from "../utils/package-root.js";
@@ -15,6 +15,51 @@ interface TemplateOverride {
 interface AgentKitOverrides {
   templates?: Record<string, TemplateOverride | string>;
 }
+
+interface AgentRosterAgent {
+  id?: unknown;
+  skills?: unknown;
+  defaultFor?: unknown;
+}
+
+interface AgentRosterWorkflow {
+  id?: unknown;
+  sequence?: unknown;
+  council?: unknown;
+}
+
+interface AgentRoster {
+  schemaVersion?: unknown;
+  defaultWorkflow?: unknown;
+  required?: unknown;
+  agents?: unknown;
+  workflows?: unknown;
+}
+
+const REQUIRED_AGENT_IDS = [
+  "planner",
+  "lead-architect",
+  "nextjs-engineer",
+  "supabase-postgres-engineer",
+  "security-reviewer",
+  "frontend-design-lead",
+  "qa-engineer",
+  "docs-maintainer",
+  "deployment-observability-engineer"
+];
+
+const REQUIRED_SKILL_IDS = [
+  "planning-council",
+  "nextjs-app-router",
+  "supabase-auth-rls",
+  "postgres-migrations",
+  "owasp-security-review",
+  "frontend-design-system",
+  "accessibility-wcag",
+  "testing-qa",
+  "docs-maintainer",
+  "deployment-observability"
+];
 
 function includesAny(text: string, values: string[]): boolean {
   const lower = text.toLowerCase();
@@ -56,6 +101,135 @@ function readOverrides(cwd: string): Record<string, TemplateOverride> {
 function readTemplate(stack: StackProfile, file: string): string | null {
   const path = join(findPackageRoot(), "templates", stack, file);
   return existsSync(path) ? readFileSync(path, "utf8") : null;
+}
+
+function asStringArray(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter((item): item is string => typeof item === "string");
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function addAgentRosterFindings(cwd: string, findings: AuditFinding[]): void {
+  const rosterPath = join(cwd, DEFAULT_AGENT_ROSTER_TARGET);
+  if (!existsSync(rosterPath)) {
+    findings.push({
+      level: "fail",
+      area: "agents",
+      message: `${DEFAULT_AGENT_ROSTER_TARGET} is missing.`,
+      remediation: "Run agent-kit update to install the default council roster and agent-to-skill routing."
+    });
+    return;
+  }
+
+  let roster: AgentRoster;
+  try {
+    const parsed = JSON.parse(readFileSync(rosterPath, "utf8")) as unknown;
+    if (!isRecord(parsed)) throw new Error("Roster must be a JSON object.");
+    roster = parsed;
+  } catch {
+    findings.push({
+      level: "fail",
+      area: "agents",
+      message: `${DEFAULT_AGENT_ROSTER_TARGET} is not valid roster JSON.`,
+      remediation: "Replace it with .agent-kit/rosters/next-supabase-default-council.json or rerun agent-kit update."
+    });
+    return;
+  }
+
+  if (roster.schemaVersion !== 1 || roster.required !== true || roster.defaultWorkflow !== "planning") {
+    findings.push({
+      level: "warn",
+      area: "agents",
+      message: "Agent roster metadata does not match the expected default council contract.",
+      remediation: "Keep schemaVersion 1, required true, and defaultWorkflow planning unless a documented override exists."
+    });
+  }
+
+  const agents = Array.isArray(roster.agents) ? (roster.agents.filter(isRecord) as AgentRosterAgent[]) : [];
+  const agentIds = new Set(agents.map((agent) => (typeof agent.id === "string" ? agent.id : "")).filter(Boolean));
+  const missingAgents = REQUIRED_AGENT_IDS.filter((agentId) => !agentIds.has(agentId));
+
+  if (missingAgents.length > 0) {
+    findings.push({
+      level: "fail",
+      area: "agents",
+      message: `Agent roster is missing required default agents: ${missingAgents.join(", ")}.`,
+      remediation: "Restore the default council roster so Planner, Architect, implementation, security, QA, docs, and deployment handoffs are always available."
+    });
+  } else {
+    findings.push({
+      level: "pass",
+      area: "agents",
+      message: "Agent roster contains the required default council agents."
+    });
+  }
+
+  const skillIds = new Set(agents.flatMap((agent) => asStringArray(agent.skills)));
+  const missingSkills = REQUIRED_SKILL_IDS.filter((skillId) => !skillIds.has(skillId));
+  if (missingSkills.length > 0) {
+    findings.push({
+      level: "fail",
+      area: "agents",
+      message: `Agent roster is missing required skill routing: ${missingSkills.join(", ")}.`,
+      remediation: "Map each default agent to its associated skills so handoffs can invoke the right review path automatically."
+    });
+  } else {
+    findings.push({
+      level: "pass",
+      area: "agents",
+      message: "Agent roster maps default agents to required skills."
+    });
+  }
+
+  const planner = agents.find((agent) => agent.id === "planner");
+  if (!planner || !asStringArray(planner.defaultFor).includes("planning")) {
+    findings.push({
+      level: "fail",
+      area: "agents",
+      message: "Planner is not marked as the default agent for planning.",
+      remediation: "Set planner.defaultFor to include planning so planning requests do not bypass the planning role."
+    });
+  }
+
+  const workflows = Array.isArray(roster.workflows) ? (roster.workflows.filter(isRecord) as AgentRosterWorkflow[]) : [];
+  const planningWorkflow = workflows.find((workflow) => workflow.id === "planning");
+  const coreChangeWorkflow = workflows.find((workflow) => workflow.id === "core-change");
+
+  if (!planningWorkflow || asStringArray(planningWorkflow.sequence)[0] !== "planner") {
+    findings.push({
+      level: "fail",
+      area: "agents",
+      message: "Planning workflow does not start with Planner.",
+      remediation: "Define a planning workflow whose first sequence item is planner."
+    });
+  }
+
+  const coreSequence = asStringArray(coreChangeWorkflow?.sequence);
+  const coreCouncil = asStringArray(coreChangeWorkflow?.council);
+  if (!coreChangeWorkflow || !coreSequence.includes("lead-architect") || !coreCouncil.includes("lead-architect")) {
+    findings.push({
+      level: "fail",
+      area: "agents",
+      message: "Core-change workflow does not require Lead Architect council review.",
+      remediation: "Define core-change with Lead Architect in both sequence and council."
+    });
+  } else if (!coreCouncil.includes("security-reviewer") || !coreCouncil.includes("qa-engineer")) {
+    findings.push({
+      level: "warn",
+      area: "agents",
+      message: "Core-change council is missing security or QA participation.",
+      remediation: "Include Security Reviewer and QA Engineer in core-change council membership."
+    });
+  } else {
+    findings.push({
+      level: "pass",
+      area: "agents",
+      message: "Core-change workflow requires architect-led council handoff."
+    });
+  }
 }
 
 function addTemplateHashFindings(cwd: string, findings: AuditFinding[]): void {
@@ -237,6 +411,7 @@ export function auditProject(cwd: string): AuditFinding[] {
   }
 
   addTemplateHashFindings(cwd, findings);
+  addAgentRosterFindings(cwd, findings);
 
   for (const doc of ROOT_DOCS) {
     findings.push(

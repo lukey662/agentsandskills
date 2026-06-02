@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "id": "next-supabase-default-council",
+  "stack": "next-supabase",
+  "required": true,
+  "defaultWorkflow": "planning",
+  "agents": [
+    {
+      "id": "planner",
+      "defaultFor": ["planning"],
+      "skills": ["planning-council", "docs-maintainer"]
+    },
+    {
+      "id": "lead-architect",
+      "defaultFor": ["core-change"],
+      "skills": ["planning-council", "nextjs-app-router", "supabase-auth-rls", "postgres-migrations", "owasp-security-review"]
+    },
+    {
+      "id": "supabase-postgres-engineer",
+      "skills": ["supabase-auth-rls", "postgres-migrations", "owasp-security-review"]
+    },
+    {
+      "id": "nextjs-engineer",
+      "skills": ["nextjs-app-router", "frontend-design-system", "accessibility-wcag", "testing-qa"]
+    },
+    {
+      "id": "frontend-design-lead",
+      "skills": ["frontend-design-system", "accessibility-wcag"]
+    },
+    {
+      "id": "security-reviewer",
+      "skills": ["owasp-security-review", "supabase-auth-rls", "postgres-migrations"]
+    },
+    {
+      "id": "qa-engineer",
+      "skills": ["testing-qa", "accessibility-wcag"]
+    },
+    {
+      "id": "docs-maintainer",
+      "skills": ["docs-maintainer", "planning-council"]
+    },
+    {
+      "id": "deployment-observability-engineer",
+      "skills": ["deployment-observability", "testing-qa"]
+    }
+  ],
+  "workflows": [
+    {
+      "id": "planning",
+      "sequence": ["planner", "lead-architect", "qa-engineer", "docs-maintainer"],
+      "council": ["planner", "lead-architect"]
+    },
+    {
+      "id": "core-change",
+      "sequence": ["planner", "lead-architect", "supabase-postgres-engineer", "nextjs-engineer", "security-reviewer", "qa-engineer", "docs-maintainer", "deployment-observability-engineer"],
+      "council": ["lead-architect", "security-reviewer", "qa-engineer", "docs-maintainer"]
+    }
+  ]
+}
+

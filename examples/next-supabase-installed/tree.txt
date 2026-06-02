@@ -1,5 +1,6 @@
 .
 |-- AGENTS.md
+|-- AGENT_ROSTER.md
 |-- SKILLS.md
 |-- SPEC.md
 |-- DECISIONS.md
@@ -10,6 +11,7 @@
 |-- DEPLOYMENT.md
 `-- .agent-kit
     |-- manifest.json
+    |-- agent-roster.json
     |-- config.json
     |-- overrides.json
     |-- agents/
@@ -18,4 +20,5 @@
     |-- checklists/
     |-- design-adapters/
     |-- design-briefs/
-    `-- profiles/
+    |-- profiles/
+    `-- rosters/

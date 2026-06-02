@@ -14,3 +14,4 @@
 - Added npm publish-token preflight and prepared draft GitHub Release `v0.1.0`.
 - Fixed package bin metadata so `agent-kit` is preserved during npm publish.
 - Replaced publish-token CI authentication with npm Trusted Publishing and optional read-token install verification.
+- Added a Planner agent, Planning and Agent Council skill, and machine-readable default council roster enforced by audit.

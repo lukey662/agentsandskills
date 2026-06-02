@@ -7,6 +7,12 @@ export const DEFAULT_CONFIG: AgentKitConfig = {
   stack: "next-supabase",
   projectType: "saas",
   docsMode: "advisory",
+  agentCouncil: {
+    required: true,
+    rosterPath: ".agent-kit/agent-roster.json",
+    defaultWorkflow: "planning",
+    coreChangeWorkflow: "core-change"
+  },
   designProviders: ["stitch", "claude", "figma", "human"],
   research: {
     maxRepos: 100,
@@ -17,6 +23,7 @@ export const DEFAULT_CONFIG: AgentKitConfig = {
 
 export const ROOT_DOCS = [
   "AGENTS.md",
+  "AGENT_ROSTER.md",
   "SKILLS.md",
   "SPEC.md",
   "DECISIONS.md",
@@ -34,5 +41,9 @@ export const LIBRARY_FOLDERS = [
   "checklists",
   "design-adapters",
   "design-briefs",
-  "profiles"
+  "profiles",
+  "rosters"
 ] as const;
+
+export const DEFAULT_AGENT_ROSTER_SOURCE = "rosters/next-supabase-default-council.json";
+export const DEFAULT_AGENT_ROSTER_TARGET = ".agent-kit/agent-roster.json";

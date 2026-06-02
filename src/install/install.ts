@@ -1,6 +1,14 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { DEFAULT_CONFIG, LIBRARY_FOLDERS, PACKAGE_NAME, PACKAGE_VERSION, ROOT_DOCS } from "../config/defaults.js";
+import {
+  DEFAULT_AGENT_ROSTER_SOURCE,
+  DEFAULT_AGENT_ROSTER_TARGET,
+  DEFAULT_CONFIG,
+  LIBRARY_FOLDERS,
+  PACKAGE_NAME,
+  PACKAGE_VERSION,
+  ROOT_DOCS
+} from "../config/defaults.js";
 import type { InstallManifest, StackProfile } from "../config/types.js";
 import { copyDirectory, copyTextWithConflict, ensureDir, sha256, writeText } from "../utils/fs.js";
 import { findPackageRoot } from "../utils/package-root.js";
@@ -63,6 +71,15 @@ export function initProject(options: InitOptions): InitResult {
     copyDirectory(join(packageRoot, folder), join(cwd, ".agent-kit", folder));
   }
 
+  const rosterCopy = copyTextWithConflict(join(packageRoot, DEFAULT_AGENT_ROSTER_SOURCE), cwd, DEFAULT_AGENT_ROSTER_TARGET, {
+    force: Boolean(options.force),
+    conflictRoot: join(cwd, ".agent-kit", "conflicts")
+  });
+  if (rosterCopy.action === "created") result.copied.push(rosterCopy.target);
+  if (rosterCopy.action === "unchanged") result.unchanged.push(rosterCopy.target);
+  if (rosterCopy.action === "overwritten") result.overwritten.push(rosterCopy.target);
+  if (rosterCopy.action === "conflict") result.conflicts.push(`${rosterCopy.target} -> ${rosterCopy.conflictPath}`);
+
   const manifest: InstallManifest = {
     packageName: PACKAGE_NAME,
     packageVersion: PACKAGE_VERSION,
@@ -70,6 +87,7 @@ export function initProject(options: InitOptions): InitResult {
     installedAt: new Date().toISOString(),
     docs: [...ROOT_DOCS],
     libraryFolders: [...LIBRARY_FOLDERS],
+    agentRoster: DEFAULT_AGENT_ROSTER_TARGET,
     templateHashes
   };
 

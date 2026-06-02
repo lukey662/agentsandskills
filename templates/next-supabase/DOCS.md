@@ -15,6 +15,7 @@ Add required environment variables in `.env.example`. Never place real secrets i
 
 Document:
 
+- Agent council routing in `.agent-kit/agent-roster.json`
 - Application routes
 - Shared components
 - Server-only modules
@@ -27,6 +28,7 @@ Document:
 
 Document primary workflows, including:
 
+- Planning and core-change handoffs from `AGENT_ROSTER.md`
 - Sign up, login, logout, and session refresh
 - Main user workflow
 - Admin workflow

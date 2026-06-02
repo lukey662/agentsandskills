@@ -5,6 +5,8 @@ Audit this project's agents, skills, and markdown documentation for a best-pract
 Evaluate:
 
 - Agent roles and handoffs
+- `.agent-kit/agent-roster.json` default council routing
+- Planner default planning workflow and Lead Architect core-change council workflow
 - Reusable skills
 - Supabase Auth, SSR, RLS, migrations, Storage, and service-role safety
 - Next.js App Router architecture

@@ -1,6 +1,6 @@
 {
   "summary": {
-    "pass": 19,
+    "pass": 24,
     "warn": 0,
     "fail": 0
   },
@@ -14,6 +14,26 @@
       "level": "pass",
       "area": "templates",
       "message": "AGENTS.md matches the current bundled template."
+    },
+    {
+      "level": "pass",
+      "area": "templates",
+      "message": "AGENT_ROSTER.md matches the current bundled template."
+    },
+    {
+      "level": "pass",
+      "area": "agents",
+      "message": "Agent roster contains the required default council agents."
+    },
+    {
+      "level": "pass",
+      "area": "agents",
+      "message": "Agent roster maps default agents to required skills."
+    },
+    {
+      "level": "pass",
+      "area": "agents",
+      "message": "Core-change workflow requires architect-led council handoff."
     }
   ]
 }

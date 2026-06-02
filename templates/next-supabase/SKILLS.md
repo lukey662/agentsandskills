@@ -2,6 +2,17 @@
 
 Use these reusable skills when building or reviewing this project.
 
+## Planning And Agent Council
+
+Use for planning requests, roadmap work, ambiguous feature requests, core architecture changes, auth/data changes, release changes, and any task that needs multiple agent roles.
+
+Required checks:
+- Planner starts planning and ambiguous requests.
+- Lead Architect reviews core changes before implementation.
+- Security Reviewer joins auth, data mutation, external-call, dependency, secret, and release-risk changes.
+- QA Engineer verifies behavior changes before completion.
+- Documentation Maintainer updates living docs when behavior, architecture, release, or standards change.
+
 ## Next.js App Router Architecture
 
 Use for routing, Server Components, Client Components, Server Actions, Route Handlers, data fetching, caching, revalidation, metadata, and protected app layouts.

@@ -7,7 +7,7 @@ The package has four main subsystems:
 - CLI commands in `src/cli`
 - Install and audit logic in `src/install`
 - GitHub research and repo analysis in `src/research`
-- Static installable assets in `templates`, `agents`, `skills`, `prompts`, `checklists`, `design-adapters`, `design-briefs`, and `profiles`
+- Static installable assets in `templates`, `agents`, `skills`, `prompts`, `checklists`, `design-adapters`, `design-briefs`, `profiles`, and `rosters`
 
 The CLI reads bundled assets from the package root so the same commands work in local development and after build.
 
@@ -19,9 +19,19 @@ Package-level research decisions are recorded in `DECISIONS.md`.
 
 Existing files are never overwritten by default. Conflicting template updates are written to `.agent-kit/conflicts/`.
 
+The installer writes `.agent-kit/agent-roster.json` from `rosters/next-supabase-default-council.json`. This roster is the default council contract:
+
+- Planner starts planning, roadmap, scope, and ambiguous requests.
+- Lead Architect reviews core changes before implementation.
+- Security Reviewer joins auth, data mutation, dependency, secret, external-call, and release-risk changes.
+- QA Engineer verifies behavior changes.
+- Documentation Maintainer keeps living markdown current.
+
 New manifests include `templateHashes` for each root markdown template. `agent-kit audit` uses these hashes to distinguish current templates, stale installed templates, and locally customized docs.
 
 Use `agent-kit audit --json` for machine-readable output in scripts or CI.
+
+Audit also validates the default council roster. Missing roster files, missing default agents, missing skill routing, or a core-change workflow without Lead Architect produce audit failures.
 
 Projects can document accepted local template customizations in `.agent-kit/overrides.json`:
 

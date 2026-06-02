@@ -44,7 +44,7 @@ Acceptance:
 
 ## Phase 3: Core Templates, Agents, Skills, And Checklists
 
-- `[x]` Add downstream templates for `AGENTS.md`, `SKILLS.md`, `SPEC.md`, `DECISIONS.md`, `DOCS.md`, `STYLE_GUIDE.md`, `SECURITY.md`, `TESTING.md`, and `DEPLOYMENT.md`.
+- `[x]` Add downstream templates for `AGENTS.md`, `AGENT_ROSTER.md`, `SKILLS.md`, `SPEC.md`, `DECISIONS.md`, `DOCS.md`, `STYLE_GUIDE.md`, `SECURITY.md`, `TESTING.md`, and `DEPLOYMENT.md`.
 - `[x]` Add core agents: architect, Next.js, Supabase/Postgres, security, frontend design, QA, docs, deployment, and research.
 - `[x]` Add core skills: Next.js App Router, Supabase Auth/RLS, Postgres migrations, OWASP review, frontend design, accessibility, testing, docs, and deployment.
 - `[x]` Add checklists for OWASP, RLS, frontend quality, accessibility, testing, and deployment.
@@ -160,3 +160,4 @@ Latest maturity evidence:
 - Public release review added at `PUBLIC_RELEASE_REVIEW.md`; current decision is private-first and not approved for public release.
 - Stack-adaptation profiles added for Next/Firebase, Next/Postgres, and Remix/Supabase.
 - Local override automation added through `.agent-kit/overrides.json`.
+- Default agent council routing added through `.agent-kit/agent-roster.json`, Planner, Planning and Agent Council skill, and audit enforcement for architect-led core-change handoffs.

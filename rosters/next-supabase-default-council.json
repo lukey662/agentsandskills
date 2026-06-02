@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "id": "next-supabase-default-council",
+  "stack": "next-supabase",
+  "required": true,
+  "defaultWorkflow": "planning",
+  "principle": "Planner routes work by default; Lead Architect convenes council for core changes before implementation.",
+  "agents": [
+    {
+      "id": "planner",
+      "name": "Planner",
+      "file": ".agent-kit/agents/planner.md",
+      "defaultFor": ["planning", "roadmap", "scope", "ambiguous-request", "handoff"],
+      "skills": ["planning-council", "docs-maintainer"],
+      "handsOffTo": ["lead-architect", "frontend-design-lead", "qa-engineer", "docs-maintainer"]
+    },
+    {
+      "id": "lead-architect",
+      "name": "Lead Architect",
+      "file": ".agent-kit/agents/lead-architect.md",
+      "defaultFor": ["core-change", "architecture", "cross-layer-change", "technical-decision"],
+      "skills": ["planning-council", "nextjs-app-router", "supabase-auth-rls", "postgres-migrations", "owasp-security-review"],
+      "handsOffTo": ["supabase-postgres-engineer", "nextjs-engineer", "security-reviewer", "qa-engineer", "docs-maintainer"]
+    },
+    {
+      "id": "supabase-postgres-engineer",
+      "name": "Supabase/Postgres Engineer",
+      "file": ".agent-kit/agents/supabase-postgres-engineer.md",
+      "defaultFor": ["schema", "migration", "rls", "auth", "storage", "sql"],
+      "skills": ["supabase-auth-rls", "postgres-migrations", "owasp-security-review"],
+      "handsOffTo": ["security-reviewer", "qa-engineer", "docs-maintainer", "deployment-observability-engineer"]
+    },
+    {
+      "id": "nextjs-engineer",
+      "name": "Next.js Engineer",
+      "file": ".agent-kit/agents/nextjs-engineer.md",
+      "defaultFor": ["app-router", "server-components", "route-handler", "server-action", "forms", "ui-state"],
+      "skills": ["nextjs-app-router", "frontend-design-system", "accessibility-wcag", "testing-qa"],
+      "handsOffTo": ["frontend-design-lead", "security-reviewer", "qa-engineer", "docs-maintainer"]
+    },
+    {
+      "id": "frontend-design-lead",
+      "name": "Frontend Design Lead",
+      "file": ".agent-kit/agents/frontend-design-lead.md",
+      "defaultFor": ["visual-design", "component-system", "accessibility", "anti-generic-ui", "screenshot-review"],
+      "skills": ["frontend-design-system", "accessibility-wcag"],
+      "handsOffTo": ["nextjs-engineer", "qa-engineer", "docs-maintainer"]
+    },
+    {
+      "id": "security-reviewer",
+      "name": "Security Reviewer",
+      "file": ".agent-kit/agents/security-reviewer.md",
+      "defaultFor": ["security-review", "auth-boundary", "data-mutation", "external-call", "dependency", "secret"],
+      "skills": ["owasp-security-review", "supabase-auth-rls", "postgres-migrations"],
+      "handsOffTo": ["lead-architect", "qa-engineer", "docs-maintainer", "deployment-observability-engineer"]
+    },
+    {
+      "id": "qa-engineer",
+      "name": "QA Engineer",
+      "file": ".agent-kit/agents/qa-engineer.md",
+      "defaultFor": ["testing", "regression", "smoke", "acceptance-evidence"],
+      "skills": ["testing-qa", "accessibility-wcag"],
+      "handsOffTo": ["docs-maintainer", "deployment-observability-engineer"]
+    },
+    {
+      "id": "docs-maintainer",
+      "name": "Documentation Maintainer",
+      "file": ".agent-kit/agents/docs-maintainer.md",
+      "defaultFor": ["docs", "decisions", "spec", "style-guide", "roadmap"],
+      "skills": ["docs-maintainer", "planning-council"],
+      "handsOffTo": ["deployment-observability-engineer"]
+    },
+    {
+      "id": "deployment-observability-engineer",
+      "name": "Deployment/Observability Engineer",
+      "file": ".agent-kit/agents/deployment-observability-engineer.md",
+      "defaultFor": ["release", "deployment", "environment", "logs", "rollback", "monitoring"],
+      "skills": ["deployment-observability", "testing-qa"],
+      "handsOffTo": ["qa-engineer", "docs-maintainer"]
+    }
+  ],
+  "workflows": [
+    {
+      "id": "planning",
+      "triggers": ["plan", "roadmap", "phase", "scope", "what should we do", "break this down"],
+      "sequence": ["planner", "lead-architect", "qa-engineer", "docs-maintainer"],
+      "council": ["planner", "lead-architect"],
+      "requiredOutputs": ["phased checklist", "affected layers", "preserved capabilities", "verification plan", "docs impact"]
+    },
+    {
+      "id": "core-change",
+      "triggers": ["schema", "auth", "rls", "api", "route handler", "server action", "dependency", "release workflow", "package behavior", "cross-layer"],
+      "sequence": [
+        "planner",
+        "lead-architect",
+        "supabase-postgres-engineer",
+        "nextjs-engineer",
+        "security-reviewer",
+        "qa-engineer",
+        "docs-maintainer",
+        "deployment-observability-engineer"
+      ],
+      "council": ["lead-architect", "security-reviewer", "qa-engineer", "docs-maintainer"],
+      "requiredOutputs": ["architecture decision", "security review", "test evidence", "doc updates", "release or rollback notes"]
+    },
+    {
+      "id": "frontend-change",
+      "triggers": ["screen", "component", "layout", "design", "responsive", "accessibility", "screenshot"],
+      "sequence": ["planner", "frontend-design-lead", "nextjs-engineer", "qa-engineer", "docs-maintainer"],
+      "council": ["frontend-design-lead", "qa-engineer"],
+      "requiredOutputs": ["domain-specific UI rationale", "state coverage", "accessibility checks", "desktop/mobile verification"]
+    },
+    {
+      "id": "security-review",
+      "triggers": ["security", "owasp", "secret", "token", "permission", "ssrf", "idor", "dependency"],
+      "sequence": ["planner", "security-reviewer", "lead-architect", "qa-engineer", "docs-maintainer"],
+      "council": ["security-reviewer", "lead-architect"],
+      "requiredOutputs": ["finding severity", "attack path", "mitigation", "verification evidence"]
+    }
+  ],
+  "handoffRules": [
+    "Each agent must state its decision, risk, and required next handoff before passing work on.",
+    "Planner starts planning and ambiguous requests by default.",
+    "Lead Architect must review core changes before implementation.",
+    "Security Reviewer must review auth, data mutation, external-call, dependency, secret, and release-risk changes.",
+    "QA Engineer must verify behavior changes before completion.",
+    "Documentation Maintainer must update living markdown when behavior, architecture, release, or standards change."
+  ]
+}
+

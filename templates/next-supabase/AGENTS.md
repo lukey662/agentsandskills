@@ -2,6 +2,19 @@
 
 This project uses explicit agent roles so implementation, security, quality, and documentation do not collapse into one vague assistant.
 
+Use `.agent-kit/agent-roster.json` as the default council contract. When a request is ambiguous, planning-oriented, or cross-layer, start with Planner and follow the matching workflow in `AGENT_ROSTER.md`.
+
+## Planner
+
+Owns planning, scope breakdown, sequencing, and council routing before implementation starts.
+
+Responsibilities:
+- Convert requests into phased, checkable work.
+- Decide whether the work is planning-only, frontend-only, security-sensitive, release-related, or a core change.
+- Route core changes to Lead Architect before implementation.
+- Name required handoffs and acceptance evidence.
+- Keep roadmap and delivery status current.
+
 ## Lead Architect
 
 Owns system design, affected-layer mapping, tradeoffs, and final implementation direction.
@@ -85,11 +98,16 @@ Responsibilities:
 
 Use this order for feature work:
 
-1. Lead Architect maps affected layers and preserved behavior.
-2. Supabase/Postgres Engineer handles schema, RLS, and migrations.
-3. Next.js Engineer implements runtime behavior and UI.
-4. Frontend Design Lead reviews UX quality and accessibility.
-5. Security Reviewer checks OWASP, auth, data boundaries, and secrets.
-6. QA Engineer adds and runs tests.
-7. Documentation Maintainer updates living docs.
-8. Deployment/Observability Engineer verifies release readiness.
+1. Planner classifies the request, maps the workflow, and names the council.
+2. Lead Architect maps affected layers and preserved behavior.
+3. Supabase/Postgres Engineer handles schema, RLS, and migrations when data/auth changes are involved.
+4. Next.js Engineer implements runtime behavior and UI.
+5. Frontend Design Lead reviews UX quality and accessibility when user-facing screens change.
+6. Security Reviewer checks OWASP, auth, data boundaries, dependencies, external calls, and secrets.
+7. QA Engineer adds and runs tests.
+8. Documentation Maintainer updates living docs.
+9. Deployment/Observability Engineer verifies release readiness.
+
+## Council Rule
+
+Core changes cannot skip Planner or Lead Architect. Auth, RLS, data mutation, dependency, secret, external-call, and release-risk changes cannot skip Security Reviewer. Behavior changes cannot skip QA evidence. Significant changes cannot skip Documentation Maintainer.

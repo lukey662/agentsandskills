@@ -5,6 +5,7 @@
   "installedAt": "2026-06-02T00:00:00.000Z",
   "docs": [
     "AGENTS.md",
+    "AGENT_ROSTER.md",
     "SKILLS.md",
     "SPEC.md",
     "DECISIONS.md",
@@ -21,10 +22,13 @@
     "checklists",
     "design-adapters",
     "design-briefs",
-    "profiles"
+    "profiles",
+    "rosters"
   ],
+  "agentRoster": ".agent-kit/agent-roster.json",
   "templateHashes": {
     "AGENTS.md": "sha256-of-installed-template",
+    "AGENT_ROSTER.md": "sha256-of-installed-template",
     "SKILLS.md": "sha256-of-installed-template",
     "SPEC.md": "sha256-of-installed-template",
     "DECISIONS.md": "sha256-of-installed-template",

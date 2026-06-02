@@ -22,6 +22,8 @@ Document the current system shape:
 
 List behavior that must be preserved during changes:
 
+- Agent council routing in `.agent-kit/agent-roster.json`
+- Planner default ownership for planning and Lead Architect review for core changes
 - Auth and session behavior
 - User ownership and tenant boundaries
 - Data mutation rules

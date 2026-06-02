@@ -2,7 +2,7 @@
 
 ## Package Purpose
 
-`@afg/next-supabase-agent-kit` is a private reusable agent-kit package for Next.js and Supabase projects. It ships installable markdown templates, agents, skills, prompts, checklists, design adapters, design briefs, stack profiles, and a CLI for installing and auditing those assets.
+`@afg/next-supabase-agent-kit` is a private reusable agent-kit package for Next.js and Supabase projects. It ships installable markdown templates, agents, skills, prompts, checklists, design adapters, design briefs, stack profiles, agent rosters, and a CLI for installing and auditing those assets.
 
 ## CLI Surface
 
@@ -22,6 +22,20 @@ Supported commands:
 - `research propose-updates`
 
 Existing project files must not be overwritten by default. Template conflicts are written to `.agent-kit/conflicts/`, and installed template hashes are tracked in `.agent-kit/manifest.json`.
+
+## Default Agent Council
+
+Installs must create `.agent-kit/agent-roster.json` from `rosters/next-supabase-default-council.json`.
+
+Required default behavior:
+
+- Planner owns planning, roadmaps, scope, ambiguous requests, and handoff routing.
+- Lead Architect owns architecture and must review core changes before implementation.
+- Supabase/Postgres Engineer, Next.js Engineer, Frontend Design Lead, Security Reviewer, QA Engineer, Documentation Maintainer, and Deployment/Observability Engineer join based on roster triggers.
+- Core changes must use the `core-change` workflow and include Lead Architect in both sequence and council.
+- Agent skill routing must include planning, Next.js, Supabase/RLS, Postgres migrations, OWASP, frontend design, accessibility, testing, docs, and deployment skills.
+
+`agent-kit audit` must fail when the default roster is missing, invalid, lacks required agents, lacks required skill routing, or does not make Planner the default planning agent.
 
 ## Release System
 
@@ -44,4 +58,3 @@ The release workflow must run typecheck, tests, build, dependency audit, and pac
 - Use least-privilege release credentials: OIDC for publish, read-only npm token only for install verification.
 - Keep package access restricted until `PUBLIC_RELEASE_REVIEW.md` is cleared.
 - Run `npm audit --audit-level=moderate` before publishing.
-

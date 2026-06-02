@@ -1,6 +1,6 @@
 # AFG Next/Supabase Agent Kit
 
-`@afg/next-supabase-agent-kit` is a private, research-backed npm package for installing agent roles, reusable skills, markdown documentation, frontend design standards, security checklists, and research workflows into Next.js + Supabase projects.
+`@afg/next-supabase-agent-kit` is a private, research-backed npm package for installing agent roles, reusable skills, default council routing, markdown documentation, frontend design standards, security checklists, and research workflows into Next.js + Supabase projects.
 
 The package is designed to answer one question consistently:
 
@@ -30,7 +30,8 @@ agent-kit doctor
 
 ## Package Goals
 
-- Install strong default docs: `AGENTS.md`, `SKILLS.md`, `SPEC.md`, `DECISIONS.md`, `DOCS.md`, `STYLE_GUIDE.md`, `SECURITY.md`, `TESTING.md`, and `DEPLOYMENT.md`.
+- Install strong default docs: `AGENTS.md`, `AGENT_ROSTER.md`, `SKILLS.md`, `SPEC.md`, `DECISIONS.md`, `DOCS.md`, `STYLE_GUIDE.md`, `SECURITY.md`, `TESTING.md`, and `DEPLOYMENT.md`.
+- Install a default agent council roster so Planner handles planning, Lead Architect reviews core changes, and specialist agents route to their associated skills by default.
 - Enforce clear agent ownership across architecture, Next.js, Supabase/Postgres, security, frontend design, QA, docs, and deployment.
 - Make Supabase Auth, SSR, RLS, migrations, service-role isolation, and IDOR prevention first-class setup concerns.
 - Prevent generic AI-looking frontend output through a dedicated frontend design skill, provider-neutral design adapters, screenshot review prompts, and product-specific design briefs.
@@ -69,6 +70,7 @@ npx @afg/next-supabase-agent-kit audit --json
 The installer preserves existing docs. If a target file already exists and differs from the template, the new template is written to `.agent-kit/conflicts/` unless `--force` is provided.
 New installs record bundled template hashes in `.agent-kit/manifest.json` so future audits can identify stale template docs, local customizations, and missing manifest metadata.
 Accepted local customizations can be documented in `.agent-kit/overrides.json`.
+New installs also write `.agent-kit/agent-roster.json`, a machine-readable council contract. `agent-kit audit` fails if required default agents, skill routing, or architect-led core-change handoffs are missing.
 
 See `examples/next-supabase-installed/` for a compact sample of installed output.
 

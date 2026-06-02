@@ -21,7 +21,14 @@
 - Private install verification may use a read-only npm token and must fail closed or skip explicitly when the token is absent.
 - Dry runs must execute quality gates without requiring npm package credentials.
 
+## Agent Council Style
+
+- Planning requests start with Planner.
+- Core changes route through Lead Architect before implementation.
+- Agent-to-skill mappings live in `.agent-kit/agent-roster.json` and must stay machine-readable.
+- Handoffs should name decision, risk, next owner, and required verification evidence.
+- Audit failures for missing council routing are treated as setup failures, not optional style drift.
+
 ## Front-End Guidance For Installed Projects
 
 Installed project docs should push teams away from generic AI-looking interfaces. Prefer product-specific layouts, explicit component states, accessible interactions, real content structure, and design briefs tailored to SaaS, admin, marketplace, content, or tool workflows.
-
