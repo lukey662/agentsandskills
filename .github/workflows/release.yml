@@ -64,3 +64,15 @@ jobs:
         run: npm publish --access restricted
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Verify published package install
+        if: github.event_name == 'release' || github.event.inputs.dry_run == 'false'
+        run: |
+          PACKAGE_VERSION="$(node -p "require('./package.json').version")"
+          for attempt in 1 2 3 4 5; do
+            npm view "@afg/next-supabase-agent-kit@$PACKAGE_VERSION" version --registry=https://registry.npmjs.org && break
+            sleep 10
+          done
+          npx --yes "@afg/next-supabase-agent-kit@$PACKAGE_VERSION" doctor
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
