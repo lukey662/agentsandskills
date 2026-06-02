@@ -138,8 +138,8 @@ Acceptance:
 
 Latest release evidence:
 
-- CI run `26811402766` passed on commit `87b6b5b`.
-- Release dry run `26811449749` passed on commit `87b6b5b`; `Publish to private npm` was skipped.
+- CI run `26812474370` passed on commit `e421b2c`.
+- Release dry run `26812524043` passed on commit `e421b2c`; `Publish to private npm` was skipped.
 
 Latest dogfood evidence:
 
