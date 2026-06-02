@@ -1,0 +1,7 @@
+src/
+tests/
+research/workdir/
+coverage/
+.env*
+tsconfig.json
+tsup.config.ts

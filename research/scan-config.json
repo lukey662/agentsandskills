@@ -1,0 +1,60 @@
+{
+  "maxRepos": 100,
+  "minStars": 100,
+  "activeSince": "2024-12-01",
+  "categories": [
+    {
+      "name": "official-nextjs",
+      "targetCount": 15,
+      "queries": [
+        "nextjs language:TypeScript",
+        "org:vercel nextjs"
+      ]
+    },
+    {
+      "name": "supabase-nextjs",
+      "targetCount": 15,
+      "queries": [
+        "supabase nextjs language:TypeScript",
+        "\"createServerClient\" supabase language:TypeScript",
+        "\"row level security\" supabase nextjs"
+      ]
+    },
+    {
+      "name": "production-saas",
+      "targetCount": 20,
+      "queries": [
+        "nextjs saas language:TypeScript",
+        "nextjs dashboard language:TypeScript",
+        "app router saas language:TypeScript"
+      ]
+    },
+    {
+      "name": "design-systems",
+      "targetCount": 15,
+      "queries": [
+        "design system react typescript",
+        "radix tailwind components language:TypeScript",
+        "accessibility components react language:TypeScript"
+      ]
+    },
+    {
+      "name": "security-quality",
+      "targetCount": 15,
+      "queries": [
+        "nextjs security language:TypeScript",
+        "codeql typescript nextjs",
+        "zod route handlers nextjs"
+      ]
+    },
+    {
+      "name": "testing-docs-agents",
+      "targetCount": 20,
+      "queries": [
+        "playwright nextjs language:TypeScript",
+        "AGENTS.md language:TypeScript",
+        "CLAUDE.md nextjs"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "name": "@afg/next-supabase-agent-kit",
+  "version": "0.1.0",
+  "description": "Research-backed agents, skills, prompts, checklists, and markdown templates for Next.js and Supabase projects.",
+  "type": "module",
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "bin": {
+    "agent-kit": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "templates",
+    "agents",
+    "skills",
+    "prompts",
+    "checklists",
+    "design-adapters",
+    "research/scan-config.json",
+    "README.md",
+    "SECURITY.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "npm@11.6.2",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsx src/cli/index.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "smoke": "node dist/index.js doctor",
+    "pack:check": "npm pack --dry-run"
+  },
+  "dependencies": {
+    "@octokit/rest": "^21.1.1",
+    "commander": "^12.1.0",
+    "simple-git": "^3.27.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "tsup": "^8.3.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "vitest": "^4.1.8"
+  }
+}
