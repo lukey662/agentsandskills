@@ -97,7 +97,15 @@ Publishing targets the private npm registry package `@afg/next-supabase-agent-ki
 Prerequisites:
 
 - The npm `@afg` scope exists and the publishing account has access.
-- GitHub secret `NPM_TOKEN` contains a granular npm token with publish rights for the `@afg` scope and 2FA bypass enabled for CI publishing.
+- npm Trusted Publishing is configured for package `@afg/next-supabase-agent-kit`.
+- Trusted publisher settings:
+  - Provider: GitHub Actions
+  - Organization or user: `lukey662`
+  - Repository: `agentsandskills`
+  - Workflow filename: `release.yml`
+  - Environment name: `npm-publish`
+  - Allowed action: `npm publish`
+- Optional GitHub secret `NPM_READ_TOKEN` contains a read-only npm token for post-publish private-package install verification.
 - The version in `package.json` is unique and follows semantic versioning.
 
 Release process:
@@ -106,15 +114,18 @@ Release process:
 2. Let CI pass on `main`.
 3. Run the manual `Release` workflow with `dry_run=true` to validate checks without publishing.
 4. Create or update a draft GitHub Release named `vX.Y.Z`.
-5. Add GitHub secret `NPM_TOKEN` with npm publish rights and 2FA bypass for the package scope.
+5. Confirm the npm Trusted Publisher settings match the release workflow exactly.
 6. Publish the draft GitHub Release, or manually dispatch `Release` with `dry_run=false`.
 7. The `Release` workflow runs the same quality gates as CI.
-8. The workflow validates npm auth with `npm whoami` and then publishes with `npm publish --access restricted`.
+8. The workflow validates the GitHub OIDC context and publishes with `npm publish --access restricted`.
 
-If publishing fails with npm `E403` and a message about two-factor authentication, replace `NPM_TOKEN` with a granular token that has bypass 2FA enabled.
+Do not use a bypass-2FA publish token for automation. If npm will not allow Trusted Publishing to be configured before the package exists, bootstrap the first version with a one-time manual OTP publish from a verified local checkout or another npm-approved package-creation path, then use Trusted Publishing for future releases.
+
+Private install verification is separate from publish authentication. If `NPM_READ_TOKEN` is absent, the workflow publishes and skips the `npx` verification step with an explicit log message.
 
 Verified release evidence:
 
 - CI run `26816316447` passed on commit `586924c`.
 - GitHub Release `v0.1.0` is published.
 - Release run `26816448475` reached `npm publish` and failed with npm `E403` because the npm token requires 2FA bypass for CI publishing.
+- The release workflow now uses Trusted Publishing instead of publish-token authentication.

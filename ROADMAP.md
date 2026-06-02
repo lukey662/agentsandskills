@@ -132,10 +132,12 @@ Acceptance:
 
 ## Current Next Actions
 
-1. Replace `NPM_TOKEN` with a granular npm token that has `@afg` publish rights and 2FA bypass enabled.
-2. Dispatch the `Release` workflow with `dry_run=false`.
-3. Verify private package install with `npx @afg/next-supabase-agent-kit`.
-4. Continue Phase 8 maturity work: scheduled research refresh, stronger local override automation, stack expansion, and public-release readiness.
+1. Configure npm Trusted Publishing for package `@afg/next-supabase-agent-kit`: GitHub user `lukey662`, repository `agentsandskills`, workflow `release.yml`, environment `npm-publish`, allowed action `npm publish`.
+2. If npm requires the package to exist before trusted publishing can be configured, complete a one-time manual OTP bootstrap publish from the verified `main` checkout.
+3. Optionally add GitHub secret `NPM_READ_TOKEN` with read-only npm access so the release workflow can verify private install with `npx`.
+4. Dispatch the `Release` workflow with `dry_run=false`.
+5. Verify private package install with `npx @afg/next-supabase-agent-kit`.
+6. Continue Phase 8 maturity work: scheduled research refresh, stronger local override automation, stack expansion, and public-release readiness.
 
 Latest release evidence:
 
@@ -143,6 +145,7 @@ Latest release evidence:
 - GitHub Release `v0.1.0` is published.
 - Release run `26816448475` reached `npm publish` and failed with npm `E403` because the npm token requires 2FA bypass for CI publishing.
 - Package metadata was fixed after the failed publish so npm no longer removes the `agent-kit` bin during pack/publish.
+- Release workflow now uses npm Trusted Publishing/OIDC instead of a long-lived publish token. Private install verification uses optional `NPM_READ_TOKEN`.
 
 Latest dogfood evidence:
 

@@ -56,7 +56,21 @@ Use a dedicated `Release` GitHub Actions workflow. The workflow runs install, ty
 
 ### Consequences
 
-The release path is repeatable and can be dry-run safely before `NPM_TOKEN` is configured. Actual package publication remains blocked until the GitHub secret contains an npm token with publish rights for the `@afg` scope.
+The release path is repeatable and can be dry-run safely before npm publishing is configured. Actual package publication remains blocked until npm allows the configured release workflow to publish the package.
+
+## 2026-06-02 - Use NPM Trusted Publishing For CI Releases
+
+### Context
+
+The first private npm release reached `npm publish` but failed because token-based CI publishing requires two-factor handling. npm warns that bypass-2FA tokens carry security risk for automation.
+
+### Decision
+
+Use npm Trusted Publishing through GitHub Actions OIDC for package writes. The `Release` workflow grants `id-token: write`, runs from the `npm-publish` environment, publishes without `NODE_AUTH_TOKEN`, and keeps `NPM_READ_TOKEN` optional for private-package install verification only.
+
+### Consequences
+
+The release process no longer depends on a long-lived npm publish token. The npm package owner must configure a trusted publisher for `lukey662/agentsandskills`, workflow `release.yml`, environment `npm-publish`, and allowed action `npm publish`. If npm requires the package to exist before trusted publishing can be configured, the first package creation still needs a one-time manual publish with OTP or another npm-approved bootstrap path.
 
 ## 2026-06-02 - Use Template Hashes For Install Drift Detection
 

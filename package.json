@@ -3,6 +3,14 @@
   "version": "0.1.0",
   "description": "Research-backed agents, skills, prompts, checklists, and markdown templates for Next.js and Supabase projects.",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lukey662/agentsandskills.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lukey662/agentsandskills/issues"
+  },
+  "homepage": "https://github.com/lukey662/agentsandskills#readme",
   "publishConfig": {
     "access": "restricted",
     "registry": "https://registry.npmjs.org"

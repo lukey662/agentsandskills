@@ -14,12 +14,14 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
 jobs:
   publish:
     name: Publish package
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    environment: npm-publish
 
     steps:
       - name: Checkout
@@ -28,9 +30,9 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
-          node-version: "20"
-          cache: npm
+          node-version: "24"
           registry-url: "https://registry.npmjs.org"
+          package-manager-cache: false
 
       - name: Use declared npm version
         run: npm install --global npm@11.6.2
@@ -53,21 +55,24 @@ jobs:
       - name: Package dry run
         run: npm pack --dry-run
 
-      - name: Validate npm publish token
+      - name: Validate trusted publishing context
         if: github.event_name == 'release' || github.event.inputs.dry_run == 'false'
-        run: npm whoami --registry=https://registry.npmjs.org
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          test -n "${ACTIONS_ID_TOKEN_REQUEST_TOKEN:-}"
+          test -n "${ACTIONS_ID_TOKEN_REQUEST_URL:-}"
 
       - name: Publish to private npm
         if: github.event_name == 'release' || github.event.inputs.dry_run == 'false'
         run: npm publish --access restricted
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Verify published package install
         if: github.event_name == 'release' || github.event.inputs.dry_run == 'false'
         run: |
+          if [ -z "${NODE_AUTH_TOKEN:-}" ]; then
+            echo "NPM_READ_TOKEN is not configured; skipping private install verification."
+            exit 0
+          fi
+
           PACKAGE_VERSION="$(node -p "require('./package.json').version")"
           for attempt in 1 2 3 4 5; do
             npm view "@afg/next-supabase-agent-kit@$PACKAGE_VERSION" version --registry=https://registry.npmjs.org && break
@@ -75,4 +80,4 @@ jobs:
           done
           npx --yes "@afg/next-supabase-agent-kit@$PACKAGE_VERSION" doctor
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_READ_TOKEN }}

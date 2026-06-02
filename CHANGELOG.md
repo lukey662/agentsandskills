@@ -13,3 +13,4 @@
 - Promoted downstream dogfood findings from `dogfood/qrcode-audit.md` and `dogfood/ai-news-audit.md`.
 - Added npm publish-token preflight and prepared draft GitHub Release `v0.1.0`.
 - Fixed package bin metadata so `agent-kit` is preserved during npm publish.
+- Replaced publish-token CI authentication with npm Trusted Publishing and optional read-token install verification.
