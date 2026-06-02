@@ -77,12 +77,12 @@ Acceptance:
 - `[x]` Generate per-repo findings.
 - `[x]` Generate summary stubs.
 - `[x]` Generate proposed update brief.
-- `[ ]` Run discovery for 100 repositories with `GITHUB_TOKEN`.
-- `[ ]` Review and curate the final 100-repo candidate list.
-- `[ ]` Run the 100-repo scan.
-- `[ ]` Manually review generated findings.
-- `[ ]` Promote repeated patterns into templates, skills, and checklists.
-- `[ ]` Record research-backed decisions in `DECISIONS.md` or a research summary.
+- `[x]` Run discovery for 100 repositories with `GITHUB_TOKEN`.
+- `[x]` Review and curate the final 100-repo candidate list.
+- `[x]` Run the 100-repo scan.
+- `[x]` Manually review generated findings.
+- `[x]` Promote repeated patterns into templates, skills, and checklists.
+- `[x]` Record research-backed decisions in `DECISIONS.md` or a research summary.
 
 Acceptance:
 
@@ -130,5 +130,7 @@ Acceptance:
 
 ## Current Next Actions
 
-1. Run the first 100-repo discovery.
-2. Dogfood the installer on one real Next.js/Supabase project.
+1. Configure GitHub Packages or private npm publishing.
+2. Add release workflow and versioning policy.
+3. Publish private v0.1 package.
+4. Dogfood the installer on one real Next.js/Supabase project.

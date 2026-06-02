@@ -32,6 +32,14 @@ List behavior that must be preserved during changes:
 
 Document tables, relationships, constraints, indexes, and ownership rules.
 
+## RLS Policy Inventory
+
+Track authorization at the data boundary.
+
+| Table/Bucket | Owner Boundary | Select | Insert | Update | Delete | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| `example_table` | `user_id = auth.uid()` | Required | Required | Required | Optional | Replace with real policy names. |
+
 ## Security Requirements
 
 - Authorization is enforced by Supabase RLS.
@@ -45,6 +53,14 @@ Document tables, relationships, constraints, indexes, and ownership rules.
 - Interfaces are mobile-first and accessible.
 - Loading, empty, error, disabled, and success states are handled.
 - Visual design is domain-specific and avoids generic AI-site defaults.
+
+## Component And State Inventory
+
+Track important UI surfaces so design quality is reviewable.
+
+| Surface | Components | Loading | Empty | Error | Disabled | Success | Mobile Notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Primary workflow | TBD | TBD | TBD | TBD | TBD | TBD | TBD |
 
 ## Open Questions
 

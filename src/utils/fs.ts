@@ -2,10 +2,10 @@ import { createHash } from "node:crypto";
 import {
   cpSync,
   existsSync,
+  lstatSync,
   mkdirSync,
   readFileSync,
   readdirSync,
-  statSync,
   writeFileSync
 } from "node:fs";
 import { basename, dirname, isAbsolute, join, relative, resolve } from "node:path";
@@ -47,7 +47,15 @@ export function listFilesRecursive(root: string): string[] {
   const visit = (dir: string) => {
     for (const entry of readdirSync(dir)) {
       const fullPath = join(dir, entry);
-      const stats = statSync(fullPath);
+      let stats;
+      try {
+        stats = lstatSync(fullPath);
+      } catch {
+        continue;
+      }
+
+      if (stats.isSymbolicLink()) continue;
+
       if (stats.isDirectory()) {
         if (entry === "node_modules" || entry === ".git") continue;
         visit(fullPath);

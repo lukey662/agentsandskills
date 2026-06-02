@@ -42,6 +42,19 @@ Prefer:
 - Clear density rules for admin, SaaS, and operational tools.
 - Mobile-first responsive layouts.
 
+## Design Token Inventory
+
+Define design tokens instead of ad hoc styling.
+
+| Token Area | Required Decisions |
+| --- | --- |
+| Color | Semantic colors, contrast, status colors |
+| Typography | Font family, scale, weights, line height |
+| Spacing | Base unit, dense/admin spacing, section spacing |
+| Radius | Component radius defaults and exceptions |
+| Motion | Duration, easing, reduced-motion behavior |
+| Shadow/Depth | When elevation is allowed |
+
 ## Component States
 
 Every interactive component should consider:

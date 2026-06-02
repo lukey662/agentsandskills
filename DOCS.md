@@ -11,6 +11,8 @@ The package has four main subsystems:
 
 The CLI reads bundled assets from the package root so the same commands work in local development and after build.
 
+Package-level research decisions are recorded in `DECISIONS.md`.
+
 ## Install Behavior
 
 `agent-kit init --stack next-supabase` installs root markdown docs and copies library assets into `.agent-kit/`.
@@ -22,6 +24,14 @@ Existing files are never overwritten by default. Conflicting template updates ar
 `research discover` requires `GITHUB_TOKEN` and writes `research/repo-candidates.json`.
 
 `research scan` shallow clones each candidate, runs static analysis, writes a per-repo markdown finding, and removes clones unless `--keep-clones` is used.
+
+Research evidence is committed:
+
+- `research/repo-candidates.json`
+- `research/candidate-review.md`
+- `research/findings/*.md`
+- `research/summaries/*.md`
+- `research/proposed-updates.md`
 
 ## Local Development
 

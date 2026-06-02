@@ -20,6 +20,19 @@ Define project-specific smoke tests for:
 - Error and empty states
 - Mobile navigation
 
+## CI Gates
+
+Every project should define the smallest reliable CI gate for its risk profile.
+
+Recommended baseline:
+
+- Install from lockfile
+- Typecheck
+- Unit tests
+- Build
+- Dependency audit
+- Playwright smoke tests for critical paths
+
 ## Security-Focused Tests
 
 Prioritize:

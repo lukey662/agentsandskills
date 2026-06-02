@@ -6,8 +6,4 @@ coverage/
 .env.*
 !.env.example
 research/workdir/
-research/repo-candidates.json
-research/proposed-updates.md
-research/findings/*.md
-research/summaries/*.md
 !.gitkeep

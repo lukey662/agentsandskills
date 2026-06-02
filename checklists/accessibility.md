@@ -8,3 +8,5 @@
 - Forms have labels and error messages.
 - Custom controls expose state.
 - Content does not rely only on color or motion.
+- Critical flows have keyboard-only smoke coverage.
+- Accessibility tooling or manual checks are documented in `TESTING.md`.

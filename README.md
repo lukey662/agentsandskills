@@ -68,6 +68,10 @@ The installer preserves existing docs. If a target file already exists and diffe
 
 This kit treats OWASP Top 10 review, Supabase RLS, service-role key isolation, input validation, output encoding, and least-privilege data access as non-negotiable defaults.
 
+## Research Evidence
+
+Research candidates, findings, summaries, and promoted decisions are tracked in `research/` and `DECISIONS.md`.
+
 ## Status
 
 Private v0.1 package. Public release requires license review, prompt review, dependency review, and legal approval for any research citations.

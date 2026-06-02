@@ -2,13 +2,63 @@
   "maxRepos": 100,
   "minStars": 100,
   "activeSince": "2024-12-01",
+  "excludeRepos": [
+    "appwrite/appwrite"
+  ],
+  "seedRepos": [
+    {
+      "fullName": "dubinc/dub",
+      "category": "production-saas"
+    },
+    {
+      "fullName": "documenso/documenso",
+      "category": "production-saas"
+    },
+    {
+      "fullName": "formbricks/formbricks",
+      "category": "production-saas"
+    },
+    {
+      "fullName": "triggerdotdev/trigger.dev",
+      "category": "production-saas"
+    },
+    {
+      "fullName": "unkeyed/unkey",
+      "category": "security-quality"
+    },
+    {
+      "fullName": "better-auth/better-auth",
+      "category": "security-quality"
+    },
+    {
+      "fullName": "nextauthjs/next-auth",
+      "category": "security-quality"
+    },
+    {
+      "fullName": "tailwindlabs/headlessui",
+      "category": "design-systems"
+    },
+    {
+      "fullName": "shadcn-ui/ui",
+      "category": "design-systems"
+    },
+    {
+      "fullName": "t3-oss/create-t3-app",
+      "category": "testing-docs-agents"
+    },
+    {
+      "fullName": "storybookjs/storybook",
+      "category": "testing-docs-agents"
+    }
+  ],
   "categories": [
     {
       "name": "official-nextjs",
       "targetCount": 15,
       "queries": [
-        "nextjs language:TypeScript",
-        "org:vercel nextjs"
+        "org:vercel nextjs",
+        "org:vercel app-router",
+        "org:nextjs"
       ]
     },
     {
@@ -17,7 +67,9 @@
       "queries": [
         "supabase nextjs language:TypeScript",
         "\"createServerClient\" supabase language:TypeScript",
-        "\"row level security\" supabase nextjs"
+        "\"row level security\" supabase nextjs",
+        "\"supabase\" \"app/\" \"middleware.ts\" language:TypeScript",
+        "\"supabase\" \"rls\" language:TypeScript"
       ]
     },
     {
@@ -26,16 +78,19 @@
       "queries": [
         "nextjs saas language:TypeScript",
         "nextjs dashboard language:TypeScript",
-        "app router saas language:TypeScript"
+        "app router saas language:TypeScript",
+        "open source saas starter nextjs language:TypeScript",
+        "nextjs admin dashboard language:TypeScript"
       ]
     },
     {
       "name": "design-systems",
       "targetCount": 15,
       "queries": [
-        "design system react typescript",
+        "react design system language:TypeScript",
+        "component library react accessibility language:TypeScript",
         "radix tailwind components language:TypeScript",
-        "accessibility components react language:TypeScript"
+        "shadcn components language:TypeScript"
       ]
     },
     {
@@ -44,7 +99,9 @@
       "queries": [
         "nextjs security language:TypeScript",
         "codeql typescript nextjs",
-        "zod route handlers nextjs"
+        "zod route handlers nextjs",
+        "auth middleware nextjs security language:TypeScript",
+        "csrf rate limit nextjs language:TypeScript"
       ]
     },
     {
@@ -52,6 +109,8 @@
       "targetCount": 20,
       "queries": [
         "playwright nextjs language:TypeScript",
+        "vitest playwright nextjs language:TypeScript",
+        "contributing security testing nextjs language:TypeScript",
         "AGENTS.md language:TypeScript",
         "CLAUDE.md nextjs"
       ]

@@ -23,6 +23,19 @@ Security review is required for every auth, API, data access, upload, webhook, e
 - Service-role keys must never be exposed to browser code.
 - Storage buckets require explicit access policies.
 - Migrations that change authorization must include review notes.
+- `SPEC.md` must include an RLS policy inventory for every protected table and bucket.
+
+## Security Control Inventory
+
+Track project controls explicitly.
+
+| Control | Location | Owner | Verification |
+| --- | --- | --- | --- |
+| Auth middleware | TBD | TBD | Protected-route smoke test |
+| RLS policies | Supabase migrations | TBD | SQL/policy review |
+| Input validation | Forms, Server Actions, Route Handlers | TBD | Unit/integration tests |
+| Rate limiting | Public mutations and auth-sensitive routes | TBD | Abuse-case review |
+| Service-role isolation | Server-only modules | TBD | Bundle and code review |
 
 ## Input And Output Boundaries
 

@@ -12,6 +12,8 @@ Working on Supabase Auth, SSR clients, middleware, sessions, tables, policies, S
 - Auth middleware handles session refresh safely.
 - Storage buckets have explicit policies.
 - IDOR attempts are considered and tested.
+- `SPEC.md` contains an RLS policy inventory.
+- Security-sensitive policy assumptions are recorded in `DECISIONS.md`.
 
 ## Safe Default
 
