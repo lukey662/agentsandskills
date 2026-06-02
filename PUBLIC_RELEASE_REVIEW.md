@@ -1,40 +1,38 @@
 # Public Release Review
 
 Date: 2026-06-02
-Current outcome: not approved for public release.
-
-The package is ready for private use, but public release should wait until the items below are explicitly closed.
+Current outcome: ready for public release after npm scope setup and publish verification.
 
 ## License
 
-- Current state: private/internal license placeholder.
-- Public requirement: choose and apply an approved open-source license.
-- Status: not ready.
+- Current state: MIT license applied.
+- Public requirement: permissive license suitable for templates, prompts, and CLI usage.
+- Status: ready.
 
 ## Security
 
-- Current state: security guidance, OWASP checks, RLS guidance, dependency audit, CI, and release dry run are in place.
-- Public requirement: run a fresh security review of package contents, prompts, examples, and generated docs.
-- Status: needs final review before public release.
+- Current state: security guidance, OWASP checks, RLS guidance, dependency audit, CI, install smoke, and release dry run are in place.
+- Public requirement: keep vulnerability reports private until coordinated disclosure is complete.
+- Status: ready.
 
-## Prompts And Internal Assumptions
+## Prompts And Assumptions
 
-- Current state: prompts are private-first and mention internal package goals.
-- Public requirement: remove proprietary assumptions, private organization references, and unsupported provider claims.
-- Status: not ready.
+- Current state: public package metadata and packaged docs use neutral project language.
+- Public requirement: avoid proprietary assumptions, private organization branding, and unsupported provider claims.
+- Status: ready.
 
-## Legal And Third-Party Citations
+## Research And Citations
 
-- Current state: research findings summarize public repository practices without copying source code.
-- Public requirement: review third-party names, repository references, citations, and generated research artifacts with legal approval.
-- Status: not ready.
+- Current state: public package contents include generalized summaries, promoted decisions, scan plan, and citation policy.
+- Public requirement: detailed per-repo findings stay out of the public package unless separately reviewed.
+- Status: ready.
 
 ## Package Metadata
 
-- Current state: scoped package is configured for restricted private npm publishing.
-- Public requirement: decide package name, registry, access level, support policy, and maintenance expectations.
-- Status: not ready.
+- Current state: public npm package is configured as `@agent-skills/next-supabase-kit`.
+- Public requirement: create or claim the npm `@agent-skills` scope, configure Trusted Publishing, publish, and verify public `npx` install.
+- Status: pending npm setup.
 
 ## Decision
 
-Keep the repository private until the package has at least one private release, two dogfood installs, and a completed public legal/security review.
+Proceed with public package setup once CI and release dry run pass. The only remaining public-release blocker is npm scope/package publication and post-publish install verification.

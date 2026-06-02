@@ -2,11 +2,11 @@
 
 ## Supported Versions
 
-This private package is supported only on the current `main` branch until versioned releases are introduced.
+This project supports the latest published npm release and the current `main` branch.
 
 ## Reporting
 
-Report vulnerabilities privately to the AFG engineering owner. Do not open public issues for secrets, exploit paths, or vulnerable downstream project details.
+Report vulnerabilities through a private security advisory or by contacting the maintainers directly. Do not publish secrets, exploit paths, or vulnerable downstream project details in public issues.
 
 ## Package Security Requirements
 

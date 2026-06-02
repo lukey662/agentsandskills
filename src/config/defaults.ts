@@ -1,6 +1,6 @@
 import type { AgentKitConfig } from "./types.js";
 
-export const PACKAGE_NAME = "@afg/next-supabase-agent-kit";
+export const PACKAGE_NAME = "@agent-skills/next-supabase-kit";
 export const PACKAGE_VERSION = "0.1.0";
 
 export const DEFAULT_CONFIG: AgentKitConfig = {

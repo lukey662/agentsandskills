@@ -1,5 +1,5 @@
 {
-  "packageName": "@afg/next-supabase-agent-kit",
+  "packageName": "@agent-skills/next-supabase-kit",
   "packageVersion": "0.1.0",
   "stack": "next-supabase",
   "installedAt": "2026-06-02T00:00:00.000Z",

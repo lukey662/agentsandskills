@@ -48,11 +48,11 @@ Installed projects get more operationally useful docs. The templates are slightl
 
 ### Context
 
-The package is intended to be consumed across multiple projects through a private scoped npm package. Publishing must not happen from normal CI pushes, and first-release validation must prove the workflow can run without requiring package credentials.
+The package is intended to be consumed across multiple projects through a public scoped npm package. Publishing must not happen from normal CI pushes, and first-release validation must prove the workflow can run without long-lived package credentials.
 
 ### Decision
 
-Use a dedicated `Release` GitHub Actions workflow. The workflow runs install, typecheck, tests, build, dependency audit, and package dry run before publishing. `npm publish --access restricted` runs only for a published GitHub Release or a manual workflow dispatch with `dry_run=false`.
+Use a dedicated `Release` GitHub Actions workflow. The workflow runs install, typecheck, tests, build, dependency audit, install smoke, and package dry run before publishing. `npm publish --access public` runs only for a published GitHub Release or a manual workflow dispatch with `dry_run=false`.
 
 ### Consequences
 
@@ -62,11 +62,11 @@ The release path is repeatable and can be dry-run safely before npm publishing i
 
 ### Context
 
-The first private npm release reached `npm publish` but failed because token-based CI publishing requires two-factor handling. npm warns that bypass-2FA tokens carry security risk for automation.
+The first npm release attempt reached `npm publish` but failed because token-based CI publishing requires two-factor handling. npm warns that bypass-2FA tokens carry security risk for automation.
 
 ### Decision
 
-Use npm Trusted Publishing through GitHub Actions OIDC for package writes. The `Release` workflow grants `id-token: write`, runs from the `npm-publish` environment, publishes without `NODE_AUTH_TOKEN`, and keeps `NPM_READ_TOKEN` optional for private-package install verification only.
+Use npm Trusted Publishing through GitHub Actions OIDC for package writes. The `Release` workflow grants `id-token: write`, runs from the `npm-publish` environment, publishes without `NODE_AUTH_TOKEN`, and verifies public install with `npx`.
 
 ### Consequences
 
@@ -85,6 +85,20 @@ Ship a structured default council roster at `.agent-kit/agent-roster.json`, back
 ### Consequences
 
 Installed projects now have a machine-readable agent-to-skill and workflow contract. Agents can read the roster to choose the default workflow, and audits can detect drift when a project removes the planner, skips architect review for core changes, or loses required skill routing.
+
+## 2026-06-02 - Prepare A Neutral Public OSS Package
+
+### Context
+
+The kit is useful beyond one organization and should be publishable as a best-practice open-source package. Private package naming, restrictive license text, and detailed per-repo research findings are not appropriate defaults for public distribution.
+
+### Decision
+
+Rename the npm package to `@agent-skills/next-supabase-kit`, publish with public npm access, use the MIT license, and keep public research exposure to generalized summaries, scan methodology, and promoted decisions. Keep detailed per-repo findings out of the public npm package unless separately reviewed.
+
+### Consequences
+
+The package is easier for external projects to adopt and can be installed publicly with `npx`. Maintainers must create or claim the `@agent-skills` npm scope, configure Trusted Publishing for the new package identity, and keep public-readiness tests passing before release.
 
 ## 2026-06-02 - Use Template Hashes For Install Drift Detection
 
@@ -114,16 +128,16 @@ Add installable `profiles` for SaaS, marketplace, admin app, and content app pro
 
 Downstream projects get reusable product-type guidance in `.agent-kit/`. Audit and templates now expect design tokens, component states, and anti-generic landing-page rules to be documented.
 
-## 2026-06-02 - Keep The Repo Private Before Public Release
+## 2026-06-02 - Gate Public Release On Package Verification
 
 ### Context
 
-The kit now contains prompts, research artifacts, private package assumptions, and downstream dogfood notes. Public release requires a separate legal, security, license, and citation review.
+The kit now contains prompts, research summaries, installable assets, and downstream dogfood notes. Public release requires verified package metadata, public install evidence, security guidance, and citation policy.
 
 ### Decision
 
-Keep the repository private until private package publishing is working, two dogfood installs have been reviewed, and `PUBLIC_RELEASE_REVIEW.md` is cleared.
+Proceed with public package setup after CI, release dry run, install smoke, and public-readiness tests pass. Keep detailed per-repo findings out of the public npm package unless separately reviewed.
 
 ### Consequences
 
-Internal projects can keep using and improving the kit immediately. Public release remains a deliberate future decision rather than an accidental side effect of package readiness.
+The public package can ship once npm scope setup and post-publish `npx` verification succeed. Public release remains gated by evidence rather than by repository intent alone.

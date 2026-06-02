@@ -2,11 +2,11 @@
 
 ## 0.1.0
 
-- Initial private package scaffold.
+- Initial public package scaffold.
 - Added CLI commands for install, audit, diff, update, add skill, doctor, and research workflows.
 - Added Next.js + Supabase markdown templates.
 - Added core agent roles, skills, prompts, checklists, and provider-neutral design adapters.
-- Added CI and private npm release workflows with dry-run validation.
+- Added CI and public npm release workflows with dry-run validation.
 - Added template-hash manifest tracking and `agent-kit audit --json`.
 - Added compatibility profiles, product-specific design briefs, screenshot review prompt, and sample installed output.
 - Promoted 100-repo research findings from `research/summaries/scan-overview.md` and `research/proposed-updates.md`.
@@ -15,3 +15,4 @@
 - Fixed package bin metadata so `agent-kit` is preserved during npm publish.
 - Replaced publish-token CI authentication with npm Trusted Publishing and optional read-token install verification.
 - Added a Planner agent, Planning and Agent Council skill, and machine-readable default council roster enforced by audit.
+- Rebranded package for public OSS as `@agent-skills/next-supabase-kit` with MIT license, citation policy, and public-readiness tests.

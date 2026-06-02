@@ -87,6 +87,7 @@ Required gates:
 - `npm run typecheck`
 - `npm test`
 - `npm run build`
+- `npm run smoke:install`
 - `npm audit --audit-level=moderate`
 - `npm pack --dry-run`
 
@@ -96,18 +97,18 @@ Use `ROADMAP.md` as the source of truth for phased implementation status and nex
 
 ## Release Notes
 
-This is a private package. Before external release, replace the private license, remove internal assumptions, and review all prompts for proprietary content.
+This is an MIT-licensed public package. Before each release, verify package metadata, public docs, research citation policy, dependency audit, and install-smoke evidence.
 
-See `PUBLIC_RELEASE_REVIEW.md` for the current public-release decision and readiness checklist.
+See `PUBLIC_RELEASE_REVIEW.md` for the public-release readiness checklist.
 
-## Private NPM Release
+## Public NPM Release
 
-Publishing targets the private npm registry package `@afg/next-supabase-agent-kit`.
+Publishing targets the public npm registry package `@agent-skills/next-supabase-kit`.
 
 Prerequisites:
 
-- The npm `@afg` scope exists and the publishing account has access.
-- npm Trusted Publishing is configured for package `@afg/next-supabase-agent-kit`.
+- The npm `@agent-skills` scope exists and the publishing account has access.
+- npm Trusted Publishing is configured for package `@agent-skills/next-supabase-kit`.
 - Trusted publisher settings:
   - Provider: GitHub Actions
   - Organization or user: `lukey662`
@@ -115,7 +116,6 @@ Prerequisites:
   - Workflow filename: `release.yml`
   - Environment name: `npm-publish`
   - Allowed action: `npm publish`
-- Optional GitHub secret `NPM_READ_TOKEN` contains a read-only npm token for post-publish private-package install verification.
 - The version in `package.json` is unique and follows semantic versioning.
 
 Release process:
@@ -127,18 +127,15 @@ Release process:
 5. Confirm the npm Trusted Publisher settings match the release workflow exactly.
 6. Publish the draft GitHub Release, or manually dispatch `Release` with `dry_run=false`.
 7. The `Release` workflow runs the same quality gates as CI.
-8. The workflow validates the GitHub OIDC context and publishes with `npm publish --access restricted`.
+8. The workflow validates the GitHub OIDC context and publishes with `npm publish --access public`.
+9. The workflow verifies public package installation with `npx @agent-skills/next-supabase-kit doctor`.
 
 Do not use a bypass-2FA publish token for automation. If npm will not allow Trusted Publishing to be configured before the package exists, bootstrap the first version with a one-time manual OTP publish from a verified local checkout or another npm-approved package-creation path, then use Trusted Publishing for future releases.
 
-Private install verification is separate from publish authentication. If `NPM_READ_TOKEN` is absent, the workflow publishes and skips the `npx` verification step with an explicit log message.
+Public install verification is separate from publish authentication and does not require an npm token after registry propagation.
 
-GitHub secret `NPM_TOKEN` is intentionally unused by the release workflow. Remove it after the npm Trusted Publisher path is confirmed. If install verification is required for this private package, add `NPM_READ_TOKEN` instead.
+Pre-public release evidence:
 
-Verified release evidence:
-
-- CI run `26816316447` passed on commit `586924c`.
-- GitHub Release `v0.1.0` is published.
-- Release run `26816448475` reached `npm publish` and failed with npm `E403` because the npm token requires 2FA bypass for CI publishing.
-- The release workflow now uses Trusted Publishing instead of publish-token authentication.
-- Release run `26819650910` reached `npm publish` with OIDC context available and failed with npm `E404`, which means npm could not find the package or the workflow did not have permission to publish it.
+- CI and release dry-run gates are configured.
+- Public package metadata is configured for `@agent-skills/next-supabase-kit`.
+- Public release remains blocked until the npm `@agent-skills` scope is created or claimed, Trusted Publishing is configured, and post-publish `npx` verification succeeds.

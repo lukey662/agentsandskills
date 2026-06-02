@@ -1,10 +1,12 @@
-# AFG Next/Supabase Agent Kit
+# Agent Skills Next/Supabase Kit
 
-`@afg/next-supabase-agent-kit` is a private, research-backed npm package for installing agent roles, reusable skills, default council routing, markdown documentation, frontend design standards, security checklists, and research workflows into Next.js + Supabase projects.
+`@agent-skills/next-supabase-kit` is an open-source, research-backed npm package for installing agent roles, reusable skills, default council routing, markdown documentation, frontend design standards, security checklists, and research workflows into Next.js + Supabase projects.
 
 The package is designed to answer one question consistently:
 
 > Does this project have the right setup for secure, maintainable, non-generic Next.js + Supabase delivery?
+
+This is more than a prompt bundle: installs include a machine-readable agent council roster, auditable handoff rules, living documentation templates, research-backed setup checks, and CLI enforcement for drift.
 
 ## Install
 
@@ -62,9 +64,9 @@ The scanner uses GitHub API discovery plus shallow clones. It writes repo findin
 From a Next.js + Supabase project:
 
 ```bash
-npx @afg/next-supabase-agent-kit init --stack next-supabase
-npx @afg/next-supabase-agent-kit audit
-npx @afg/next-supabase-agent-kit audit --json
+npx @agent-skills/next-supabase-kit init --stack next-supabase
+npx @agent-skills/next-supabase-kit audit
+npx @agent-skills/next-supabase-kit audit --json
 ```
 
 The installer preserves existing docs. If a target file already exists and differs from the template, the new template is written to `.agent-kit/conflicts/` unless `--force` is provided.
@@ -83,6 +85,10 @@ This kit treats OWASP Top 10 review, Supabase RLS, service-role key isolation, i
 Research candidates, findings, summaries, and promoted decisions are tracked in `research/` and `DECISIONS.md`.
 Quarterly refresh automation lives in `.github/workflows/research-refresh.yml`.
 
-## Status
+## Research And Citations
 
-Private v0.1 package. Public release requires license review, prompt review, dependency review, and legal approval for any research citations.
+Public package contents include generalized research summaries and promoted decisions, not detailed per-repo findings. See `RESEARCH_CITATION_POLICY.md` for the citation and attribution policy.
+
+## License
+
+MIT.

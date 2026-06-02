@@ -1,7 +1,7 @@
 {
-  "name": "@afg/next-supabase-agent-kit",
+  "name": "@agent-skills/next-supabase-kit",
   "version": "0.1.0",
-  "description": "Research-backed agents, skills, prompts, checklists, and markdown templates for Next.js and Supabase projects.",
+  "description": "Open agent council, skills, prompts, checklists, and markdown templates for Next.js and Supabase projects.",
   "type": "module",
   "repository": {
     "type": "git",
@@ -12,7 +12,7 @@
   },
   "homepage": "https://github.com/lukey662/agentsandskills#readme",
   "publishConfig": {
-    "access": "restricted",
+    "access": "public",
     "registry": "https://registry.npmjs.org"
   },
   "bin": {
@@ -31,7 +31,11 @@
     "rosters",
     "examples",
     "research/scan-config.json",
+    "research/scan-plan.md",
+    "research/summaries",
+    "research/proposed-updates.md",
     "README.md",
+    "RESEARCH_CITATION_POLICY.md",
     "SECURITY.md",
     "LICENSE"
   ],
@@ -47,6 +51,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "smoke": "node dist/index.js doctor",
+    "smoke:install": "node scripts/smoke-install.mjs",
     "pack:check": "npm pack --dry-run"
   },
   "dependencies": {

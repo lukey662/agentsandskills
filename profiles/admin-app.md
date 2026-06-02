@@ -7,7 +7,7 @@ Use for internal operations consoles, support tools, moderation systems, and ana
 - Least-privilege admin access, audit logs, impersonation controls, and destructive-action review.
 - RLS and server-side authorization for admin-only data and actions.
 - Clear stale-data, partial-data, rate-limit, and permission-denied states.
-- Smoke tests for admin login, core queue processing, audit logging, and restricted access.
+- Smoke tests for admin login, core queue processing, audit logging, and access control.
 
 ## Agent Handoff
 

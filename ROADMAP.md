@@ -1,6 +1,6 @@
 # Roadmap And Delivery Tracker
 
-This file tracks the phased work needed to turn the kit into a maintained internal standard.
+This file tracks the phased work needed to turn the kit into a maintained open-source project standard.
 
 Status legend:
 
@@ -10,18 +10,18 @@ Status legend:
 
 ## Phase 1: Bootstrap Package Repo
 
-- `[x]` Create TypeScript npm package for `@afg/next-supabase-agent-kit`.
+- `[x]` Create TypeScript npm package for `@agent-skills/next-supabase-kit`.
 - `[x]` Add `agent-kit` CLI entrypoint.
 - `[x]` Add installable asset folders: `templates`, `agents`, `skills`, `prompts`, `checklists`, and `design-adapters`.
 - `[x]` Add root docs: `README.md`, `DOCS.md`, `SECURITY.md`, `CONTRIBUTING.md`, and `CHANGELOG.md`.
 - `[x]` Initialize local git repo on `main`.
 - `[x]` Create initial local commit.
-- `[x]` Create private GitHub repo `lukey662/agentsandskills`.
+- `[x]` Create GitHub repo `lukey662/agentsandskills`.
 - `[x]` Push local `main` to GitHub.
 
 Acceptance:
 
-- Local repo exists, package builds, and remote private repo is connected.
+- Local repo exists, package builds, and remote repo is connected.
 
 ## Phase 2: CLI Install, Audit, Diff, And Update
 
@@ -91,18 +91,18 @@ Acceptance:
 ## Phase 6: CI, Release, And Package Publishing
 
 - `[x]` Add GitHub Actions workflow.
-- `[x]` CI runs `npm ci`, `npm run typecheck`, `npm test`, `npm run build`, `npm audit --audit-level=moderate`, and `npm pack --dry-run`.
-- `[x]` Add restricted scoped package publishing config.
-- `[x]` Configure GitHub Packages or private npm publishing.
+- `[x]` CI runs `npm ci`, `npm run typecheck`, `npm test`, `npm run build`, `npm run smoke:install`, `npm audit --audit-level=moderate`, and `npm pack --dry-run`.
+- `[x]` Add public scoped package publishing config.
+- `[x]` Configure public npm publishing workflow with Trusted Publishing.
 - `[x]` Add release workflow and versioning policy.
 - `[x]` Run release workflow dry run and confirm publish step is skipped.
 - `[x]` Prepare draft GitHub Release `v0.1.0`.
-- `[ ]` Publish private v0.1 package.
+- `[ ]` Publish public v0.1 package.
 
 Acceptance:
 
 - Every pushed change is verified before release.
-- The package can be installed with `npx @afg/next-supabase-agent-kit`.
+- The package can be installed with `npx @agent-skills/next-supabase-kit`.
 
 ## Phase 7: Dogfood On Real Projects
 
@@ -132,22 +132,20 @@ Acceptance:
 
 ## Current Next Actions
 
-1. Configure npm Trusted Publishing for package `@afg/next-supabase-agent-kit`: GitHub user `lukey662`, repository `agentsandskills`, workflow `release.yml`, environment `npm-publish`, allowed action `npm publish`.
-2. If npm requires the package to exist before trusted publishing can be configured, complete a one-time manual OTP bootstrap publish from the verified `main` checkout.
-3. Remove the unused GitHub secret `NPM_TOKEN` after the trusted-publisher path is confirmed.
-4. Optionally add GitHub secret `NPM_READ_TOKEN` with read-only npm access so the release workflow can verify private install with `npx`.
+1. Create or claim the npm scope `@agent-skills`.
+2. Configure npm Trusted Publishing for package `@agent-skills/next-supabase-kit`: GitHub user `lukey662`, repository `agentsandskills`, workflow `release.yml`, environment `npm-publish`, allowed action `npm publish`.
+3. If npm requires the package to exist before trusted publishing can be configured, complete a one-time manual OTP bootstrap publish from the verified `main` checkout.
+4. Delete any legacy npm publish secrets after the trusted-publisher path is confirmed.
 5. Dispatch the `Release` workflow with `dry_run=false`.
-6. Verify private package install with `npx @afg/next-supabase-agent-kit`.
+6. Verify public package install with `npx @agent-skills/next-supabase-kit`.
 7. Continue Phase 8 maturity work: scheduled research refresh, stronger local override automation, stack expansion, and public-release readiness.
 
 Latest release evidence:
 
-- CI run `26816316447` passed on commit `586924c`.
-- GitHub Release `v0.1.0` is published.
-- Release run `26816448475` reached `npm publish` and failed with npm `E403` because the npm token requires 2FA bypass for CI publishing.
-- Package metadata was fixed after the failed publish so npm no longer removes the `agent-kit` bin during pack/publish.
-- Release workflow now uses npm Trusted Publishing/OIDC instead of a long-lived publish token. Private install verification uses optional `NPM_READ_TOKEN`.
-- Release run `26819650910` reached `npm publish` with OIDC context available and failed with npm `E404`, which means npm could not find the package or the workflow did not have permission to publish it.
+- Package metadata now targets public npm package `@agent-skills/next-supabase-kit`.
+- Release workflow uses npm Trusted Publishing/OIDC instead of a long-lived publish token.
+- Public install verification uses `npx` without a package token.
+- Public release remains blocked until the npm `@agent-skills` scope is created or claimed and post-publish install verification succeeds.
 
 Latest dogfood evidence:
 
@@ -157,7 +155,7 @@ Latest dogfood evidence:
 Latest maturity evidence:
 
 - Quarterly research refresh workflow added at `.github/workflows/research-refresh.yml`.
-- Public release review added at `PUBLIC_RELEASE_REVIEW.md`; current decision is private-first and not approved for public release.
+- Public release review added at `PUBLIC_RELEASE_REVIEW.md`; current decision is public-ready after final npm scope and package publication.
 - Stack-adaptation profiles added for Next/Firebase, Next/Postgres, and Remix/Supabase.
 - Local override automation added through `.agent-kit/overrides.json`.
 - Default agent council routing added through `.agent-kit/agent-roster.json`, Planner, Planning and Agent Council skill, and audit enforcement for architect-led core-change handoffs.

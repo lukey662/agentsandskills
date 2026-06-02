@@ -1,6 +1,6 @@
 # Contributing
 
-This package is private-first. Contributions should improve reusable project setup, not encode one-off project preferences.
+Contributions should improve reusable project setup, not encode one-off project preferences.
 
 ## Contribution Rules
 
@@ -10,6 +10,7 @@ This package is private-first. Contributions should improve reusable project set
 - Cite research findings when promoting a pattern into a core template.
 - Keep frontend guidance domain-aware and avoid generic AI-site defaults.
 - Keep security guidance aligned with OWASP Top 10 and Supabase RLS practices.
+- Keep public package contents neutral, reusable, and free of project-specific secrets or proprietary assumptions.
 
 ## Research Contributions
 
@@ -36,5 +37,6 @@ When an existing project installs the kit:
 - `npm run lint`
 - `npm test`
 - `npm run build`
+- `npm run smoke:install`
 - `agent-kit doctor`
 - Manual install into a temporary Next.js/Supabase-like project

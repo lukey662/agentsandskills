@@ -43,6 +43,9 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Install smoke
+        run: npm run smoke:install
+
       - name: Dependency audit
         run: npm audit --audit-level=moderate
 

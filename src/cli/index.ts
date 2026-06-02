@@ -11,7 +11,7 @@ const program = new Command();
 
 program
   .name("agent-kit")
-  .description("AFG Next.js + Supabase agent, skill, docs, design, and research kit.")
+  .description("Next.js + Supabase agent, skill, docs, design, and research kit.")
   .version("0.1.0");
 
 program

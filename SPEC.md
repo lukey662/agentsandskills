@@ -2,7 +2,7 @@
 
 ## Package Purpose
 
-`@afg/next-supabase-agent-kit` is a private reusable agent-kit package for Next.js and Supabase projects. It ships installable markdown templates, agents, skills, prompts, checklists, design adapters, design briefs, stack profiles, agent rosters, and a CLI for installing and auditing those assets.
+`@agent-skills/next-supabase-kit` is a public reusable agent-kit package for Next.js and Supabase projects. It ships installable markdown templates, agents, skills, prompts, checklists, design adapters, design briefs, stack profiles, agent rosters, and a CLI for installing and auditing those assets.
 
 ## CLI Surface
 
@@ -39,7 +39,7 @@ Required default behavior:
 
 ## Release System
 
-The package is published as a restricted private npm package.
+The package is published as a public npm package.
 
 Release workflow requirements:
 
@@ -47,14 +47,14 @@ Release workflow requirements:
 - GitHub environment: `npm-publish`
 - Publish trigger: published GitHub Release or manual workflow dispatch with `dry_run=false`
 - Publish authentication: npm Trusted Publishing through GitHub Actions OIDC
-- Publish command: `npm publish --access restricted`
-- Optional private install verification token: GitHub secret `NPM_READ_TOKEN`
+- Publish command: `npm publish --access public`
+- Public install verification: `npx @agent-skills/next-supabase-kit doctor`
 
 The release workflow must run typecheck, tests, build, dependency audit, and package dry run before publishing.
 
 ## Security Requirements
 
 - Do not store long-lived npm publish tokens in GitHub Actions.
-- Use least-privilege release credentials: OIDC for publish, read-only npm token only for install verification.
-- Keep package access restricted until `PUBLIC_RELEASE_REVIEW.md` is cleared.
+- Use least-privilege release credentials: OIDC for publish.
+- Keep detailed per-repo research findings out of the public npm package unless separately reviewed.
 - Run `npm audit --audit-level=moderate` before publishing.
