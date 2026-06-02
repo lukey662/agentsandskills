@@ -105,11 +105,14 @@ Release process:
 1. Update `package.json` version in a normal PR.
 2. Let CI pass on `main`.
 3. Run the manual `Release` workflow with `dry_run=true` to validate checks without publishing.
-4. Create a GitHub Release named `vX.Y.Z`, or manually dispatch `Release` with `dry_run=false`.
-5. The `Release` workflow runs the same quality gates as CI.
-6. The workflow publishes with `npm publish --access restricted`.
+4. Create or update a draft GitHub Release named `vX.Y.Z`.
+5. Add GitHub secret `NPM_TOKEN` with npm publish rights for the package scope.
+6. Publish the draft GitHub Release, or manually dispatch `Release` with `dry_run=false`.
+7. The `Release` workflow runs the same quality gates as CI.
+8. The workflow validates npm auth with `npm whoami` and then publishes with `npm publish --access restricted`.
 
 Verified release evidence:
 
-- CI run `26811402766` passed on commit `87b6b5b`.
-- Release dry run `26811449749` passed on commit `87b6b5b`; the publish step was skipped.
+- CI run `26812591984` passed on commit `829eeec`.
+- Release dry run `26812524043` passed on commit `e421b2c`; the publish step was skipped.
+- Draft release `v0.1.0` exists and is waiting for `NPM_TOKEN` before publication.

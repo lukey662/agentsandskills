@@ -11,3 +11,4 @@
 - Added compatibility profiles, product-specific design briefs, screenshot review prompt, and sample installed output.
 - Promoted 100-repo research findings from `research/summaries/scan-overview.md` and `research/proposed-updates.md`.
 - Promoted downstream dogfood findings from `dogfood/qrcode-audit.md` and `dogfood/ai-news-audit.md`.
+- Added npm publish-token preflight and prepared draft GitHub Release `v0.1.0`.

@@ -96,6 +96,7 @@ Acceptance:
 - `[x]` Configure GitHub Packages or private npm publishing.
 - `[x]` Add release workflow and versioning policy.
 - `[x]` Run release workflow dry run and confirm publish step is skipped.
+- `[x]` Prepare draft GitHub Release `v0.1.0`.
 - `[ ]` Publish private v0.1 package.
 
 Acceptance:
@@ -132,7 +133,7 @@ Acceptance:
 ## Current Next Actions
 
 1. Add `NPM_TOKEN` with `@afg` publish rights to GitHub secrets.
-2. Create GitHub Release `v0.1.0` or dispatch `Release` with `dry_run=false` once the secret is present.
+2. Publish the existing draft GitHub Release `v0.1.0`, or dispatch `Release` with `dry_run=false` once the secret is present.
 3. Publish private v0.1 package and verify install with `npx @afg/next-supabase-agent-kit`.
 4. Continue Phase 8 maturity work: scheduled research refresh, stronger local override automation, stack expansion, and public-release readiness.
 
@@ -140,6 +141,8 @@ Latest release evidence:
 
 - CI run `26812474370` passed on commit `e421b2c`.
 - Release dry run `26812524043` passed on commit `e421b2c`; `Publish to private npm` was skipped.
+- Draft release `v0.1.0` exists and targets `main`; it is not published yet.
+- Publish credentials are still missing: repo secrets list does not include `NPM_TOKEN`, local `NPM_TOKEN` is unset, and local `npm whoami` returns `ENEEDAUTH`.
 
 Latest dogfood evidence:
 

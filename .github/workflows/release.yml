@@ -53,6 +53,12 @@ jobs:
       - name: Package dry run
         run: npm pack --dry-run
 
+      - name: Validate npm publish token
+        if: github.event_name == 'release' || github.event.inputs.dry_run == 'false'
+        run: npm whoami --registry=https://registry.npmjs.org
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Publish to private npm
         if: github.event_name == 'release' || github.event.inputs.dry_run == 'false'
         run: npm publish --access restricted
