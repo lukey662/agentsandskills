@@ -16,7 +16,7 @@ Status legend:
 - `[x]` Add root docs: `README.md`, `DOCS.md`, `SECURITY.md`, `CONTRIBUTING.md`, and `CHANGELOG.md`.
 - `[x]` Initialize local git repo on `main`.
 - `[x]` Create initial local commit.
-- `[ ]` Create private GitHub repo `AFG/next-supabase-agent-kit`.
+- `[x]` Create private GitHub repo `lukey662/agentsandskills`.
 - `[ ]` Push local `main` to GitHub.
 
 Acceptance:
@@ -130,8 +130,7 @@ Acceptance:
 
 ## Current Next Actions
 
-1. Create the private GitHub repo `AFG/next-supabase-agent-kit`.
-2. Push local `main` to GitHub.
-3. Add GitHub Actions CI.
-4. Run the first 100-repo discovery.
-5. Dogfood the installer on one real Next.js/Supabase project.
+1. Push local `main` to `lukey662/agentsandskills`.
+2. Add GitHub Actions CI.
+3. Run the first 100-repo discovery.
+4. Dogfood the installer on one real Next.js/Supabase project.
