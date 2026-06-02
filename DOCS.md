@@ -32,6 +32,19 @@ npm test
 npm run build
 ```
 
+## CI
+
+GitHub Actions runs on pushes and pull requests to `main`.
+
+Required gates:
+
+- `npm ci`
+- `npm run typecheck`
+- `npm test`
+- `npm run build`
+- `npm audit --audit-level=moderate`
+- `npm pack --dry-run`
+
 ## Delivery Tracking
 
 Use `ROADMAP.md` as the source of truth for phased implementation status and next actions.

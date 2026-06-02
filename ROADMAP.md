@@ -90,8 +90,8 @@ Acceptance:
 
 ## Phase 6: CI, Release, And Package Publishing
 
-- `[ ]` Add GitHub Actions workflow.
-- `[ ]` CI runs `npm ci`, `npm run typecheck`, `npm test`, `npm run build`, `npm audit --audit-level=moderate`, and `npm pack --dry-run`.
+- `[x]` Add GitHub Actions workflow.
+- `[x]` CI runs `npm ci`, `npm run typecheck`, `npm test`, `npm run build`, `npm audit --audit-level=moderate`, and `npm pack --dry-run`.
 - `[x]` Add restricted scoped package publishing config.
 - `[ ]` Configure GitHub Packages or private npm publishing.
 - `[ ]` Add release workflow and versioning policy.
@@ -130,6 +130,5 @@ Acceptance:
 
 ## Current Next Actions
 
-1. Add GitHub Actions CI.
-2. Run the first 100-repo discovery.
-3. Dogfood the installer on one real Next.js/Supabase project.
+1. Run the first 100-repo discovery.
+2. Dogfood the installer on one real Next.js/Supabase project.
