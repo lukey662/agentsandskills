@@ -38,6 +38,7 @@ GitHub Actions runs on pushes and pull requests to `main`.
 
 Required gates:
 
+- `npm install --global npm@11.6.2`
 - `npm ci`
 - `npm run typecheck`
 - `npm test`
