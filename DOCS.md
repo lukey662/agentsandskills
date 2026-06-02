@@ -97,7 +97,7 @@ Publishing targets the private npm registry package `@afg/next-supabase-agent-ki
 Prerequisites:
 
 - The npm `@afg` scope exists and the publishing account has access.
-- GitHub secret `NPM_TOKEN` contains a token with publish rights for the `@afg` scope.
+- GitHub secret `NPM_TOKEN` contains a granular npm token with publish rights for the `@afg` scope and 2FA bypass enabled for CI publishing.
 - The version in `package.json` is unique and follows semantic versioning.
 
 Release process:
@@ -106,13 +106,15 @@ Release process:
 2. Let CI pass on `main`.
 3. Run the manual `Release` workflow with `dry_run=true` to validate checks without publishing.
 4. Create or update a draft GitHub Release named `vX.Y.Z`.
-5. Add GitHub secret `NPM_TOKEN` with npm publish rights for the package scope.
+5. Add GitHub secret `NPM_TOKEN` with npm publish rights and 2FA bypass for the package scope.
 6. Publish the draft GitHub Release, or manually dispatch `Release` with `dry_run=false`.
 7. The `Release` workflow runs the same quality gates as CI.
 8. The workflow validates npm auth with `npm whoami` and then publishes with `npm publish --access restricted`.
 
+If publishing fails with npm `E403` and a message about two-factor authentication, replace `NPM_TOKEN` with a granular token that has bypass 2FA enabled.
+
 Verified release evidence:
 
-- CI run `26812834473` passed on commit `71607e1`.
-- Release dry run `26812876401` passed on commit `71607e1`; npm auth validation and publishing were skipped.
-- Draft release `v0.1.0` exists and is waiting for `NPM_TOKEN` before publication.
+- CI run `26816316447` passed on commit `586924c`.
+- GitHub Release `v0.1.0` is published.
+- Release run `26816448475` reached `npm publish` and failed with npm `E403` because the npm token requires 2FA bypass for CI publishing.

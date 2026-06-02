@@ -132,17 +132,17 @@ Acceptance:
 
 ## Current Next Actions
 
-1. Add `NPM_TOKEN` with `@afg` publish rights to GitHub secrets.
-2. Publish the existing draft GitHub Release `v0.1.0`, or dispatch `Release` with `dry_run=false` once the secret is present.
-3. Publish private v0.1 package and verify install with `npx @afg/next-supabase-agent-kit`.
+1. Replace `NPM_TOKEN` with a granular npm token that has `@afg` publish rights and 2FA bypass enabled.
+2. Dispatch the `Release` workflow with `dry_run=false`.
+3. Verify private package install with `npx @afg/next-supabase-agent-kit`.
 4. Continue Phase 8 maturity work: scheduled research refresh, stronger local override automation, stack expansion, and public-release readiness.
 
 Latest release evidence:
 
-- CI run `26812834473` passed on commit `71607e1`.
-- Release dry run `26812876401` passed on commit `71607e1`; `Validate npm publish token` and `Publish to private npm` were skipped.
-- Draft release `v0.1.0` exists and targets `main`; it is not published yet.
-- Publish credentials are still missing: repo secrets list does not include `NPM_TOKEN`, local `NPM_TOKEN` is unset, and local `npm whoami` returns `ENEEDAUTH`.
+- CI run `26816316447` passed on commit `586924c`.
+- GitHub Release `v0.1.0` is published.
+- Release run `26816448475` reached `npm publish` and failed with npm `E403` because the npm token requires 2FA bypass for CI publishing.
+- Package metadata was fixed after the failed publish so npm no longer removes the `agent-kit` bin during pack/publish.
 
 Latest dogfood evidence:
 
