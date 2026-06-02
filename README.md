@@ -35,6 +35,10 @@ agent-kit doctor
 - Prevent generic AI-looking frontend output through a dedicated frontend design skill and provider-neutral design briefs.
 - Research 100 high-quality open-source repos and promote repeated best practices into the kit.
 
+## Delivery Tracker
+
+Use `ROADMAP.md` as the phased checklist for what is done, what is in progress, and what remains.
+
 ## Research Workflow
 
 Set a GitHub token before discovery:

@@ -32,6 +32,10 @@ npm test
 npm run build
 ```
 
+## Delivery Tracking
+
+Use `ROADMAP.md` as the source of truth for phased implementation status and next actions.
+
 ## Release Notes
 
 This is a private package. Before external release, replace the private license, remove internal assumptions, and review all prompts for proprietary content.
