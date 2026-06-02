@@ -35,6 +35,7 @@ agent-kit doctor
 - Make Supabase Auth, SSR, RLS, migrations, service-role isolation, and IDOR prevention first-class setup concerns.
 - Prevent generic AI-looking frontend output through a dedicated frontend design skill, provider-neutral design adapters, screenshot review prompts, and product-specific design briefs.
 - Provide compatibility profiles for SaaS, marketplaces, admin apps, and content apps.
+- Provide stack-adaptation profiles for Next/Firebase, Next/Postgres, and Remix/Supabase.
 - Research 100 high-quality open-source repos and promote repeated best practices into the kit.
 
 ## Delivery Tracker
@@ -67,6 +68,7 @@ npx @afg/next-supabase-agent-kit audit --json
 
 The installer preserves existing docs. If a target file already exists and differs from the template, the new template is written to `.agent-kit/conflicts/` unless `--force` is provided.
 New installs record bundled template hashes in `.agent-kit/manifest.json` so future audits can identify stale template docs, local customizations, and missing manifest metadata.
+Accepted local customizations can be documented in `.agent-kit/overrides.json`.
 
 See `examples/next-supabase-installed/` for a compact sample of installed output.
 
@@ -77,6 +79,7 @@ This kit treats OWASP Top 10 review, Supabase RLS, service-role key isolation, i
 ## Research Evidence
 
 Research candidates, findings, summaries, and promoted decisions are tracked in `research/` and `DECISIONS.md`.
+Quarterly refresh automation lives in `.github/workflows/research-refresh.yml`.
 
 ## Status
 

@@ -1,0 +1,62 @@
+name: Research Refresh
+
+on:
+  schedule:
+    - cron: "0 3 1 1,4,7,10 *"
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "Maximum repositories to discover and scan."
+        required: true
+        default: "100"
+
+permissions:
+  contents: read
+
+jobs:
+  refresh:
+    name: Refresh repository research
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      GITHUB_TOKEN: ${{ secrets.RESEARCH_GITHUB_TOKEN || github.token }}
+      REFRESH_LIMIT: ${{ github.event.inputs.limit || '100' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Use declared npm version
+        run: npm install --global npm@11.6.2
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Discover repositories
+        run: npm run dev -- research discover --limit "$REFRESH_LIMIT"
+
+      - name: Scan repositories
+        run: npm run dev -- research scan
+
+      - name: Summarize findings
+        run: npm run dev -- research summarize
+
+      - name: Propose updates
+        run: npm run dev -- research propose-updates
+
+      - name: Upload research artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: research-refresh
+          path: |
+            research/repo-candidates.json
+            research/candidate-review.md
+            research/findings/
+            research/summaries/
+            research/proposed-updates.md

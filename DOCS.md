@@ -23,6 +23,20 @@ New manifests include `templateHashes` for each root markdown template. `agent-k
 
 Use `agent-kit audit --json` for machine-readable output in scripts or CI.
 
+Projects can document accepted local template customizations in `.agent-kit/overrides.json`:
+
+```json
+{
+  "templates": {
+    "AGENTS.md": {
+      "reason": "Project keeps a mature custom agent roster.",
+      "owner": "engineering",
+      "reviewedAt": "2026-06-02"
+    }
+  }
+}
+```
+
 ## Research Behavior
 
 `research discover` requires `GITHUB_TOKEN` and writes `research/repo-candidates.json`.
@@ -36,6 +50,12 @@ Research evidence is committed:
 - `research/findings/*.md`
 - `research/summaries/*.md`
 - `research/proposed-updates.md`
+
+The `Research Refresh` workflow runs quarterly and can be manually dispatched. It writes refreshed research artifacts as a workflow artifact for review before anything is committed.
+
+## Stack Expansion
+
+The package remains optimized for `next-supabase`, but `profiles/stack-next-firebase.md`, `profiles/stack-next-postgres.md`, and `profiles/stack-remix-supabase.md` document how to adapt the same operating model to adjacent stacks.
 
 ## Local Development
 
@@ -67,6 +87,8 @@ Use `ROADMAP.md` as the source of truth for phased implementation status and nex
 ## Release Notes
 
 This is a private package. Before external release, replace the private license, remove internal assumptions, and review all prompts for proprietary content.
+
+See `PUBLIC_RELEASE_REVIEW.md` for the current public-release decision and readiness checklist.
 
 ## Private NPM Release
 

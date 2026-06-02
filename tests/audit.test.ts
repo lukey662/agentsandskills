@@ -78,4 +78,31 @@ describe("auditProject", () => {
     expect(findings.some((finding) => finding.area === "templates" && finding.message.includes("older installed template"))).toBe(true);
     rmSync(target, { recursive: true, force: true });
   });
+
+  it("accepts documented local template overrides", () => {
+    const target = mkdtempSync(join(tmpdir(), "agent-kit-override-"));
+    initProject({ cwd: target });
+
+    writeFileSync(join(target, "AGENTS.md"), "project-specific agents\n");
+    writeFileSync(
+      join(target, ".agent-kit", "overrides.json"),
+      JSON.stringify(
+        {
+          templates: {
+            "AGENTS.md": {
+              reason: "Project has a mature existing agent roster.",
+              reviewedAt: "2026-06-02"
+            }
+          }
+        },
+        null,
+        2
+      )
+    );
+
+    const findings = auditProject(target);
+    expect(findings.some((finding) => finding.message === "AGENTS.md has a documented local override.")).toBe(true);
+    expect(findings.some((finding) => finding.message.includes("AGENTS.md is locally customized"))).toBe(false);
+    rmSync(target, { recursive: true, force: true });
+  });
 });

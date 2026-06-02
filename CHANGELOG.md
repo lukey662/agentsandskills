@@ -9,3 +9,5 @@
 - Added CI and private npm release workflows with dry-run validation.
 - Added template-hash manifest tracking and `agent-kit audit --json`.
 - Added compatibility profiles, product-specific design briefs, screenshot review prompt, and sample installed output.
+- Promoted 100-repo research findings from `research/summaries/scan-overview.md` and `research/proposed-updates.md`.
+- Promoted downstream dogfood findings from `dogfood/qrcode-audit.md` and `dogfood/ai-news-audit.md`.

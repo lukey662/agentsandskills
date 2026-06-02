@@ -75,6 +75,8 @@ export function initProject(options: InitOptions): InitResult {
 
   writeText(join(cwd, ".agent-kit", "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);
   writeText(join(cwd, ".agent-kit", "config.json"), `${JSON.stringify(DEFAULT_CONFIG, null, 2)}\n`);
+  const overridesPath = join(cwd, ".agent-kit", "overrides.json");
+  if (!existsSync(overridesPath)) writeText(overridesPath, `${JSON.stringify({ templates: {} }, null, 2)}\n`);
 
   return result;
 }

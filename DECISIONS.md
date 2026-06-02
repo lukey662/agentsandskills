@@ -85,3 +85,17 @@ Add installable `profiles` for SaaS, marketplace, admin app, and content app pro
 ### Consequences
 
 Downstream projects get reusable product-type guidance in `.agent-kit/`. Audit and templates now expect design tokens, component states, and anti-generic landing-page rules to be documented.
+
+## 2026-06-02 - Keep The Repo Private Before Public Release
+
+### Context
+
+The kit now contains prompts, research artifacts, private package assumptions, and downstream dogfood notes. Public release requires a separate legal, security, license, and citation review.
+
+### Decision
+
+Keep the repository private until private package publishing is working, two dogfood installs have been reviewed, and `PUBLIC_RELEASE_REVIEW.md` is cleared.
+
+### Consequences
+
+Internal projects can keep using and improving the kit immediately. Public release remains a deliberate future decision rather than an accidental side effect of package readiness.

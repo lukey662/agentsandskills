@@ -6,6 +6,16 @@ import { listFilesRecursive, sha256 } from "../utils/fs.js";
 import { findPackageRoot } from "../utils/package-root.js";
 import { readManifest } from "./install.js";
 
+interface TemplateOverride {
+  reason?: string;
+  reviewedAt?: string;
+  owner?: string;
+}
+
+interface AgentKitOverrides {
+  templates?: Record<string, TemplateOverride | string>;
+}
+
 function includesAny(text: string, values: string[]): boolean {
   const lower = text.toLowerCase();
   return values.some((value) => lower.includes(value.toLowerCase()));
@@ -21,6 +31,28 @@ function readDoc(cwd: string, file: string): string {
   return existsSync(path) ? readFileSync(path, "utf8") : "";
 }
 
+function readOverrides(cwd: string): Record<string, TemplateOverride> {
+  const path = join(cwd, ".agent-kit", "overrides.json");
+  if (!existsSync(path)) return {};
+
+  try {
+    const parsed = JSON.parse(readFileSync(path, "utf8")) as AgentKitOverrides;
+    const templates = parsed.templates ?? {};
+    return Object.fromEntries(
+      Object.entries(templates).map(([file, override]) => [
+        file,
+        typeof override === "string"
+          ? { reason: override }
+          : override && typeof override === "object"
+            ? override
+            : { reason: String(override) }
+      ])
+    );
+  } catch {
+    return {};
+  }
+}
+
 function readTemplate(stack: StackProfile, file: string): string | null {
   const path = join(findPackageRoot(), "templates", stack, file);
   return existsSync(path) ? readFileSync(path, "utf8") : null;
@@ -29,6 +61,7 @@ function readTemplate(stack: StackProfile, file: string): string | null {
 function addTemplateHashFindings(cwd: string, findings: AuditFinding[]): void {
   const manifest = readManifest(cwd);
   if (!manifest) return;
+  const overrides = readOverrides(cwd);
 
   for (const doc of ROOT_DOCS) {
     const targetPath = join(cwd, doc);
@@ -40,6 +73,7 @@ function addTemplateHashFindings(cwd: string, findings: AuditFinding[]): void {
     const targetHash = sha256(readFileSync(targetPath, "utf8"));
     const currentTemplateHash = sha256(currentTemplate);
     const installedTemplateHash = manifest.templateHashes?.[doc];
+    const override = overrides[doc];
 
     if (!installedTemplateHash) {
       findings.push({
@@ -75,6 +109,36 @@ function addTemplateHashFindings(cwd: string, findings: AuditFinding[]): void {
         level: "pass",
         area: "templates",
         message: `${doc} matches the current template even though manifest metadata is older.`
+      });
+      continue;
+    }
+
+    if (installedTemplateHash === currentTemplateHash) {
+      if (override) {
+        findings.push({
+          level: "pass",
+          area: "templates",
+          message: `${doc} has a documented local override.`,
+          remediation: override.reviewedAt ? `Last reviewed at ${override.reviewedAt}.` : "Add reviewedAt to the override after the next template review."
+        });
+        continue;
+      }
+
+      findings.push({
+        level: "warn",
+        area: "templates",
+        message: `${doc} is locally customized or was preserved from before agent-kit install.`,
+        remediation: "Compare the local file with .agent-kit/conflicts or agent-kit diff before adopting template changes."
+      });
+      continue;
+    }
+
+    if (override) {
+      findings.push({
+        level: "warn",
+        area: "templates",
+        message: `${doc} has a documented local override, but the bundled template changed since install.`,
+        remediation: "Review the override against the current conflict template and update reviewedAt when accepted."
       });
       continue;
     }

@@ -1,0 +1,9 @@
+{
+  "templates": {
+    "AGENTS.md": {
+      "reason": "Project keeps a mature custom agent roster and only imports new kit roles selectively.",
+      "owner": "engineering",
+      "reviewedAt": "2026-06-02"
+    }
+  }
+}

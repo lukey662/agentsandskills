@@ -105,12 +105,12 @@ Acceptance:
 
 ## Phase 7: Dogfood On Real Projects
 
-- `[ ]` Install into one existing Next.js/Supabase project.
-- `[ ]` Run `agent-kit audit`.
-- `[ ]` Record gaps that the audit catches.
-- `[ ]` Improve templates and audit rules based on real project feedback.
-- `[ ]` Install into a second project to confirm improvements generalize.
-- `[ ]` Add contribution process for downstream projects to send improvements back to the kit.
+- `[x]` Install into one existing Next.js/Supabase project.
+- `[x]` Run `agent-kit audit`.
+- `[x]` Record gaps that the audit catches.
+- `[x]` Improve templates and audit rules based on real project feedback.
+- `[x]` Install into a second project to confirm improvements generalize.
+- `[x]` Add contribution process for downstream projects to send improvements back to the kit.
 
 Acceptance:
 
@@ -118,12 +118,12 @@ Acceptance:
 
 ## Phase 8: Long-Term Maturity
 
-- `[ ]` Add quarterly research refresh workflow.
-- `[ ]` Add changelog entries tied to research findings.
-- `[ ]` Add more stack profiles beyond Next.js + Supabase.
-- `[ ]` Add stronger automation for template diffs and local overrides.
-- `[ ]` Decide whether and when to open-source the repo.
-- `[ ]` Complete public release review: license, security, prompts, legal, and third-party citations.
+- `[x]` Add quarterly research refresh workflow.
+- `[x]` Add changelog entries tied to research findings.
+- `[x]` Add more stack profiles beyond Next.js + Supabase.
+- `[x]` Add stronger automation for template diffs and local overrides.
+- `[x]` Decide whether and when to open-source the repo.
+- `[x]` Complete public release review: license, security, prompts, legal, and third-party citations.
 
 Acceptance:
 
@@ -134,9 +134,21 @@ Acceptance:
 1. Add `NPM_TOKEN` with `@afg` publish rights to GitHub secrets.
 2. Create GitHub Release `v0.1.0` or dispatch `Release` with `dry_run=false` once the secret is present.
 3. Publish private v0.1 package and verify install with `npx @afg/next-supabase-agent-kit`.
-4. Dogfood the installer on one real Next.js/Supabase project.
+4. Continue Phase 8 maturity work: scheduled research refresh, stronger local override automation, stack expansion, and public-release readiness.
 
 Latest release evidence:
 
 - CI run `26811402766` passed on commit `87b6b5b`.
 - Release dry run `26811449749` passed on commit `87b6b5b`; `Publish to private npm` was skipped.
+
+Latest dogfood evidence:
+
+- `/Volumes/Mac eSSD/qrcode`: install created five missing root docs, preserved four existing docs as conflicts, audit returned 15 pass / 7 warn / 0 fail.
+- `/Volumes/Mac eSSD/AI news`: install preserved all nine existing root docs as conflicts, audit returned 10 pass / 12 warn / 0 fail.
+
+Latest maturity evidence:
+
+- Quarterly research refresh workflow added at `.github/workflows/research-refresh.yml`.
+- Public release review added at `PUBLIC_RELEASE_REVIEW.md`; current decision is private-first and not approved for public release.
+- Stack-adaptation profiles added for Next/Firebase, Next/Postgres, and Remix/Supabase.
+- Local override automation added through `.agent-kit/overrides.json`.

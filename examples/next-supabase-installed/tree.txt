@@ -11,6 +11,7 @@
 `-- .agent-kit
     |-- manifest.json
     |-- config.json
+    |-- overrides.json
     |-- agents/
     |-- skills/
     |-- prompts/

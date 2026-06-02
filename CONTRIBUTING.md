@@ -20,6 +20,17 @@ When adding a repo finding:
 3. List weak practices that should not be copied.
 4. Identify patterns that affect kit templates, agents, skills, or checklists.
 
+## Downstream Dogfood Contributions
+
+When an existing project installs the kit:
+
+1. Run `agent-kit init --stack next-supabase` without `--force`.
+2. Run `agent-kit audit --json` and `agent-kit diff`.
+3. Record the project type, created files, conflict files, audit summary, and top gaps in `dogfood/<project>-audit.md`.
+4. Promote repeated gaps into this package's templates, skills, checklists, prompts, profiles, or audit rules.
+5. Keep project-specific wording in the downstream project unless the pattern generalizes.
+6. Re-run package tests and a temporary install smoke test before committing kit changes.
+
 ## Release Checklist
 
 - `npm run lint`
