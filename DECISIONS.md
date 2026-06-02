@@ -43,3 +43,17 @@ Update downstream templates to require explicit inventories for RLS policies, se
 ### Consequences
 
 Installed projects get more operationally useful docs. The templates are slightly more demanding, but the added structure reduces ambiguity for humans and agents.
+
+## 2026-06-02 - Gate Private NPM Publishing Behind Verified Release Checks
+
+### Context
+
+The package is intended to be consumed across multiple projects through a private scoped npm package. Publishing must not happen from normal CI pushes, and first-release validation must prove the workflow can run without requiring package credentials.
+
+### Decision
+
+Use a dedicated `Release` GitHub Actions workflow. The workflow runs install, typecheck, tests, build, dependency audit, and package dry run before publishing. `npm publish --access restricted` runs only for a published GitHub Release or a manual workflow dispatch with `dry_run=false`.
+
+### Consequences
+
+The release path is repeatable and can be dry-run safely before `NPM_TOKEN` is configured. Actual package publication remains blocked until the GitHub secret contains an npm token with publish rights for the `@afg` scope.

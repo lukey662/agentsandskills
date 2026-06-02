@@ -78,8 +78,12 @@ Release process:
 
 1. Update `package.json` version in a normal PR.
 2. Let CI pass on `main`.
-3. Create a GitHub Release named `vX.Y.Z`.
-4. The `Release` workflow runs the same quality gates as CI.
-5. The workflow publishes with `npm publish --access restricted`.
+3. Run the manual `Release` workflow with `dry_run=true` to validate checks without publishing.
+4. Create a GitHub Release named `vX.Y.Z`, or manually dispatch `Release` with `dry_run=false`.
+5. The `Release` workflow runs the same quality gates as CI.
+6. The workflow publishes with `npm publish --access restricted`.
 
-Use the manual `workflow_dispatch` dry run before first publishing to verify the release gate without publishing.
+Verified release evidence:
+
+- CI run `26811402766` passed on commit `87b6b5b`.
+- Release dry run `26811449749` passed on commit `87b6b5b`; the publish step was skipped.

@@ -95,6 +95,7 @@ Acceptance:
 - `[x]` Add restricted scoped package publishing config.
 - `[x]` Configure GitHub Packages or private npm publishing.
 - `[x]` Add release workflow and versioning policy.
+- `[x]` Run release workflow dry run and confirm publish step is skipped.
 - `[ ]` Publish private v0.1 package.
 
 Acceptance:
@@ -131,5 +132,11 @@ Acceptance:
 ## Current Next Actions
 
 1. Add `NPM_TOKEN` with `@afg` publish rights to GitHub secrets.
-2. Publish private v0.1 package.
-3. Dogfood the installer on one real Next.js/Supabase project.
+2. Create GitHub Release `v0.1.0` or dispatch `Release` with `dry_run=false` once the secret is present.
+3. Publish private v0.1 package and verify install with `npx @afg/next-supabase-agent-kit`.
+4. Dogfood the installer on one real Next.js/Supabase project.
+
+Latest release evidence:
+
+- CI run `26811402766` passed on commit `87b6b5b`.
+- Release dry run `26811449749` passed on commit `87b6b5b`; `Publish to private npm` was skipped.
