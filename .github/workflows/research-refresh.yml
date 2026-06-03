@@ -57,7 +57,7 @@ jobs:
         run: npm run dev -- research propose-updates
 
       - name: Upload research artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: research-refresh
           path: |
