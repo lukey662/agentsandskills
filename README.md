@@ -1,53 +1,184 @@
 # Agent Skills Next/Supabase Kit
 
-`@agent-skills/next-supabase-kit` is an open-source, research-backed npm package for installing agent roles, reusable skills, default council routing, markdown documentation, frontend design standards, security checklists, and research workflows into Next.js + Supabase projects.
+`@agent-skills/next-supabase-kit` installs an agent operating system for Next.js + Supabase projects.
 
-The package is designed to answer one question consistently:
+It gives agentic coders a default council roster, reusable skills, handoff rules, model-routing guidance, markdown docs, frontend design gates, Supabase/RLS security checks, upgrade workflows, and audit commands.
 
-> Does this project have the right setup for secure, maintainable, non-generic Next.js + Supabase delivery?
+The package answers one practical question:
 
-This is more than a prompt bundle: installs include a machine-readable agent council roster, auditable handoff rules, living documentation templates, research-backed setup checks, and CLI enforcement for drift.
+> Does this project have the setup needed for secure, maintainable, non-generic Next.js + Supabase delivery?
 
-## Install
+This is not just a prompt bundle. A project gets machine-readable agent routing, model profile routing, schema-backed council evidence, living documentation templates, research-backed quality gates, and CLI checks for drift.
+
+## Quick Start
+
+Use this in a Next.js + Supabase project after the public package is available on npm:
+
+```bash
+npx @agent-skills/next-supabase-kit init --stack next-supabase
+npx @agent-skills/next-supabase-kit audit
+npx @agent-skills/next-supabase-kit audit --min-readiness baseline-setup
+```
+
+The installer preserves existing docs. If a file already exists and differs from the template, the new version is written to `.agent-kit/conflicts/` for review.
+
+For local development of this repo:
 
 ```bash
 npm install
 npm run build
+npm test
+npm run release:check
 ```
 
-## CLI
+`npm run release:check` is the main pre-release proof command. It typechecks, tests, builds, install-smokes the package, checks examples, runs dependency audit, validates SBOM generation, and dry-runs packaging.
+
+## How Agentic Coders Should Use It
+
+Start with the installed files:
+
+- `AGENTS.md`: the high-level operating instructions.
+- `.agent-kit/agent-roster.json`: the machine-readable source of truth for agent routing.
+- `AGENT_ROSTER.md`: the human-readable roster summary.
+- `SKILLS.md`: when each reusable skill should be used.
+- `MODEL_ROUTING.md`: model-profile guidance for each agent and IDE.
+- `QUALITY_GATES.md`: what separates baseline setup, strong delivery, and best-practice evidence.
+- `DESIGN.md`: the frontend design and content contract.
+- `COUNCIL.md`: where meaningful handoffs and decisions are recorded.
+
+Default routing:
+
+- Planner handles plans, roadmaps, scope, and ambiguous requests first.
+- Lead Architect reviews core changes before implementation.
+- Security Reviewer joins auth, RLS, data mutation, dependency, secret, external-call, and release-risk work.
+- Frontend Design Lead owns content-first design, reference-led critique, distinctiveness benchmarking, product-quality scoring, and visual QA.
+- QA Engineer verifies behavior changes before completion.
+- Documentation Maintainer keeps the living markdown current.
+
+For meaningful multi-agent work, record the decision, risk, next handoff, required outputs, and verification evidence in `COUNCIL.md` or `.agent-kit/council-sessions/*.json`.
+
+## What Gets Installed
+
+Root markdown docs:
+
+```text
+AGENTS.md
+AGENT_ROSTER.md
+ASSISTANT_ADAPTERS.md
+COUNCIL.md
+SKILLS.md
+SPEC.md
+DECISIONS.md
+DOCS.md
+DESIGN.md
+MODEL_ROUTING.md
+QUALITY_GATES.md
+STYLE_GUIDE.md
+SECURITY.md
+TESTING.md
+DEPLOYMENT.md
+UPGRADE.md
+```
+
+The `.agent-kit/` folder includes:
+
+- `agent-roster.json` for default workflow routing.
+- `model-routing.json` for provider-neutral model profile routing.
+- `schemas/` for agent roster, council-session, model-routing, and audit-report contracts.
+- `agents/`, `skills/`, `prompts/`, and `checklists/`.
+- `assistant-adapters/` for Codex/AGENTS.md-compatible tools, GitHub Copilot/VS Code, Cursor, and Claude Code.
+- `design-briefs/` for SaaS, admin, marketplace, content, tool, ecommerce, portfolio/venue, education, community/social, and AI workflow surfaces.
+- `profiles/` for product-type and adjacent-stack adaptation.
+
+## Everyday Commands
 
 ```bash
-agent-kit init --stack next-supabase
 agent-kit audit
 agent-kit audit --json
+agent-kit audit --min-readiness baseline-setup
 agent-kit diff
 agent-kit update
 agent-kit add skill frontend-design-system
-agent-kit research discover
-agent-kit research scan
-agent-kit research summarize
 agent-kit doctor
 ```
 
-## Package Goals
+Readiness levels from `agent-kit audit --json`:
 
-- Install strong default docs: `AGENTS.md`, `AGENT_ROSTER.md`, `SKILLS.md`, `SPEC.md`, `DECISIONS.md`, `DOCS.md`, `STYLE_GUIDE.md`, `SECURITY.md`, `TESTING.md`, and `DEPLOYMENT.md`.
-- Install a default agent council roster so Planner handles planning, Lead Architect reviews core changes, and specialist agents route to their associated skills by default.
-- Enforce clear agent ownership across architecture, Next.js, Supabase/Postgres, security, frontend design, QA, docs, and deployment.
-- Make Supabase Auth, SSR, RLS, migrations, service-role isolation, and IDOR prevention first-class setup concerns.
-- Prevent generic AI-looking frontend output through a dedicated frontend design skill, provider-neutral design adapters, screenshot review prompts, and product-specific design briefs.
-- Provide compatibility profiles for SaaS, marketplaces, admin apps, and content apps.
-- Provide stack-adaptation profiles for Next/Firebase, Next/Postgres, and Remix/Supabase.
-- Research 100 high-quality open-source repos and promote repeated best practices into the kit.
+- `needs-setup`: required install or council contracts are failing.
+- `baseline-setup`: setup is valid, but starter evidence placeholders remain.
+- `needs-improvement`: no failures, but warnings remain.
+- `best-practice-candidate`: static audit found no failures or warnings.
 
-## Delivery Tracker
+Use `agent-kit audit --min-readiness <level>` in CI when a project wants a merge or release threshold.
 
-Use `ROADMAP.md` as the phased checklist for what is done, what is in progress, and what remains.
+## AI Mechanisms
 
-## Research Workflow
+Agent Kit separates the mechanisms that make AI coding repeatable:
 
-Set a GitHub token before discovery:
+- Instructions: `AGENTS.md`, assistant adapters, and IDE-specific rule files.
+- Roster: `.agent-kit/agent-roster.json` chooses agents, workflows, and handoffs.
+- Skills: `.agent-kit/skills/` keeps specialist workflows reusable.
+- Model routing: `MODEL_ROUTING.md` and `.agent-kit/model-routing.json` map agents to model profiles.
+- Tools and MCP: `ASSISTANT_ADAPTERS.md` records browser, GitHub, Figma, Supabase, docs, or other connector setup.
+- Hooks and CI: optional local enforcement plus `agent-kit audit`, tests, install smoke, SBOM, and release gates.
+
+Some IDEs can partially enforce model settings; others only let project files advise the user. The kit records that difference instead of pretending every tool can force per-agent model selection.
+
+## Frontend Quality Bar
+
+The kit is intentionally strict about frontend work because normal AI output often looks generic.
+
+Significant UI work should prove:
+
+- Brand/content intake and real user needs.
+- A selected creative direction, with rejected alternatives.
+- Reference lessons and anti-references without copied source designs.
+- First-screen proof that the real product task, object, workflow, or content is visible.
+- A content fingerprint: real product nouns, labels, data shapes, actions, and edge cases.
+- Asset provenance for real, generated, licensed, and placeholder visuals.
+- Product-quality scorecard evidence.
+- Desktop, mobile, key states, accessibility, and visual QA evidence.
+
+The Frontend Design Lead should reject work that would still look valid for another product after only changing the logo or headline.
+
+## Security Bar
+
+The kit treats these as defaults, not optional polish:
+
+- OWASP Top 10 review for auth, API, Server Action, external-call, upload, and dependency changes.
+- Supabase RLS at the data boundary.
+- Service-role keys isolated to trusted server code.
+- Input validation and safe output rendering.
+- IDOR, SSRF, injection, broken auth, and misconfiguration review.
+- Dependency audit before release.
+
+## Updating An Existing Install
+
+Use the upgrade flow instead of overwriting project-owned docs:
+
+```bash
+agent-kit diff
+agent-kit update
+agent-kit audit --min-readiness baseline-setup
+```
+
+Document accepted local deviations in `.agent-kit/overrides.json`. Record version changes, conflicts, migration impact, rollback notes, and verification evidence in `UPGRADE.md`.
+
+## Research Evidence
+
+The repo includes a 100-repo research workflow plus focused follow-up summaries.
+
+Research volume does not count as proof by itself. A repeated pattern only becomes part of the kit when it is promoted into installed assets, audit checks, tests, release gates, schemas, workflows, or documented decisions.
+
+Useful evidence files:
+
+- `BEST_PRACTICE_EVIDENCE.md`: maps research signals to enforceable assets and validation paths.
+- `research/summaries/`: public-safe research summaries.
+- `research/proposed-updates.md`: promoted and future updates.
+- `DOGFOOD.md`: public-safe downstream adoption evidence.
+- `ROADMAP.md`: the phased done/left tracker.
+
+Research commands:
 
 ```bash
 export GITHUB_TOKEN=ghp_replace_me
@@ -57,37 +188,32 @@ agent-kit research summarize
 agent-kit research propose-updates
 ```
 
-The scanner uses GitHub API discovery plus shallow clones. It writes repo findings into `research/findings/` and summaries into `research/summaries/`.
+Detailed per-repo findings are committed for repository development, but the public npm package ships generalized summaries and promoted decisions only. See `RESEARCH_CITATION_POLICY.md`.
 
-## Downstream Project Workflow
+## Public Release And Supply Chain
 
-From a Next.js + Supabase project:
+Public package name:
 
-```bash
-npx @agent-skills/next-supabase-kit init --stack next-supabase
-npx @agent-skills/next-supabase-kit audit
-npx @agent-skills/next-supabase-kit audit --json
+```text
+@agent-skills/next-supabase-kit
 ```
 
-The installer preserves existing docs. If a target file already exists and differs from the template, the new template is written to `.agent-kit/conflicts/` unless `--force` is provided.
-New installs record bundled template hashes in `.agent-kit/manifest.json` so future audits can identify stale template docs, local customizations, and missing manifest metadata.
-Accepted local customizations can be documented in `.agent-kit/overrides.json`.
-New installs also write `.agent-kit/agent-roster.json`, a machine-readable council contract. `agent-kit audit` fails if required default agents, skill routing, or architect-led core-change handoffs are missing.
+Release expectations:
 
-See `examples/next-supabase-installed/` for a compact sample of installed output.
+- MIT license.
+- Public npm access.
+- npm Trusted Publishing through GitHub Actions OIDC.
+- No long-lived npm publish token for automation.
+- Dependency Review, CodeQL, OpenSSF Scorecard, Dependabot, SBOM validation, and SBOM attestation.
+- Post-publish verification with `npm run publish:verify`.
 
-## Security Position
+Public release remains gated until the npm scope/package exists, Trusted Publishing is configured, and post-publish `npx` verification succeeds.
 
-This kit treats OWASP Top 10 review, Supabase RLS, service-role key isolation, input validation, output encoding, and least-privilege data access as non-negotiable defaults.
+## Repository Health
 
-## Research Evidence
+The repo includes issue forms, PR template, labels, CODEOWNERS, Dependabot, CodeQL, Dependency Review, OpenSSF Scorecard, `CODE_OF_CONDUCT.md`, `SUPPORT.md`, `GOVERNANCE.md`, `REPOSITORY_SETTINGS.md`, and `SUPPLY_CHAIN.md`.
 
-Research candidates, findings, summaries, and promoted decisions are tracked in `research/` and `DECISIONS.md`.
-Quarterly refresh automation lives in `.github/workflows/research-refresh.yml`.
-
-## Research And Citations
-
-Public package contents include generalized research summaries and promoted decisions, not detailed per-repo findings. See `RESEARCH_CITATION_POLICY.md` for the citation and attribution policy.
+These files are tested as public-readiness assets so the package can be maintained as public OSS, not just published as a tarball.
 
 ## License
 

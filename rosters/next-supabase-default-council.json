@@ -11,7 +11,7 @@
       "name": "Planner",
       "file": ".agent-kit/agents/planner.md",
       "defaultFor": ["planning", "roadmap", "scope", "ambiguous-request", "handoff"],
-      "skills": ["planning-council", "docs-maintainer"],
+      "skills": ["planning-council", "best-practice-maturity-review", "agent-handoff-tracing", "docs-maintainer", "upgrade-maintenance"],
       "handsOffTo": ["lead-architect", "frontend-design-lead", "qa-engineer", "docs-maintainer"]
     },
     {
@@ -19,7 +19,16 @@
       "name": "Lead Architect",
       "file": ".agent-kit/agents/lead-architect.md",
       "defaultFor": ["core-change", "architecture", "cross-layer-change", "technical-decision"],
-      "skills": ["planning-council", "nextjs-app-router", "supabase-auth-rls", "postgres-migrations", "owasp-security-review"],
+      "skills": [
+        "planning-council",
+        "best-practice-maturity-review",
+        "agent-handoff-tracing",
+        "nextjs-app-router",
+        "supabase-auth-rls",
+        "postgres-migrations",
+        "owasp-security-review",
+        "upgrade-maintenance"
+      ],
       "handsOffTo": ["supabase-postgres-engineer", "nextjs-engineer", "security-reviewer", "qa-engineer", "docs-maintainer"]
     },
     {
@@ -35,15 +44,35 @@
       "name": "Next.js Engineer",
       "file": ".agent-kit/agents/nextjs-engineer.md",
       "defaultFor": ["app-router", "server-components", "route-handler", "server-action", "forms", "ui-state"],
-      "skills": ["nextjs-app-router", "frontend-design-system", "accessibility-wcag", "testing-qa"],
+      "skills": ["nextjs-app-router", "content-first-design", "frontend-design-system", "accessibility-wcag", "testing-qa"],
       "handsOffTo": ["frontend-design-lead", "security-reviewer", "qa-engineer", "docs-maintainer"]
     },
     {
       "id": "frontend-design-lead",
       "name": "Frontend Design Lead",
       "file": ".agent-kit/agents/frontend-design-lead.md",
-      "defaultFor": ["visual-design", "component-system", "accessibility", "anti-generic-ui", "screenshot-review"],
-      "skills": ["frontend-design-system", "accessibility-wcag"],
+      "defaultFor": [
+        "brand-content-intake",
+        "creative-direction",
+        "reference-led-critique",
+        "distinctiveness-benchmark",
+        "product-quality-scorecard",
+        "visual-design",
+        "component-system",
+        "visual-regression",
+        "accessibility",
+        "anti-generic-ui",
+        "screenshot-review"
+      ],
+      "skills": [
+        "content-first-design",
+        "reference-led-design-critique",
+        "frontend-distinctiveness-benchmark",
+        "frontend-product-quality-rubric",
+        "frontend-design-system",
+        "visual-regression-qa",
+        "accessibility-wcag"
+      ],
       "handsOffTo": ["nextjs-engineer", "qa-engineer", "docs-maintainer"]
     },
     {
@@ -59,15 +88,15 @@
       "name": "QA Engineer",
       "file": ".agent-kit/agents/qa-engineer.md",
       "defaultFor": ["testing", "regression", "smoke", "acceptance-evidence"],
-      "skills": ["testing-qa", "accessibility-wcag"],
+      "skills": ["testing-qa", "best-practice-maturity-review", "visual-regression-qa", "accessibility-wcag"],
       "handsOffTo": ["docs-maintainer", "deployment-observability-engineer"]
     },
     {
       "id": "docs-maintainer",
       "name": "Documentation Maintainer",
       "file": ".agent-kit/agents/docs-maintainer.md",
-      "defaultFor": ["docs", "decisions", "spec", "style-guide", "roadmap"],
-      "skills": ["docs-maintainer", "planning-council"],
+      "defaultFor": ["docs", "decisions", "spec", "style-guide", "roadmap", "upgrade-evidence"],
+      "skills": ["docs-maintainer", "planning-council", "best-practice-maturity-review", "agent-handoff-tracing", "upgrade-maintenance"],
       "handsOffTo": ["deployment-observability-engineer"]
     },
     {
@@ -75,7 +104,7 @@
       "name": "Deployment/Observability Engineer",
       "file": ".agent-kit/agents/deployment-observability-engineer.md",
       "defaultFor": ["release", "deployment", "environment", "logs", "rollback", "monitoring"],
-      "skills": ["deployment-observability", "testing-qa"],
+      "skills": ["deployment-observability", "testing-qa", "upgrade-maintenance"],
       "handsOffTo": ["qa-engineer", "docs-maintainer"]
     }
   ],
@@ -85,11 +114,11 @@
       "triggers": ["plan", "roadmap", "phase", "scope", "what should we do", "break this down"],
       "sequence": ["planner", "lead-architect", "qa-engineer", "docs-maintainer"],
       "council": ["planner", "lead-architect"],
-      "requiredOutputs": ["phased checklist", "affected layers", "preserved capabilities", "verification plan", "docs impact"]
+      "requiredOutputs": ["phased checklist", "maturity target", "affected layers", "preserved capabilities", "verification plan", "docs impact"]
     },
     {
       "id": "core-change",
-      "triggers": ["schema", "auth", "rls", "api", "route handler", "server action", "dependency", "release workflow", "package behavior", "cross-layer"],
+      "triggers": ["schema", "auth", "rls", "api", "route handler", "server action", "dependency", "upgrade", "release workflow", "package behavior", "cross-layer"],
       "sequence": [
         "planner",
         "lead-architect",
@@ -101,14 +130,34 @@
         "deployment-observability-engineer"
       ],
       "council": ["lead-architect", "security-reviewer", "qa-engineer", "docs-maintainer"],
-      "requiredOutputs": ["architecture decision", "security review", "test evidence", "doc updates", "release or rollback notes"]
+      "requiredOutputs": [
+        "architecture decision",
+        "maturity evidence",
+        "security review",
+        "test evidence",
+        "doc updates",
+        "upgrade evidence when applicable",
+        "release or rollback notes"
+      ]
     },
     {
       "id": "frontend-change",
       "triggers": ["screen", "component", "layout", "design", "responsive", "accessibility", "screenshot"],
       "sequence": ["planner", "frontend-design-lead", "nextjs-engineer", "qa-engineer", "docs-maintainer"],
       "council": ["frontend-design-lead", "qa-engineer"],
-      "requiredOutputs": ["domain-specific UI rationale", "state coverage", "accessibility checks", "desktop/mobile verification"]
+      "requiredOutputs": [
+        "brand/content intake",
+        "creative-direction rationale",
+        "reference-set evidence",
+        "distinctiveness benchmark",
+        "design critique verdict",
+        "frontend product-quality scorecard",
+        "domain-specific UI rationale",
+        "visual QA evidence",
+        "state coverage",
+        "accessibility checks",
+        "desktop/mobile verification"
+      ]
     },
     {
       "id": "security-review",
@@ -120,11 +169,13 @@
   ],
   "handoffRules": [
     "Each agent must state its decision, risk, and required next handoff before passing work on.",
+    "Planner must classify meaningful work against QUALITY_GATES.md as baseline, strong, or best-practice before completion is claimed.",
+    "Meaningful multi-agent work must record council-session evidence in COUNCIL.md or a structured record that follows .agent-kit/schemas/council-session.schema.json.",
     "Planner starts planning and ambiguous requests by default.",
     "Lead Architect must review core changes before implementation.",
+    "Frontend Design Lead must record reference-set evidence, anti-references, a design critique verdict, a distinctiveness benchmark, and a frontend product-quality scorecard before accepting significant frontend work.",
     "Security Reviewer must review auth, data mutation, external-call, dependency, secret, and release-risk changes.",
     "QA Engineer must verify behavior changes before completion.",
     "Documentation Maintainer must update living markdown when behavior, architecture, release, or standards change."
   ]
 }
-

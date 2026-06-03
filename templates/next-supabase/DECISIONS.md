@@ -1,6 +1,6 @@
 # Decisions
 
-Record architectural and technical decisions here.
+Record architectural, technical, security, release, and design-direction decisions here.
 
 ## Template
 
@@ -27,3 +27,19 @@ What should be revisited later?
 ## Active Decisions
 
 Add new decisions above this line or keep newest first.
+
+Record major frontend choices here when a creative direction, reference set, anti-reference, brand constraint, information architecture, visual QA tier, or component-system rule materially affects implementation.
+
+## Agent Kit Model Routing
+
+### Context
+
+AI coding tools differ in whether repository files can enforce per-agent model selection.
+
+### Decision
+
+Use `MODEL_ROUTING.md` and `.agent-kit/model-routing.json` as the provider-neutral source for agent model profiles. Record IDE-specific setup and limitations in `ASSISTANT_ADAPTERS.md`.
+
+### Consequences
+
+Exact model names remain dated recommendations, while agents keep stable profile intent and evidence requirements.

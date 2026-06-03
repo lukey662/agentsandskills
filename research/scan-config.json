@@ -43,12 +43,116 @@
       "category": "design-systems"
     },
     {
+      "fullName": "google-labs-code/design.md",
+      "category": "design-systems"
+    },
+    {
+      "fullName": "google-labs-code/stitch-sdk",
+      "category": "design-systems"
+    },
+    {
+      "fullName": "storybookjs/design-system",
+      "category": "design-systems"
+    },
+    {
+      "fullName": "primer/react",
+      "category": "design-systems"
+    },
+    {
+      "fullName": "radix-ui/primitives",
+      "category": "design-systems"
+    },
+    {
+      "fullName": "carbon-design-system/carbon",
+      "category": "design-systems"
+    },
+    {
+      "fullName": "Shopify/polaris",
+      "category": "design-systems"
+    },
+    {
+      "fullName": "uswds/uswds",
+      "category": "design-systems"
+    },
+    {
+      "fullName": "Shopify/polaris-tokens",
+      "category": "design-systems"
+    },
+    {
+      "fullName": "alphagov/govuk-design-system",
+      "category": "design-systems"
+    },
+    {
       "fullName": "t3-oss/create-t3-app",
       "category": "testing-docs-agents"
     },
     {
       "fullName": "storybookjs/storybook",
       "category": "testing-docs-agents"
+    },
+    {
+      "fullName": "storybookjs/test-runner",
+      "category": "testing-docs-agents"
+    },
+    {
+      "fullName": "chromaui/chromatic-cli",
+      "category": "testing-docs-agents"
+    },
+    {
+      "fullName": "argos-ci/argos",
+      "category": "testing-docs-agents"
+    },
+    {
+      "fullName": "oblador/loki",
+      "category": "testing-docs-agents"
+    },
+    {
+      "fullName": "openai/openai-agents-js",
+      "category": "testing-docs-agents"
+    },
+    {
+      "fullName": "openai/openai-agents-python",
+      "category": "testing-docs-agents"
+    },
+    {
+      "fullName": "langchain-ai/langgraphjs",
+      "category": "testing-docs-agents"
+    },
+    {
+      "fullName": "langchain-ai/langgraph-supervisor-py",
+      "category": "testing-docs-agents"
+    },
+    {
+      "fullName": "github/docs",
+      "category": "repo-health-maintainers"
+    },
+    {
+      "fullName": "github/codeql-action",
+      "category": "repo-health-maintainers"
+    },
+    {
+      "fullName": "dependabot/dependabot-core",
+      "category": "repo-health-maintainers"
+    },
+    {
+      "fullName": "ossf/scorecard",
+      "category": "repo-health-maintainers"
+    },
+    {
+      "fullName": "actions/dependency-review-action",
+      "category": "supply-chain-security"
+    },
+    {
+      "fullName": "ossf/scorecard-action",
+      "category": "supply-chain-security"
+    },
+    {
+      "fullName": "npm/provenance",
+      "category": "supply-chain-security"
+    },
+    {
+      "fullName": "slsa-framework/slsa-github-generator",
+      "category": "supply-chain-security"
     }
   ],
   "categories": [
@@ -90,7 +194,13 @@
         "react design system language:TypeScript",
         "component library react accessibility language:TypeScript",
         "radix tailwind components language:TypeScript",
-        "shadcn components language:TypeScript"
+        "shadcn components language:TypeScript",
+        "\"DESIGN.md\" \"design system\" language:Markdown",
+        "\"creative direction\" \"design tokens\" language:Markdown",
+        "\"design critique\" \"reference set\" language:Markdown",
+        "\"anti-reference\" \"creative direction\" language:Markdown",
+        "\"product quality\" \"scorecard\" \"frontend\" language:Markdown",
+        "\"user task\" \"content\" \"accessibility\" \"design system\" language:Markdown"
       ]
     },
     {
@@ -109,10 +219,42 @@
       "targetCount": 20,
       "queries": [
         "playwright nextjs language:TypeScript",
+        "\"toHaveScreenshot\" playwright language:TypeScript",
+        "\"visual regression\" storybook language:TypeScript",
+        "chromatic storybook visual testing language:TypeScript",
+        "argos visual testing playwright language:TypeScript",
         "vitest playwright nextjs language:TypeScript",
         "contributing security testing nextjs language:TypeScript",
         "AGENTS.md language:TypeScript",
-        "CLAUDE.md nextjs"
+        "CLAUDE.md nextjs",
+        "\"agent handoff\" \"tracing\" language:TypeScript",
+        "\"json schema\" \"agents\" language:TypeScript",
+        "\"AGENTS.md\" \"handoff\" language:Markdown"
+      ]
+    },
+    {
+      "name": "repo-health-maintainers",
+      "targetCount": 10,
+      "queries": [
+        "\".github/ISSUE_TEMPLATE\" \"pull_request_template\" language:Markdown",
+        "\"dependabot.yml\" \"CODEOWNERS\" language:Markdown",
+        "\"CodeQL\" \"dependabot\" \"PULL_REQUEST_TEMPLATE\" language:Markdown",
+        "\"SECURITY.md\" \"SUPPORT.md\" \"CODE_OF_CONDUCT.md\" language:Markdown",
+        "\"research\" \"CONTRIBUTING.md\" \"security advisory\" language:Markdown",
+        "\"branch protection\" \"required status checks\" \"CODEOWNERS\" language:Markdown",
+        "\"private vulnerability reporting\" \"security advisories\" language:Markdown",
+        "\"labels.yml\" \"labeler.yml\" \".github\" language:YAML"
+      ]
+    },
+    {
+      "name": "supply-chain-security",
+      "targetCount": 10,
+      "queries": [
+        "\"npm publish\" \"id-token: write\" \"provenance\" language:YAML",
+        "\"trusted publishing\" \"npm publish\" \"GitHub Actions\" language:Markdown",
+        "\"dependency-review-action\" \"fail-on-severity\" language:YAML",
+        "\"ossf/scorecard-action\" \"publish_results\" language:YAML",
+        "\"OpenSSF Scorecard\" \"CodeQL\" \"Dependabot\" language:Markdown"
       ]
     }
   ]

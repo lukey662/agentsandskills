@@ -1,0 +1,157 @@
+{
+  "schemaVersion": 1,
+  "id": "next-supabase-default-model-routing",
+  "stack": "next-supabase",
+  "reviewedAt": "2026-06-03",
+  "reviewCadence": "Review quarterly or whenever the active IDE/model provider changes model availability.",
+  "principle": "Select model depth by agent responsibility. Keep role behavior in the roster and skills; keep tool-specific model names in dated adapter setup notes.",
+  "profiles": [
+    {
+      "id": "fast-targeted",
+      "label": "Fast Targeted",
+      "intent": "Use for narrow edits, doc cleanup, simple command interpretation, and low-risk repeated checks.",
+      "reasoningEffort": "low",
+      "contextWindow": "medium",
+      "latency": "low",
+      "cost": "low",
+      "preferredFor": ["docs-maintainer", "deployment-observability-engineer"]
+    },
+    {
+      "id": "balanced-reasoning",
+      "label": "Balanced Reasoning",
+      "intent": "Use for planning, normal implementation, review synthesis, and tasks where speed and judgment both matter.",
+      "reasoningEffort": "medium",
+      "contextWindow": "large",
+      "latency": "medium",
+      "cost": "medium",
+      "preferredFor": ["planner", "nextjs-engineer", "qa-engineer"]
+    },
+    {
+      "id": "coding-large-context",
+      "label": "Coding Large Context",
+      "intent": "Use for multi-file Next.js implementation, Server Component boundaries, form flows, and repo-wide code changes.",
+      "reasoningEffort": "medium",
+      "contextWindow": "large",
+      "latency": "medium",
+      "cost": "medium",
+      "preferredFor": ["nextjs-engineer"]
+    },
+    {
+      "id": "deep-reasoning-large-context",
+      "label": "Deep Reasoning Large Context",
+      "intent": "Use for architecture, cross-layer changes, migrations, security-sensitive work, and ambiguous decisions with high blast radius.",
+      "reasoningEffort": "high",
+      "contextWindow": "very-large",
+      "latency": "high",
+      "cost": "high",
+      "preferredFor": ["lead-architect", "security-reviewer", "supabase-postgres-engineer"]
+    },
+    {
+      "id": "creative-vision-large-context",
+      "label": "Creative Vision Large Context",
+      "intent": "Use for frontend creative direction, screenshot critique, content-first design, distinctiveness benchmarking, and product-quality review.",
+      "reasoningEffort": "high",
+      "contextWindow": "large",
+      "latency": "medium",
+      "cost": "medium",
+      "preferredFor": ["frontend-design-lead"]
+    }
+  ],
+  "agentRoutes": [
+    {
+      "agentId": "planner",
+      "profileId": "balanced-reasoning",
+      "defaultEffort": "medium",
+      "escalationProfileId": "deep-reasoning-large-context",
+      "notes": "Escalate when the plan changes architecture, auth, data model, release workflow, or public package behavior."
+    },
+    {
+      "agentId": "lead-architect",
+      "profileId": "deep-reasoning-large-context",
+      "defaultEffort": "high",
+      "notes": "Use for core-change council review and cross-layer decisions."
+    },
+    {
+      "agentId": "supabase-postgres-engineer",
+      "profileId": "deep-reasoning-large-context",
+      "defaultEffort": "high",
+      "notes": "Use high reasoning for schema, RLS, migration ordering, rollback, and authorization boundaries."
+    },
+    {
+      "agentId": "nextjs-engineer",
+      "profileId": "coding-large-context",
+      "defaultEffort": "medium",
+      "escalationProfileId": "deep-reasoning-large-context",
+      "notes": "Escalate when server/client boundaries, caching, auth, or data mutation behavior is uncertain."
+    },
+    {
+      "agentId": "frontend-design-lead",
+      "profileId": "creative-vision-large-context",
+      "defaultEffort": "high",
+      "notes": "Use with screenshots, reference sets, content inventory, and product-specific design evidence."
+    },
+    {
+      "agentId": "security-reviewer",
+      "profileId": "deep-reasoning-large-context",
+      "defaultEffort": "high",
+      "notes": "Use high reasoning for OWASP, IDOR, SSRF, injection, broken auth, dependency, secret, and release-risk review."
+    },
+    {
+      "agentId": "qa-engineer",
+      "profileId": "balanced-reasoning",
+      "defaultEffort": "medium",
+      "escalationProfileId": "deep-reasoning-large-context",
+      "notes": "Escalate for flaky tests, concurrency, auth flows, visual regression, or hard-to-reproduce bugs."
+    },
+    {
+      "agentId": "docs-maintainer",
+      "profileId": "fast-targeted",
+      "defaultEffort": "low",
+      "escalationProfileId": "balanced-reasoning",
+      "notes": "Use balanced reasoning when docs encode decisions, migration order, or security-sensitive setup."
+    },
+    {
+      "agentId": "deployment-observability-engineer",
+      "profileId": "fast-targeted",
+      "defaultEffort": "low",
+      "escalationProfileId": "balanced-reasoning",
+      "notes": "Escalate for release gates, rollback paths, env var review, logs, or production incidents."
+    }
+  ],
+  "toolSurfaces": [
+    {
+      "tool": "Codex",
+      "instructionSurface": "AGENTS.md, .codex/config.toml, and optional .codex/agents/*.toml custom agents",
+      "modelSelection": "Default model in config.toml, temporary /model or --model selection, and optional custom-agent model/model_reasoning_effort fields",
+      "enforcement": "partial",
+      "adapter": ".agent-kit/assistant-adapters/model-selection/codex-config.example.toml"
+    },
+    {
+      "tool": "Claude Code",
+      "instructionSurface": "CLAUDE.md and .claude/agents/*.md project subagents",
+      "modelSelection": "Subagent frontmatter can document or select model where supported by the installed Claude Code version",
+      "enforcement": "partial",
+      "adapter": ".agent-kit/assistant-adapters/model-selection/claude-code-subagents-with-models.md"
+    },
+    {
+      "tool": "Cursor",
+      "instructionSurface": ".cursor/rules/*.mdc",
+      "modelSelection": "Use Cursor model picker or team setting; project rules advise which profile to pick but do not force the picker",
+      "enforcement": "advisory",
+      "adapter": ".agent-kit/assistant-adapters/model-selection/cursor-model-selection.mdc"
+    },
+    {
+      "tool": "GitHub Copilot",
+      "instructionSurface": ".github/copilot-instructions.md and .github/instructions/*.instructions.md",
+      "modelSelection": "Use Copilot chat or coding-agent model selection where available; repo instructions advise but do not force model selection",
+      "enforcement": "advisory",
+      "adapter": ".agent-kit/assistant-adapters/model-selection/github-copilot-model-selection.md"
+    }
+  ],
+  "updatePolicy": [
+    "Treat model names as dated recommendations, not permanent product truth.",
+    "Do not store API keys, tokens, billing data, or private model entitlement notes in model-routing files.",
+    "When model availability changes, update adapter examples, MODEL_ROUTING.md, DECISIONS.md, and audit tests in the same change.",
+    "If an IDE cannot enforce per-agent model choice, record that limitation in ASSISTANT_ADAPTERS.md instead of pretending the package can force it."
+  ]
+}

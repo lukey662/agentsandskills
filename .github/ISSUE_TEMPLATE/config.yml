@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/lukey662/agentsandskills/security/advisories/new
+    about: Report vulnerabilities privately through GitHub Security Advisories.
+  - name: Usage question
+    url: https://github.com/lukey662/agentsandskills/discussions
+    about: Ask setup, install, or roadmap questions in discussions when enabled.

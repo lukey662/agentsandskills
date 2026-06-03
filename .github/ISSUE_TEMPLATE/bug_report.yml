@@ -1,0 +1,63 @@
+name: Bug report
+description: Report a reproducible package, CLI, template, or audit problem.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a problem. Do not include secrets, tokens, private downstream project data, or unreleased third-party source.
+  - type: textarea
+    id: current
+    attributes:
+      label: Current behavior
+      description: What happened?
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should have happened?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction steps
+      description: Include commands and a minimal project shape when possible.
+      placeholder: |
+        1. Run ...
+        2. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Paste redacted command output, audit JSON summary, screenshots, or relevant file paths.
+    validations:
+      required: false
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - CLI install/update/diff
+        - Audit rules
+        - Agent roster/council
+        - Frontend/design guidance
+        - Supabase/security guidance
+        - Research scanner
+        - Release/package metadata
+        - Documentation
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Package version or commit
+      placeholder: "@agent-skills/next-supabase-kit@0.1.0 or commit SHA"
+    validations:
+      required: true

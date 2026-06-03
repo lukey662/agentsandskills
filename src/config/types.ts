@@ -12,6 +12,11 @@ export interface AgentKitConfig {
     defaultWorkflow: string;
     coreChangeWorkflow: string;
   };
+  modelRouting: {
+    required: boolean;
+    routingPath: string;
+    reviewCadence: string;
+  };
   designProviders: DesignProvider[];
   research: {
     maxRepos: number;
@@ -28,6 +33,7 @@ export interface InstallManifest {
   docs: string[];
   libraryFolders: string[];
   agentRoster?: string;
+  modelRouting?: string;
   templateHashes?: Record<string, string>;
 }
 
@@ -38,8 +44,17 @@ export interface AuditFinding {
   remediation?: string;
 }
 
+export type AuditReadinessLevel = "needs-setup" | "needs-improvement" | "baseline-setup" | "best-practice-candidate";
+
+export interface AuditReadiness {
+  level: AuditReadinessLevel;
+  summary: string;
+  nextActions: string[];
+}
+
 export interface AuditReport {
   summary: Record<AuditFinding["level"], number>;
+  readiness: AuditReadiness;
   findings: AuditFinding[];
 }
 
@@ -63,6 +78,8 @@ export interface RepoScore {
   testing: number;
   documentation: number;
   ciDeployment: number;
+  repoHealth: number;
+  supplyChain: number;
   agentReadiness: number;
 }
 

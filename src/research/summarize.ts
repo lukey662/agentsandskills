@@ -33,6 +33,16 @@ const SUMMARY_TARGETS = {
     title: "Docs And Agent Patterns",
     scoreKeys: ["documentation", "agentReadiness"] satisfies (keyof RepoScore)[],
     categories: ["testing-docs-agents", "official-nextjs"]
+  },
+  "repo-health-patterns": {
+    title: "Repo Health Patterns",
+    scoreKeys: ["repoHealth", "documentation", "ciDeployment", "security"] satisfies (keyof RepoScore)[],
+    categories: ["repo-health-maintainers", "testing-docs-agents", "security-quality", "production-saas"]
+  },
+  "supply-chain-patterns": {
+    title: "Supply Chain Patterns",
+    scoreKeys: ["supplyChain", "security", "ciDeployment", "repoHealth"] satisfies (keyof RepoScore)[],
+    categories: ["supply-chain-security", "repo-health-maintainers", "security-quality"]
   }
 } as const;
 
@@ -46,6 +56,20 @@ interface ParsedFinding {
   strongPractices: string[];
   weakPractices: string[];
 }
+
+const SCORE_KEYS: (keyof RepoScore)[] = [
+  "architecture",
+  "supabaseAuthRls",
+  "security",
+  "frontendDesign",
+  "accessibility",
+  "testing",
+  "documentation",
+  "ciDeployment",
+  "repoHealth",
+  "supplyChain",
+  "agentReadiness"
+];
 
 function sectionBullets(text: string, start: string, end: string): string[] {
   const startIndex = text.indexOf(start);
@@ -70,7 +94,8 @@ function parseFinding(file: string, text: string): ParsedFinding | null {
 
   if (!fullName || !category || !scoreJson) return null;
 
-  const score = JSON.parse(scoreJson) as RepoScore;
+  const parsedScore = JSON.parse(scoreJson) as Partial<RepoScore>;
+  const score = Object.fromEntries(SCORE_KEYS.map((key) => [key, parsedScore[key] ?? 0])) as unknown as RepoScore;
   const totalScore = Object.values(score).reduce((sum, value) => sum + value, 0);
 
   return {
@@ -103,11 +128,12 @@ function averageScore(findings: ParsedFinding[], scoreKeys: (keyof RepoScore)[])
 }
 
 function renderRepoList(findings: ParsedFinding[], scoreKeys: (keyof RepoScore)[]): string {
+  const maxTotalScore = findings[0] ? Object.keys(findings[0].score).length * 5 : 0;
   return findings
     .slice()
     .sort((a, b) => scoreFor(b, scoreKeys) - scoreFor(a, scoreKeys) || b.totalScore - a.totalScore || b.stars - a.stars)
     .slice(0, 12)
-    .map((finding) => `- ${finding.fullName} (${finding.category}) - focus score ${scoreFor(finding, scoreKeys)}, total ${finding.totalScore}/45`)
+    .map((finding) => `- ${finding.fullName} (${finding.category}) - focus score ${scoreFor(finding, scoreKeys)}, total ${finding.totalScore}/${maxTotalScore}`)
     .join("\n");
 }
 
@@ -137,7 +163,7 @@ ${findings
   .slice()
   .sort((a, b) => b.totalScore - a.totalScore || b.stars - a.stars)
   .slice(0, 20)
-  .map((finding) => `- ${finding.fullName} (${finding.category}) - ${finding.totalScore}/45`)
+  .map((finding) => `- ${finding.fullName} (${finding.category}) - ${finding.totalScore}/${Object.keys(finding.score).length * 5}`)
   .join("\n")}
 
 ## Most Repeated Strengths

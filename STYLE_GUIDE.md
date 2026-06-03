@@ -21,6 +21,14 @@
 - Private install verification may use a read-only npm token and must fail closed or skip explicitly when the token is absent.
 - Dry runs must execute quality gates without requiring npm package credentials.
 
+## Upgrade Workflow Style
+
+- Treat package, framework, Supabase, assistant-adapter, and template updates as reviewable changes.
+- Run diff before update when project-owned files may change.
+- Preserve local decisions with `.agent-kit/overrides.json`.
+- Record version changes, migration impact, rollback process, owner, date, and verification evidence in `UPGRADE.md`.
+- Do not claim best-practice readiness when upgrade placeholders remain.
+
 ## Agent Council Style
 
 - Planning requests start with Planner.
@@ -31,4 +39,6 @@
 
 ## Front-End Guidance For Installed Projects
 
-Installed project docs should push teams away from generic AI-looking interfaces. Prefer product-specific layouts, explicit component states, accessible interactions, real content structure, and design briefs tailored to SaaS, admin, marketplace, content, or tool workflows.
+Installed project docs should push teams away from generic AI-looking interfaces. Prefer product-specific layouts, explicit component states, accessible interactions, real content structure, reference-led critique, frontend distinctiveness benchmarking, and design briefs tailored to SaaS, admin, marketplace, content, or tool workflows.
+
+Significant frontend work should record references, anti-references, source-safety notes, a distinctiveness verdict, first-screen proof, content fingerprint, asset provenance, state proof, visual QA proof, and a frontend product-quality scorecard in `DESIGN.md` before it is accepted as best-practice ready. The scorecard should reject work with critical zeroes or a total below `10/14`; reserve best-practice claims for `12/14` or higher plus a passing distinctiveness benchmark, desktop/mobile review, and visual QA evidence.

@@ -1,0 +1,46 @@
+name: Feature request
+description: Propose a reusable improvement to the kit.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Feature requests should improve the reusable kit. Keep project-specific preferences in downstream projects unless the pattern generalizes.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What setup, handoff, audit, release, security, or frontend quality gap does this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: What should change in templates, agents, skills, prompts, checklists, schemas, CLI, or docs?
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence or source pattern
+      description: Link research summaries, dogfood findings, public docs, or generalized repo patterns. Do not paste third-party source code.
+    validations:
+      required: false
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Agent council/workflows
+        - Frontend/design quality
+        - Next.js/Supabase architecture
+        - Security/OWASP/RLS
+        - Testing/visual QA
+        - Research scanner
+        - Release/public package
+        - Documentation/governance
+    validations:
+      required: true

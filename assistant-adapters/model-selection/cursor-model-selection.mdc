@@ -1,0 +1,24 @@
+---
+description: Agent Kit model-selection reminder for Cursor.
+globs:
+  - "**/*"
+alwaysApply: true
+---
+
+# Agent Kit Model Selection
+
+Use `MODEL_ROUTING.md` and `.agent-kit/model-routing.json` when choosing a model for the active task.
+
+## June 2026 Recommendations
+
+<!--
+Cursor model selection is controlled by the user, workspace, model picker, or team policy.
+This rule advises routing; it should not be treated as hard enforcement.
+-->
+
+- Use a deep reasoning model for Lead Architect, Security Reviewer, Supabase/Postgres Engineer, migrations, RLS, auth, dependencies, release risk, and cross-layer decisions.
+- Use a strong coding model with large context for Next.js Engineer work across App Router, Server Actions, Route Handlers, forms, caching, and UI state.
+- Use a creative/vision-capable model for Frontend Design Lead work, especially screenshot critique, references, and distinctiveness benchmarking.
+- Use a fast or balanced model for low-risk docs, deployment notes, and repeated QA summaries.
+
+Record the selected Cursor model, rule evidence, date, owner, and limitations in `ASSISTANT_ADAPTERS.md`.

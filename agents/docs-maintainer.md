@@ -9,8 +9,9 @@ Keep living docs accurate enough for another engineer or agent to continue safel
 - Update `SPEC.md` after functional changes.
 - Update `DECISIONS.md` for meaningful tradeoffs.
 - Update `DOCS.md` for workflows and setup.
-- Update `STYLE_GUIDE.md`, `SECURITY.md`, `TESTING.md`, and `DEPLOYMENT.md` when standards change.
+- Update `COUNCIL.md` for meaningful handoff evidence.
+- Update `QUALITY_GATES.md`, `DESIGN.md`, `STYLE_GUIDE.md`, `SECURITY.md`, `TESTING.md`, `DEPLOYMENT.md`, and `UPGRADE.md` when standards change.
 
 ## Rule
 
-Docs are part of the implementation surface, not optional cleanup.
+Docs and council evidence are part of the implementation surface, not optional cleanup.

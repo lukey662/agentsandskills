@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-skills.dev/schemas/agent-roster.schema.json",
+  "title": "Agent Kit Agent Roster",
+  "type": "object",
+  "required": ["schemaVersion", "id", "stack", "required", "defaultWorkflow", "agents", "workflows", "handoffRules"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": { "type": "string", "minLength": 1 },
+    "stack": { "type": "string", "minLength": 1 },
+    "required": { "type": "boolean" },
+    "defaultWorkflow": { "type": "string", "minLength": 1 },
+    "principle": { "type": "string" },
+    "agents": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "skills"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "name": { "type": "string" },
+          "file": { "type": "string" },
+          "defaultFor": { "type": "array", "items": { "type": "string" } },
+          "skills": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+          "handsOffTo": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "workflows": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "sequence", "council", "requiredOutputs"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "triggers": { "type": "array", "items": { "type": "string" } },
+          "sequence": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+          "council": { "type": "array", "items": { "type": "string" } },
+          "requiredOutputs": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "handoffRules": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" }
+    }
+  }
+}

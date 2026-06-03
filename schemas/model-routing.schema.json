@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-skills.dev/schemas/model-routing.schema.json",
+  "title": "Agent Kit Model Routing",
+  "type": "object",
+  "required": ["schemaVersion", "id", "stack", "reviewedAt", "reviewCadence", "principle", "profiles", "agentRoutes", "toolSurfaces", "updatePolicy"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": { "type": "string", "minLength": 1 },
+    "stack": { "type": "string", "minLength": 1 },
+    "reviewedAt": { "type": "string", "minLength": 1 },
+    "reviewCadence": { "type": "string", "minLength": 1 },
+    "principle": { "type": "string", "minLength": 1 },
+    "profiles": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "intent", "reasoningEffort", "contextWindow", "latency", "cost", "preferredFor"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "label": { "type": "string", "minLength": 1 },
+          "intent": { "type": "string", "minLength": 1 },
+          "reasoningEffort": { "type": "string", "enum": ["low", "medium", "high", "varies"] },
+          "contextWindow": { "type": "string", "enum": ["small", "medium", "large", "very-large", "varies"] },
+          "latency": { "type": "string", "enum": ["low", "medium", "high", "varies"] },
+          "cost": { "type": "string", "enum": ["low", "medium", "high", "varies"] },
+          "preferredFor": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+        }
+      }
+    },
+    "agentRoutes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["agentId", "profileId", "defaultEffort"],
+        "additionalProperties": false,
+        "properties": {
+          "agentId": { "type": "string", "minLength": 1 },
+          "profileId": { "type": "string", "minLength": 1 },
+          "defaultEffort": { "type": "string", "enum": ["low", "medium", "high"] },
+          "escalationProfileId": { "type": "string", "minLength": 1 },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "toolSurfaces": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["tool", "instructionSurface", "modelSelection", "enforcement", "adapter"],
+        "additionalProperties": false,
+        "properties": {
+          "tool": { "type": "string", "minLength": 1 },
+          "instructionSurface": { "type": "string", "minLength": 1 },
+          "modelSelection": { "type": "string", "minLength": 1 },
+          "enforcement": { "type": "string", "enum": ["enforced", "partial", "advisory", "manual"] },
+          "adapter": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "updatePolicy": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" }
+    }
+  }
+}

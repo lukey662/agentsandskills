@@ -1,17 +1,24 @@
 .
 |-- AGENTS.md
 |-- AGENT_ROSTER.md
+|-- ASSISTANT_ADAPTERS.md
+|-- COUNCIL.md
 |-- SKILLS.md
 |-- SPEC.md
 |-- DECISIONS.md
 |-- DOCS.md
+|-- DESIGN.md
+|-- MODEL_ROUTING.md
+|-- QUALITY_GATES.md
 |-- STYLE_GUIDE.md
 |-- SECURITY.md
 |-- TESTING.md
 |-- DEPLOYMENT.md
+|-- UPGRADE.md
 `-- .agent-kit
     |-- manifest.json
     |-- agent-roster.json
+    |-- model-routing.json
     |-- config.json
     |-- overrides.json
     |-- agents/
@@ -19,6 +26,8 @@
     |-- prompts/
     |-- checklists/
     |-- design-adapters/
+    |-- assistant-adapters/
     |-- design-briefs/
     |-- profiles/
-    `-- rosters/
+    |-- rosters/
+    `-- schemas/

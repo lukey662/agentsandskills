@@ -13,6 +13,11 @@ export const DEFAULT_CONFIG: AgentKitConfig = {
     defaultWorkflow: "planning",
     coreChangeWorkflow: "core-change"
   },
+  modelRouting: {
+    required: true,
+    routingPath: ".agent-kit/model-routing.json",
+    reviewCadence: "quarterly-or-when-model-docs-change"
+  },
   designProviders: ["stitch", "claude", "figma", "human"],
   research: {
     maxRepos: 100,
@@ -24,14 +29,20 @@ export const DEFAULT_CONFIG: AgentKitConfig = {
 export const ROOT_DOCS = [
   "AGENTS.md",
   "AGENT_ROSTER.md",
+  "ASSISTANT_ADAPTERS.md",
+  "COUNCIL.md",
   "SKILLS.md",
   "SPEC.md",
   "DECISIONS.md",
   "DOCS.md",
+  "DESIGN.md",
+  "MODEL_ROUTING.md",
+  "QUALITY_GATES.md",
   "STYLE_GUIDE.md",
   "SECURITY.md",
   "TESTING.md",
-  "DEPLOYMENT.md"
+  "DEPLOYMENT.md",
+  "UPGRADE.md"
 ] as const;
 
 export const LIBRARY_FOLDERS = [
@@ -40,10 +51,14 @@ export const LIBRARY_FOLDERS = [
   "prompts",
   "checklists",
   "design-adapters",
+  "assistant-adapters",
   "design-briefs",
   "profiles",
-  "rosters"
+  "rosters",
+  "schemas"
 ] as const;
 
 export const DEFAULT_AGENT_ROSTER_SOURCE = "rosters/next-supabase-default-council.json";
 export const DEFAULT_AGENT_ROSTER_TARGET = ".agent-kit/agent-roster.json";
+export const DEFAULT_MODEL_ROUTING_SOURCE = "model-routing/default-model-routing.json";
+export const DEFAULT_MODEL_ROUTING_TARGET = ".agent-kit/model-routing.json";

@@ -1,0 +1,69 @@
+"area: cli":
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/cli/**
+          - src/install/**
+          - scripts/**
+"area: agents":
+  - changed-files:
+      - any-glob-to-any-file:
+          - agents/**
+          - skills/**
+          - rosters/**
+          - schemas/**
+          - templates/next-supabase/AGENTS.md
+          - templates/next-supabase/AGENT_ROSTER.md
+          - templates/next-supabase/COUNCIL.md
+"area: frontend":
+  - changed-files:
+      - any-glob-to-any-file:
+          - design-adapters/**
+          - design-briefs/**
+          - templates/next-supabase/DESIGN.md
+          - templates/next-supabase/STYLE_GUIDE.md
+          - checklists/frontend-quality.md
+          - checklists/brand-content.md
+          - checklists/visual-regression.md
+"area: supabase":
+  - changed-files:
+      - any-glob-to-any-file:
+          - skills/supabase-auth-rls.md
+          - skills/postgres-migrations.md
+          - checklists/rls.md
+          - templates/next-supabase/SECURITY.md
+"area: research":
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/research/**
+          - research/**
+"area: release":
+  - changed-files:
+      - any-glob-to-any-file:
+          - .github/workflows/release.yml
+          - package.json
+          - package-lock.json
+          - SUPPLY_CHAIN.md
+"area: repo-health":
+  - changed-files:
+      - any-glob-to-any-file:
+          - .github/**
+          - GOVERNANCE.md
+          - SUPPORT.md
+          - CODE_OF_CONDUCT.md
+          - REPOSITORY_SETTINGS.md
+"risk: security":
+  - changed-files:
+      - any-glob-to-any-file:
+          - SECURITY.md
+          - SUPPLY_CHAIN.md
+          - .github/workflows/**
+          - skills/owasp-security-review.md
+          - checklists/owasp.md
+          - templates/next-supabase/SECURITY.md
+"risk: breaking-change":
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/**
+          - package.json
+          - schemas/**
+          - rosters/**

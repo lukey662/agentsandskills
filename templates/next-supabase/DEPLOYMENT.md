@@ -41,3 +41,5 @@ Document:
 ## Rollback
 
 Document rollback steps for code, database migrations, and environment variable mistakes.
+
+Link upgrade-specific rollback evidence from `UPGRADE.md` when the release includes package, framework, Agent Kit, or migration changes.

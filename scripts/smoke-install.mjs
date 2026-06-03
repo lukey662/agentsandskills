@@ -94,7 +94,9 @@ try {
     throw new Error(`Expected install smoke audit to have 0 failures, got ${auditReport.summary?.fail}.\n${auditOutput}`);
   }
 
-  console.log(`install smoke passed: ${auditReport.summary.pass} pass / ${auditReport.summary.warn} warn / ${auditReport.summary.fail} fail`);
+  console.log(
+    `install smoke passed: ${auditReport.summary.pass} pass / ${auditReport.summary.warn} warn / ${auditReport.summary.fail} fail / readiness ${auditReport.readiness?.level ?? "unknown"}`
+  );
 } finally {
   rmSync(tempRoot, { recursive: true, force: true });
 }

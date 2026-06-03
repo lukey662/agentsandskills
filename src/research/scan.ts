@@ -14,6 +14,7 @@ export interface ScanOptions {
 
 function findingToMarkdown(finding: RepoFinding): string {
   const total = Object.values(finding.score).reduce((sum, value) => sum + value, 0);
+  const maxScore = Object.keys(finding.score).length * 5;
 
   return `# Repo Finding: ${finding.candidate.fullName}
 
@@ -23,7 +24,7 @@ function findingToMarkdown(finding: RepoFinding): string {
 - Last pushed: ${finding.candidate.pushedAt}
 - Language: ${finding.candidate.language ?? "unknown"}
 - URL: ${finding.candidate.htmlUrl}
-- Score: ${total}/45
+- Score: ${total}/${maxScore}
 
 ## Score
 \`\`\`json

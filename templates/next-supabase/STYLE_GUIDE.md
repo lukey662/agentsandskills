@@ -24,6 +24,8 @@
 
 ## Frontend Design Rules
 
+Use `DESIGN.md` before visual implementation. Frontend work should be content-first: audience, user needs, real content, brand constraints, and creative direction must be understood before styling starts.
+
 Do not default to generic AI-site visual patterns:
 
 - No generic purple-blue gradient hero as the default solution.
@@ -41,8 +43,15 @@ Prefer:
 - Accessible forms and controls.
 - Clear density rules for admin, SaaS, and operational tools.
 - Mobile-first responsive layouts.
+- Creative direction that is visibly tied to product content and user need.
 
-Use `.agent-kit/design-briefs/*` before designing SaaS, admin dashboard, marketplace, content app, or tool surfaces. Use `.agent-kit/prompts/screenshot-review.md` after implementation to review desktop and mobile screenshots.
+Use `.agent-kit/prompts/brand-content-intake.md` and `.agent-kit/prompts/creative-direction-matrix.md` when inputs are under-specified. Use `.agent-kit/design-briefs/*` before designing SaaS, admin dashboard, marketplace, content app, tool, ecommerce, portfolio/venue, education, community/social, or AI workflow surfaces. Use `.agent-kit/prompts/screenshot-review.md` after implementation to review desktop and mobile screenshots. Use `.agent-kit/prompts/visual-qa-plan.md` when a change needs repeatable visual regression or component-state evidence.
+
+Use `.agent-kit/prompts/design-critique-gate.md` before accepting significant frontend work. `DESIGN.md` should name a reference set, anti-references, source-safety notes, and a distinctiveness verdict so a design cannot pass only because it has tokens, states, and screenshots.
+
+Use `.agent-kit/prompts/frontend-distinctiveness-benchmark.md` before accepting significant frontend work. `DESIGN.md` should prove first-screen specificity, content fingerprint, reference benchmark, asset provenance, state proof, and visual QA proof so a design cannot pass while remaining interchangeable with another product in the same category.
+
+Use `.agent-kit/prompts/frontend-product-quality-scorecard.md` before accepting significant frontend work. `DESIGN.md` should score user/task fit, content specificity, visual identity, information architecture, component states, accessibility and interaction, and source safety. Reject work with critical zeroes or a total score below `10/14`; reserve best-practice claims for `12/14` or higher with desktop/mobile and visual QA evidence.
 
 ## Design Token Inventory
 
@@ -70,6 +79,8 @@ Every interactive component should consider:
 - Error
 - Success
 - Mobile
+
+For reusable components, capture these states as Storybook stories, Playwright screenshot cases, or documented screenshot evidence when the component is visually significant.
 
 ## Accessibility
 

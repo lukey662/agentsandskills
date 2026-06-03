@@ -1,10 +1,10 @@
 # Agent Roster
 
-This project uses `.agent-kit/agent-roster.json` as the default council contract. Agents should use it before planning, implementation, review, and handoff.
+This project uses `.agent-kit/agent-roster.json` as the default council contract. Agents should use it before planning, implementation, review, and handoff. Use `MODEL_ROUTING.md` and `.agent-kit/model-routing.json` to select model profiles for each agent. The roster contract is backed by `.agent-kit/schemas/agent-roster.schema.json`.
 
 ## Default Rule
 
-Planner handles planning by default. Lead Architect reviews core changes before implementation. Security Reviewer, QA Engineer, Documentation Maintainer, and Deployment/Observability Engineer join when their trigger areas are touched.
+Planner handles planning by default. Lead Architect reviews core changes before implementation. Frontend Design Lead owns content-first creative direction, reference-led critique, frontend distinctiveness benchmarking, product-quality scoring, and visual QA before significant frontend implementation is accepted. Security Reviewer, QA Engineer, Documentation Maintainer, and Deployment/Observability Engineer join when their trigger areas are touched. Meaningful multi-agent work records council-session evidence in `COUNCIL.md` or a structured record that follows `.agent-kit/schemas/council-session.schema.json`.
 
 ## Default Workflows
 
@@ -21,7 +21,7 @@ Handoff order:
 
 ### Core Change
 
-Use when the request touches schema, auth, RLS, API behavior, Server Actions, Route Handlers, dependency changes, package behavior, release workflows, or cross-layer architecture.
+Use when the request touches schema, auth, RLS, API behavior, Server Actions, Route Handlers, dependency changes, package behavior, upgrade workflows, release workflows, or cross-layer architecture.
 
 Handoff order:
 
@@ -46,11 +46,27 @@ Handoff order:
 4. QA Engineer
 5. Documentation Maintainer
 
+Required outputs:
+
+- Brand/content intake
+- Creative-direction rationale
+- Reference-set evidence
+- Frontend distinctiveness benchmark
+- Design critique verdict
+- Frontend product-quality scorecard
+- Domain-specific UI rationale
+- Visual QA evidence
+- State coverage
+- Accessibility checks
+- Desktop/mobile verification
+
 ## Handoff Rules
 
 - Each agent must state its decision, risk, and required next handoff.
+- Each meaningful council session must record workflow, affected layers, required outputs, handoff decisions, risks, evidence, and verification status.
 - Core changes cannot skip Lead Architect.
+- Frontend changes cannot skip content/brand intake, creative-direction rationale, reference-set evidence, distinctiveness benchmark, design critique verdict, product-quality scorecard, visual QA evidence, or Frontend Design Lead review.
 - Auth, data mutation, dependency, external-call, secret, and release-risk changes cannot skip Security Reviewer.
 - Behavior changes cannot skip QA evidence.
 - Significant changes cannot skip living docs.
-
+- Upgrade changes cannot skip `UPGRADE.md`, conflict review, audit evidence, and rollback notes.

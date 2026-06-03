@@ -1,0 +1,57 @@
+- name: bug
+  color: d73a4a
+  description: Something is broken or behaving unexpectedly.
+- name: enhancement
+  color: a2eeef
+  description: A reusable improvement request.
+- name: research
+  color: 5319e7
+  description: Research-backed pattern or scanner work.
+- name: documentation
+  color: 0075ca
+  description: Documentation, templates, or guidance.
+- name: security
+  color: b60205
+  description: Security-sensitive work. Do not disclose vulnerabilities publicly.
+- name: dependencies
+  color: 0366d6
+  description: Dependency or GitHub Actions update.
+- name: "area: cli"
+  color: c5def5
+  description: CLI install, audit, update, diff, or research commands.
+- name: "area: agents"
+  color: c5def5
+  description: Agents, skills, handoffs, rosters, or council evidence.
+- name: "area: frontend"
+  color: c5def5
+  description: Frontend design, accessibility, visual QA, or design briefs.
+- name: "area: supabase"
+  color: c5def5
+  description: Supabase, RLS, Auth, Postgres, migrations, or storage.
+- name: "area: research"
+  color: c5def5
+  description: Research scanner, findings, summaries, or promotion policy.
+- name: "area: release"
+  color: c5def5
+  description: Release workflow, npm publishing, provenance, or package metadata.
+- name: "area: repo-health"
+  color: c5def5
+  description: Repository settings, governance, support, or issue intake.
+- name: needs-triage
+  color: fbca04
+  description: Needs maintainer review before work starts.
+- name: blocked
+  color: e99695
+  description: Cannot proceed without external input or setting changes.
+- name: good first issue
+  color: 7057ff
+  description: Suitable for a first contribution.
+- name: help wanted
+  color: 008672
+  description: Maintainers welcome contribution help.
+- name: "risk: security"
+  color: b60205
+  description: Security, authorization, secret, dependency, or release-risk work.
+- name: "risk: breaking-change"
+  color: d93f0b
+  description: May break downstream installs, package behavior, or public APIs.

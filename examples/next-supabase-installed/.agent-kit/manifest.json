@@ -2,18 +2,24 @@
   "packageName": "@agent-skills/next-supabase-kit",
   "packageVersion": "0.1.0",
   "stack": "next-supabase",
-  "installedAt": "2026-06-02T00:00:00.000Z",
+  "installedAt": "2026-06-03T13:12:46.985Z",
   "docs": [
     "AGENTS.md",
     "AGENT_ROSTER.md",
+    "ASSISTANT_ADAPTERS.md",
+    "COUNCIL.md",
     "SKILLS.md",
     "SPEC.md",
     "DECISIONS.md",
     "DOCS.md",
+    "DESIGN.md",
+    "MODEL_ROUTING.md",
+    "QUALITY_GATES.md",
     "STYLE_GUIDE.md",
     "SECURITY.md",
     "TESTING.md",
-    "DEPLOYMENT.md"
+    "DEPLOYMENT.md",
+    "UPGRADE.md"
   ],
   "libraryFolders": [
     "agents",
@@ -21,21 +27,30 @@
     "prompts",
     "checklists",
     "design-adapters",
+    "assistant-adapters",
     "design-briefs",
     "profiles",
-    "rosters"
+    "rosters",
+    "schemas"
   ],
   "agentRoster": ".agent-kit/agent-roster.json",
+  "modelRouting": ".agent-kit/model-routing.json",
   "templateHashes": {
-    "AGENTS.md": "sha256-of-installed-template",
-    "AGENT_ROSTER.md": "sha256-of-installed-template",
-    "SKILLS.md": "sha256-of-installed-template",
-    "SPEC.md": "sha256-of-installed-template",
-    "DECISIONS.md": "sha256-of-installed-template",
-    "DOCS.md": "sha256-of-installed-template",
-    "STYLE_GUIDE.md": "sha256-of-installed-template",
-    "SECURITY.md": "sha256-of-installed-template",
-    "TESTING.md": "sha256-of-installed-template",
-    "DEPLOYMENT.md": "sha256-of-installed-template"
+    "AGENTS.md": "48ba8fea4ce3fef1307ad74327d7983c745cfd3d5e29af1a3588df71f21ffb3d",
+    "AGENT_ROSTER.md": "b9c2b7bcc10e0efb3137ea0ff016d3c7137f4a6c96928627a8a31655542002ec",
+    "ASSISTANT_ADAPTERS.md": "b0ef583db4fbc38d3714f3094a9a209be430e6ad948da20c302bdcf5c541a201",
+    "COUNCIL.md": "1174fc5928cc4c6b74bda3266e46b2f0282d576e609c5f58c55ff79a2c7b137d",
+    "SKILLS.md": "4fe6ed148ca7ecdd5f89b29ac90ee37f67b465b4b6a02b892257b366a2584935",
+    "SPEC.md": "fd8a0fc2a9c493ce8a4a59049484a30324977252bf78dec6b190a68a0596c0ca",
+    "DECISIONS.md": "89b1c8d70450dae83d8b877d5c6acb6517a3555321fdc6fb7259726e06beebab",
+    "DOCS.md": "766c86b4fe26bdc0986d1e2bff971ea1fe12b1fa080e5b33adb4311a2ca00198",
+    "DESIGN.md": "70f52e539073e7c4c1d37e63c9a21672a3221d2931d3ff284058dabf60243530",
+    "MODEL_ROUTING.md": "ade11856d509df84a70a6a701580937a5990c832ab045e9898617a38445539f7",
+    "QUALITY_GATES.md": "11a41178b14484cae88adec6aab92f34f50afad80dcf9dffcb8fac28b3607e6a",
+    "STYLE_GUIDE.md": "146610e6527fa6131f9d8b9eff15ff2a684eb208b2732f21d16b7da2d12a41c5",
+    "SECURITY.md": "f046e4dc794f49700ddee4cb866e2ba1983a1b71268f2e244892d615b41714f8",
+    "TESTING.md": "183f9ca56b95f6390bcfda75a3da3bd22298c8c6ff0d815982022b2af74da75d",
+    "DEPLOYMENT.md": "c33d949c2b1850f8ee6c38e5ec565325c3d47f4daac13b81c75e1b35655ea174",
+    "UPGRADE.md": "e8393975a7a46c2020cd6afb4c4b4d2cc17807fbec1d33f52b7d159f4eb1e3a0"
   }
 }

@@ -15,6 +15,11 @@ on:
 permissions:
   contents: read
   id-token: write
+  attestations: write
+
+concurrency:
+  group: release-${{ github.workflow }}
+  cancel-in-progress: false
 
 jobs:
   publish:
@@ -26,6 +31,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - name: Setup Node
         uses: actions/setup-node@v6
@@ -40,23 +47,31 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Typecheck
-        run: npm run typecheck
+      - name: Release readiness check
+        run: npm run release:check
 
-      - name: Test
-        run: npm test
+      - name: Create package artifact
+        id: pack
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p release-artifacts
+          npm pack --json --pack-destination release-artifacts > release-artifacts/npm-pack.json
+          tarball="$(node -e "const [result] = JSON.parse(require('fs').readFileSync('release-artifacts/npm-pack.json', 'utf8')); if (!result?.filename) process.exit(1); console.log('release-artifacts/' + result.filename);")"
+          echo "tarball=${tarball}" >> "${GITHUB_OUTPUT}"
 
-      - name: Build
-        run: npm run build
+      - name: Generate package SBOM
+        run: node scripts/sbom-check.mjs --output release-artifacts/sbom.cdx.json
 
-      - name: Dependency audit
-        run: npm audit --audit-level=moderate
-
-      - name: Package dry run
-        run: npm pack --dry-run
-
-      - name: Install smoke
-        run: npm run smoke:install
+      - name: Upload release evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-package-release-evidence
+          path: |
+            release-artifacts/*.tgz
+            release-artifacts/sbom.cdx.json
+            release-artifacts/npm-pack.json
+          retention-days: 30
 
       - name: Validate trusted publishing context
         if: github.event_name == 'release' || github.event.inputs.dry_run == 'false'
@@ -64,17 +79,21 @@ jobs:
           test -n "${ACTIONS_ID_TOKEN_REQUEST_TOKEN:-}"
           test -n "${ACTIONS_ID_TOKEN_REQUEST_URL:-}"
 
+      - name: Validate manual publish ref
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run == 'false'
+        run: test "${GITHUB_REF}" = "refs/heads/main"
+
+      - name: Attest package SBOM
+        if: github.event_name == 'release' || github.event.inputs.dry_run == 'false'
+        uses: actions/attest-sbom@v3
+        with:
+          subject-path: ${{ steps.pack.outputs.tarball }}
+          sbom-path: release-artifacts/sbom.cdx.json
+
       - name: Publish to public npm
         if: github.event_name == 'release' || github.event.inputs.dry_run == 'false'
-        run: npm publish --access public
+        run: npm publish "${{ steps.pack.outputs.tarball }}" --access public
 
       - name: Verify published package install
         if: github.event_name == 'release' || github.event.inputs.dry_run == 'false'
-        run: |
-          PACKAGE_VERSION="$(node -p "require('./package.json').version")"
-          PACKAGE_NAME="$(node -p "require('./package.json').name")"
-          for attempt in 1 2 3 4 5; do
-            npm view "$PACKAGE_NAME@$PACKAGE_VERSION" version --registry=https://registry.npmjs.org && break
-            sleep 10
-          done
-          npx --yes "$PACKAGE_NAME@$PACKAGE_VERSION" doctor
+        run: node scripts/post-publish-verify.mjs

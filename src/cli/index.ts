@@ -1,6 +1,7 @@
 import { Command } from "commander";
+import type { AuditReadinessLevel } from "../config/types.js";
 import { addSkill, listSkills } from "../install/add-skill.js";
-import { createAuditReport } from "../install/audit.js";
+import { READINESS_ORDER, createAuditReport, isAuditReadinessLevel, meetsMinimumReadiness } from "../install/audit.js";
 import { diffProject } from "../install/diff.js";
 import { initProject } from "../install/install.js";
 import { discoverRepos } from "../research/discover.js";
@@ -32,12 +33,29 @@ program
   .command("audit")
   .description("Audit an existing project for agent-kit coverage gaps.")
   .option("--json", "Print machine-readable JSON output.")
-  .action((options: { json?: boolean }) => {
+  .option("--min-readiness <level>", `Exit non-zero unless readiness is at least this level: ${READINESS_ORDER.join(", ")}.`)
+  .action((options: { json?: boolean; minReadiness?: string }) => {
     const report = createAuditReport(process.cwd());
+    let minimumReadiness: AuditReadinessLevel | undefined;
+    if (options.minReadiness) {
+      if (!isAuditReadinessLevel(options.minReadiness)) {
+        console.error(`Invalid --min-readiness value "${options.minReadiness}". Expected one of: ${READINESS_ORDER.join(", ")}.`);
+        process.exitCode = 1;
+        return;
+      }
+      minimumReadiness = options.minReadiness;
+    }
 
     if (options.json) {
       console.log(JSON.stringify(report, null, 2));
     } else {
+      console.log(`READINESS ${report.readiness.level}: ${report.readiness.summary}`);
+      console.log(`SUMMARY pass=${report.summary.pass} warn=${report.summary.warn} fail=${report.summary.fail}`);
+      if (report.readiness.nextActions.length > 0) {
+        console.log("NEXT ACTIONS");
+        for (const action of report.readiness.nextActions) console.log(`- ${action}`);
+      }
+      console.log("");
       for (const finding of report.findings) {
         const prefix = finding.level.toUpperCase().padEnd(4);
         console.log(`${prefix} ${finding.area}: ${finding.message}`);
@@ -46,6 +64,10 @@ program
     }
 
     if (report.summary.fail > 0) {
+      process.exitCode = 1;
+    }
+    if (minimumReadiness && !meetsMinimumReadiness(report.readiness.level, minimumReadiness)) {
+      console.error(`Audit readiness ${report.readiness.level} is below required minimum ${minimumReadiness}.`);
       process.exitCode = 1;
     }
   });

@@ -1,0 +1,41 @@
+name: Research promotion
+description: Propose a research-backed pattern for promotion into package assets.
+title: "[Research]: "
+labels:
+  - research
+body:
+  - type: textarea
+    id: pattern
+    attributes:
+      label: Generalized pattern
+      description: Describe the practice without copying third-party source or private findings.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Link research summaries, dogfood notes, official docs, or public repo references.
+    validations:
+      required: true
+  - type: checkboxes
+    id: promotion_target
+    attributes:
+      label: Promotion target
+      options:
+        - label: Root template
+        - label: Agent role
+        - label: Skill
+        - label: Prompt
+        - label: Checklist
+        - label: Schema
+        - label: Audit rule
+        - label: Release or CI gate
+        - label: Research scanner
+  - type: textarea
+    id: risk
+    attributes:
+      label: Risks and non-goals
+      description: What should not be copied blindly?
+    validations:
+      required: true

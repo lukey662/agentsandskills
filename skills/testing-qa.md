@@ -9,6 +9,7 @@ Adding or reviewing tests, smoke checks, regression coverage, or acceptance evid
 - Core logic has unit tests.
 - Preserved behavior has regression tests.
 - Critical user flows have Playwright smoke tests.
+- High-risk UI changes have screenshot or visual-regression evidence.
 - Auth and data mutation paths are prioritized.
 - Network failure, empty state, and error state behavior is covered.
 - Test gaps are documented when infrastructure is missing.

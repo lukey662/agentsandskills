@@ -4,6 +4,8 @@ import {
   DEFAULT_AGENT_ROSTER_SOURCE,
   DEFAULT_AGENT_ROSTER_TARGET,
   DEFAULT_CONFIG,
+  DEFAULT_MODEL_ROUTING_SOURCE,
+  DEFAULT_MODEL_ROUTING_TARGET,
   LIBRARY_FOLDERS,
   PACKAGE_NAME,
   PACKAGE_VERSION,
@@ -80,6 +82,15 @@ export function initProject(options: InitOptions): InitResult {
   if (rosterCopy.action === "overwritten") result.overwritten.push(rosterCopy.target);
   if (rosterCopy.action === "conflict") result.conflicts.push(`${rosterCopy.target} -> ${rosterCopy.conflictPath}`);
 
+  const modelRoutingCopy = copyTextWithConflict(join(packageRoot, DEFAULT_MODEL_ROUTING_SOURCE), cwd, DEFAULT_MODEL_ROUTING_TARGET, {
+    force: Boolean(options.force),
+    conflictRoot: join(cwd, ".agent-kit", "conflicts")
+  });
+  if (modelRoutingCopy.action === "created") result.copied.push(modelRoutingCopy.target);
+  if (modelRoutingCopy.action === "unchanged") result.unchanged.push(modelRoutingCopy.target);
+  if (modelRoutingCopy.action === "overwritten") result.overwritten.push(modelRoutingCopy.target);
+  if (modelRoutingCopy.action === "conflict") result.conflicts.push(`${modelRoutingCopy.target} -> ${modelRoutingCopy.conflictPath}`);
+
   const manifest: InstallManifest = {
     packageName: PACKAGE_NAME,
     packageVersion: PACKAGE_VERSION,
@@ -88,6 +99,7 @@ export function initProject(options: InitOptions): InitResult {
     docs: [...ROOT_DOCS],
     libraryFolders: [...LIBRARY_FOLDERS],
     agentRoster: DEFAULT_AGENT_ROSTER_TARGET,
+    modelRouting: DEFAULT_MODEL_ROUTING_TARGET,
     templateHashes
   };
 

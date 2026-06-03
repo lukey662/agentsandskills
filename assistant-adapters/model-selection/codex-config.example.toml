@@ -1,0 +1,29 @@
+# Codex model-selection example for Agent Kit.
+# Copy the relevant comments into ~/.codex/config.toml or a trusted project .codex/config.toml.
+# Verify current model availability in your Codex environment before uncommenting.
+
+# June 2026 Agent Kit suggested baseline:
+# model = "gpt-5.5"
+# model_reasoning_effort = "medium"
+
+# Use high reasoning for Lead Architect, Security Reviewer, and Supabase/Postgres Engineer
+# when spawning custom Codex agents or starting dedicated review threads.
+# model_reasoning_effort = "high"
+
+# Optional custom-agent files can live under .codex/agents/*.toml.
+# Keep each custom agent narrow and point it back to:
+# - AGENTS.md
+# - AGENT_ROSTER.md
+# - .agent-kit/agent-roster.json
+# - MODEL_ROUTING.md
+# - .agent-kit/model-routing.json
+
+# Example custom-agent fragment:
+# name = "lead-architect"
+# description = "Architecture and core-change council review."
+# model = "gpt-5.5"
+# model_reasoning_effort = "high"
+# developer_instructions = """
+# Read AGENTS.md, AGENT_ROSTER.md, MODEL_ROUTING.md, and .agent-kit/agent-roster.json.
+# Review affected layers, preserved behavior, tradeoffs, security impact, test plan, and docs impact.
+# """
