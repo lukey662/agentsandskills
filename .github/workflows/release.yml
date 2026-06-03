@@ -85,7 +85,7 @@ jobs:
 
       - name: Attest package SBOM
         if: github.event_name == 'release' || github.event.inputs.dry_run == 'false'
-        uses: actions/attest-sbom@v3
+        uses: actions/attest-sbom@v4
         with:
           subject-path: ${{ steps.pack.outputs.tarball }}
           sbom-path: release-artifacts/sbom.cdx.json
