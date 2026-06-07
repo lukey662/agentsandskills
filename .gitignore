@@ -1,6 +1,7 @@
 node_modules/
 dist/
 coverage/
+.cursor/
 release-artifacts/
 sbom.cdx.json
 .DS_Store

@@ -271,7 +271,10 @@ Acceptance:
 - `[x]` Run release workflow dry run and confirm publish step is skipped.
 - `[x]` Prepare draft GitHub Release `v0.1.0`.
 - `[x]` Add reusable post-publish verification script for public `npx` doctor, clean init, and zero-failure audit.
-- `[ ]` Publish public v0.1 package.
+- `[x]` Pass `npm run release:check` locally with Cursor adapter install, baseline audit gate smoke, install smoke, and npm pack dry run.
+- `[x]` Add [PUBLISH.md](PUBLISH.md) release runbook for GitHub Release, workflow dispatch, and maintainer-local fallback publish.
+- `[ ]` Publish public v0.1 package to npm. Requires maintainer npm Trusted Publishing or `npm login`, then GitHub Release `v0.1.0` or `gh workflow run release.yml -f dry_run=false`.
+- `[ ]` Run `npm run publish:verify` after the package is visible on npm.
 
 Acceptance:
 

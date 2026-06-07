@@ -3,8 +3,12 @@ import { join } from "node:path";
 import type { RepoCandidate, RepoFinding, RepoScore } from "../config/types.js";
 import { listFilesRecursive } from "../utils/fs.js";
 
+function normalizeRelativePath(file: string): string {
+  return file.replace(/\\/g, "/");
+}
+
 function hasFile(files: string[], matcher: RegExp): boolean {
-  return files.some((file) => matcher.test(file));
+  return files.some((file) => matcher.test(normalizeRelativePath(file)));
 }
 
 function fileText(root: string, file: string): string {
@@ -15,7 +19,7 @@ function fileText(root: string, file: string): string {
 function textIncludes(root: string, files: string[], matcher: RegExp, terms: string[]): boolean {
   const lowerTerms = terms.map((term) => term.toLowerCase());
   return files
-    .filter((file) => matcher.test(file))
+    .filter((file) => matcher.test(normalizeRelativePath(file)))
     .some((file) => {
       const text = fileText(root, file).toLowerCase();
       return lowerTerms.some((term) => text.includes(term));

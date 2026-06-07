@@ -3,6 +3,7 @@ import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, 
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { resolveNpmCommand, resolveTarCommand, runNpmCapture } from "./lib/npm-command.mjs";
 
 const repoRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const tempRoot = mkdtempSync(join(tmpdir(), "agent-kit-smoke-"));
@@ -43,10 +44,9 @@ function stat(path) {
 }
 
 try {
-  const packOutput = execFileSync("npm", ["pack", "--json", "--pack-destination", tempRoot], {
+  const packOutput = runNpmCapture(["pack", "--json", "--pack-destination", tempRoot], {
     cwd: repoRoot,
-    env: npmEnv,
-    encoding: "utf8"
+    env: npmEnv
   });
   const [packResult] = JSON.parse(packOutput);
   if (!packResult?.filename) throw new Error("npm pack did not return a package filename.");
@@ -54,7 +54,7 @@ try {
   const tarballPath = join(tempRoot, packResult.filename);
   const unpackRoot = join(tempRoot, "unpack");
   mkdirSync(unpackRoot);
-  execFileSync("tar", ["-xzf", tarballPath, "-C", unpackRoot]);
+  execFileSync(resolveTarCommand(), ["-xzf", tarballPath, "-C", unpackRoot]);
 
   const packageRoot = join(unpackRoot, "package");
   const packageJson = JSON.parse(readFileSync(join(packageRoot, "package.json"), "utf8"));
@@ -80,18 +80,36 @@ try {
 
   const projectRoot = join(tempRoot, "project");
   mkdirSync(projectRoot);
-  execFileSync("npm", ["init", "--yes"], { cwd: projectRoot, env: npmEnv, stdio: "ignore" });
-  execFileSync("npm", ["install", "--no-audit", "--ignore-scripts", "--package-lock=false", tarballPath], {
+  execFileSync(resolveNpmCommand(), ["init", "--yes"], {
     cwd: projectRoot,
     env: npmEnv,
-    stdio: "inherit"
+    stdio: "ignore",
+    shell: process.platform === "win32"
   });
-  const cliPath = join(projectRoot, "node_modules", ".bin", "agent-kit");
-  execFileSync(cliPath, ["init", "--stack", "next-supabase"], { cwd: projectRoot, stdio: "inherit" });
-  const auditOutput = execFileSync(cliPath, ["audit", "--json"], { cwd: projectRoot, encoding: "utf8" });
+  execFileSync(resolveNpmCommand(), ["install", "--no-audit", "--ignore-scripts", "--package-lock=false", tarballPath], {
+    cwd: projectRoot,
+    env: npmEnv,
+    stdio: "inherit",
+    shell: process.platform === "win32"
+  });
+  const installedCliPath = join(projectRoot, "node_modules", packageJson.name, "dist", "index.js");
+  if (!existsSync(installedCliPath)) {
+    throw new Error(`Installed CLI is missing at ${installedCliPath}.`);
+  }
+  execFileSync("node", [installedCliPath, "init", "--stack", "next-supabase"], { cwd: projectRoot, stdio: "inherit" });
+  const auditOutput = execFileSync("node", [installedCliPath, "audit", "--json", "--min-readiness", "baseline-setup"], {
+    cwd: projectRoot,
+    encoding: "utf8"
+  });
   const auditReport = JSON.parse(auditOutput);
   if (auditReport.summary?.fail !== 0) {
     throw new Error(`Expected install smoke audit to have 0 failures, got ${auditReport.summary?.fail}.\n${auditOutput}`);
+  }
+  if (auditReport.readiness?.level !== "baseline-setup" && auditReport.readiness?.level !== "strong-delivery" && auditReport.readiness?.level !== "best-practice-candidate") {
+    throw new Error(`Expected install smoke readiness baseline-setup or better, got ${auditReport.readiness?.level ?? "unknown"}.\n${auditOutput}`);
+  }
+  if (!existsSync(join(projectRoot, ".cursor", "rules", "cursor-agent-kit.mdc"))) {
+    throw new Error("Expected init to install .cursor/rules/cursor-agent-kit.mdc.");
   }
 
   console.log(

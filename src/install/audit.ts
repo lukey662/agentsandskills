@@ -403,7 +403,7 @@ function addCouncilSessionRecordFindings(cwd: string, findings: AuditFinding[]):
   const sessionsRoot = join(cwd, COUNCIL_SESSION_DIR);
   if (!existsSync(sessionsRoot)) return;
 
-  const sessionFiles = listFilesRecursive(sessionsRoot).filter((file) => file.endsWith(".json") && !file.endsWith("/session.json"));
+  const sessionFiles = listFilesRecursive(sessionsRoot).filter((file) => file.endsWith(".json") && !/[\\/]/.test(file));
   if (sessionFiles.length === 0) return;
 
   let invalidCount = 0;
@@ -598,17 +598,20 @@ function addAgentStudioFindings(cwd: string, findings: AuditFinding[]): void {
   if (!existsSync(sessionsRoot)) return;
 
   const files = listFilesRecursive(sessionsRoot);
-  const studioSessionFiles = files.filter((file) => file.endsWith("/session.json"));
+  const studioSessionFiles = files.filter((file) => /[\\/]session\.json$/.test(file));
   for (const sessionFile of studioSessionFiles) {
-    const sessionRelative = `${COUNCIL_SESSION_DIR}/${sessionFile}`;
-    const sessionDir = sessionFile.replace(/\/session\.json$/, "");
-    const eventsRelative = `${COUNCIL_SESSION_DIR}/${sessionDir}/events.jsonl`;
-    const indexRelative = `${COUNCIL_SESSION_DIR}/${sessionDir}/index.md`;
-    const transcriptRelative = `${COUNCIL_SESSION_DIR}/${sessionDir}/transcript.md`;
+    const normalizedSessionFile = sessionFile.replace(/\\/g, "/");
+    const sessionRelative = `${COUNCIL_SESSION_DIR}/${normalizedSessionFile}`;
+    const sessionDir = sessionFile.replace(/[\\/]session\.json$/, "");
+    const normalizedSessionDir = sessionDir.replace(/\\/g, "/");
+    const eventsRelative = `${COUNCIL_SESSION_DIR}/${normalizedSessionDir}/events.jsonl`;
+    const indexRelative = `${COUNCIL_SESSION_DIR}/${normalizedSessionDir}/index.md`;
+    const transcriptRelative = `${COUNCIL_SESSION_DIR}/${normalizedSessionDir}/transcript.md`;
+    const sessionDirPath = join(sessionsRoot, sessionDir);
 
     let sessionResult: ReturnType<typeof StudioSessionContract.safeParse> | null = null;
     try {
-      sessionResult = StudioSessionContract.safeParse(JSON.parse(readFileSync(join(sessionsRoot, sessionFile), "utf8")) as unknown);
+      sessionResult = StudioSessionContract.safeParse(JSON.parse(readFileSync(join(sessionDirPath, "session.json"), "utf8")) as unknown);
       if (!sessionResult.success) {
         findings.push({
           level: "fail",
@@ -628,7 +631,7 @@ function addAgentStudioFindings(cwd: string, findings: AuditFinding[]): void {
       continue;
     }
 
-    const eventsPath = join(cwd, eventsRelative);
+    const eventsPath = join(sessionDirPath, "events.jsonl");
     if (!existsSync(eventsPath)) {
       findings.push({
         level: "fail",
@@ -676,7 +679,7 @@ function addAgentStudioFindings(cwd: string, findings: AuditFinding[]): void {
       }
     }
 
-    if (!existsSync(join(cwd, indexRelative)) || !existsSync(join(cwd, transcriptRelative))) {
+    if (!existsSync(join(sessionDirPath, "index.md")) || !existsSync(join(sessionDirPath, "transcript.md"))) {
       findings.push({
         level: "warn",
         area: "studio",
@@ -684,8 +687,8 @@ function addAgentStudioFindings(cwd: string, findings: AuditFinding[]): void {
         remediation: "Run agent-kit session render so humans can inspect the current agent transcript and handoffs."
       });
     } else {
-      const indexText = readFileSync(join(cwd, indexRelative), "utf8");
-      const transcriptText = readFileSync(join(cwd, transcriptRelative), "utf8");
+      const indexText = readFileSync(join(sessionDirPath, "index.md"), "utf8");
+      const transcriptText = readFileSync(join(sessionDirPath, "transcript.md"), "utf8");
       if (containsLikelySecret(indexText) || containsLikelySecret(transcriptText)) {
         findings.push({
           level: "fail",
@@ -694,7 +697,7 @@ function addAgentStudioFindings(cwd: string, findings: AuditFinding[]): void {
           remediation: "Regenerate Markdown after redacting sensitive values from the event log."
         });
       }
-      if (statSync(eventsPath).mtimeMs > statSync(join(cwd, indexRelative)).mtimeMs) {
+      if (statSync(eventsPath).mtimeMs > statSync(join(sessionDirPath, "index.md")).mtimeMs) {
         findings.push({
           level: "warn",
           area: "studio",

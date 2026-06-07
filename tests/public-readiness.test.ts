@@ -34,6 +34,7 @@ describe("public package readiness", () => {
     expect(packageJson.scripts?.["sbom:generate"]).toBe("node scripts/sbom-check.mjs --output sbom.cdx.json");
     expect(packageJson.scripts?.["publish:verify"]).toBe("node scripts/post-publish-verify.mjs");
     expect(packageJson.scripts?.["smoke:studio"]).toBe("node scripts/smoke-studio.mjs");
+    expect(packageJson.scripts?.["smoke:audit-gate"]).toBe("node scripts/smoke-audit-gate.mjs");
     expect(packageJson.files).toContain("RESEARCH_CITATION_POLICY.md");
     expect(packageJson.files).toContain("CHANGELOG.md");
     expect(packageJson.files).toContain("CONTRIBUTING.md");
@@ -83,7 +84,7 @@ describe("public package readiness", () => {
   });
 
   it("keeps detailed per-repo research out of the public package", () => {
-    const packaged = packagedPublicFiles().map((file) => file.replace(root, "").replace(/^\/+/, ""));
+    const packaged = packagedPublicFiles().map((file) => file.replace(root, "").replace(/\\/g, "/").replace(/^\/+/, ""));
     expect(packaged.some((file) => file.startsWith("research/findings/"))).toBe(false);
     expect(packaged).toContain("research/summaries/scan-overview.md");
     expect(packaged).toContain("research/proposed-updates.md");
@@ -95,7 +96,7 @@ describe("public package readiness", () => {
   });
 
   it("keeps generated example special files out of package inputs", () => {
-    const packaged = packagedPublicFiles().map((file) => file.replace(root, "").replace(/^\/+/, ""));
+    const packaged = packagedPublicFiles().map((file) => file.replace(root, "").replace(/\\/g, "/").replace(/^\/+/, ""));
     expect(packaged).not.toContain("examples/next-supabase-installed/SECURITY.md");
     expect(packaged).not.toContain("examples/next-supabase-installed/UPGRADE.md");
     expect(packaged).not.toContain("examples/next-supabase-installed/.agent-kit/assistant-adapters/README.md");
@@ -219,7 +220,8 @@ describe("public package readiness", () => {
     expect(setup).toContain("Model-selection status");
     expect(setup).toContain("Enforcement");
     expect(setup).toContain(".github/copilot-instructions.md");
-    expect(setup).toContain(".cursor/rules/*.mdc");
+    expect(setup).toContain(".cursor/rules/cursor-agent-kit.mdc");
+    expect(setup).toContain(".cursor/rules/cursor-model-selection.mdc");
     expect(setup).toContain(".claude/agents/*.md");
     expect(cursor).toContain("alwaysApply: true");
     expect(cursor).toContain("MODEL_ROUTING.md");
@@ -468,6 +470,7 @@ describe("public package readiness", () => {
     expect(releaseCheck).toContain("[\"run\", \"examples:check\"]");
     expect(releaseCheck).toContain("[\"run\", \"smoke:install\"]");
     expect(releaseCheck).toContain("[\"run\", \"smoke:studio\"]");
+    expect(releaseCheck).toContain("[\"run\", \"smoke:audit-gate\"]");
     expect(releaseCheck).toContain("[\"audit\", \"--audit-level=moderate\"]");
     expect(releaseCheck).toContain("[\"run\", \"sbom:check\"]");
     expect(releaseCheck).toContain("[\"pack\", \"--dry-run\"]");

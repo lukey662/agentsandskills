@@ -1,8 +1,9 @@
-import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
+import { runNpm } from "./lib/npm-command.mjs";
 
 const repoRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 
@@ -37,28 +38,28 @@ function validateJson() {
   }
 }
 
-function run(name, command, args) {
+function run(name, args) {
   logStep(name);
-  execFileSync(command, args, {
+  runNpm(args, {
     cwd: repoRoot,
     env: {
       ...process.env,
-      npm_config_cache: process.env.npm_config_cache ?? "/tmp/agent-kit-npm-cache"
-    },
-    stdio: "inherit"
+      npm_config_cache: process.env.npm_config_cache ?? join(tmpdir(), "agent-kit-npm-cache")
+    }
   });
 }
 
 validateJson();
-run("Version consistency check", "npm", ["run", "version:check"]);
-run("Typecheck", "npm", ["run", "typecheck"]);
-run("Test", "npm", ["test"]);
-run("Build", "npm", ["run", "build"]);
-run("Example consistency check", "npm", ["run", "examples:check"]);
-run("Install smoke", "npm", ["run", "smoke:install"]);
-run("Agent Studio smoke", "npm", ["run", "smoke:studio"]);
-run("Dependency audit", "npm", ["audit", "--audit-level=moderate"]);
-run("SBOM check", "npm", ["run", "sbom:check"]);
-run("Package dry run", "npm", ["pack", "--dry-run"]);
+run("Version consistency check", ["run", "version:check"]);
+run("Typecheck", ["run", "typecheck"]);
+run("Test", ["test"]);
+run("Build", ["run", "build"]);
+run("Example consistency check", ["run", "examples:check"]);
+run("Install smoke", ["run", "smoke:install"]);
+run("Agent Studio smoke", ["run", "smoke:studio"]);
+run("Baseline audit gate smoke", ["run", "smoke:audit-gate"]);
+run("Dependency audit", ["audit", "--audit-level=moderate"]);
+run("SBOM check", ["run", "sbom:check"]);
+run("Package dry run", ["pack", "--dry-run"]);
 
 console.log("\nrelease check passed");

@@ -1,6 +1,6 @@
 import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { copyTextWithConflict, resolveInside } from "../src/utils/fs.js";
 
@@ -13,11 +13,13 @@ afterEach(() => {
 
 describe("resolveInside", () => {
   it("allows paths inside the root", () => {
-    expect(resolveInside("/tmp/project", "AGENTS.md")).toBe("/tmp/project/AGENTS.md");
+    const projectRoot = resolve("/tmp/project");
+    expect(resolveInside(projectRoot, "AGENTS.md")).toBe(resolve(projectRoot, "AGENTS.md"));
   });
 
   it("blocks traversal outside the root", () => {
-    expect(() => resolveInside("/tmp/project", "../secret")).toThrow(/Unsafe path/);
+    const projectRoot = resolve("/tmp/project");
+    expect(() => resolveInside(projectRoot, "../secret")).toThrow(/Unsafe path/);
   });
 });
 

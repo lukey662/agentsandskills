@@ -16,6 +16,10 @@
 |-- TESTING.md
 |-- DEPLOYMENT.md
 |-- UPGRADE.md
+|-- .cursor
+|   `-- rules
+|       |-- cursor-agent-kit.mdc
+|       `-- cursor-model-selection.mdc
 `-- .agent-kit
     |-- manifest.json
     |-- agent-roster.json

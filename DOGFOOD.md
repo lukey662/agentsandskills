@@ -53,9 +53,40 @@ Dogfood exposed that sessions could define required outputs but lacked a CLI com
 ### Remaining Dogfood Gaps
 
 - Project context still needs real product summary, audience, workflows, auth/tenant model, UI direction, value proposition, and quality target answers.
-- Assistant adapter rows still need active-tool verification evidence.
+- Assistant adapter rows still need active-tool verification evidence in downstream projects beyond the kit repo itself.
 - Project-owned docs need conflict review before adopting newer template wording.
 - A real UI change still needs reference-led design critique and desktop/mobile visual QA evidence.
+- Public npm publish and `npm run publish:verify` still need maintainer release execution. See [PUBLISH.md](PUBLISH.md).
+
+## 2026-06-07 Release Gate Snapshot
+
+Date: 2026-06-07
+CLI source: current built CLI
+Command: `npm run release:check`
+Result: passed locally on Windows after assistant adapter install on init, baseline audit gate smoke, install smoke, Agent Studio smoke, SBOM check, and npm pack dry run.
+
+| Gate | Result |
+| --- | --- | --- |
+| Tests | 65 passed |
+| Example install shape | `baseline-setup`, 0 failures |
+| Install smoke | IDE adapter rules installed, `baseline-setup`, 0 failures |
+| Agent Studio smoke | `baseline-setup`, 0 failures |
+| Baseline audit gate smoke | `baseline-setup`, 0 failures |
+| npm pack dry run | `@agent-skills/next-supabase-kit@0.1.0` tarball validated |
+
+Remaining publish action: execute [PUBLISH.md](PUBLISH.md), then run `npm run publish:verify`.
+
+## 2026-06-07 Assistant Adapter Activation On Init
+
+Date: 2026-06-07
+CLI source: current built CLI
+Mode: init-time assistant adapter rule installation for downstream projects.
+
+| Surface | Path | Status | Evidence |
+| --- | --- | --- | --- |
+| Downstream init | `.cursor/rules/cursor-agent-kit.mdc` | Active on `agent-kit init` | `smoke:install`, `smoke:audit-gate`, and `tests/update.test.ts` verify rule installation. |
+| Downstream init | `.cursor/rules/cursor-model-selection.mdc` | Active on `agent-kit init` | Same smoke and update coverage as council rule. |
+| Template docs | `ASSISTANT_ADAPTERS.md` | Updated | Adapter activation steps and init-time install behavior documented for downstream projects. |
 
 ## Promotion Back Into The Kit
 

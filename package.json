@@ -72,6 +72,7 @@
     "smoke": "node dist/index.js doctor",
     "smoke:install": "node scripts/smoke-install.mjs",
     "smoke:studio": "node scripts/smoke-studio.mjs",
+    "smoke:audit-gate": "node scripts/smoke-audit-gate.mjs",
     "examples:check": "node scripts/example-check.mjs",
     "version:check": "node scripts/version-check.mjs",
     "sbom:check": "node scripts/sbom-check.mjs",
@@ -87,6 +88,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@rolldown/binding-win32-x64-msvc": "^1.0.3",
     "@types/node": "^22.10.5",
     "tsup": "^8.3.5",
     "tsx": "^4.19.2",

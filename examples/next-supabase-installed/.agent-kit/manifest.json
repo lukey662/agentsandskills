@@ -2,7 +2,7 @@
   "packageName": "@agent-skills/next-supabase-kit",
   "packageVersion": "0.1.0",
   "stack": "next-supabase",
-  "installedAt": "2026-06-07T03:37:48.665Z",
+  "installedAt": "2026-06-07T11:22:09.937Z",
   "docs": [
     "AGENTS.md",
     "AGENT_ROSTER.md",
@@ -39,7 +39,7 @@
   "templateHashes": {
     "AGENTS.md": "f9bb80554334f8466d4d0c0c5ae0fa1ed0e7fd5060ef28802e97ed96f76c1a98",
     "AGENT_ROSTER.md": "fb88198d0a5f911ec8cbaa2850c1a47e1dbd1fe2c8144f9ce633bbfc1ec414d3",
-    "ASSISTANT_ADAPTERS.md": "e5620370d42867649a39efd1127bd84dad439b3d4448c47f1a14224a0c90e272",
+    "ASSISTANT_ADAPTERS.md": "d6154a64d77f37cdcfa1f6e59c7d30fc0728c07553551ea77c4fe8d14f1c7365",
     "COUNCIL.md": "40bec9051664c9c38b8360ee16f21b5e4716030d19c493cdec67395ab06528e1",
     "SKILLS.md": "3c3c2eb40438a42026479dccac7bbf084ba22e2d758c425dff59385d05eae3bd",
     "SPEC.md": "8a12bae351b0ceda50dfb2e63ec68767e27f68ffdc15f25bb21bba189855578e",

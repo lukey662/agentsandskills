@@ -63,3 +63,14 @@ export const DEFAULT_AGENT_ROSTER_SOURCE = "rosters/next-supabase-default-counci
 export const DEFAULT_AGENT_ROSTER_TARGET = ".agent-kit/agent-roster.json";
 export const DEFAULT_MODEL_ROUTING_SOURCE = "model-routing/default-model-routing.json";
 export const DEFAULT_MODEL_ROUTING_TARGET = ".agent-kit/model-routing.json";
+
+export const CURSOR_ADAPTER_FILES = [
+  {
+    source: "assistant-adapters/cursor-agent-kit.mdc",
+    target: ".cursor/rules/cursor-agent-kit.mdc"
+  },
+  {
+    source: "assistant-adapters/model-selection/cursor-model-selection.mdc",
+    target: ".cursor/rules/cursor-model-selection.mdc"
+  }
+] as const;

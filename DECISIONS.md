@@ -469,3 +469,36 @@ Run the CodeQL job only when `github.repository_visibility == 'public'`. Keep pa
 ### Consequences
 
 Private-repo pushes no longer fail on a GitHub code-scanning feature that is unavailable in the current repository settings. CodeQL starts running automatically once the repo is made public. If private GitHub Advanced Security/code scanning is enabled before publication, this gate can be revisited deliberately.
+
+## 2026-06-07 - Install Assistant Adapter Rules During Init
+
+### Context
+
+Assistant adapter templates existed under `.agent-kit/assistant-adapters/`, but downstream projects still had to manually copy IDE rule files into `.cursor/rules/`. That left assistant activation as a common setup gap in dogfood audits and delayed provable adapter evidence.
+
+### Decision
+
+Copy the canonical assistant adapter files during `agent-kit init`:
+
+- `.cursor/rules/cursor-agent-kit.mdc`
+- `.cursor/rules/cursor-model-selection.mdc`
+
+Use the same conflict-safe write behavior as root docs. Document activation and verification steps in `ASSISTANT_ADAPTERS.md`. Enforce install and baseline readiness through `smoke:install`, `smoke:audit-gate`, CI, and update regression tests.
+
+### Consequences
+
+Fresh installs now have an explicit IDE adapter activation surface without forking council instructions. Customized projects may receive adapter updates through `.agent-kit/conflicts/` during `agent-kit update`. Audit and release gates now require baseline readiness, not just zero failures.
+
+## 2026-06-07 - Scope Optional Runtime Orchestration Separately
+
+### Context
+
+The readiness review confirmed the kit is strong as an IDE-driven multi-agent harness but does not yet provide autonomous runtime orchestration. Milestone 9 was deferred, but teams need a concrete scope before implementation starts.
+
+### Decision
+
+Add [RUNTIME_ORCHESTRATION_SCOPE.md](RUNTIME_ORCHESTRATION_SCOPE.md) as the source of truth for Milestone 9. Keep baseline behavior unchanged: IDE agents, local JSON/JSONL/Markdown evidence, and CLI audit gates remain the default path. Any future orchestrator must reuse existing session schemas and stay opt-in.
+
+### Consequences
+
+The project can discuss runtime execution without confusing it with current v0.1 deliverables. Implementation can start from schema and validate-only commands before any provider adapter ships.

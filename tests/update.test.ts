@@ -91,11 +91,13 @@ describe("update older installs", () => {
     const result = initProject({ cwd: root });
 
     expect(readFileSync(join(root, "AGENTS.md"), "utf8")).toBe("Project-specific existing agents.\n");
-    expect(result.conflicts.some((item) => item.startsWith("AGENTS.md -> .agent-kit/conflicts/"))).toBe(true);
+    expect(result.conflicts.some((item) => item.replace(/\\/g, "/").startsWith("AGENTS.md -> .agent-kit/conflicts/"))).toBe(true);
     expect(readdirSync(join(root, ".agent-kit", "conflicts")).length).toBeGreaterThan(0);
 
     expect(result.copied).toContain("AGENT_ROSTER.md");
     expect(result.copied).toContain("ASSISTANT_ADAPTERS.md");
+    expect(existsSync(join(root, ".cursor", "rules", "cursor-agent-kit.mdc"))).toBe(true);
+    expect(existsSync(join(root, ".cursor", "rules", "cursor-model-selection.mdc"))).toBe(true);
     expect(result.copied).toContain("COUNCIL.md");
     expect(result.copied).toContain("DESIGN.md");
     expect(result.copied).toContain("MESSAGING.md");

@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
+  CURSOR_ADAPTER_FILES,
   DEFAULT_AGENT_ROSTER_SOURCE,
   DEFAULT_AGENT_ROSTER_TARGET,
   DEFAULT_CONFIG,
@@ -71,6 +72,19 @@ export function initProject(options: InitOptions): InitResult {
 
   for (const folder of LIBRARY_FOLDERS) {
     copyDirectory(join(packageRoot, folder), join(cwd, ".agent-kit", folder));
+  }
+
+  for (const adapter of CURSOR_ADAPTER_FILES) {
+    const adapterCopy = copyTextWithConflict(join(packageRoot, adapter.source), cwd, adapter.target, {
+      force: Boolean(options.force),
+      conflictRoot: join(cwd, ".agent-kit", "conflicts")
+    });
+    if (adapterCopy.action === "created") result.copied.push(adapterCopy.target);
+    if (adapterCopy.action === "unchanged") result.unchanged.push(adapterCopy.target);
+    if (adapterCopy.action === "overwritten") result.overwritten.push(adapterCopy.target);
+    if (adapterCopy.action === "conflict") {
+      result.conflicts.push(`${adapterCopy.target} -> ${adapterCopy.conflictPath}`);
+    }
   }
 
   const rosterCopy = copyTextWithConflict(join(packageRoot, DEFAULT_AGENT_ROSTER_SOURCE), cwd, DEFAULT_AGENT_ROSTER_TARGET, {

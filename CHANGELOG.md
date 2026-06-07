@@ -38,3 +38,7 @@
 - Added reusable post-publish verification script for `npm view`, public `npx doctor`, clean temp `init`, and `audit --json` with zero failures.
 - Added model-routing docs, schema, adapter examples, install/update/diff support, and audit warnings for per-agent model-selection setup.
 - Added Marketing Copy Lead, `MESSAGING.md`, copywriting skills, copy-review prompt, marketing-copy checklist, roster/model routing, and audit coverage for positioning, proof, objections, voice, and CTA evidence.
+- Added automatic assistant adapter rule installation to `.cursor/rules/` during `agent-kit init`, plus activation guidance in `ASSISTANT_ADAPTERS.md`.
+- Added `npm run smoke:audit-gate` and CI baseline readiness enforcement with `agent-kit audit --min-readiness baseline-setup`.
+- Added [PUBLISH.md](PUBLISH.md) release runbook and [RUNTIME_ORCHESTRATION_SCOPE.md](RUNTIME_ORCHESTRATION_SCOPE.md) for deferred Milestone 9 orchestration work.
+- Fixed Windows-safe npm/tar spawning in release and smoke scripts, cross-platform audit path handling for Agent Studio sessions, and cross-platform research scoring path normalization.

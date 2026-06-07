@@ -49,6 +49,15 @@ Supported commands:
 
 Existing project files must not be overwritten by default. Template conflicts are written to `.agent-kit/conflicts/`, and installed template hashes are tracked in `.agent-kit/manifest.json`.
 
+`init` also installs assistant adapter rules when absent:
+
+- `.cursor/rules/cursor-agent-kit.mdc`
+- `.cursor/rules/cursor-model-selection.mdc`
+
+Downstream projects should record adapter activation evidence in `ASSISTANT_ADAPTERS.md`.
+
+Release and CI gates include `npm run smoke:audit-gate`, which requires a fresh install to pass `agent-kit audit --min-readiness baseline-setup` with zero failures.
+
 ## Context And Session Surface
 
 Phase 9 adds a local-first Agent Studio workflow. The baseline implementation must not require a database, hosted service, background daemon, or direct model API credentials.

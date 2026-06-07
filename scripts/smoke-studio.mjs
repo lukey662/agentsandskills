@@ -127,7 +127,7 @@ try {
   if (!exportText.includes("<details")) throw new Error("Static studio export is missing clickable transcript panels.");
   if (exportText.includes(fakeSecret)) throw new Error("Static studio export contains an unredacted fake secret.");
 
-  const audit = JSON.parse(run(["audit", "--json"]));
+  const audit = JSON.parse(run(["audit", "--json", "--min-readiness", "baseline-setup"]));
   if (audit.summary.fail !== 0) {
     throw new Error(`Expected Agent Studio smoke audit to have 0 failures, got ${audit.summary.fail}.`);
   }

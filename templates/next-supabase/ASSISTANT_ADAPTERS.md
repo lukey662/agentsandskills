@@ -28,7 +28,7 @@ Canonical source of truth:
 | --- | --- | --- | --- | --- | --- | --- |
 | Codex / AGENTS.md-compatible tools | `AGENTS.md`, optional `.codex/config.toml`, optional `.codex/agents/*.toml` | TBD | TBD | Partial | TBD | Confirm the tool loads root `AGENTS.md`, follows council routing, and uses `MODEL_ROUTING.md` for model choice. |
 | GitHub Copilot / VS Code | `.github/copilot-instructions.md` and `.github/instructions/*.instructions.md` | TBD | TBD | Advisory | TBD | Use `.agent-kit/assistant-adapters/github-copilot-instructions.md`, `github-next-supabase.instructions.md`, and `model-selection/github-copilot-model-selection.md` as starting points. |
-| Cursor | `.cursor/rules/*.mdc` | TBD | TBD | Advisory | TBD | Use `.agent-kit/assistant-adapters/cursor-agent-kit.mdc` and `model-selection/cursor-model-selection.mdc` as starting points. |
+| Cursor | `.cursor/rules/cursor-agent-kit.mdc` and `.cursor/rules/cursor-model-selection.mdc` | Active on init | Advisory | Advisory | `agent-kit init` copies canonical rules from `.agent-kit/assistant-adapters/`; verify in Cursor Settings > Rules that both rules load. | `agent-kit init` installs `.cursor/rules/cursor-agent-kit.mdc` and `.cursor/rules/cursor-model-selection.mdc`. Re-run `agent-kit diff` after kit updates if the canonical adapter files changed. |
 | Claude Code | `.claude/agents/*.md` and optional `CLAUDE.md` | TBD | TBD | Partial | TBD | Use `.agent-kit/assistant-adapters/claude-code-subagents.md` and `model-selection/claude-code-subagents-with-models.md` as starting points. |
 
 ## Model Selection
@@ -50,6 +50,23 @@ Canonical source of truth:
 - Keep commands concrete and verified. Document known failures or environment prerequisites.
 - Update this file when a tool is added, removed, or confirmed to load the project instructions.
 - Record MCP/tool connector setup separately from model-selection setup. Tool access and model choice are different controls.
+
+## Cursor Activation
+
+`agent-kit init` installs the canonical Cursor rules automatically:
+
+- `.cursor/rules/cursor-agent-kit.mdc`
+- `.cursor/rules/cursor-model-selection.mdc`
+
+Verification steps:
+
+1. Run `agent-kit init --stack next-supabase` in the target project.
+2. Confirm both files exist under `.cursor/rules/`.
+3. Open Cursor Settings > Rules and verify the rules are active for the workspace.
+4. Start a meaningful task and confirm the agent reads `AGENTS.md`, `.agent-kit/agent-roster.json`, and project context before implementation.
+5. Record the verification date, owner, and evidence path in the Active Tool Surfaces table above.
+
+If a project already customized `.cursor/rules/`, review `.agent-kit/conflicts/` after `agent-kit update` before adopting newer adapter wording.
 
 ## Acceptance Evidence
 
