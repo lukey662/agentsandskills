@@ -145,14 +145,17 @@ describe("public package readiness", () => {
     const agentIds = new Set(roster.agents.map((agent) => agent.id));
     const planner = roster.agents.find((agent) => agent.id === "planner");
     const frontendDesignLead = roster.agents.find((agent) => agent.id === "frontend-design-lead");
+    const marketingCopyLead = roster.agents.find((agent) => agent.id === "marketing-copy-lead");
     const coreChange = roster.workflows.find((workflow) => workflow.id === "core-change");
     const frontendChange = roster.workflows.find((workflow) => workflow.id === "frontend-change");
+    const marketingCopy = roster.workflows.find((workflow) => workflow.id === "marketing-copy");
 
     expect(roster.required).toBe(true);
     expect(roster.defaultWorkflow).toBe("planning");
     expect(agentIds).toContain("planner");
     expect(agentIds).toContain("lead-architect");
     expect(agentIds).toContain("security-reviewer");
+    expect(agentIds).toContain("marketing-copy-lead");
     expect(agentIds).toContain("qa-engineer");
     expect(planner?.defaultFor).toContain("planning");
     expect(planner?.skills).toContain("planning-council");
@@ -168,6 +171,13 @@ describe("public package readiness", () => {
     expect(frontendDesignLead?.defaultFor).toContain("reference-led-critique");
     expect(frontendDesignLead?.defaultFor).toContain("distinctiveness-benchmark");
     expect(frontendDesignLead?.defaultFor).toContain("product-quality-scorecard");
+    expect(marketingCopyLead?.skills).toContain("positioning-messaging");
+    expect(marketingCopyLead?.skills).toContain("conversion-copywriting");
+    expect(marketingCopyLead?.skills).toContain("landing-page-copy");
+    expect(marketingCopyLead?.skills).toContain("product-voice-tone");
+    expect(marketingCopyLead?.skills).toContain("onboarding-empty-state-copy");
+    expect(marketingCopyLead?.defaultFor).toContain("value-proposition");
+    expect(marketingCopyLead?.defaultFor).toContain("conversion");
     expect(coreChange?.sequence).toContain("lead-architect");
     expect(coreChange?.council).toContain("lead-architect");
     expect(coreChange?.requiredOutputs).toContain("upgrade evidence when applicable");
@@ -179,6 +189,9 @@ describe("public package readiness", () => {
     expect(frontendChange?.requiredOutputs).toContain("design critique verdict");
     expect(frontendChange?.requiredOutputs).toContain("frontend product-quality scorecard");
     expect(frontendChange?.requiredOutputs).toContain("visual QA evidence");
+    expect(marketingCopy?.sequence).toContain("marketing-copy-lead");
+    expect(marketingCopy?.requiredOutputs).toContain("problem, pain, desired outcome, and value proposition");
+    expect(marketingCopy?.requiredOutputs).toContain("differentiators, proof points, objections, and counter-messaging");
   });
 
   it("ships assistant adapter assets for common AI coding tools", () => {
@@ -236,6 +249,7 @@ describe("public package readiness", () => {
     expect(agentIds).toContain("planner");
     expect(agentIds).toContain("lead-architect");
     expect(agentIds).toContain("frontend-design-lead");
+    expect(agentIds).toContain("marketing-copy-lead");
     expect(agentIds).toContain("security-reviewer");
     expect(toolNames).toContain("Codex");
     expect(toolNames).toContain("Claude Code");
@@ -295,6 +309,28 @@ describe("public package readiness", () => {
     expect(readFileSync(join(root, "templates", "next-supabase", "STYLE_GUIDE.md"), "utf8")).toContain("frontend-distinctiveness-benchmark");
     expect(readFileSync(join(root, "templates", "next-supabase", "STYLE_GUIDE.md"), "utf8")).toContain("frontend-product-quality-scorecard");
     expect(readFileSync(join(root, "templates", "next-supabase", "QUALITY_GATES.md"), "utf8")).toContain("Best-Practice");
+  });
+
+  it("ships marketing copy and messaging assets", () => {
+    expect(existsSync(join(root, "templates", "next-supabase", "MESSAGING.md"))).toBe(true);
+    expect(existsSync(join(root, "agents", "marketing-copy-lead.md"))).toBe(true);
+    expect(existsSync(join(root, "skills", "positioning-messaging.md"))).toBe(true);
+    expect(existsSync(join(root, "skills", "conversion-copywriting.md"))).toBe(true);
+    expect(existsSync(join(root, "skills", "landing-page-copy.md"))).toBe(true);
+    expect(existsSync(join(root, "skills", "product-voice-tone.md"))).toBe(true);
+    expect(existsSync(join(root, "skills", "onboarding-empty-state-copy.md"))).toBe(true);
+    expect(existsSync(join(root, "prompts", "copy-review.md"))).toBe(true);
+    expect(existsSync(join(root, "checklists", "marketing-copy.md"))).toBe(true);
+
+    const messaging = readFileSync(join(root, "templates", "next-supabase", "MESSAGING.md"), "utf8");
+    const agents = readFileSync(join(root, "templates", "next-supabase", "AGENTS.md"), "utf8");
+    const skills = readFileSync(join(root, "templates", "next-supabase", "SKILLS.md"), "utf8");
+
+    expect(messaging).toContain("Discovery Questions");
+    expect(messaging).toContain("Proof And Objections");
+    expect(messaging).toContain("Page And Flow Copy Inventory");
+    expect(agents).toContain("Marketing Copy Lead");
+    expect(skills).toContain("Marketing Copy And Messaging");
   });
 
   it("ships schema-backed council evidence assets", () => {

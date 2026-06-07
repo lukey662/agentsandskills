@@ -73,7 +73,36 @@
         "visual-regression-qa",
         "accessibility-wcag"
       ],
-      "handsOffTo": ["nextjs-engineer", "qa-engineer", "docs-maintainer"]
+      "handsOffTo": ["marketing-copy-lead", "nextjs-engineer", "qa-engineer", "docs-maintainer"]
+    },
+    {
+      "id": "marketing-copy-lead",
+      "name": "Marketing Copy Lead",
+      "file": ".agent-kit/agents/marketing-copy-lead.md",
+      "defaultFor": [
+        "copy",
+        "copywriting",
+        "marketing",
+        "positioning",
+        "messaging",
+        "value-proposition",
+        "landing-page-copy",
+        "headline",
+        "cta",
+        "conversion",
+        "onboarding-copy",
+        "empty-state-copy",
+        "voice-tone",
+        "pricing-copy"
+      ],
+      "skills": [
+        "positioning-messaging",
+        "conversion-copywriting",
+        "landing-page-copy",
+        "product-voice-tone",
+        "onboarding-empty-state-copy"
+      ],
+      "handsOffTo": ["frontend-design-lead", "nextjs-engineer", "qa-engineer", "docs-maintainer"]
     },
     {
       "id": "security-reviewer",
@@ -143,10 +172,11 @@
     {
       "id": "frontend-change",
       "triggers": ["screen", "component", "layout", "design", "responsive", "accessibility", "screenshot"],
-      "sequence": ["planner", "frontend-design-lead", "nextjs-engineer", "qa-engineer", "docs-maintainer"],
-      "council": ["frontend-design-lead", "qa-engineer"],
+      "sequence": ["planner", "frontend-design-lead", "marketing-copy-lead", "nextjs-engineer", "qa-engineer", "docs-maintainer"],
+      "council": ["frontend-design-lead", "marketing-copy-lead", "qa-engineer"],
       "requiredOutputs": [
         "brand/content intake",
+        "copy/value-proposition brief when public-facing or conversion-facing",
         "creative-direction rationale",
         "reference-set evidence",
         "distinctiveness benchmark",
@@ -157,6 +187,22 @@
         "state coverage",
         "accessibility checks",
         "desktop/mobile verification"
+      ]
+    },
+    {
+      "id": "marketing-copy",
+      "triggers": ["copy", "copywriting", "marketing", "positioning", "messaging", "value prop", "value proposition", "landing page", "headline", "cta", "conversion", "onboarding", "empty state", "pricing"],
+      "sequence": ["planner", "marketing-copy-lead", "frontend-design-lead", "qa-engineer", "docs-maintainer"],
+      "council": ["marketing-copy-lead", "frontend-design-lead"],
+      "requiredOutputs": [
+        "discovery questions answered or explicitly marked unknown",
+        "audience and segment assumptions",
+        "problem, pain, desired outcome, and value proposition",
+        "differentiators, proof points, objections, and counter-messaging",
+        "voice/tone guidance",
+        "page or flow copy inventory",
+        "CTA and conversion hypothesis",
+        "handoff notes for design and implementation"
       ]
     },
     {
@@ -174,6 +220,7 @@
     "Planner starts planning and ambiguous requests by default.",
     "Lead Architect must review core changes before implementation.",
     "Frontend Design Lead must record reference-set evidence, anti-references, a design critique verdict, a distinctiveness benchmark, and a frontend product-quality scorecard before accepting significant frontend work.",
+    "Marketing Copy Lead must ask discovery questions and record audience, pain, outcome, value proposition, proof, objections, voice/tone, and conversion goal before accepting public-facing or conversion-facing copy.",
     "Security Reviewer must review auth, data mutation, external-call, dependency, secret, and release-risk changes.",
     "QA Engineer must verify behavior changes before completion.",
     "Documentation Maintainer must update living markdown when behavior, architecture, release, or standards change."

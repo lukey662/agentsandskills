@@ -46,6 +46,7 @@ const REQUIRED_AGENT_IDS = [
   "supabase-postgres-engineer",
   "security-reviewer",
   "frontend-design-lead",
+  "marketing-copy-lead",
   "qa-engineer",
   "docs-maintainer",
   "deployment-observability-engineer"
@@ -66,6 +67,11 @@ const REQUIRED_SKILL_IDS = [
   "frontend-product-quality-rubric",
   "frontend-design-system",
   "visual-regression-qa",
+  "positioning-messaging",
+  "conversion-copywriting",
+  "landing-page-copy",
+  "product-voice-tone",
+  "onboarding-empty-state-copy",
   "accessibility-wcag",
   "testing-qa",
   "docs-maintainer",
@@ -237,6 +243,7 @@ function addAgentRosterFindings(cwd: string, findings: AuditFinding[]): void {
   const planningWorkflow = workflows.find((workflow) => workflow.id === "planning");
   const coreChangeWorkflow = workflows.find((workflow) => workflow.id === "core-change");
   const frontendWorkflow = workflows.find((workflow) => workflow.id === "frontend-change");
+  const marketingCopyWorkflow = workflows.find((workflow) => workflow.id === "marketing-copy");
 
   if (!planningWorkflow || asStringArray(planningWorkflow.sequence)[0] !== "planner") {
     findings.push({
@@ -301,6 +308,58 @@ function addAgentRosterFindings(cwd: string, findings: AuditFinding[]): void {
       level: "pass",
       area: "agents",
       message: "Frontend-change workflow requires content-first design, reference-led critique, distinctiveness benchmarking, product-quality scoring, and creative-direction evidence."
+    });
+  }
+
+  const marketingCopyLead = agents.find((agent) => agent.id === "marketing-copy-lead");
+  const marketingDefaultFor = asStringArray(marketingCopyLead?.defaultFor);
+  const marketingSkills = asStringArray(marketingCopyLead?.skills);
+  if (
+    !marketingCopyLead ||
+    !marketingDefaultFor.includes("copywriting") ||
+    !marketingDefaultFor.includes("value-proposition") ||
+    !marketingSkills.includes("positioning-messaging") ||
+    !marketingSkills.includes("conversion-copywriting")
+  ) {
+    findings.push({
+      level: "fail",
+      area: "agents",
+      message: "Marketing Copy Lead is missing question-led positioning or conversion-copy skill routing.",
+      remediation:
+        "Restore Marketing Copy Lead with copywriting, positioning, value-proposition, conversion, voice/tone, landing-page, onboarding, and empty-state routing."
+    });
+  }
+
+  const marketingSequence = asStringArray(marketingCopyWorkflow?.sequence);
+  const marketingOutputs = asStringArray(marketingCopyWorkflow?.requiredOutputs).join(" ").toLowerCase();
+  if (!marketingCopyWorkflow || !marketingSequence.includes("marketing-copy-lead")) {
+    findings.push({
+      level: "fail",
+      area: "agents",
+      message: "Marketing-copy workflow does not require Marketing Copy Lead review.",
+      remediation: "Define marketing-copy with Marketing Copy Lead in the sequence before public-facing copy is accepted."
+    });
+  } else if (
+    !marketingOutputs.includes("questions") ||
+    !marketingOutputs.includes("audience") ||
+    !marketingOutputs.includes("value proposition") ||
+    !marketingOutputs.includes("proof") ||
+    !marketingOutputs.includes("objections") ||
+    !marketingOutputs.includes("voice") ||
+    !marketingOutputs.includes("conversion")
+  ) {
+    findings.push({
+      level: "warn",
+      area: "agents",
+      message: "Marketing-copy workflow is missing discovery questions, audience, value proposition, proof, objections, voice, or conversion outputs.",
+      remediation:
+        "Require discovery questions, audience and segment assumptions, problem/pain/outcome, value proposition, differentiators, proof, objections, voice/tone, conversion goal, and design handoff notes."
+    });
+  } else {
+    findings.push({
+      level: "pass",
+      area: "agents",
+      message: "Marketing-copy workflow requires question-led positioning, value proposition, proof, objections, voice, and conversion evidence."
     });
   }
 
@@ -797,6 +856,7 @@ function addQualityGateFindings(cwd: string, findings: AuditFinding[]): void {
       "architecture",
       "security",
       "supabase",
+      "messaging",
       "frontend",
       "accessibility",
       "testing",
@@ -862,6 +922,7 @@ const EVIDENCE_DOCS = [
   "COUNCIL.md",
   "SPEC.md",
   "DESIGN.md",
+  "MESSAGING.md",
   "SECURITY.md",
   "TESTING.md",
   "DEPLOYMENT.md",
@@ -889,6 +950,42 @@ function addProjectEvidenceFindings(cwd: string, findings: AuditFinding[]): void
       level: "pass",
       area: "evidence",
       message: "Project evidence docs do not contain starter placeholders."
+    });
+  }
+}
+
+function addMessagingFindings(cwd: string, findings: AuditFinding[]): void {
+  const messagingDoc = readDoc(cwd, "MESSAGING.md");
+  if (!messagingDoc) return;
+
+  if (!includesAll(messagingDoc, ["discovery questions", "audience", "pain", "outcome", "differentiator", "proof", "objections", "voice", "conversion"])) {
+    findings.push({
+      level: "warn",
+      area: "messaging",
+      message: "MESSAGING.md does not capture the required discovery questions and value-proposition inputs.",
+      remediation:
+        "Document audience, pain, outcome, differentiator, proof, objections, voice, conversion goal, and unanswered discovery questions before accepting final copy."
+    });
+  } else {
+    findings.push({
+      level: "pass",
+      area: "messaging",
+      message: "MESSAGING.md captures question-led positioning and value-proposition inputs."
+    });
+  }
+
+  if (!includesAll(messagingDoc, ["claim", "proof required", "current proof", "objection", "cta"])) {
+    findings.push({
+      level: "warn",
+      area: "messaging",
+      message: "MESSAGING.md does not connect claims, proof, objections, and CTA hierarchy.",
+      remediation: "Track claims against proof, objection handling, primary CTA, secondary CTA, and risky claims before release."
+    });
+  } else {
+    findings.push({
+      level: "pass",
+      area: "messaging",
+      message: "MESSAGING.md connects claims, proof, objections, and CTA hierarchy."
     });
   }
 }
@@ -933,6 +1030,7 @@ export function auditProject(cwd: string): AuditFinding[] {
   addCouncilDocFindings(cwd, findings);
   addAssistantAdapterFindings(cwd, findings);
   addModelRoutingFindings(cwd, findings);
+  addMessagingFindings(cwd, findings);
   addQualityGateFindings(cwd, findings);
   addUpgradeFindings(cwd, findings);
   addProjectEvidenceFindings(cwd, findings);

@@ -2,7 +2,7 @@
 
 ## Package Purpose
 
-`@agent-skills/next-supabase-kit` is a public reusable agent-kit package for Next.js and Supabase projects. It ships installable markdown templates, agents, skills, prompts, checklists, design adapters, assistant adapters, model-routing profiles, design briefs, stack profiles, agent rosters, and a CLI for installing, auditing, updating, and reviewing those assets.
+`@agent-skills/next-supabase-kit` is a public reusable agent-kit package for Next.js and Supabase projects. It ships installable markdown templates, agents, skills, prompts, checklists, design adapters, assistant adapters, model-routing profiles, design briefs, stack profiles, agent rosters, messaging/copy evidence templates, and a CLI for installing, auditing, updating, and reviewing those assets.
 
 ## CLI Surface
 
@@ -43,12 +43,25 @@ Required default behavior:
 
 - Planner owns planning, roadmaps, scope, ambiguous requests, and handoff routing.
 - Lead Architect owns architecture and must review core changes before implementation.
-- Supabase/Postgres Engineer, Next.js Engineer, Frontend Design Lead, Security Reviewer, QA Engineer, Documentation Maintainer, and Deployment/Observability Engineer join based on roster triggers.
+- Supabase/Postgres Engineer, Next.js Engineer, Frontend Design Lead, Marketing Copy Lead, Security Reviewer, QA Engineer, Documentation Maintainer, and Deployment/Observability Engineer join based on roster triggers.
 - Core changes must use the `core-change` workflow and include Lead Architect in both sequence and council.
-- Agent skill routing must include planning, upgrade maintenance, Next.js, Supabase/RLS, Postgres migrations, OWASP, frontend design, accessibility, testing, docs, and deployment skills.
+- Agent skill routing must include planning, upgrade maintenance, Next.js, Supabase/RLS, Postgres migrations, OWASP, frontend design, marketing copy, accessibility, testing, docs, and deployment skills.
 - Frontend skill routing must include content-first design, reference-led design critique, frontend distinctiveness benchmark, frontend product-quality rubric, visual regression QA, and accessibility.
+- Marketing copy routing must include positioning, conversion copywriting, landing-page copy, product voice/tone, onboarding, and empty-state copy skills.
 
 `agent-kit audit` must fail when the default roster is missing, invalid, lacks required agents, lacks required skill routing, or does not make Planner the default planning agent.
+
+## Messaging And Copy Surface
+
+Installed projects receive `MESSAGING.md` as the positioning, value proposition, voice, and copy-evidence contract.
+
+Required behavior:
+
+- Public-facing or conversion-facing copy changes route through Marketing Copy Lead.
+- The marketing-copy workflow records discovery questions, audience, pain, desired outcome, alternatives, differentiator, proof, objections, voice/tone, page or flow copy inventory, CTA hierarchy, and design handoff notes.
+- `agent-kit audit` fails when Marketing Copy Lead or the marketing-copy workflow is missing from the default roster.
+- `agent-kit audit` warns when `MESSAGING.md` does not capture discovery questions, value-proposition evidence, claim/proof mapping, objections, and CTA hierarchy.
+- Risky claims about pricing, privacy, security, compliance, performance, legal, medical, or financial outcomes must be reviewed before release.
 
 ## Model Routing Surface
 

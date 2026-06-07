@@ -17,12 +17,13 @@ Use `agent-kit audit --min-readiness <level>` in CI when the project wants a mer
 
 Baseline means the project is usable and the agent kit can audit it.
 
-- `AGENTS.md`, `AGENT_ROSTER.md`, `ASSISTANT_ADAPTERS.md`, `COUNCIL.md`, `SPEC.md`, `DECISIONS.md`, `DOCS.md`, `DESIGN.md`, `MODEL_ROUTING.md`, `STYLE_GUIDE.md`, `SECURITY.md`, `TESTING.md`, `DEPLOYMENT.md`, and `UPGRADE.md` exist.
+- `AGENTS.md`, `AGENT_ROSTER.md`, `ASSISTANT_ADAPTERS.md`, `COUNCIL.md`, `SPEC.md`, `DECISIONS.md`, `DOCS.md`, `DESIGN.md`, `MESSAGING.md`, `MODEL_ROUTING.md`, `STYLE_GUIDE.md`, `SECURITY.md`, `TESTING.md`, `DEPLOYMENT.md`, and `UPGRADE.md` exist.
 - `.agent-kit/agent-roster.json`, `.agent-kit/model-routing.json`, and `.agent-kit/schemas/` exist.
 - `.agent-kit/assistant-adapters/` exists.
 - Planner is the default planning route.
 - Lead Architect reviews core changes.
 - Security Reviewer reviews auth, RLS, dependency, secret, external-call, and release-risk changes.
+- Marketing Copy Lead reviews public-facing or conversion-facing copy, positioning, proof, objections, voice, and CTA hierarchy.
 - QA evidence is recorded before behavior changes are accepted.
 
 ### Strong
@@ -32,6 +33,7 @@ Strong means the project is safe for repeated team or agent delivery.
 - Council sessions record workflow, decision, risk, next handoff, required outputs, and evidence.
 - `ASSISTANT_ADAPTERS.md` records active AI tool surfaces, model-selection status, enforcement level, and verification evidence.
 - `MODEL_ROUTING.md` records active model-selection status, dated recommendations, enforcement limits, and known IDE limitations.
+- `MESSAGING.md` captures audience, pain, desired outcome, alternatives, differentiator, proof, objections, voice, conversion goal, and copy inventory.
 - `SPEC.md` documents affected architecture, behavioral contracts, data model, RLS inventory, and critical workflows.
 - `SECURITY.md` covers OWASP Top 10, Supabase RLS, service-role isolation, secrets, IDOR prevention, dependency risk, and external-call risk.
 - `DESIGN.md` captures audience, user needs, real content, brand constraints, reference set, anti-references, creative direction, design critique verdict, distinctiveness benchmark, product-quality scorecard, design tokens, and visual QA tier.
@@ -48,6 +50,7 @@ Best-practice means evidence can survive handoff, release, and later audit.
 - Supabase RLS policies are inventory-backed, least-privilege, and tested for cross-user or cross-tenant access.
 - Production readiness covers Next.js routing/rendering, caching, error boundaries, metadata, accessibility, performance, security headers, and Core Web Vitals evidence.
 - Frontend work starts from brand/content intake, reference-set review, anti-references, and creative-direction options, then proves first-screen proof, content fingerprint, asset provenance, product-quality scorecard, distinctiveness, desktop, mobile, key states, keyboard flow, and visual QA evidence.
+- Public-facing and conversion-facing copy starts from discovery questions, audience, pain, outcome, differentiator, proof, objections, voice/tone, and CTA hierarchy, with unsupported claims marked as assumptions.
 - Test evidence includes the smallest useful unit/regression checks plus critical-path smoke coverage.
 - Release evidence includes install or production smoke, migration order, dependency audit, package or deployment verification, logs, and rollback notes.
 - Repo health includes issue/PR templates, CODEOWNERS, dependency updates, CodeQL or equivalent scanning, dependency review, provenance expectations, support, conduct, and governance.
@@ -61,6 +64,7 @@ Best-practice means evidence can survive handoff, release, and later audit.
 | Core architecture | Planner, Lead Architect, QA, Docs | Affected-layer map, preserved contracts, tests, updated `SPEC.md` or `DECISIONS.md` |
 | Supabase/Auth/RLS | Lead Architect, Supabase/Postgres Engineer, Security Reviewer, QA | Migration notes, RLS inventory, negative authorization test, rollback risk |
 | Frontend/UI | Frontend Design Lead, QA, Docs | Brand/content intake, reference-set evidence, design critique verdict, distinctiveness benchmark, product-quality scorecard, creative direction, component states, accessibility, desktop/mobile visual QA |
+| Marketing/copy | Marketing Copy Lead, Frontend Design Lead, QA, Docs | `MESSAGING.md`, audience and pain, value proposition, proof, objections, voice/tone, CTA hierarchy, risky-claim review |
 | Security-sensitive | Security Reviewer, Lead Architect, QA | OWASP review, boundary validation, dependency/secret review, regression or smoke evidence |
 | Release/package | Deployment/Observability Engineer, Security Reviewer, QA, Docs | Release gate output, dependency audit, install/deploy smoke, provenance or publish identity evidence |
 | Upgrade/dependency | Planner, Lead Architect, Security Reviewer, QA, Docs, Deployment/Observability Engineer | Release notes, codemods or migration guide, `agent-kit diff`, conflict review, audit output, rollback notes |

@@ -29,6 +29,7 @@ List behavior that must be preserved during changes:
 - Planner default ownership for planning and Lead Architect review for core changes
 - Quality gate evidence in `QUALITY_GATES.md`
 - Content-first design direction in `DESIGN.md`
+- Messaging and copy evidence in `MESSAGING.md`
 - Reference-led design critique evidence in `DESIGN.md`
 - Auth and session behavior
 - User ownership and tenant boundaries
@@ -66,6 +67,7 @@ Record the current maturity target and evidence.
 | Model routing | TBD | TBD | TBD | `MODEL_ROUTING.md`, `ASSISTANT_ADAPTERS.md` |
 | Architecture | TBD | TBD | TBD | Affected-layer map, `DECISIONS.md` |
 | Supabase/RLS | TBD | TBD | TBD | RLS inventory, migration tests |
+| Messaging | TBD | TBD | TBD | `MESSAGING.md`, proof map, objection handling, CTA hierarchy |
 | Frontend | TBD | TBD | TBD | `DESIGN.md`, reference-set evidence, design critique verdict, product-quality scorecard, screenshots, visual QA |
 | Testing | TBD | TBD | TBD | Unit, regression, smoke, visual evidence |
 | Release | TBD | TBD | TBD | `DEPLOYMENT.md`, logs, rollback notes |
@@ -76,6 +78,7 @@ Record the current maturity target and evidence.
 - Loading, empty, error, disabled, and success states are handled.
 - Visual design is domain-specific and avoids generic AI-site defaults.
 - Audience, user needs, real content, brand constraints, and creative direction are documented before frontend implementation.
+- Audience, pain, desired outcome, differentiator, proof, objections, voice, and CTA hierarchy are documented before public-facing or conversion-facing copy is accepted.
 - Reference set, anti-references, source-safety notes, and design critique verdict are documented before accepting significant frontend work.
 - Frontend product-quality scorecard is documented before accepting significant frontend work.
 - First screens show the real product, task, object, content, or workflow.
@@ -90,6 +93,7 @@ Track the inputs that make the UI specific to this product.
 | Primary audience | TBD | User research, analytics, stakeholder input, or project brief |
 | User needs | TBD | `DESIGN.md` and accepted stories |
 | Real content/data | TBD | Seeds, CMS, database schema, product copy, assets |
+| Value proposition | TBD | `MESSAGING.md`, proof, objections, and CTA evidence |
 | Brand constraints | TBD | Logo, colors, fonts, imagery, platform rules |
 | Reference set | TBD | `DESIGN.md`, category references, source-safety notes |
 | Anti-references | TBD | `DESIGN.md`, explicit non-goals |

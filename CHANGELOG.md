@@ -37,3 +37,4 @@
 - Added older-install upgrade regression coverage proving diff previews missing/conflicting assets, update preserves customized docs, writes conflicts, installs new baseline assets, and audits with zero failures.
 - Added reusable post-publish verification script for `npm view`, public `npx doctor`, clean temp `init`, and `audit --json` with zero failures.
 - Added model-routing docs, schema, adapter examples, install/update/diff support, and audit warnings for per-agent model-selection setup.
+- Added Marketing Copy Lead, `MESSAGING.md`, copywriting skills, copy-review prompt, marketing-copy checklist, roster/model routing, and audit coverage for positioning, proof, objections, voice, and CTA evidence.

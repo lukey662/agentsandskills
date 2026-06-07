@@ -393,3 +393,17 @@ Add `MODEL_ROUTING.md`, `.agent-kit/model-routing.json`, `schemas/model-routing.
 ### Consequences
 
 Downstream projects can now document model selection as a first-class mechanism alongside instructions, roster, skills, tools, hooks, audit, and CI gates. Audit warns when model routing is missing or unverified, but does not fail solely because an IDE only supports advisory model selection.
+
+## 2026-06-07 - Add Marketing Copy As A Default Council Boundary
+
+### Context
+
+The kit already made frontend design stricter through content-first design, reference-led critique, distinctiveness benchmarking, visual QA, and product-quality scoring. Public-facing projects still had a gap: agents could produce generic or unsupported marketing copy while satisfying visual and technical gates.
+
+### Decision
+
+Add Marketing Copy Lead as a default council agent. Install `MESSAGING.md` as the positioning, value proposition, proof, objection, voice, and CTA contract. Add copywriting skills, a marketing-copy checklist, a copy-review prompt, roster routing, model routing, and audit checks for copy workflow coverage and messaging evidence.
+
+### Consequences
+
+Public-facing and conversion-facing copy now has an auditable owner and evidence path before implementation. The package becomes stricter for landing pages, onboarding, empty states, pricing, and CTA work, but it reduces the risk of vague SaaS language, invented proof, unsupported AI claims, dark patterns, or risky compliance and performance claims.

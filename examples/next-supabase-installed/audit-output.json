@@ -1,6 +1,6 @@
 {
   "summary": {
-    "pass": 51,
+    "pass": 56,
     "warn": 2,
     "fail": 0
   },
@@ -66,6 +66,11 @@
     {
       "level": "pass",
       "area": "templates",
+      "message": "MESSAGING.md matches the current bundled template."
+    },
+    {
+      "level": "pass",
+      "area": "templates",
       "message": "MODEL_ROUTING.md matches the current bundled template."
     },
     {
@@ -122,6 +127,11 @@
       "level": "pass",
       "area": "agents",
       "message": "Frontend-change workflow requires content-first design, reference-led critique, distinctiveness benchmarking, product-quality scoring, and creative-direction evidence."
+    },
+    {
+      "level": "pass",
+      "area": "agents",
+      "message": "Marketing-copy workflow requires question-led positioning, value proposition, proof, objections, voice, and conversion evidence."
     },
     {
       "level": "pass",
@@ -196,6 +206,11 @@
     {
       "level": "pass",
       "area": "docs",
+      "message": "MESSAGING.md exists."
+    },
+    {
+      "level": "pass",
+      "area": "docs",
       "message": "MODEL_ROUTING.md exists."
     },
     {
@@ -266,6 +281,16 @@
     },
     {
       "level": "pass",
+      "area": "messaging",
+      "message": "MESSAGING.md captures question-led positioning and value-proposition inputs."
+    },
+    {
+      "level": "pass",
+      "area": "messaging",
+      "message": "MESSAGING.md connects claims, proof, objections, and CTA hierarchy."
+    },
+    {
+      "level": "pass",
       "area": "quality",
       "message": "QUALITY_GATES.md defines a multi-area best-practice maturity model."
     },
@@ -277,7 +302,7 @@
     {
       "level": "warn",
       "area": "evidence",
-      "message": "Project evidence docs still contain starter placeholders: COUNCIL.md, SPEC.md, DESIGN.md, SECURITY.md, DEPLOYMENT.md, ASSISTANT_ADAPTERS.md, UPGRADE.md.",
+      "message": "Project evidence docs still contain starter placeholders: COUNCIL.md, SPEC.md, DESIGN.md, MESSAGING.md, SECURITY.md, DEPLOYMENT.md, ASSISTANT_ADAPTERS.md, UPGRADE.md.",
       "remediation": "Replace TBD/example rows with real project evidence, or document why an item is not applicable before claiming strong or best-practice maturity."
     }
   ]

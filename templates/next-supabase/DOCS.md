@@ -23,6 +23,7 @@ Document:
 - Quality gate maturity model in `QUALITY_GATES.md`
 - Upgrade lifecycle in `UPGRADE.md`
 - Design identity and content-direction contract in `DESIGN.md`
+- Messaging, positioning, proof, objections, voice, and CTA contract in `MESSAGING.md`
 - Application routes
 - Shared components
 - Server-only modules
@@ -44,6 +45,7 @@ Document primary workflows, including:
 - Brand/content intake and creative-direction selection before frontend implementation
 - Reference-led design critique, anti-references, source-safety notes, and distinctiveness verdict from `DESIGN.md`
 - Frontend product-quality scorecard from `DESIGN.md`
+- Marketing-copy workflow, proof mapping, objection handling, and CTA hierarchy from `MESSAGING.md`
 - Visual QA tier and baseline approval workflow for high-risk UI changes
 - Sign up, login, logout, and session refresh
 - Main user workflow

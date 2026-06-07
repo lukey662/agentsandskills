@@ -53,6 +53,19 @@ Use `.agent-kit/prompts/frontend-distinctiveness-benchmark.md` before accepting 
 
 Use `.agent-kit/prompts/frontend-product-quality-scorecard.md` before accepting significant frontend work. `DESIGN.md` should score user/task fit, content specificity, visual identity, information architecture, component states, accessibility and interaction, and source safety. Reject work with critical zeroes or a total score below `10/14`; reserve best-practice claims for `12/14` or higher with desktop/mobile and visual QA evidence.
 
+## Messaging And Copy Rules
+
+Use `MESSAGING.md` before writing public-facing or conversion-facing copy. Copy should identify the audience, pain, desired outcome, differentiator, proof, objections, voice, and CTA hierarchy before it is accepted.
+
+Prefer:
+
+- Specific product nouns, workflows, constraints, and customer language.
+- Claims tied to proof or marked as assumptions.
+- One primary CTA with clear secondary actions.
+- Useful next steps for onboarding, empty, error, permission, upgrade, and pricing copy.
+
+Reject unsupported superlatives, invented proof, dark patterns, forced urgency, vague AI claims, and risky pricing, privacy, security, compliance, performance, medical, financial, or legal wording.
+
 ## Design Token Inventory
 
 Define design tokens instead of ad hoc styling.

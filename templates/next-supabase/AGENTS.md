@@ -73,6 +73,18 @@ Responsibilities:
 - Maintain WCAG 2.1 AA, keyboard navigation, focus states, and mobile-first behavior.
 - Use design adapters for Stitch, Claude, Figma, or human review when visual direction is weak.
 
+## Marketing Copy Lead
+
+Owns positioning, value proposition, conversion copy, product voice, and UX copy for public-facing or conversion-facing surfaces.
+
+Responsibilities:
+- Maintain `MESSAGING.md` as the positioning, value proposition, voice, proof, objection, and CTA contract.
+- Ask discovery questions when audience, pain, outcome, differentiator, proof, objections, voice, or conversion goal is unclear.
+- Reject vague SaaS copy, unsupported AI claims, invented proof, and headlines that could fit any competitor.
+- Translate product facts into specific headlines, CTAs, onboarding copy, empty states, pricing copy, and objection handling.
+- Handoff public-facing copy to Frontend Design Lead so layout, hierarchy, imagery, and interaction tone reinforce the message.
+- Flag risky pricing, security, privacy, compliance, financial, legal, medical, or performance claims before release.
+
 ## QA Engineer
 
 Owns tests, regression coverage, smoke checks, and acceptance evidence.
@@ -90,7 +102,7 @@ Owns living markdown docs.
 
 Responsibilities:
 - Validate handoff evidence against `COUNCIL.md` and `.agent-kit/schemas/`.
-- Update `SPEC.md`, `DECISIONS.md`, `DOCS.md`, `ASSISTANT_ADAPTERS.md`, `MODEL_ROUTING.md`, `QUALITY_GATES.md`, `DESIGN.md`, `STYLE_GUIDE.md`, `SECURITY.md`, `TESTING.md`, `DEPLOYMENT.md`, and `UPGRADE.md`.
+- Update `SPEC.md`, `DECISIONS.md`, `DOCS.md`, `ASSISTANT_ADAPTERS.md`, `MODEL_ROUTING.md`, `QUALITY_GATES.md`, `DESIGN.md`, `MESSAGING.md`, `STYLE_GUIDE.md`, `SECURITY.md`, `TESTING.md`, `DEPLOYMENT.md`, and `UPGRADE.md`.
 - Record decisions with context, decision, and consequences.
 - Keep docs actionable for another engineer or agent to continue safely.
 
@@ -114,11 +126,12 @@ Use this order for feature work:
 4. Supabase/Postgres Engineer handles schema, RLS, and migrations when data/auth changes are involved.
 5. Next.js Engineer implements runtime behavior and UI.
 6. Frontend Design Lead owns content-first creative direction and reviews UX quality/accessibility when user-facing screens change.
-7. Security Reviewer checks OWASP, auth, data boundaries, dependencies, external calls, and secrets.
-8. QA Engineer adds and runs tests.
-9. Documentation Maintainer updates living docs and council evidence.
-10. Deployment/Observability Engineer verifies release and upgrade readiness.
+7. Marketing Copy Lead owns positioning, value proposition, conversion copy, product voice, and UX copy when public-facing or conversion-facing copy changes.
+8. Security Reviewer checks OWASP, auth, data boundaries, dependencies, external calls, and secrets.
+9. QA Engineer adds and runs tests.
+10. Documentation Maintainer updates living docs and council evidence.
+11. Deployment/Observability Engineer verifies release and upgrade readiness.
 
 ## Council Rule
 
-Core changes cannot skip Planner or Lead Architect. Frontend changes cannot skip content/brand intake, creative-direction rationale, reference-led critique, product-quality scorecard, visual QA evidence, and Frontend Design Lead review. Auth, RLS, data mutation, dependency, secret, external-call, and release-risk changes cannot skip Security Reviewer. Behavior changes cannot skip QA evidence. Significant changes cannot skip Documentation Maintainer. Meaningful multi-agent work cannot skip a decision, risk, next-handoff, and evidence record. Work is not best-practice ready until it satisfies the relevant `QUALITY_GATES.md` evidence level.
+Core changes cannot skip Planner or Lead Architect. Frontend changes cannot skip content/brand intake, creative-direction rationale, reference-led critique, product-quality scorecard, visual QA evidence, and Frontend Design Lead review. Public-facing or conversion-facing copy changes cannot skip Marketing Copy Lead discovery questions, value proposition, proof, objection, voice/tone, and CTA review. Auth, RLS, data mutation, dependency, secret, external-call, and release-risk changes cannot skip Security Reviewer. Behavior changes cannot skip QA evidence. Significant changes cannot skip Documentation Maintainer. Meaningful multi-agent work cannot skip a decision, risk, next-handoff, and evidence record. Work is not best-practice ready until it satisfies the relevant `QUALITY_GATES.md` evidence level.

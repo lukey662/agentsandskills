@@ -72,14 +72,14 @@ describe("update older installs", () => {
 
     const preview = diffProject(root);
     expect(preview.missing).toEqual(
-      expect.arrayContaining(["AGENT_ROSTER.md", "ASSISTANT_ADAPTERS.md", "COUNCIL.md", "DESIGN.md", "MODEL_ROUTING.md", "QUALITY_GATES.md", "UPGRADE.md"])
+      expect.arrayContaining(["AGENT_ROSTER.md", "ASSISTANT_ADAPTERS.md", "COUNCIL.md", "DESIGN.md", "MESSAGING.md", "MODEL_ROUTING.md", "QUALITY_GATES.md", "UPGRADE.md"])
     );
     expect(preview.changed).toEqual(expect.arrayContaining(["AGENTS.md", "SKILLS.md", "SPEC.md"]));
     expect(preview.agentRoster).toBe("missing");
     expect(preview.modelRouting).toBe("missing");
     expect(preview.libraryFolders.missing).toEqual(expect.arrayContaining(["assistant-adapters", "rosters", "schemas"]));
     expect(preview.preview.wouldCreate).toEqual(
-      expect.arrayContaining(["DESIGN.md", "MODEL_ROUTING.md", "QUALITY_GATES.md", "UPGRADE.md", ".agent-kit/agent-roster.json", ".agent-kit/model-routing.json"])
+      expect.arrayContaining(["DESIGN.md", "MESSAGING.md", "MODEL_ROUTING.md", "QUALITY_GATES.md", "UPGRADE.md", ".agent-kit/agent-roster.json", ".agent-kit/model-routing.json"])
     );
     expect(preview.preview.wouldWriteConflicts).toEqual(expect.arrayContaining(["AGENTS.md", "SKILLS.md", "SPEC.md"]));
     expect(preview.preview.wouldRefreshLibraryFolders).toEqual(expect.arrayContaining(["assistant-adapters", "schemas"]));
@@ -98,6 +98,7 @@ describe("update older installs", () => {
     expect(result.copied).toContain("ASSISTANT_ADAPTERS.md");
     expect(result.copied).toContain("COUNCIL.md");
     expect(result.copied).toContain("DESIGN.md");
+    expect(result.copied).toContain("MESSAGING.md");
     expect(result.copied).toContain("MODEL_ROUTING.md");
     expect(result.copied).toContain("QUALITY_GATES.md");
     expect(result.copied).toContain("UPGRADE.md");
@@ -120,6 +121,7 @@ describe("update older installs", () => {
       templateHashes?: Record<string, string>;
     };
     expect(manifest.docs).toContain("DESIGN.md");
+    expect(manifest.docs).toContain("MESSAGING.md");
     expect(manifest.docs).toContain("MODEL_ROUTING.md");
     expect(manifest.docs).toContain("UPGRADE.md");
     expect(manifest.libraryFolders).toContain("assistant-adapters");
@@ -127,6 +129,7 @@ describe("update older installs", () => {
     expect(manifest.agentRoster).toBe(".agent-kit/agent-roster.json");
     expect(manifest.modelRouting).toBe(".agent-kit/model-routing.json");
     expect(manifest.templateHashes?.["DESIGN.md"]).toMatch(/^[a-f0-9]{64}$/);
+    expect(manifest.templateHashes?.["MESSAGING.md"]).toMatch(/^[a-f0-9]{64}$/);
     expect(manifest.templateHashes?.["MODEL_ROUTING.md"]).toMatch(/^[a-f0-9]{64}$/);
     expect(manifest.templateHashes?.["UPGRADE.md"]).toMatch(/^[a-f0-9]{64}$/);
 

@@ -46,4 +46,5 @@ The machine-readable roster lives at `.agent-kit/agent-roster.json`. Model profi
 - Core changes must include Lead Architect evidence.
 - Auth, data mutation, dependency, external-call, secret, and release-risk work must include Security Reviewer evidence.
 - User-facing frontend work must include Frontend Design Lead, reference-set evidence, design critique verdict, creative direction, accessibility, and visual QA evidence.
+- Public-facing or conversion-facing copy work must include Marketing Copy Lead evidence, discovery questions, value proposition, proof, objections, voice/tone, and CTA hierarchy.
 - Behavior changes must include QA evidence or a documented test gap.

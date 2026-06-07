@@ -49,6 +49,7 @@ function assertTreeSummary() {
     "DECISIONS.md",
     "DOCS.md",
     "DESIGN.md",
+    "MESSAGING.md",
     "MODEL_ROUTING.md",
     "QUALITY_GATES.md",
     "STYLE_GUIDE.md",

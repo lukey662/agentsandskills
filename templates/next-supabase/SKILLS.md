@@ -151,6 +151,20 @@ Required checks:
 - Important states and desktop/mobile evidence exist for the change risk.
 - Reject work that would still look valid after only changing the logo or headline.
 
+## Marketing Copy And Messaging
+
+Use before writing or accepting public-facing pages, landing pages, pricing copy, CTAs, onboarding copy, empty states, product voice, or conversion-critical UX copy.
+
+Required checks:
+- `MESSAGING.md` identifies audience, pain, desired outcome, alternatives, differentiator, proof, objections, voice, and conversion goal.
+- Missing positioning inputs are asked as explicit questions before final copy is written.
+- Claims are supported by named proof or marked as assumptions.
+- Headline, subhead, CTA, proof, and objection handling match the same value proposition.
+- Copy uses real product nouns, workflows, constraints, and customer language.
+- CTAs have one primary action and clear secondary actions.
+- Risky pricing, privacy, security, compliance, performance, medical, financial, or legal claims are reviewed before release.
+- Marketing Copy Lead hands off public-facing copy to Frontend Design Lead for layout and hierarchy review.
+
 ## Accessibility WCAG 2.1 AA
 
 Use for forms, navigation, modals, menus, tables, dashboards, and any custom interaction.
@@ -193,7 +207,7 @@ Required checks:
 - `DOCS.md` explains workflows and integration points.
 - `COUNCIL.md` captures required handoffs and evidence for meaningful multi-agent work.
 - `MODEL_ROUTING.md` captures model profile and IDE enforcement evidence.
-- `QUALITY_GATES.md`, `DESIGN.md`, `STYLE_GUIDE.md`, `SECURITY.md`, `TESTING.md`, `DEPLOYMENT.md`, and `UPGRADE.md` stay current.
+- `QUALITY_GATES.md`, `DESIGN.md`, `MESSAGING.md`, `STYLE_GUIDE.md`, `SECURITY.md`, `TESTING.md`, `DEPLOYMENT.md`, and `UPGRADE.md` stay current.
 
 ## Compatibility Profiles
 

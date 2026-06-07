@@ -26,6 +26,7 @@ Canonical source of truth:
 | Supabase/Postgres Engineer | `deep-reasoning-large-context` | High | Schema, RLS, migration order, rollback, or authorization impact exists. |
 | Next.js Engineer | `coding-large-context` | Medium | Server/client boundary, caching, auth, or mutation behavior is uncertain. |
 | Frontend Design Lead | `creative-vision-large-context` | High | Significant UI, screenshots, references, content strategy, or visual QA is involved. |
+| Marketing Copy Lead | `creative-vision-large-context` | High | Positioning, value proposition, conversion copy, voice/tone, proof review, or public-facing copy handoff is involved. |
 | Security Reviewer | `deep-reasoning-large-context` | High | OWASP, IDOR, SSRF, injection, broken auth, dependency, secret, or release risk exists. |
 | QA Engineer | `balanced-reasoning` | Medium | Flaky tests, concurrency, auth flows, visual regression, or hard-to-reproduce bugs exist. |
 | Documentation Maintainer | `fast-targeted` | Low | Docs encode architecture, migrations, security, or release decisions. |

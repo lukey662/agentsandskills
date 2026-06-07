@@ -44,6 +44,7 @@ Start with the installed files:
 - `MODEL_ROUTING.md`: model-profile guidance for each agent and IDE.
 - `QUALITY_GATES.md`: what separates baseline setup, strong delivery, and best-practice evidence.
 - `DESIGN.md`: the frontend design and content contract.
+- `MESSAGING.md`: the positioning, value proposition, proof, objections, voice, and CTA contract.
 - `COUNCIL.md`: where meaningful handoffs and decisions are recorded.
 
 Default routing:
@@ -52,6 +53,7 @@ Default routing:
 - Lead Architect reviews core changes before implementation.
 - Security Reviewer joins auth, RLS, data mutation, dependency, secret, external-call, and release-risk work.
 - Frontend Design Lead owns content-first design, reference-led critique, distinctiveness benchmarking, product-quality scoring, and visual QA.
+- Marketing Copy Lead owns public-facing and conversion-facing copy, positioning, proof, objections, voice, and CTA hierarchy.
 - QA Engineer verifies behavior changes before completion.
 - Documentation Maintainer keeps the living markdown current.
 
@@ -71,6 +73,7 @@ SPEC.md
 DECISIONS.md
 DOCS.md
 DESIGN.md
+MESSAGING.md
 MODEL_ROUTING.md
 QUALITY_GATES.md
 STYLE_GUIDE.md
@@ -119,6 +122,7 @@ Agent Kit separates the mechanisms that make AI coding repeatable:
 - Roster: `.agent-kit/agent-roster.json` chooses agents, workflows, and handoffs.
 - Skills: `.agent-kit/skills/` keeps specialist workflows reusable.
 - Model routing: `MODEL_ROUTING.md` and `.agent-kit/model-routing.json` map agents to model profiles.
+- Messaging: `MESSAGING.md` records audience, pain, outcome, proof, objections, voice, and conversion evidence for public-facing copy.
 - Tools and MCP: `ASSISTANT_ADAPTERS.md` records browser, GitHub, Figma, Supabase, docs, or other connector setup.
 - Hooks and CI: optional local enforcement plus `agent-kit audit`, tests, install smoke, SBOM, and release gates.
 

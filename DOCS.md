@@ -26,6 +26,7 @@ The installer writes `.agent-kit/agent-roster.json` from `rosters/next-supabase-
 - Security Reviewer joins auth, data mutation, dependency, secret, external-call, and release-risk changes.
 - Frontend Design Lead owns `DESIGN.md`, brand/content intake, creative-direction rationale, frontend distinctiveness benchmarking, frontend product-quality scoring, and screenshot acceptance for frontend changes.
 - Frontend Design Lead owns reference-set evidence, anti-references, source-safety notes, and the design critique verdict for significant frontend changes.
+- Marketing Copy Lead owns `MESSAGING.md`, positioning, value proposition, public-facing copy, proof, objections, voice/tone, and CTA hierarchy for copy or conversion-facing changes.
 - QA Engineer verifies behavior changes.
 - Documentation Maintainer keeps living markdown current.
 
@@ -38,6 +39,8 @@ Assistant adapter templates are installed into `.agent-kit/assistant-adapters/`.
 Use `agent-kit audit --json` for machine-readable output in scripts or CI. The output shape is documented by `schemas/audit-report.schema.json` and installed to `.agent-kit/schemas/audit-report.schema.json`.
 
 Audit also validates the default council roster against the runtime contract that mirrors `schemas/agent-roster.schema.json`. Missing roster files, malformed roster shape, missing default agents, missing skill routing, or a core-change workflow without Lead Architect produce audit failures. Missing schema files, incomplete `COUNCIL.md` handoff evidence, or missing model-routing evidence produce warnings so existing installs can upgrade without being blocked.
+
+`MESSAGING.md` is installed as the persistent positioning and copy-evidence contract. It captures discovery questions, audience, pain, desired outcome, differentiator, proof, objections, voice/tone, page or flow copy inventory, and CTA hierarchy. Audit warns when this doc does not connect claims to proof, objections, and conversion evidence.
 
 ## AI Mechanisms
 
@@ -55,7 +58,7 @@ If a project stores structured council sessions in `.agent-kit/council-sessions/
 
 Audit validates frontend maturity beyond tokens and states. `DESIGN.md` must capture brand, content, user needs, creative direction, reference set, anti-references, distinctiveness, critique guidance, frontend distinctiveness benchmark, frontend product-quality scorecard, and design tokens. `STYLE_GUIDE.md` must require content-first creative direction before implementation. `TESTING.md` must document visual QA or visual-regression evidence for important UI changes.
 
-Audit also validates `QUALITY_GATES.md` as the downstream maturity model. The file must define baseline, strong, and best-practice evidence across council routing, architecture, security, Supabase/RLS, frontend, accessibility, testing, release, and repo health. This keeps research-backed expectations visible after install instead of leaving best-practice judgment in chat history.
+Audit also validates `QUALITY_GATES.md` as the downstream maturity model. The file must define baseline, strong, and best-practice evidence across council routing, architecture, security, Supabase/RLS, messaging, frontend, accessibility, testing, release, and repo health. This keeps research-backed expectations visible after install instead of leaving best-practice judgment in chat history.
 
 Fresh installs can pass setup checks while warning on evidence placeholders. That warning is intentional: `TBD`, `example_table`, and starter instruction text mean the package installed correctly but the downstream project has not yet supplied real product, RLS, design, security, testing, deployment, or council evidence.
 

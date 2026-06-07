@@ -33,9 +33,17 @@
 
 - Planning requests start with Planner.
 - Core changes route through Lead Architect before implementation.
+- Public-facing and conversion-facing copy changes route through Marketing Copy Lead before implementation.
 - Agent-to-skill mappings live in `.agent-kit/agent-roster.json` and must stay machine-readable.
 - Handoffs should name decision, risk, next owner, and required verification evidence.
 - Audit failures for missing council routing are treated as setup failures, not optional style drift.
+
+## Messaging And Copy Style
+
+- Keep `MESSAGING.md` current when positioning, value proposition, voice, CTAs, onboarding, empty states, pricing, or public-facing copy changes.
+- Prefer product-specific nouns, customer language, proof, constraints, and clear next steps over broad SaaS claims.
+- Mark unknown audience, differentiator, proof, objections, or conversion assumptions as `TBD` instead of hiding gaps behind polished copy.
+- Avoid unsupported superlatives, invented proof, dark patterns, forced urgency, and risky pricing, privacy, security, compliance, performance, medical, financial, or legal claims.
 
 ## Front-End Guidance For Installed Projects
 

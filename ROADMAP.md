@@ -348,3 +348,4 @@ Latest maturity evidence:
 - Upgrade lifecycle maturity added through `UPGRADE.md`, Upgrade Maintenance skill, upgrade checklist, upgrade-review prompt, audit coverage, and `research/summaries/upgrade-lifecycle-patterns.md`.
 - Frontend product-quality scorecard added through rubric skill, checklist, prompt, `DESIGN.md` scorecard fields, audit coverage, roster routing, and `research/summaries/frontend-product-quality-rubric-patterns.md`.
 - Agent model-routing mechanism added through `MODEL_ROUTING.md`, `.agent-kit/model-routing.json`, `schemas/model-routing.schema.json`, model-selection adapter examples, audit coverage, install/update/diff support, and public-readiness tests.
+- Marketing copy maturity added through Marketing Copy Lead, `MESSAGING.md`, positioning/conversion/voice/onboarding copy skills, copy-review prompt, marketing-copy checklist, roster/model routing, and audit coverage for proof, objections, voice, and CTA evidence.

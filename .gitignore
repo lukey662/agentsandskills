@@ -29,6 +29,8 @@ examples/next-supabase-installed/DECISIONS.md
 examples/next-supabase-installed/DEPLOYMENT.md
 examples/next-supabase-installed/DESIGN.md
 examples/next-supabase-installed/DOCS.md
+examples/next-supabase-installed/MESSAGING.md
+examples/next-supabase-installed/MODEL_ROUTING.md
 examples/next-supabase-installed/QUALITY_GATES.md
 examples/next-supabase-installed/SECURITY.md
 examples/next-supabase-installed/SKILLS.md

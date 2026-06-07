@@ -54,7 +54,7 @@
       "contextWindow": "large",
       "latency": "medium",
       "cost": "medium",
-      "preferredFor": ["frontend-design-lead"]
+      "preferredFor": ["frontend-design-lead", "marketing-copy-lead"]
     }
   ],
   "agentRoutes": [
@@ -89,6 +89,13 @@
       "profileId": "creative-vision-large-context",
       "defaultEffort": "high",
       "notes": "Use with screenshots, reference sets, content inventory, and product-specific design evidence."
+    },
+    {
+      "agentId": "marketing-copy-lead",
+      "profileId": "creative-vision-large-context",
+      "defaultEffort": "high",
+      "escalationProfileId": "deep-reasoning-large-context",
+      "notes": "Use for positioning, value proposition, conversion copy, voice/tone, proof review, and public-facing copy handoff."
     },
     {
       "agentId": "security-reviewer",

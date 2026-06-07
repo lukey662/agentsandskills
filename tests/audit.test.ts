@@ -71,7 +71,11 @@ describe("auditProject", () => {
     writeFileSync(join(root, "COUNCIL.md"), "Council session\nhandoff\ndecision\nrisk\nevidence\n");
     writeFileSync(
       join(root, "QUALITY_GATES.md"),
-      "Baseline\nStrong\nBest-practice\nEvidence\nCouncil\nArchitecture\nSecurity\nSupabase\nFrontend\nAccessibility\nTesting\nRelease\nRepo health\n"
+      "Baseline\nStrong\nBest-practice\nEvidence\nCouncil\nArchitecture\nSecurity\nSupabase\nMessaging\nFrontend\nAccessibility\nTesting\nRelease\nRepo health\n"
+    );
+    writeFileSync(
+      join(root, "MESSAGING.md"),
+      "Discovery questions\nAudience\nPain\nOutcome\nDifferentiator\nProof\nObjections\nVoice\nConversion\nClaim\nProof Required\nCurrent Proof\nObjection\nCTA\n"
     );
     writeFileSync(
       join(root, "DESIGN.md"),
@@ -303,6 +307,26 @@ describe("auditProject", () => {
 
     const findings = auditProject(root);
     expect(findings.some((finding) => finding.level === "warn" && finding.message.includes("brand/content intake"))).toBe(true);
+  });
+
+  it("fails when marketing-copy workflow can bypass Marketing Copy Lead", () => {
+    const roster = JSON.parse(readFileSync(join(root, ".agent-kit", "agent-roster.json"), "utf8")) as {
+      workflows: Array<{ id: string; sequence: string[] }>;
+    };
+    const marketingCopy = roster.workflows.find((workflow) => workflow.id === "marketing-copy");
+    if (!marketingCopy) throw new Error("Expected marketing-copy workflow in fixture.");
+    marketingCopy.sequence = marketingCopy.sequence.filter((agent) => agent !== "marketing-copy-lead");
+    writeFileSync(join(root, ".agent-kit", "agent-roster.json"), `${JSON.stringify(roster, null, 2)}\n`);
+
+    const findings = auditProject(root);
+    expect(findings.some((finding) => finding.level === "fail" && finding.message.includes("Marketing-copy workflow"))).toBe(true);
+  });
+
+  it("warns when MESSAGING.md lacks claim proof and CTA evidence", () => {
+    writeFileSync(join(root, "MESSAGING.md"), "Discovery questions\nAudience\nPain\nOutcome\nDifferentiator\nProof\nObjections\nVoice\nConversion\n");
+
+    const findings = auditProject(root);
+    expect(findings.some((finding) => finding.area === "messaging" && finding.message.includes("claims, proof, objections, and CTA"))).toBe(true);
   });
 
   it("warns when testing docs omit visual QA evidence", () => {
