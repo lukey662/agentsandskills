@@ -19,8 +19,8 @@ function writeOldInstall(root: string): void {
     join(root, ".agent-kit", "manifest.json"),
     `${JSON.stringify(
       {
-        packageName: "@agent-skills/next-supabase-kit",
-        packageVersion: "0.1.0",
+        packageName: "@appsforgood/next-supabase-kit",
+        packageVersion: "0.1.1",
         stack: "next-supabase",
         installedAt: "2026-06-02T00:00:00.000Z",
         docs: ["AGENTS.md", "SKILLS.md", "SPEC.md", "DECISIONS.md", "DOCS.md", "STYLE_GUIDE.md", "SECURITY.md", "TESTING.md", "DEPLOYMENT.md"],

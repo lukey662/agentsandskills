@@ -5,10 +5,10 @@ Use this file when upgrading Agent Kit, Next.js, Supabase, shared UI primitives,
 ## Agent Kit Upgrade Flow
 
 ```bash
-npx @agent-skills/next-supabase-kit@latest doctor
-npx @agent-skills/next-supabase-kit@latest diff
-npx @agent-skills/next-supabase-kit@latest update
-npx @agent-skills/next-supabase-kit@latest audit --min-readiness baseline-setup
+npx @appsforgood/next-supabase-kit@latest doctor
+npx @appsforgood/next-supabase-kit@latest diff
+npx @appsforgood/next-supabase-kit@latest update
+npx @appsforgood/next-supabase-kit@latest audit --min-readiness baseline-setup
 ```
 
 Use `agent-kit audit --min-readiness best-practice-candidate` only after starter placeholders and upgrade evidence are replaced with project-specific evidence.

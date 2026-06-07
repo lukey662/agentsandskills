@@ -18,17 +18,17 @@ Before publishing a new package version:
 3. Run `npm run release:check`.
 4. Confirm the pack dry run includes only public-safe files.
 5. Publish through npm Trusted Publishing.
-6. Verify public install with `npx @agent-skills/next-supabase-kit`.
+6. Verify public install with `npx @appsforgood/next-supabase-kit`.
 
 ## Downstream Upgrade Checklist
 
 From a downstream project:
 
 ```bash
-npx @agent-skills/next-supabase-kit@latest doctor
-npx @agent-skills/next-supabase-kit@latest diff
-npx @agent-skills/next-supabase-kit@latest update
-npx @agent-skills/next-supabase-kit@latest audit --min-readiness baseline-setup
+npx @appsforgood/next-supabase-kit@latest doctor
+npx @appsforgood/next-supabase-kit@latest diff
+npx @appsforgood/next-supabase-kit@latest update
+npx @appsforgood/next-supabase-kit@latest audit --min-readiness baseline-setup
 ```
 
 The package includes an older-install regression fixture that exercises this path. The fixture proves update preserves customized docs, writes conflict templates, installs new current baseline docs and `.agent-kit/` assets, then audits with zero failures.
@@ -38,7 +38,7 @@ The package includes an older-install regression fixture that exercises this pat
 For mature projects, raise the gate after local evidence is updated:
 
 ```bash
-npx @agent-skills/next-supabase-kit@latest audit --min-readiness best-practice-candidate
+npx @appsforgood/next-supabase-kit@latest audit --min-readiness best-practice-candidate
 ```
 
 ## Review Order

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.1
+
+- Completed npm package rename from `@agent-skills/next-supabase-kit` to `@appsforgood/next-supabase-kit` across CLI defaults, shipped docs, templates, examples, tests, and release scripts.
+- Fixed Windows post-publish verification to use `npm exec -- agent-kit` so public install checks work with an isolated npm cache.
+- Regenerated committed install examples and audit output for the `@appsforgood` package identity.
+
 ## 0.1.0
 
 - Initial public package scaffold.
@@ -15,7 +21,7 @@
 - Fixed package bin metadata so `agent-kit` is preserved during npm publish.
 - Replaced publish-token CI authentication with npm Trusted Publishing and optional read-token install verification.
 - Added a Planner agent, Planning and Agent Council skill, and machine-readable default council roster enforced by audit.
-- Rebranded package for public OSS as `@agent-skills/next-supabase-kit` with MIT license, citation policy, and public-readiness tests.
+- Rebranded package for public OSS as `@appsforgood/next-supabase-kit` with MIT license, citation policy, and public-readiness tests.
 - Added content-first design, visual QA, schema-backed council traceability, and public OSS repo-health hardening.
 - Added issue forms, PR template, CODEOWNERS, Dependabot, CodeQL, support, conduct, governance docs, and repo-health research signals.
 - Added label source of truth, PR labeler workflow, and repository-settings checklist for branch protection, release environment, private vulnerability reporting, and required labels.

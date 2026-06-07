@@ -25,6 +25,7 @@ import {
   startSession
 } from "../studio/session.js";
 import { readTextFile } from "../studio/shared.js";
+import { PACKAGE_VERSION } from "../config/defaults.js";
 
 const program = new Command();
 const requiredOutputStatuses = ["missing", "partial", "complete", "not-applicable"] as const;
@@ -37,7 +38,7 @@ function isRequiredOutputStatus(value: string): value is RequiredOutputStatus {
 program
   .name("agent-kit")
   .description("Next.js + Supabase agent, skill, docs, design, and research kit.")
-  .version("0.1.0");
+  .version(PACKAGE_VERSION);
 
 program
   .command("init")

@@ -58,6 +58,6 @@ body:
     id: version
     attributes:
       label: Package version or commit
-      placeholder: "@agent-skills/next-supabase-kit@0.1.0 or commit SHA"
+      placeholder: "@appsforgood/next-supabase-kit@0.1.1 or commit SHA"
     validations:
       required: true

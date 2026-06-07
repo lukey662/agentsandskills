@@ -24,7 +24,7 @@ function packagedPublicFiles(): string[] {
 
 describe("public package readiness", () => {
   it("uses neutral public package metadata", () => {
-    expect(packageJson.name).toBe("@agent-skills/next-supabase-kit");
+    expect(packageJson.name).toBe("@appsforgood/next-supabase-kit");
     expect(packageJson.publishConfig?.access).toBe("public");
     expect(packageJson.bin?.["agent-kit"]).toBe("dist/index.js");
     expect(packageJson.scripts?.["release:check"]).toBe("node scripts/release-check.mjs");

@@ -1,6 +1,6 @@
 # Agent Skills Next/Supabase Kit
 
-`@agent-skills/next-supabase-kit` installs an agent operating system for Next.js + Supabase projects.
+`@appsforgood/next-supabase-kit` installs an agent operating system for Next.js + Supabase projects.
 
 It gives agentic coders a default council roster, reusable skills, handoff rules, model-routing guidance, markdown docs, frontend design gates, Supabase/RLS security checks, upgrade workflows, and audit commands.
 
@@ -17,9 +17,9 @@ It also includes a local Agent Studio workflow: project context, durable human c
 Use this in a Next.js + Supabase project after the public package is available on npm:
 
 ```bash
-npx @agent-skills/next-supabase-kit init --stack next-supabase
-npx @agent-skills/next-supabase-kit audit
-npx @agent-skills/next-supabase-kit audit --min-readiness baseline-setup
+npx @appsforgood/next-supabase-kit init --stack next-supabase
+npx @appsforgood/next-supabase-kit audit
+npx @appsforgood/next-supabase-kit audit --min-readiness baseline-setup
 ```
 
 The installer preserves existing docs. If a file already exists and differs from the template, the new version is written to `.agent-kit/conflicts/` for review.
@@ -226,7 +226,7 @@ Detailed per-repo findings are committed for repository development, but the pub
 Public package name:
 
 ```text
-@agent-skills/next-supabase-kit
+@appsforgood/next-supabase-kit
 ```
 
 Release expectations:

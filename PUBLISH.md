@@ -1,13 +1,13 @@
-# Publish Runbook (v0.1.0)
+# Publish Runbook
 
-Use this runbook to complete Phase 6 publish and post-publish verification for `@agent-skills/next-supabase-kit`.
+Use this runbook to publish `@appsforgood/next-supabase-kit` and run post-publish verification.
 
 ## Preconditions
 
 1. `npm run release:check` passes locally and in CI.
-2. `@agent-skills` npm scope access and Trusted Publishing are configured for `lukey662/agentsandskills`.
+2. `@appsforgood` npm org access and Trusted Publishing are configured for `lukey662/agentsandskills`.
 3. GitHub environment `npm-publish` exists with OIDC trusted publishing to npm.
-4. `CHANGELOG.md` contains a `0.1.0` section aligned with `package.json`.
+4. `CHANGELOG.md` contains a release section aligned with `package.json`.
 
 ## Publish Steps
 
@@ -15,7 +15,7 @@ Use this runbook to complete Phase 6 publish and post-publish verification for `
 
 1. Merge release-ready changes to `main`.
 2. Confirm CI is green, including `npm run smoke:audit-gate`.
-3. Create and publish GitHub Release `v0.1.0` from `main`.
+3. Create and publish GitHub Release `vX.Y.Z` from `main` (tag must match `package.json`).
 4. The [Release workflow](.github/workflows/release.yml) runs `npm run release:check`, publishes the tarball with provenance, and executes `npm run publish:verify`.
 
 ### Option B: Manual workflow dispatch
@@ -35,14 +35,14 @@ npm publish --access public
 npm run publish:verify
 ```
 
-Requires npm login with publish rights to `@agent-skills`.
+Requires npm login with publish rights to `@appsforgood/next-supabase-kit`.
 
 ## Post-Publish Verification
 
 `npm run publish:verify` checks:
 
-- Registry visibility for `@agent-skills/next-supabase-kit@0.1.0`
-- `npx @agent-skills/next-supabase-kit doctor`
+- Registry visibility for `@appsforgood/next-supabase-kit@<version>`
+- `npx @appsforgood/next-supabase-kit doctor`
 - Clean temp `init --stack next-supabase`
 - `audit --json --min-readiness baseline-setup` with zero failures
 

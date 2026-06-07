@@ -2,7 +2,7 @@
 
 ## Package Purpose
 
-`@agent-skills/next-supabase-kit` is a public reusable agent-kit package for Next.js and Supabase projects. It ships installable markdown templates, agents, skills, prompts, checklists, design adapters, assistant adapters, model-routing profiles, design briefs, stack profiles, agent rosters, messaging/copy evidence templates, and a CLI for installing, auditing, updating, and reviewing those assets.
+`@appsforgood/next-supabase-kit` is a public reusable agent-kit package for Next.js and Supabase projects. It ships installable markdown templates, agents, skills, prompts, checklists, design adapters, assistant adapters, model-routing profiles, design briefs, stack profiles, agent rosters, messaging/copy evidence templates, and a CLI for installing, auditing, updating, and reviewing those assets.
 
 ## CLI Surface
 
@@ -205,7 +205,7 @@ Release workflow requirements:
 - Publish trigger: published GitHub Release or manual workflow dispatch with `dry_run=false`
 - Publish authentication: npm Trusted Publishing through GitHub Actions OIDC
 - Publish command: create a package tarball, attest the SBOM for that tarball, then run `npm publish <tarball> --access public`
-- Public install verification: `npx @agent-skills/next-supabase-kit doctor`
+- Public install verification: `npx @appsforgood/next-supabase-kit doctor`
 
 The release workflow must run typecheck, tests, build, dependency audit, SBOM check, install smoke, and package dry run before publishing.
 

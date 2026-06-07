@@ -224,12 +224,12 @@ See `PUBLIC_RELEASE_REVIEW.md` for the public-release readiness checklist.
 
 ## Public NPM Release
 
-Publishing targets the public npm registry package `@agent-skills/next-supabase-kit`.
+Publishing targets the public npm registry package `@appsforgood/next-supabase-kit`.
 
 Prerequisites:
 
-- The npm `@agent-skills` scope exists and the publishing account has access.
-- npm Trusted Publishing is configured for package `@agent-skills/next-supabase-kit`.
+- The npm `@appsforgood` org exists and the publishing account has access to `@appsforgood/next-supabase-kit`.
+- npm Trusted Publishing is configured for package `@appsforgood/next-supabase-kit`.
 - Trusted publisher settings:
   - Provider: GitHub Actions
   - Organization or user: `lukey662`
@@ -262,5 +262,5 @@ npm run publish:verify
 Pre-public release evidence:
 
 - CI and release dry-run gates are configured.
-- Public package metadata is configured for `@agent-skills/next-supabase-kit`.
-- Public release remains blocked until the npm `@agent-skills` scope is created or claimed, Trusted Publishing is configured, and post-publish `npx` verification succeeds.
+- Public package metadata is configured for `@appsforgood/next-supabase-kit`.
+- Public release remains blocked until `@appsforgood/next-supabase-kit` is published, Trusted Publishing is configured, and post-publish `npx` verification succeeds.

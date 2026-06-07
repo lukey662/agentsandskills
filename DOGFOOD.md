@@ -72,7 +72,7 @@ Result: passed locally on Windows after assistant adapter install on init, basel
 | Install smoke | IDE adapter rules installed, `baseline-setup`, 0 failures |
 | Agent Studio smoke | `baseline-setup`, 0 failures |
 | Baseline audit gate smoke | `baseline-setup`, 0 failures |
-| npm pack dry run | `@agent-skills/next-supabase-kit@0.1.0` tarball validated |
+| npm pack dry run | `@appsforgood/next-supabase-kit@0.1.1` tarball validated |
 
 Remaining publish action: execute [PUBLISH.md](PUBLISH.md), then run `npm run publish:verify`.
 

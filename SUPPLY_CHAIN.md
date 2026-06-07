@@ -4,7 +4,7 @@ This package is intended for public npm distribution and downstream project boot
 
 ## Publish Identity
 
-- Public package: `@agent-skills/next-supabase-kit`.
+- Public package: `@appsforgood/next-supabase-kit`.
 - Publish path: GitHub Actions release workflow through npm Trusted Publishing.
 - Authentication: OIDC trusted publisher, not a long-lived npm automation token.
 - Environment: `npm-publish`.
@@ -28,10 +28,10 @@ Before publish:
 
 After publish:
 
-- `npm view @agent-skills/next-supabase-kit@<version> version`
-- `npx --yes @agent-skills/next-supabase-kit@<version> doctor`
-- `npx --yes @agent-skills/next-supabase-kit@<version> init --stack next-supabase` in a clean temp project
-- `npx --yes @agent-skills/next-supabase-kit@<version> audit --json` with zero failures
+- `npm view @appsforgood/next-supabase-kit@<version> version`
+- `npx --yes @appsforgood/next-supabase-kit@<version> doctor`
+- `npx --yes @appsforgood/next-supabase-kit@<version> init --stack next-supabase` in a clean temp project
+- `npx --yes @appsforgood/next-supabase-kit@<version> audit --json` with zero failures
 
 The release workflow and `npm run publish:verify` both use `scripts/post-publish-verify.mjs` for this post-publish verification path.
 

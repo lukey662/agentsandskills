@@ -36,7 +36,7 @@ Create environment `npm-publish` with:
 
 The npm trusted publisher must match:
 
-- Package: `@agent-skills/next-supabase-kit`
+- Package: `@appsforgood/next-supabase-kit`
 - Provider: GitHub Actions
 - Repository: `lukey662/agentsandskills`
 - Workflow: `release.yml`

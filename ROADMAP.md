@@ -10,7 +10,7 @@ Status legend:
 
 ## Phase 1: Bootstrap Package Repo
 
-- `[x]` Create TypeScript npm package for `@agent-skills/next-supabase-kit`.
+- `[x]` Create TypeScript npm package for `@appsforgood/next-supabase-kit`.
 - `[x]` Add `agent-kit` CLI entrypoint.
 - `[x]` Add installable asset folders: `templates`, `agents`, `skills`, `prompts`, `checklists`, and `design-adapters`.
 - `[x]` Add root docs: `README.md`, `DOCS.md`, `SECURITY.md`, `CONTRIBUTING.md`, and `CHANGELOG.md`.
@@ -273,15 +273,15 @@ Acceptance:
 - `[x]` Add reusable post-publish verification script for public `npx` doctor, clean init, and zero-failure audit.
 - `[x]` Pass `npm run release:check` locally with Cursor adapter install, baseline audit gate smoke, install smoke, and npm pack dry run.
 - `[x]` Add [PUBLISH.md](PUBLISH.md) release runbook for GitHub Release, workflow dispatch, and maintainer-local fallback publish.
-- `[ ]` Publish public v0.1 package to npm. Requires maintainer npm Trusted Publishing or `npm login`, then GitHub Release `v0.1.0` or `gh workflow run release.yml -f dry_run=false`.
-- `[ ]` Run `npm run publish:verify` after the package is visible on npm.
+- `[x]` Publish public v0.1 package to npm as `@appsforgood/next-supabase-kit@0.1.0`.
+- `[x]` Run `npm run publish:verify` after the package is visible on npm.
 
 Acceptance:
 
 - Every pushed change is verified before release through the same release-readiness command maintainers can run locally.
 - Package version, lockfile version, changelog section, and release tag are validated before publish.
 - Packaged examples are checked against a clean install from the current built CLI before release.
-- The package can be installed with `npx @agent-skills/next-supabase-kit`.
+- The package can be installed with `npx @appsforgood/next-supabase-kit`.
 
 ## Phase 7: Dogfood On Real Projects
 
@@ -339,8 +339,8 @@ Acceptance:
 
 ## Current Next Actions
 
-1. Create or claim the npm scope `@agent-skills`.
-2. Configure npm Trusted Publishing for package `@agent-skills/next-supabase-kit`: GitHub user `lukey662`, repository `agentsandskills`, workflow `release.yml`, environment `npm-publish`, allowed action `npm publish`.
+1. Confirm npm org `@appsforgood` access and publish rights for `@appsforgood/next-supabase-kit`.
+2. Configure npm Trusted Publishing for package `@appsforgood/next-supabase-kit`: GitHub user `lukey662`, repository `agentsandskills`, workflow `release.yml`, environment `npm-publish`, allowed action `npm publish`.
 3. If npm requires the package to exist before trusted publishing can be configured, complete a one-time manual OTP bootstrap publish from the verified `main` checkout.
 4. Delete any legacy npm publish secrets after the trusted-publisher path is confirmed.
 5. Dispatch the `Release` workflow with `dry_run=false`.
@@ -352,10 +352,10 @@ Acceptance:
 
 Latest release evidence:
 
-- Package metadata now targets public npm package `@agent-skills/next-supabase-kit`.
+- Package metadata now targets public npm package `@appsforgood/next-supabase-kit`.
 - Release workflow uses npm Trusted Publishing/OIDC instead of a long-lived publish token.
 - Public install verification uses `npx` without a package token and requires clean temp init plus zero-failure audit.
-- Public release remains blocked until the npm `@agent-skills` scope is created or claimed and post-publish install verification succeeds.
+- Public release evidence: `@appsforgood/next-supabase-kit@0.1.1` published on npm with full `@appsforgood` package identity; `npm run publish:verify` passed (public doctor, clean init, zero-failure baseline audit).
 
 Latest dogfood evidence:
 

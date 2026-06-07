@@ -43,8 +43,8 @@ Current outcome: ready for public release after npm scope setup and publish veri
 
 ## Package Metadata
 
-- Current state: public npm package is configured as `@agent-skills/next-supabase-kit`.
-- Public requirement: create or claim the npm `@agent-skills` scope, configure Trusted Publishing, publish, and verify public `npx` install/init/audit through `scripts/post-publish-verify.mjs`.
+- Current state: public npm package is configured as `@appsforgood/next-supabase-kit`.
+- Public requirement: publish `@appsforgood/next-supabase-kit` under the `@appsforgood` npm org, configure Trusted Publishing, and verify public `npx` install/init/audit through `scripts/post-publish-verify.mjs`.
 - Status: pending npm setup.
 
 ## Release Gate

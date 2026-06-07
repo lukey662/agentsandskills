@@ -37,8 +37,8 @@ describe("auditProject", () => {
     writeFileSync(
       join(root, ".agent-kit", "manifest.json"),
       JSON.stringify({
-        packageName: "@agent-skills/next-supabase-kit",
-        packageVersion: "0.1.0",
+        packageName: "@appsforgood/next-supabase-kit",
+        packageVersion: "0.1.1",
         stack: "next-supabase",
         installedAt: new Date().toISOString(),
         docs: ROOT_DOCS,

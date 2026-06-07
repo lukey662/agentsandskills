@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
-import { resolveNpmCommand, resolveNpxCommand } from "./lib/npm-command.mjs";
+import { resolveNpmCommand } from "./lib/npm-command.mjs";
 
 const repoRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const packageJson = JSON.parse(readFileSync(join(repoRoot, "package.json"), "utf8"));
@@ -33,6 +33,14 @@ function run(command, args, options = {}) {
   return execFileSync(resolvedCommand, args, spawnOptions);
 }
 
+function runInstalledAgentKit(args, options = {}) {
+  return run(
+    "npm",
+    ["exec", "--yes", "--package", packageSpec, "--", "agent-kit", ...args],
+    options
+  );
+}
+
 function verifyPackageVisible() {
   const maxAttempts = Number.parseInt(process.env.AGENT_KIT_VERIFY_ATTEMPTS ?? "12", 10);
   const delayMs = Number.parseInt(process.env.AGENT_KIT_VERIFY_DELAY_MS ?? "10000", 10);
@@ -57,15 +65,20 @@ function verifyPackageVisible() {
 try {
   verifyPackageVisible();
 
+  console.log("preparing clean temp project");
+  run("npm", ["init", "--yes"], { cwd: tempRoot, stdio: "ignore" });
+
   console.log("running published doctor");
-  run("npx", ["--yes", packageSpec, "doctor"], { stdio: "inherit" });
+  runInstalledAgentKit(["doctor"], { cwd: tempRoot, stdio: "inherit" });
 
   console.log("running published init in clean temp project");
-  run("npm", ["init", "--yes"], { cwd: tempRoot, stdio: "ignore" });
-  run("npx", ["--yes", packageSpec, "init", "--stack", "next-supabase"], { cwd: tempRoot, stdio: "inherit" });
+  runInstalledAgentKit(["init", "--stack", "next-supabase"], { cwd: tempRoot, stdio: "inherit" });
 
   console.log("running published audit");
-  const auditOutput = run("npx", ["--yes", packageSpec, "audit", "--json", "--min-readiness", "baseline-setup"], { cwd: tempRoot });
+  const auditOutput = runInstalledAgentKit(
+    ["audit", "--json", "--min-readiness", "baseline-setup"],
+    { cwd: tempRoot }
+  );
   const auditReport = JSON.parse(auditOutput);
   if (auditReport.summary?.fail !== 0) {
     throw new Error(`Expected published install audit to have 0 failures, got ${auditReport.summary?.fail}.\n${auditOutput}`);

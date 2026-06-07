@@ -1,6 +1,6 @@
 # Runtime Orchestration Scope (Milestone 9)
 
-This document scopes optional direct AI orchestration for `@agent-skills/next-supabase-kit`. It does not change the baseline kit: IDE agents, local files, and CLI evidence remain the default path.
+This document scopes optional direct AI orchestration for `@appsforgood/next-supabase-kit`. It does not change the baseline kit: IDE agents, local files, and CLI evidence remain the default path.
 
 ## Problem Statement
 

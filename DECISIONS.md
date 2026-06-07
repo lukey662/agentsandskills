@@ -108,11 +108,11 @@ The kit is useful beyond one organization and should be publishable as a best-pr
 
 ### Decision
 
-Rename the npm package to `@agent-skills/next-supabase-kit`, publish with public npm access, use the MIT license, and keep public research exposure to generalized summaries, scan methodology, and promoted decisions. Keep detailed per-repo findings out of the public npm package unless separately reviewed.
+Rename the npm package to `@appsforgood/next-supabase-kit`, publish with public npm access, use the MIT license, and keep public research exposure to generalized summaries, scan methodology, and promoted decisions. Keep detailed per-repo findings out of the public npm package unless separately reviewed.
 
 ### Consequences
 
-The package is easier for external projects to adopt and can be installed publicly with `npx`. Maintainers must create or claim the `@agent-skills` npm scope, configure Trusted Publishing for the new package identity, and keep public-readiness tests passing before release.
+The package is easier for external projects to adopt and can be installed publicly with `npx`. Maintainers must publish under the `@appsforgood` npm org, configure Trusted Publishing for `@appsforgood/next-supabase-kit`, and keep public-readiness tests passing before release.
 
 ## 2026-06-02 - Use Template Hashes For Install Drift Detection
 

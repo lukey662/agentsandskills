@@ -3,9 +3,9 @@
 This directory shows the expected shape after running:
 
 ```bash
-npx @agent-skills/next-supabase-kit init --stack next-supabase
-npx @agent-skills/next-supabase-kit audit --json
-npx @agent-skills/next-supabase-kit audit --min-readiness baseline-setup
+npx @appsforgood/next-supabase-kit init --stack next-supabase
+npx @appsforgood/next-supabase-kit audit --json
+npx @appsforgood/next-supabase-kit audit --min-readiness baseline-setup
 ```
 
 The example is intentionally compact. It documents the generated structure, representative manifest metadata, Cursor adapter rules under `.cursor/rules/`, and expected audit shape without duplicating every template file. `npm run examples:check` verifies that these committed example files still match a clean install from the current built CLI.

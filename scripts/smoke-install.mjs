@@ -59,7 +59,7 @@ try {
   const packageRoot = join(unpackRoot, "package");
   const packageJson = JSON.parse(readFileSync(join(packageRoot, "package.json"), "utf8"));
   const binPath = packageJson.bin?.["agent-kit"];
-  if (packageJson.name !== "@agent-skills/next-supabase-kit") {
+  if (packageJson.name !== "@appsforgood/next-supabase-kit") {
     throw new Error(`Unexpected package name in tarball: ${packageJson.name}`);
   }
   if (binPath !== "dist/index.js") {
