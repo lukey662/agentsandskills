@@ -20,6 +20,7 @@
         "command_recorded",
         "verification_recorded",
         "open_question",
+        "required_output_updated",
         "session_status_changed",
         "session_rendered"
       ]
@@ -37,6 +38,8 @@
     "artifactPath": { "type": "string", "minLength": 1 },
     "command": { "type": "string", "minLength": 1 },
     "result": { "type": "string", "enum": ["pass", "fail", "skipped"] },
+    "outputName": { "type": "string", "minLength": 1 },
+    "outputStatus": { "type": "string", "enum": ["missing", "partial", "complete", "not-applicable"] },
     "status": { "type": "string", "enum": ["planned", "in-progress", "blocked", "complete"] },
     "notes": { "type": "string" }
   }

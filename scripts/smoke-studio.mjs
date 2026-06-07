@@ -91,6 +91,7 @@ try {
   ]);
   run(["session", "artifact", "--file", "DESIGN.md", "--note", "Design direction reviewed."]);
   run(["session", "verify", "--command", `npm test ${fakeSecret}`, "--result", "pass", "--notes", "Smoke verification passed."]);
+  run(["session", "output", "visual", "QA", "evidence", "--status", "not-applicable", "--evidence", "Smoke flow does not change UI."]);
   run(["session", "render"]);
 
   const eventText = readFileSync(join(tempRoot, ".agent-kit", "council-sessions", sessionId, "events.jsonl"), "utf8");
@@ -105,7 +106,11 @@ try {
 
   if (!indexText.includes("Handoff Graph")) throw new Error("Rendered session index is missing handoff graph.");
   if (!indexText.includes("frontend-design-lead")) throw new Error("Rendered session index is missing handoff target.");
+  if (!indexText.includes("| visual QA evidence | not-applicable | Smoke flow does not change UI. |")) {
+    throw new Error("Rendered session index is missing required output status.");
+  }
   if (!transcriptText.includes("planner")) throw new Error("Rendered transcript is missing planner stream.");
+  if (!transcriptText.includes("visual QA evidence: not-applicable")) throw new Error("Rendered transcript is missing required output event.");
   if (!appliedProjectRules.rules.some((rule) => rule.id === firstProjectRule.id && rule.status === "active" && rule.reviewedAt)) {
     throw new Error("Project-scoped correction was not applied and reviewed.");
   }

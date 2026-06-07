@@ -41,11 +41,11 @@ The machine-readable roster lives at `.agent-kit/agent-roster.json`. Model profi
 ## Rules
 
 - Every handoff must include decision, risk, next handoff, and evidence.
-- Meaningful multi-agent work should use `agent-kit session start`, `decision`, `handoff`, `correct`, `artifact`, `verify`, and `render` when the CLI is available.
+- Meaningful multi-agent work should use `agent-kit session start`, `decision`, `handoff`, `correct`, `artifact`, `verify`, `output`, and `render` when the CLI is available.
 - Static Studio export is optional, but exported HTML must be regenerated after session evidence changes and must not contain secrets.
 - Structured session JSON records must pass `agent-kit audit`.
 - Agent Studio `events.jsonl` rows must stay append-only, valid JSONL, and free of secrets.
-- Missing required outputs must be explicitly marked missing or partial.
+- Required outputs must be explicitly marked `complete`, `not-applicable`, `missing`, or `partial`; do not close a session as complete while any required output is still missing or partial.
 - Core changes must include Lead Architect evidence.
 - Auth, data mutation, dependency, external-call, secret, and release-risk work must include Security Reviewer evidence.
 - User-facing frontend work must include Frontend Design Lead, reference-set evidence, design critique verdict, creative direction, accessibility, and visual QA evidence.

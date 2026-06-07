@@ -34,6 +34,29 @@ Mode: read-only audit; no downstream files were modified.
 - Assistant adapters and upgrade lifecycle still need real activation/dogfood evidence after publication.
 - Reference-led design critique still needs a real UI change dogfood pass with screenshots or equivalent visual evidence.
 
+## 2026-06-07 Agent Studio Dogfood Snapshot
+
+Date: 2026-06-07
+CLI source: current `dist/index.js`
+Mode: downstream update, guided context generation, session recording, static Studio export, and final audit.
+
+| Project Archetype | Stage | Summary | Readiness | Notes |
+| --- | --- | --- | --- | --- |
+| Content/admin hybrid | Before update | 11 pass, 31 warn, 8 fail | `needs-setup` | Older partial install was missing current roster, schemas, docs, context, and Agent Studio assets. |
+| Content/admin hybrid | After update/onboard/export | 54 pass, 17 warn, 0 fail | `baseline-setup` | `agent-kit update` preserved customized docs through `.agent-kit/conflicts/`; `onboard`, session render, and `studio export` worked locally. |
+| Content/admin hybrid | After `session output` fix and completed session | 52 pass, 19 warn, 0 fail | `baseline-setup` | Completed planning session has all required outputs marked complete, verification recorded, rendered Markdown current, static Studio export regenerated, and 14 valid Agent Studio events. Extra warnings reflect template changes made during this fix and remaining project-specific evidence gaps. |
+
+### Finding Promoted Back Into The Kit
+
+Dogfood exposed that sessions could define required outputs but lacked a CLI command to update their status. The fix adds `agent-kit session output <name...> --status <missing|partial|complete|not-applicable> --evidence <evidence>`, a `required_output_updated` event type, renderer/static-export support, CLI smoke coverage, and completed-session regression tests.
+
+### Remaining Dogfood Gaps
+
+- Project context still needs real product summary, audience, workflows, auth/tenant model, UI direction, value proposition, and quality target answers.
+- Assistant adapter rows still need active-tool verification evidence.
+- Project-owned docs need conflict review before adopting newer template wording.
+- A real UI change still needs reference-led design critique and desktop/mobile visual QA evidence.
+
 ## Promotion Back Into The Kit
 
 | Dogfood Finding | Promoted Kit Behavior |
@@ -43,6 +66,7 @@ Mode: read-only audit; no downstream files were modified.
 | Agent instructions can exist without machine-readable council routing. | `.agent-kit/agent-roster.json`, roster schema validation, and council-session evidence. |
 | AI tool activation cannot be assumed from `AGENTS.md` alone. | `ASSISTANT_ADAPTERS.md` and `.agent-kit/assistant-adapters/`. |
 | Frontend docs can miss product-specific design evidence. | `DESIGN.md`, content-first design skill, reference-led design critique, visual QA tiers, and screenshot review. |
+| Required session outputs were hard to complete without manual JSON edits. | `agent-kit session output`, `required_output_updated` events, renderer/export support, and completed-session audit coverage. |
 
 ## Upgrade Regression Fixture
 
@@ -59,8 +83,8 @@ Covered by `tests/update.test.ts`.
 
 ## Next Dogfood Passes
 
-- Run `agent-kit update` on both real projects on dedicated branches and record conflict-review outcomes.
-- Capture `agent-kit diff` preview output before update so missing assets and conflicts are visible without touching files.
+- Review generated conflicts in the dogfood project and decide which project-owned docs should adopt the latest template wording.
+- Run `agent-kit update` on another real project on a dedicated branch and record conflict-review outcomes.
 - Activate at least one assistant adapter in a real project and record whether the chosen tool loads the canonical council instructions.
 - Apply the reference-led design critique gate to one real frontend change with desktop/mobile screenshot evidence.
 - After public publish, run `npm run publish:verify` to verify registry visibility, public `npx doctor`, clean temp `init`, and `audit --json` with zero failures.

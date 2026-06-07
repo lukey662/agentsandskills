@@ -71,6 +71,7 @@ agent-kit session decision --agent planner --risk "Generic UI risk" "Use fronten
 agent-kit session handoff --from planner --to frontend-design-lead --decision "Start design intake." --risk "Generic UI risk."
 agent-kit session correct --agent frontend-design-lead --scope project "Keep UI dense and operational."
 agent-kit session verify --command "npm test" --result pass --notes "Tests passed."
+agent-kit session output "visual QA evidence" --status not-applicable --evidence "No UI change."
 agent-kit session render
 agent-kit correction list
 agent-kit studio export
@@ -120,6 +121,7 @@ agent-kit audit --json
 agent-kit audit --min-readiness baseline-setup
 agent-kit context init
 agent-kit session start "Short task name"
+agent-kit session output "verification evidence" --status complete --evidence "npm test"
 agent-kit session render
 agent-kit correction list
 agent-kit studio export
@@ -147,7 +149,7 @@ Agent Kit separates the mechanisms that make AI coding repeatable:
 - Skills: `.agent-kit/skills/` keeps specialist workflows reusable.
 - Model routing: `MODEL_ROUTING.md` and `.agent-kit/model-routing.json` map agents to model profiles.
 - Messaging: `MESSAGING.md` records audience, pain, outcome, proof, objections, voice, and conversion evidence for public-facing copy.
-- Local Agent Studio: `.agent-kit/project-context.*`, `.agent-kit/corrections/*.json`, and `.agent-kit/council-sessions/*` keep context, corrections, decisions, handoffs, artifacts, verification, and rendered Markdown transcripts local.
+- Local Agent Studio: `.agent-kit/project-context.*`, `.agent-kit/corrections/*.json`, and `.agent-kit/council-sessions/*` keep context, corrections, decisions, handoffs, required-output status, artifacts, verification, and rendered Markdown transcripts local.
 - Tools and MCP: `ASSISTANT_ADAPTERS.md` records browser, GitHub, Figma, Supabase, docs, or other connector setup.
 - Hooks and CI: optional local enforcement plus `agent-kit audit`, tests, install smoke, SBOM, and release gates.
 

@@ -100,6 +100,7 @@ agent-kit session handoff --from planner --to frontend-design-lead --decision "S
 agent-kit session correct --agent frontend-design-lead --scope project "Keep UI dense and operational."
 agent-kit session artifact --file DESIGN.md --note "Design direction reviewed."
 agent-kit session verify --command "npm test" --result pass --notes "Tests passed."
+agent-kit session output "visual QA evidence" --status not-applicable --evidence "No UI change."
 agent-kit session render
 agent-kit session close --status complete
 agent-kit correction list
@@ -111,7 +112,7 @@ agent-kit studio export
 agent-kit audit --json
 ```
 
-Every Agent Studio milestone must include automated tests with the feature. Current coverage includes unit tests, fixture-project tests, CLI smoke tests, example snapshot checks, regression tests for install/update/diff behavior, and security tests for redaction, path traversal, malformed JSON/JSONL, static export secret safety, and secret-looking values. `npm run smoke:studio` is wired into `npm run release:check` so context/session/correction/export regressions fail before user testing.
+Every Agent Studio milestone must include automated tests with the feature. Current coverage includes unit tests, fixture-project tests, CLI smoke tests, example snapshot checks, regression tests for install/update/diff behavior, and security tests for required-output status validation, redaction, path traversal, malformed JSON/JSONL, static export secret safety, and secret-looking values. `npm run smoke:studio` is wired into `npm run release:check` so context/session/correction/export regressions fail before user testing.
 
 Direct AI orchestration can be added later as an opt-in mode, but baseline Agent Studio works through installed IDE agents and local file updates.
 

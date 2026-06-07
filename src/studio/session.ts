@@ -175,6 +175,7 @@ function redactEvent(event: SessionEventContractValue): SessionEventContractValu
     ...(event.risk ? { risk: redactSensitive(event.risk) } : {}),
     ...(event.notes ? { notes: redactSensitive(event.notes) } : {}),
     ...(event.command ? { command: redactSensitive(event.command) } : {}),
+    ...(event.outputName ? { outputName: redactSensitive(event.outputName) } : {}),
     ...(event.evidence ? { evidence: event.evidence.map(redactSensitive) } : {})
   };
 }
@@ -246,6 +247,37 @@ export function recordVerification(cwd: string, command: string, result: "pass" 
     command,
     result,
     ...(notes ? { notes } : {})
+  });
+}
+
+export function recordRequiredOutput(
+  cwd: string,
+  name: string,
+  status: "missing" | "partial" | "complete" | "not-applicable",
+  evidence?: string
+): SessionEventContractValue {
+  const trimmedName = name.trim();
+  if (!trimmedName) throw new Error("Required output name is required.");
+  const sessionId = getActiveSessionId(cwd);
+  const session = readSession(cwd, sessionId);
+  const now = nowIso();
+  const output = {
+    name: trimmedName,
+    status,
+    ...(evidence ? { evidence: redactSensitive(evidence) } : {})
+  };
+  const outputIndex = session.requiredOutputs.findIndex((item) => item.name === trimmedName);
+  const requiredOutputs =
+    outputIndex === -1
+      ? [...session.requiredOutputs, output]
+      : session.requiredOutputs.map((item, index) => (index === outputIndex ? { ...item, ...output } : item));
+  writeSession(cwd, { ...session, requiredOutputs, updatedAt: now });
+  return appendSessionEvent(cwd, sessionId, {
+    type: "required_output_updated",
+    createdAt: now,
+    outputName: trimmedName,
+    outputStatus: status,
+    ...(evidence ? { evidence: [evidence] } : {})
   });
 }
 
@@ -386,7 +418,14 @@ function renderSessionTranscript(session: StudioSessionContractValue, events: Se
   const sections = [...byAgent.entries()]
     .map(([agentId, agentEvents]) => {
       const rows = agentEvents.map((event) => {
-        const detail = event.text ?? event.decision ?? event.command ?? event.artifactPath ?? event.status ?? "";
+        const detail =
+          event.text ??
+          event.decision ??
+          event.command ??
+          event.artifactPath ??
+          (event.outputName ? `${event.outputName}: ${event.outputStatus ?? ""}` : undefined) ??
+          event.status ??
+          "";
         return `- ${event.createdAt} \`${event.type}\`: ${escapeMarkdownText(detail)}`;
       });
       return `## ${escapeMarkdownText(agentId)}\n\n${rows.join("\n")}`;

@@ -2,7 +2,7 @@ import { appendFileSync, existsSync, mkdtempSync, readFileSync, rmSync, writeFil
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { ProjectContextContract, SessionEventContract, StudioSessionContract } from "../src/config/contracts.js";
+import { ProjectContextContract, SessionEventContract, StudioSessionContract, type StudioSessionContractValue } from "../src/config/contracts.js";
 import { createAuditReport } from "../src/install/audit.js";
 import { initProject } from "../src/install/install.js";
 import { initProjectContext, validateProjectContext } from "../src/studio/context.js";
@@ -14,6 +14,7 @@ import {
   recordCorrection,
   recordDecision,
   recordHandoff,
+  recordRequiredOutput,
   recordVerification,
   renderActiveSession,
   startSession
@@ -145,6 +146,34 @@ describe("Agent Studio local workflow", () => {
     expect(html).not.toContain(fakeSecret);
     expect(audit.summary.fail).toBe(0);
     expect(audit.findings.some((finding) => finding.message.includes(".agent-kit/studio/index.html is present"))).toBe(true);
+  });
+
+  it("updates required session outputs through validated events", () => {
+    const root = tempProject();
+    initProjectContext(root);
+
+    const session = startSession(root, { title: "Output tracking", workflowId: "planning" });
+    const event = recordRequiredOutput(root, "verification plan", "complete", "tests/studio.test.ts");
+    for (const outputName of ["phased checklist", "maturity target", "affected layers", "preserved capabilities", "docs impact"]) {
+      recordRequiredOutput(root, outputName, "not-applicable", "Focused regression test.");
+    }
+    recordVerification(root, "npm test", "pass", "Required output command covered.");
+    closeSession(root, "complete");
+    renderActiveSession(root);
+
+    const sessionJson = JSON.parse(readFileSync(join(root, ".agent-kit", "council-sessions", session.sessionId, "session.json"), "utf8")) as StudioSessionContractValue;
+    const index = readFileSync(join(root, ".agent-kit", "council-sessions", session.sessionId, "index.md"), "utf8");
+    const transcript = readFileSync(join(root, ".agent-kit", "council-sessions", session.sessionId, "transcript.md"), "utf8");
+    const audit = createAuditReport(root);
+
+    expect(SessionEventContract.safeParse(event).success).toBe(true);
+    expect(sessionJson.requiredOutputs.find((output) => output.name === "verification plan")).toMatchObject({
+      status: "complete",
+      evidence: "tests/studio.test.ts"
+    });
+    expect(index).toContain("| verification plan | complete | tests/studio.test.ts |");
+    expect(transcript).toContain("verification plan: complete");
+    expect(audit.summary.fail).toBe(0);
   });
 
   it("applies and retires durable corrections without deleting review history", () => {

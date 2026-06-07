@@ -19,6 +19,7 @@ import {
   recordDecision,
   recordHandoff,
   recordNote,
+  recordRequiredOutput,
   recordVerification,
   renderActiveSession,
   startSession
@@ -26,6 +27,12 @@ import {
 import { readTextFile } from "../studio/shared.js";
 
 const program = new Command();
+const requiredOutputStatuses = ["missing", "partial", "complete", "not-applicable"] as const;
+type RequiredOutputStatus = (typeof requiredOutputStatuses)[number];
+
+function isRequiredOutputStatus(value: string): value is RequiredOutputStatus {
+  return requiredOutputStatuses.includes(value as RequiredOutputStatus);
+}
 
 program
   .name("agent-kit")
@@ -295,6 +302,20 @@ session
   .option("--notes <notes>", "Verification notes.")
   .action((options: { command: string; result: "pass" | "fail" | "skipped"; notes?: string }) => {
     console.log(JSON.stringify(recordVerification(process.cwd(), options.command, options.result, options.notes), null, 2));
+  });
+
+session
+  .command("output <name...>")
+  .description("Mark a required session output status.")
+  .requiredOption("--status <status>", "missing, partial, complete, or not-applicable.")
+  .option("--evidence <evidence>", "Evidence path, command, or note.")
+  .action((nameParts: string[], options: { status: string; evidence?: string }) => {
+    if (!isRequiredOutputStatus(options.status)) {
+      console.error(`Invalid --status value "${options.status}". Expected one of: ${requiredOutputStatuses.join(", ")}.`);
+      process.exitCode = 1;
+      return;
+    }
+    console.log(JSON.stringify(recordRequiredOutput(process.cwd(), nameParts.join(" "), options.status, options.evidence), null, 2));
   });
 
 session

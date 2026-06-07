@@ -43,7 +43,7 @@ Canonical source of truth:
 - Keep `AGENTS.md`, `AGENT_ROSTER.md`, and `.agent-kit/agent-roster.json` as the source of truth.
 - Adapter files should reference the council contract; they should not fork role definitions, security policy, frontend quality rules, or release gates.
 - Agents should read project context and active correction rules before meaningful work.
-- Agents should record meaningful decisions, handoffs, human corrections, artifacts, and verification with `agent-kit session ...` commands when the CLI is available.
+- Agents should record meaningful decisions, handoffs, human corrections, artifacts, required-output status, and verification with `agent-kit session ...` commands when the CLI is available.
 - Agents should run `agent-kit session render` after changing session evidence so Markdown views stay current.
 - Agents may run `agent-kit studio export` after rendering sessions when a local visual review page would help the user inspect collaboration.
 - Do not place secrets, tokens, credentials, private URLs, or customer data in assistant instruction files.

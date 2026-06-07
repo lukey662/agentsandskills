@@ -295,6 +295,7 @@ export const SessionEventContract = z
       "command_recorded",
       "verification_recorded",
       "open_question",
+      "required_output_updated",
       "session_status_changed",
       "session_rendered"
     ]),
@@ -311,6 +312,8 @@ export const SessionEventContract = z
     artifactPath: z.string().min(1).optional(),
     command: z.string().min(1).optional(),
     result: z.enum(["pass", "fail", "skipped"]).optional(),
+    outputName: z.string().min(1).optional(),
+    outputStatus: z.enum(["missing", "partial", "complete", "not-applicable"]).optional(),
     status: z.enum(["planned", "in-progress", "blocked", "complete"]).optional(),
     notes: z.string().optional()
   })
@@ -331,6 +334,9 @@ export const SessionEventContract = z
     }
     if (event.type === "artifact_recorded" && !event.artifactPath) {
       context.addIssue({ code: z.ZodIssueCode.custom, message: "artifact events require artifactPath", path: ["artifactPath"] });
+    }
+    if (event.type === "required_output_updated" && (!event.outputName || !event.outputStatus)) {
+      context.addIssue({ code: z.ZodIssueCode.custom, message: "required output events require outputName and outputStatus", path: ["outputName"] });
     }
   });
 

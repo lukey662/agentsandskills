@@ -37,6 +37,7 @@ Supported commands:
 - `session correct`
 - `session artifact`
 - `session verify`
+- `session output`
 - `session render`
 - `session close`
 - `correction list`
@@ -71,6 +72,7 @@ Implemented commands:
 - `session correct`
 - `session artifact`
 - `session verify`
+- `session output`
 - `session render`
 - `session close`
 - `correction list`
@@ -95,7 +97,7 @@ Implemented local files:
 
 `project-context.json` is the machine-readable source for product, audience, workflows, sensitive data, auth model, tenant model, integrations, UI direction, messaging, quality target, known constraints, and open questions.
 
-`events.jsonl` is the append-only source of truth for visible session events: agent messages, decisions, handoffs, risks, evidence, human corrections, artifacts, verification, open questions, and session status changes.
+`events.jsonl` is the append-only source of truth for visible session events: agent messages, decisions, handoffs, risks, evidence, human corrections, artifacts, verification, required-output status updates, open questions, and session status changes.
 
 Generated Markdown files are the primary human interface. They must include Mermaid handoff graphs, current status, agent streams, decision tables, correction summaries, required outputs, verification evidence, artifact links, and next actions.
 
@@ -113,7 +115,7 @@ Required and current coverage:
 
 - Unit tests for schema validation, scanner output, guided answer normalization, correction scope handling, JSONL parsing, event validation, graph generation, Markdown rendering, redaction, path safety, and audit findings.
 - Fixture tests for empty projects, fresh installs, existing customized docs, old manifests, malformed context files, active corrections, unrendered sessions, incomplete completed sessions, and fake secret-looking values.
-- CLI smoke tests for `init --guided`, context scan/render/validate, session start/decision/handoff/correct/artifact/verify/render, static studio export, and audit.
+- CLI smoke tests for `init --guided`, context scan/render/validate, session start/decision/handoff/correct/artifact/verify/output/render, static studio export, and audit.
 - Golden output tests for generated project context Markdown, session index Markdown, transcript Markdown, and expected audit output.
 - Regression tests proving existing `init`, `update`, `diff`, conflict handling, examples, and public package file allowlist behavior do not regress.
 - Security tests for path traversal, Markdown injection, secret redaction, malformed JSON/JSONL, unsafe static exports, and localhost-only live studio behavior when implemented.

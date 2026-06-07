@@ -316,7 +316,7 @@ Acceptance:
 - `[x]` Implement guided onboarding commands: `agent-kit onboard`, `agent-kit context scan`, `agent-kit context ask`, `agent-kit context render`, and `agent-kit init --guided`.
 - `[x]` Add correction contracts and commands for session, project, agent, and upstream-proposal scopes under `.agent-kit/corrections/`.
 - `[x]` Add append-only council-session event logging under `.agent-kit/council-sessions/<session-id>/events.jsonl`.
-- `[x]` Implement session commands: `start`, `list`, `active`, `note`, `decision`, `handoff`, `correct`, `artifact`, `verify`, `render`, and `close`.
+- `[x]` Implement session commands: `start`, `list`, `active`, `note`, `decision`, `handoff`, `correct`, `artifact`, `verify`, `output`, `render`, and `close`.
 - `[x]` Render session `index.md` and `transcript.md` from JSON/JSONL, including Mermaid handoff graphs, decisions, risks, human corrections, artifacts, verification, and next actions.
 - `[x]` Update installed `AGENTS.md`, `ASSISTANT_ADAPTERS.md`, `COUNCIL.md`, `QUALITY_GATES.md`, `SKILLS.md`, and Agent Handoff Tracing skill so IDE agents read project context and corrections before meaningful work.
 - `[x]` Add audit checks for missing or malformed project context, correction files, active sessions, unrendered session events, and completed sessions without required outputs or verification.
@@ -342,9 +342,10 @@ Acceptance:
 4. Delete any legacy npm publish secrets after the trusted-publisher path is confirmed.
 5. Dispatch the `Release` workflow with `dry_run=false`.
 6. Verify public package install with `npm run publish:verify`.
-7. Dogfood Markdown-first Agent Studio in at least one real downstream project and capture audit/session evidence.
-8. Dogfood `agent-kit studio export` in at least one real downstream project and capture whether the static view is useful enough before considering a live local GUI.
-9. Revisit live local GUI and direct AI API orchestration after the file protocol is proven.
+7. Review generated conflicts from the Agent Studio dogfood project and decide which customized docs should adopt the latest template wording.
+8. Activate at least one assistant adapter in a real project and record whether the chosen tool loads the canonical council instructions.
+9. Apply the reference-led design critique gate to one real frontend change with desktop/mobile screenshot evidence.
+10. Revisit live local GUI and direct AI API orchestration after the file protocol is proven across more than one project.
 
 Latest release evidence:
 
@@ -357,6 +358,7 @@ Latest dogfood evidence:
 
 - `/Volumes/Mac eSSD/qrcode`: install created five missing root docs, preserved four existing docs as conflicts, audit returned 15 pass / 7 warn / 0 fail.
 - `/Volumes/Mac eSSD/AI news`: install preserved all nine existing root docs as conflicts, audit returned 10 pass / 12 warn / 0 fail.
+- Content/admin real-project Agent Studio dogfood: current CLI update/onboard/session/render/static export completed, rough edge promoted into `agent-kit session output`, final audit returned 52 pass / 19 warn / 0 fail with `baseline-setup`, completed rendered session, and 14 valid events.
 
 Latest maturity evidence:
 

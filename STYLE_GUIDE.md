@@ -44,6 +44,7 @@
 - Do not require SQLite, a hosted database, a background daemon, or model API credentials for baseline context, session, correction, or rendering workflows.
 - Treat session event logs as append-only. Corrections add new events and status changes; they do not silently rewrite prior agent messages.
 - Record visible agent outputs, decisions, handoffs, risks, artifacts, verification, and user corrections. Do not claim to expose hidden model reasoning.
+- Update required-output status through `agent-kit session output` so session JSON and append-only events stay in sync.
 - Store human corrections with explicit scope: `session`, `project`, `agent`, or `upstream-proposal`.
 - Redact secrets, raw environment values, access tokens, database URLs, private customer data, and other sensitive data before writing context, session, correction, or Markdown files.
 - Generated Markdown should be deterministic, link back to source JSON/JSONL files, and include Mermaid graphs only when they remain readable in common Markdown previewers.

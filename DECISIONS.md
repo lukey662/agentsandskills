@@ -427,3 +427,17 @@ Make automated testing part of the Phase 9 definition of done. The release gate 
 ### Consequences
 
 Installed projects get faster context capture, inspectable agent collaboration, durable human corrections, and a static local Studio view without adopting another software stack. The package must keep schemas, CLI commands, renderers, adapter instructions, audit checks, and tests aligned so context/session/export files stay valid and secret-safe. The design is less flashy than a full live GUI at first, but it keeps the source of truth reviewable in Git and lets future live studio views render over the same local files.
+
+## 2026-06-07 - Track Required Outputs As Session Events
+
+### Context
+
+Agent Studio sessions already stored required outputs in `session.json`, and audits failed completed sessions when outputs were still missing or partial. Dogfood showed a practical rough edge: users and IDE agents had no CLI command to mark a required output complete or not applicable, so a session could not be closed cleanly without manual JSON edits.
+
+### Decision
+
+Add `agent-kit session output <name...> --status <missing|partial|complete|not-applicable> --evidence <evidence>`. The command updates the matching required output in `session.json` and appends a `required_output_updated` row to `events.jsonl`. The CLI validates status before writing, and the session-event schema requires both `outputName` and `outputStatus` for the new event type.
+
+### Consequences
+
+Required-output status is now visible in rendered Markdown, the static Studio export, and audit evidence. Completed-session checks remain strict without forcing direct JSON edits. Future live UI work can build controls on top of the same command and event shape instead of inventing a separate state store.

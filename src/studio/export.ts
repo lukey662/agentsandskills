@@ -268,6 +268,7 @@ function renderEventList(events: SessionEventContractValue[]): string {
 
 function eventDetail(event: SessionEventContractValue): string {
   if (event.type === "handoff") return `${event.fromAgentId ?? "unknown"} -> ${event.toAgentId ?? "unknown"}: ${event.decision ?? ""} Risk: ${event.risk ?? ""}`;
+  if (event.type === "required_output_updated") return `${event.outputName ?? "output"}: ${event.outputStatus ?? "unknown"}`;
   return event.text ?? event.decision ?? event.command ?? event.artifactPath ?? event.status ?? "";
 }
 

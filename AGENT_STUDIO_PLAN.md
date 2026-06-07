@@ -311,6 +311,7 @@ agent-kit session handoff --from planner --to frontend-design-lead --decision "N
 agent-kit session correct --agent frontend-design-lead --scope project "Keep UI dense and operational."
 agent-kit session artifact --file DESIGN.md --note "Updated UI direction."
 agent-kit session verify --command "npm test" --result pass --notes "53 tests passed."
+agent-kit session output "verification plan" --status complete --evidence "npm test"
 agent-kit session render
 agent-kit session close --status complete
 ```
@@ -388,7 +389,7 @@ Audit should validate:
 - Session events are valid JSONL.
 - Active sessions with unrendered events warn.
 - Human corrections with `project` or `agent` scope are reflected in correction files.
-- Completed sessions include required outputs and verification evidence.
+- Completed sessions include required outputs marked `complete` or `not-applicable` plus verification evidence.
 - No obvious secret patterns are present in session Markdown or JSONL.
 
 ## Automated Verification Strategy
@@ -458,6 +459,7 @@ agent-kit session handoff --from planner --to frontend-design-lead --decision "S
 agent-kit session correct --agent frontend-design-lead --scope project "Keep the UI operational and dense."
 agent-kit session artifact --file DESIGN.md --note "Updated design direction."
 agent-kit session verify --command "npm test" --result pass --notes "Tests passed."
+agent-kit session output "visual QA evidence" --status not-applicable --evidence "No UI change."
 agent-kit session render
 agent-kit audit --json
 ```
@@ -625,7 +627,7 @@ Deliverables:
 - Session folder creation.
 - Active session pointer.
 - JSONL append helpers.
-- `session start`, `note`, `decision`, `handoff`, `artifact`, `verify`, `close`, `list`, and `active` commands.
+- `session start`, `note`, `decision`, `handoff`, `artifact`, `verify`, `output`, `close`, `list`, and `active` commands.
 - Validation for event types and required fields.
 
 Acceptance:
