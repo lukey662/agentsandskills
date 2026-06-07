@@ -441,3 +441,17 @@ Add `agent-kit session output <name...> --status <missing|partial|complete|not-a
 ### Consequences
 
 Required-output status is now visible in rendered Markdown, the static Studio export, and audit evidence. Completed-session checks remain strict without forcing direct JSON edits. Future live UI work can build controls on top of the same command and event shape instead of inventing a separate state store.
+
+## 2026-06-07 - Pin OpenSSF Scorecard To A Published Action Tag
+
+### Context
+
+The pushed `OpenSSF Scorecard` workflow failed before running because GitHub could not resolve `ossf/scorecard-action@v2`. This is a supply-chain workflow, so a missing or floating tag blocks release confidence even when package code and CI pass.
+
+### Decision
+
+Pin the workflow to the current published upstream release tag `ossf/scorecard-action@v2.4.3`.
+
+### Consequences
+
+The Scorecard workflow can resolve deterministically on GitHub-hosted runners. Future Scorecard upgrades should be explicit workflow changes with normal release-gate review.
