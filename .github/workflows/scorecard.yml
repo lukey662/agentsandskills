@@ -20,6 +20,7 @@ concurrency:
 jobs:
   scorecard:
     name: Scorecard
+    if: ${{ github.repository_visibility == 'public' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
 

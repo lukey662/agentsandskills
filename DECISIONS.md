@@ -442,16 +442,16 @@ Add `agent-kit session output <name...> --status <missing|partial|complete|not-a
 
 Required-output status is now visible in rendered Markdown, the static Studio export, and audit evidence. Completed-session checks remain strict without forcing direct JSON edits. Future live UI work can build controls on top of the same command and event shape instead of inventing a separate state store.
 
-## 2026-06-07 - Pin OpenSSF Scorecard To A Published Action Tag
+## 2026-06-07 - Pin OpenSSF Scorecard And Gate It To Public Repos
 
 ### Context
 
-The pushed `OpenSSF Scorecard` workflow failed before running because GitHub could not resolve `ossf/scorecard-action@v2`. This is a supply-chain workflow, so a missing or floating tag blocks release confidence even when package code and CI pass.
+The pushed `OpenSSF Scorecard` workflow failed before running because GitHub could not resolve `ossf/scorecard-action@v2`. After pinning the action, the private repository still failed with `Resource not accessible by integration` while Scorecard tried to inspect commits through GitHub GraphQL. This is a supply-chain workflow, so unresolved actions or private-repo permission failures block release confidence even when package code and CI pass.
 
 ### Decision
 
-Pin the workflow to the current published upstream release tag `ossf/scorecard-action@v2.4.3`.
+Pin the workflow to the current published upstream release tag `ossf/scorecard-action@v2.4.3`, and run the Scorecard job only when `github.repository_visibility == 'public'`.
 
 ### Consequences
 
-The Scorecard workflow can resolve deterministically on GitHub-hosted runners. Future Scorecard upgrades should be explicit workflow changes with normal release-gate review.
+The Scorecard workflow can resolve deterministically on GitHub-hosted runners and will stop failing private-repo pushes for a public-readiness check that cannot publish useful public results yet. When the repo is made public, Scorecard runs automatically again. Future Scorecard upgrades should be explicit workflow changes with normal release-gate review.
