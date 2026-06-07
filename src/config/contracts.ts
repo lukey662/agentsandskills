@@ -167,10 +167,182 @@ export const ModelRoutingContract = z
   })
   .strict();
 
+const projectEvidenceItem = z
+  .object({
+    source: z.string().min(1),
+    note: z.string().min(1)
+  })
+  .strict();
+
+export const ProjectContextContract = z
+  .object({
+    schemaVersion: z.literal(1),
+    projectName: z.string(),
+    productSummary: z.string(),
+    productCategory: z.string(),
+    primaryAudience: z.string(),
+    primaryWorkflows: z.array(z.string()),
+    businessCriticalBehavior: z.array(z.string()),
+    architecture: z
+      .object({
+        packageManager: z.string().optional(),
+        scripts: z.array(z.string()),
+        frameworks: z.array(z.string()),
+        uiLibraries: z.array(z.string()),
+        hasSupabase: z.boolean(),
+        supabaseSignals: z.array(z.string()),
+        testTools: z.array(z.string()),
+        envExampleKeys: z.array(z.string()),
+        deployment: z.array(z.string())
+      })
+      .strict(),
+    dataSensitivity: z.array(z.string()),
+    authModel: z.string(),
+    tenantModel: z.string(),
+    integrations: z.array(z.string()),
+    uiDirection: z
+      .object({
+        preferred: z.string(),
+        avoid: z.string()
+      })
+      .strict(),
+    messaging: z
+      .object({
+        valueProposition: z.string(),
+        proof: z.array(z.string()),
+        objections: z.array(z.string())
+      })
+      .strict(),
+    qualityTarget: z.enum(["baseline-setup", "needs-improvement", "best-practice-candidate"]),
+    knownConstraints: z.array(z.string()),
+    openQuestions: z.array(z.string()),
+    evidence: z.array(projectEvidenceItem),
+    lastReviewedAt: z.string().datetime(),
+    owners: z.array(z.string())
+  })
+  .strict();
+
+export const CorrectionRuleContract = z
+  .object({
+    id: z.string().min(1),
+    scope: z.enum(["session", "project", "agent", "upstream-proposal"]),
+    status: z.enum(["active", "retired", "proposed"]),
+    text: z.string().min(1),
+    appliesToAgents: z.array(z.string()).optional(),
+    agentId: z.string().min(1).optional(),
+    sourceSessionId: z.string().min(1).optional(),
+    createdAt: z.string().datetime(),
+    reviewedAt: z.string().datetime().nullable().optional(),
+    retiredAt: z.string().datetime().optional(),
+    reason: z.string().optional()
+  })
+  .strict()
+  .superRefine((rule, context) => {
+    if (rule.scope === "agent" && !rule.agentId && (!rule.appliesToAgents || rule.appliesToAgents.length === 0)) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "agent-scoped corrections require agentId or appliesToAgents",
+        path: ["agentId"]
+      });
+    }
+  });
+
+export const CorrectionRulesContract = z
+  .object({
+    schemaVersion: z.literal(1),
+    rules: z.array(CorrectionRuleContract)
+  })
+  .strict();
+
+export const StudioSessionContract = z
+  .object({
+    schemaVersion: z.literal(1),
+    sessionId: z.string().min(1),
+    title: z.string().min(1),
+    createdAt: z.string().datetime(),
+    updatedAt: z.string().datetime(),
+    status: z.enum(["planned", "in-progress", "blocked", "complete"]),
+    workflowId: z.string().min(1),
+    request: z.string().min(1),
+    affectedLayers: z.array(z.string()),
+    activeAgentId: z.string().optional(),
+    nextAgentId: z.string().optional(),
+    qualityTarget: z.enum(["baseline-setup", "needs-improvement", "best-practice-candidate"]),
+    requiredOutputs: z.array(
+      z
+        .object({
+          name: z.string().min(1),
+          status: z.enum(["missing", "partial", "complete", "not-applicable"]),
+          evidence: z.string().optional()
+        })
+        .strict()
+    ),
+    renderedAt: z.string().datetime().optional()
+  })
+  .strict();
+
+export const SessionEventContract = z
+  .object({
+    type: z.enum([
+      "session_started",
+      "project_context_loaded",
+      "agent_message",
+      "agent_decision",
+      "handoff",
+      "human_correction",
+      "correction_promoted",
+      "artifact_recorded",
+      "command_recorded",
+      "verification_recorded",
+      "open_question",
+      "session_status_changed",
+      "session_rendered"
+    ]),
+    createdAt: z.string().datetime(),
+    agentId: z.string().min(1).optional(),
+    fromAgentId: z.string().min(1).optional(),
+    toAgentId: z.string().min(1).optional(),
+    text: z.string().optional(),
+    decision: z.string().optional(),
+    risk: z.string().optional(),
+    evidence: z.array(z.string()).optional(),
+    scope: z.enum(["session", "project", "agent", "upstream-proposal"]).optional(),
+    correctionId: z.string().min(1).optional(),
+    artifactPath: z.string().min(1).optional(),
+    command: z.string().min(1).optional(),
+    result: z.enum(["pass", "fail", "skipped"]).optional(),
+    status: z.enum(["planned", "in-progress", "blocked", "complete"]).optional(),
+    notes: z.string().optional()
+  })
+  .strict()
+  .superRefine((event, context) => {
+    if (event.type === "handoff") {
+      for (const field of ["fromAgentId", "toAgentId", "decision", "risk"] as const) {
+        if (!event[field]) {
+          context.addIssue({ code: z.ZodIssueCode.custom, message: `${field} is required for handoff events`, path: [field] });
+        }
+      }
+    }
+    if (event.type === "human_correction" && (!event.text || !event.scope)) {
+      context.addIssue({ code: z.ZodIssueCode.custom, message: "human corrections require text and scope", path: ["text"] });
+    }
+    if (event.type === "verification_recorded" && (!event.command || !event.result)) {
+      context.addIssue({ code: z.ZodIssueCode.custom, message: "verification events require command and result", path: ["command"] });
+    }
+    if (event.type === "artifact_recorded" && !event.artifactPath) {
+      context.addIssue({ code: z.ZodIssueCode.custom, message: "artifact events require artifactPath", path: ["artifactPath"] });
+    }
+  });
+
 export type AgentRosterContractValue = z.infer<typeof AgentRosterContract>;
 export type CouncilSessionContractValue = z.infer<typeof CouncilSessionContract>;
 export type AuditReportContractValue = z.infer<typeof AuditReportContract>;
 export type ModelRoutingContractValue = z.infer<typeof ModelRoutingContract>;
+export type ProjectContextContractValue = z.infer<typeof ProjectContextContract>;
+export type CorrectionRuleContractValue = z.infer<typeof CorrectionRuleContract>;
+export type CorrectionRulesContractValue = z.infer<typeof CorrectionRulesContract>;
+export type StudioSessionContractValue = z.infer<typeof StudioSessionContract>;
+export type SessionEventContractValue = z.infer<typeof SessionEventContract>;
 
 export function formatContractIssues(error: z.ZodError): string[] {
   return error.issues.map((issue) => {

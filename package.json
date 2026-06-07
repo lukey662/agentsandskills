@@ -71,6 +71,7 @@
     "test:watch": "vitest",
     "smoke": "node dist/index.js doctor",
     "smoke:install": "node scripts/smoke-install.mjs",
+    "smoke:studio": "node scripts/smoke-studio.mjs",
     "examples:check": "node scripts/example-check.mjs",
     "version:check": "node scripts/version-check.mjs",
     "sbom:check": "node scripts/sbom-check.mjs",

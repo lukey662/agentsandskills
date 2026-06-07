@@ -20,6 +20,7 @@ Baseline means the project is usable and the agent kit can audit it.
 - `AGENTS.md`, `AGENT_ROSTER.md`, `ASSISTANT_ADAPTERS.md`, `COUNCIL.md`, `SPEC.md`, `DECISIONS.md`, `DOCS.md`, `DESIGN.md`, `MESSAGING.md`, `MODEL_ROUTING.md`, `STYLE_GUIDE.md`, `SECURITY.md`, `TESTING.md`, `DEPLOYMENT.md`, and `UPGRADE.md` exist.
 - `.agent-kit/agent-roster.json`, `.agent-kit/model-routing.json`, and `.agent-kit/schemas/` exist.
 - `.agent-kit/assistant-adapters/` exists.
+- Agent Studio schemas for project context, correction rules, session events, and studio sessions exist when the installed kit version includes them.
 - Planner is the default planning route.
 - Lead Architect reviews core changes.
 - Security Reviewer reviews auth, RLS, dependency, secret, external-call, and release-risk changes.
@@ -31,6 +32,10 @@ Baseline means the project is usable and the agent kit can audit it.
 Strong means the project is safe for repeated team or agent delivery.
 
 - Council sessions record workflow, decision, risk, next handoff, required outputs, and evidence.
+- `.agent-kit/project-context.json` and `.agent-kit/project-context.md` capture product intent, users, workflows, auth/data assumptions, integrations, design direction, quality target, and open questions.
+- Active project and agent corrections are reviewed before implementation and are reflected in future session behavior.
+- Agent Studio sessions render current `index.md` and `transcript.md` files after visible decisions, handoffs, artifacts, corrections, or verification change.
+- Optional static Studio exports are regenerated from local files after session evidence changes and are checked for secret leakage.
 - `ASSISTANT_ADAPTERS.md` records active AI tool surfaces, model-selection status, enforcement level, and verification evidence.
 - `MODEL_ROUTING.md` records active model-selection status, dated recommendations, enforcement limits, and known IDE limitations.
 - `MESSAGING.md` captures audience, pain, desired outcome, alternatives, differentiator, proof, objections, voice, conversion goal, and copy inventory.
@@ -47,6 +52,7 @@ Strong means the project is safe for repeated team or agent delivery.
 Best-practice means evidence can survive handoff, release, and later audit.
 
 - Every meaningful change maps affected layers: data, business logic, presentation, auth, deployment, docs, and tests.
+- Multi-agent work has local Agent Studio evidence: context loaded, corrections considered, decisions and handoffs recorded, required outputs tracked, artifacts linked, verification captured, and rendered Markdown current.
 - Supabase RLS policies are inventory-backed, least-privilege, and tested for cross-user or cross-tenant access.
 - Production readiness covers Next.js routing/rendering, caching, error boundaries, metadata, accessibility, performance, security headers, and Core Web Vitals evidence.
 - Frontend work starts from brand/content intake, reference-set review, anti-references, and creative-direction options, then proves first-screen proof, content fingerprint, asset provenance, product-quality scorecard, distinctiveness, desktop, mobile, key states, keyboard flow, and visual QA evidence.
@@ -77,4 +83,5 @@ Best-practice means evidence can survive handoff, release, and later audit.
 - A research finding is not a best practice until it is promoted into templates, skills, checklists, audit checks, tests, release gates, or documented decisions.
 - A fresh install can be baseline setup while still warning on `TBD`, example rows, or starter instruction text; those placeholders must be replaced before claiming strong or best-practice maturity.
 - A local customization is acceptable only when `.agent-kit/overrides.json` explains why and when it was reviewed.
+- A human correction is not durable until it is stored in `.agent-kit/corrections/`, remains secret-safe, has a clear scope, and is visible to future agents through installed instructions.
 - An upgrade is not complete until `UPGRADE.md` records version changes, migration impact, rollback process, and verification evidence.

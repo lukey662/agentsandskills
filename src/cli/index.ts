@@ -7,6 +7,23 @@ import { initProject } from "../install/install.js";
 import { discoverRepos } from "../research/discover.js";
 import { scanRepos } from "../research/scan.js";
 import { proposeUpdates, summarizeFindings } from "../research/summarize.js";
+import { addCorrection, applyCorrection, listCorrections, proposeCorrectionUpstream, retireCorrection } from "../studio/corrections.js";
+import { initProjectContext, renderProjectContext, scanProjectContext, validateProjectContext } from "../studio/context.js";
+import { exportStaticStudio } from "../studio/export.js";
+import {
+  closeSession,
+  getActiveSessionId,
+  listSessions,
+  recordArtifact,
+  recordCorrection,
+  recordDecision,
+  recordHandoff,
+  recordNote,
+  recordVerification,
+  renderActiveSession,
+  startSession
+} from "../studio/session.js";
+import { readTextFile } from "../studio/shared.js";
 
 const program = new Command();
 
@@ -20,12 +37,17 @@ program
   .description("Install agent-kit docs and library files into a project.")
   .option("--stack <stack>", "Stack profile to install.", "next-supabase")
   .option("--force", "Overwrite existing docs instead of writing conflicts.")
-  .action((options: { stack: "next-supabase"; force?: boolean }) => {
+  .option("--guided", "Also create local project context files from a non-interactive scan.")
+  .action((options: { stack: "next-supabase"; force?: boolean; guided?: boolean }) => {
     const result = initProject({
       cwd: process.cwd(),
       stack: options.stack,
       force: Boolean(options.force)
     });
+    if (options.guided) {
+      console.log(JSON.stringify({ install: result, context: initProjectContext(process.cwd()) }, null, 2));
+      return;
+    }
     console.log(JSON.stringify(result, null, 2));
   });
 
@@ -105,6 +127,255 @@ program
     console.log(`node: ${process.version}`);
     console.log(`available skills: ${listSkills().length}`);
     console.log("status: ok");
+  });
+
+program
+  .command("onboard")
+  .description("Create or refresh local project context files for installed agents.")
+  .option("--refresh", "Refresh inferred context from the current project state.")
+  .action(() => {
+    console.log(JSON.stringify(initProjectContext(process.cwd()), null, 2));
+  });
+
+const context = program.command("context").description("Manage local project context for Agent Studio.");
+
+context
+  .command("init")
+  .description("Create project context from a local scan.")
+  .action(() => {
+    console.log(JSON.stringify(initProjectContext(process.cwd()), null, 2));
+  });
+
+context
+  .command("scan")
+  .description("Print inferred project context without writing it.")
+  .action(() => {
+    console.log(JSON.stringify(scanProjectContext(process.cwd()), null, 2));
+  });
+
+context
+  .command("ask")
+  .description("Print unanswered high-value project context questions.")
+  .action(() => {
+    const result = initProjectContext(process.cwd());
+    for (const question of result.openQuestions) console.log(`- ${question}`);
+  });
+
+context
+  .command("render")
+  .description("Render .agent-kit/project-context.md from project-context.json.")
+  .action(() => {
+    console.log(JSON.stringify(renderProjectContext(process.cwd()), null, 2));
+  });
+
+context
+  .command("validate")
+  .description("Validate .agent-kit/project-context.json.")
+  .action(() => {
+    console.log(JSON.stringify(validateProjectContext(process.cwd()), null, 2));
+  });
+
+context
+  .command("show")
+  .description("Print rendered project context markdown.")
+  .action(() => {
+    console.log(readTextFile(process.cwd(), ".agent-kit/project-context.md") ?? "");
+  });
+
+const session = program.command("session").description("Record and render local Agent Studio council sessions.");
+
+session
+  .command("start <title...>")
+  .description("Start a local council session.")
+  .option("--workflow <workflow>", "Workflow id.", "planning")
+  .option("--request <request>", "Original user request.")
+  .action((titleParts: string[], options: { workflow: string; request?: string }) => {
+    const title = titleParts.join(" ");
+    console.log(
+      JSON.stringify(
+        startSession(process.cwd(), {
+          title,
+          workflowId: options.workflow,
+          ...(options.request ? { request: options.request } : {})
+        }),
+        null,
+        2
+      )
+    );
+  });
+
+session
+  .command("list")
+  .description("List local council sessions.")
+  .action(() => {
+    console.log(JSON.stringify(listSessions(process.cwd()), null, 2));
+  });
+
+session
+  .command("active")
+  .description("Print the active council session id.")
+  .action(() => {
+    console.log(getActiveSessionId(process.cwd()));
+  });
+
+session
+  .command("note <text...>")
+  .description("Record a visible agent message.")
+  .requiredOption("--agent <agent>", "Agent id.")
+  .action((textParts: string[], options: { agent: string }) => {
+    console.log(JSON.stringify(recordNote(process.cwd(), options.agent, textParts.join(" ")), null, 2));
+  });
+
+session
+  .command("decision <text...>")
+  .description("Record an agent decision.")
+  .requiredOption("--agent <agent>", "Agent id.")
+  .option("--risk <risk>", "Risk associated with the decision.")
+  .action((textParts: string[], options: { agent: string; risk?: string }) => {
+    console.log(JSON.stringify(recordDecision(process.cwd(), options.agent, textParts.join(" "), options.risk), null, 2));
+  });
+
+session
+  .command("handoff")
+  .description("Record an agent handoff.")
+  .requiredOption("--from <agent>", "Source agent id.")
+  .requiredOption("--to <agent>", "Target agent id.")
+  .requiredOption("--decision <decision>", "Decision being handed off.")
+  .requiredOption("--risk <risk>", "Risk that remains.")
+  .option("--evidence <evidence...>", "Evidence paths or notes.")
+  .action((options: { from: string; to: string; decision: string; risk: string; evidence?: string[] }) => {
+    console.log(
+      JSON.stringify(
+        recordHandoff(process.cwd(), {
+          fromAgentId: options.from,
+          toAgentId: options.to,
+          decision: options.decision,
+          risk: options.risk,
+          ...(options.evidence ? { evidence: options.evidence } : {})
+        }),
+        null,
+        2
+      )
+    );
+  });
+
+session
+  .command("correct <text...>")
+  .description("Record a human correction and optionally promote it to durable rules.")
+  .option("--agent <agent>", "Agent id.")
+  .option("--scope <scope>", "Correction scope: session, project, agent, upstream-proposal.", "session")
+  .action((textParts: string[], options: { agent?: string; scope: "session" | "project" | "agent" | "upstream-proposal" }) => {
+    console.log(
+      JSON.stringify(
+        recordCorrection(process.cwd(), {
+          ...(options.agent ? { agentId: options.agent } : {}),
+          scope: options.scope,
+          text: textParts.join(" ")
+        }),
+        null,
+        2
+      )
+    );
+  });
+
+session
+  .command("artifact")
+  .description("Record a changed or relevant artifact path.")
+  .requiredOption("--file <file>", "Artifact file path.")
+  .option("--note <note>", "Artifact note.")
+  .action((options: { file: string; note?: string }) => {
+    console.log(JSON.stringify(recordArtifact(process.cwd(), options.file, options.note), null, 2));
+  });
+
+session
+  .command("verify")
+  .description("Record verification evidence.")
+  .requiredOption("--command <command>", "Command or review performed.")
+  .requiredOption("--result <result>", "pass, fail, or skipped.")
+  .option("--notes <notes>", "Verification notes.")
+  .action((options: { command: string; result: "pass" | "fail" | "skipped"; notes?: string }) => {
+    console.log(JSON.stringify(recordVerification(process.cwd(), options.command, options.result, options.notes), null, 2));
+  });
+
+session
+  .command("render")
+  .description("Render active session Markdown files.")
+  .action(() => {
+    console.log(JSON.stringify(renderActiveSession(process.cwd()), null, 2));
+  });
+
+session
+  .command("close")
+  .description("Close the active session.")
+  .option("--status <status>", "planned, in-progress, blocked, or complete.", "complete")
+  .action((options: { status: "planned" | "in-progress" | "blocked" | "complete" }) => {
+    console.log(JSON.stringify(closeSession(process.cwd(), options.status), null, 2));
+  });
+
+const correction = program.command("correction").description("Manage durable Agent Studio correction rules.");
+
+correction
+  .command("list")
+  .description("List correction rules.")
+  .action(() => {
+    console.log(JSON.stringify(listCorrections(process.cwd()), null, 2));
+  });
+
+correction
+  .command("add <text...>")
+  .description("Add a durable correction rule.")
+  .option("--scope <scope>", "Correction scope: project, agent, or upstream-proposal.", "project")
+  .option("--agent <agent>", "Agent id for agent-scoped corrections.")
+  .action((textParts: string[], options: { scope: "project" | "agent" | "upstream-proposal"; agent?: string }) => {
+    console.log(
+      JSON.stringify(
+        addCorrection(process.cwd(), {
+          scope: options.scope,
+          ...(options.agent ? { agentId: options.agent } : {}),
+          text: textParts.join(" ")
+        }),
+        null,
+        2
+      )
+    );
+  });
+
+correction
+  .command("apply [id]")
+  .description("Mark a correction rule active and reviewed.")
+  .option("--id <id>", "Correction id.")
+  .action((idArgument: string | undefined, options: { id?: string }) => {
+    const id = idArgument ?? options.id;
+    if (!id) {
+      console.error("Missing correction id. Use agent-kit correction apply <id> or --id <id>.");
+      process.exitCode = 1;
+      return;
+    }
+    console.log(JSON.stringify(applyCorrection(process.cwd(), id), null, 2));
+  });
+
+correction
+  .command("retire <id>")
+  .description("Retire a correction rule.")
+  .requiredOption("--reason <reason>", "Reason for retirement.")
+  .action((id: string, options: { reason: string }) => {
+    console.log(JSON.stringify(retireCorrection(process.cwd(), id, options.reason), null, 2));
+  });
+
+correction
+  .command("propose-upstream <id>")
+  .description("Create an upstream proposal from a project or agent correction.")
+  .action((id: string) => {
+    console.log(JSON.stringify(proposeCorrectionUpstream(process.cwd(), id), null, 2));
+  });
+
+const studio = program.command("studio").description("Export local Agent Studio views.");
+
+studio
+  .command("export")
+  .description("Generate a self-contained static Agent Studio HTML file.")
+  .action(() => {
+    console.log(JSON.stringify(exportStaticStudio(process.cwd()), null, 2));
   });
 
 const research = program.command("research").description("Research high-quality open-source repositories.");

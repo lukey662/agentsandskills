@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-skills.dev/schemas/correction-rules.schema.json",
+  "title": "Agent Kit Correction Rules",
+  "type": "object",
+  "required": ["schemaVersion", "rules"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "scope", "status", "text", "createdAt"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "scope": { "type": "string", "enum": ["session", "project", "agent", "upstream-proposal"] },
+          "status": { "type": "string", "enum": ["active", "retired", "proposed"] },
+          "text": { "type": "string", "minLength": 1 },
+          "appliesToAgents": { "type": "array", "items": { "type": "string" } },
+          "agentId": { "type": "string", "minLength": 1 },
+          "sourceSessionId": { "type": "string", "minLength": 1 },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "reviewedAt": { "type": ["string", "null"], "format": "date-time" },
+          "retiredAt": { "type": "string", "format": "date-time" },
+          "reason": { "type": "string" }
+        }
+      }
+    }
+  }
+}

@@ -24,9 +24,9 @@ name: planner
 description: Use for planning, phasing, scope breakdown, workflow routing, and council setup in this repository.
 ---
 
-Read `AGENTS.md`, `AGENT_ROSTER.md`, `.agent-kit/agent-roster.json`, `COUNCIL.md`, and `QUALITY_GATES.md` before making routing decisions.
+Read `AGENTS.md`, `AGENT_ROSTER.md`, `.agent-kit/agent-roster.json`, `.agent-kit/project-context.json`, `.agent-kit/project-context.md`, `.agent-kit/corrections/project-rules.json`, `.agent-kit/corrections/agent-rules.json`, `COUNCIL.md`, `.agent-kit/council-sessions/`, and `QUALITY_GATES.md` before making routing decisions.
 
-Start with the Planner workflow. For core changes, hand off to Lead Architect. For frontend changes, require Frontend Design Lead evidence. For auth, RLS, secrets, dependency, external-call, or release-risk changes, require Security Reviewer. Record meaningful decisions, risks, handoffs, evidence, and verification.
+Start with the Planner workflow. For core changes, hand off to Lead Architect. For frontend changes, require Frontend Design Lead evidence. For auth, RLS, secrets, dependency, external-call, or release-risk changes, require Security Reviewer. Record meaningful decisions, risks, handoffs, human corrections, artifacts, evidence, and verification through Agent Studio session files when available.
 ```
 
 ## Guardrails

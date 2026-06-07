@@ -24,6 +24,10 @@ function writeDefaultSchemas(targetRoot: string): void {
   copyFileSync(join(process.cwd(), "schemas", "council-session.schema.json"), join(targetRoot, ".agent-kit", "schemas", "council-session.schema.json"));
   copyFileSync(join(process.cwd(), "schemas", "audit-report.schema.json"), join(targetRoot, ".agent-kit", "schemas", "audit-report.schema.json"));
   copyFileSync(join(process.cwd(), "schemas", "model-routing.schema.json"), join(targetRoot, ".agent-kit", "schemas", "model-routing.schema.json"));
+  copyFileSync(join(process.cwd(), "schemas", "project-context.schema.json"), join(targetRoot, ".agent-kit", "schemas", "project-context.schema.json"));
+  copyFileSync(join(process.cwd(), "schemas", "correction-rules.schema.json"), join(targetRoot, ".agent-kit", "schemas", "correction-rules.schema.json"));
+  copyFileSync(join(process.cwd(), "schemas", "session-event.schema.json"), join(targetRoot, ".agent-kit", "schemas", "session-event.schema.json"));
+  copyFileSync(join(process.cwd(), "schemas", "studio-session.schema.json"), join(targetRoot, ".agent-kit", "schemas", "studio-session.schema.json"));
 }
 
 describe("auditProject", () => {
@@ -166,6 +170,8 @@ describe("auditProject", () => {
     expect(readFileSync(join(target, ".agent-kit", "schemas", "agent-roster.schema.json"), "utf8")).toContain('"title": "Agent Kit Agent Roster"');
     expect(readFileSync(join(target, ".agent-kit", "schemas", "audit-report.schema.json"), "utf8")).toContain('"title": "Agent Kit Audit Report"');
     expect(readFileSync(join(target, ".agent-kit", "schemas", "model-routing.schema.json"), "utf8")).toContain('"title": "Agent Kit Model Routing"');
+    expect(readFileSync(join(target, ".agent-kit", "schemas", "project-context.schema.json"), "utf8")).toContain('"title": "Agent Kit Project Context"');
+    expect(readFileSync(join(target, ".agent-kit", "schemas", "session-event.schema.json"), "utf8")).toContain('"title": "Agent Kit Session Event"');
     rmSync(target, { recursive: true, force: true });
   });
 

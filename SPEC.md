@@ -20,8 +20,105 @@ Supported commands:
 - `research scan`
 - `research summarize`
 - `research propose-updates`
+- `init --guided`
+- `onboard`
+- `context init`
+- `context scan`
+- `context ask`
+- `context render`
+- `context validate`
+- `context show`
+- `session start`
+- `session list`
+- `session active`
+- `session note`
+- `session decision`
+- `session handoff`
+- `session correct`
+- `session artifact`
+- `session verify`
+- `session render`
+- `session close`
+- `correction list`
+- `correction add`
+- `correction apply`
+- `correction retire`
+- `correction propose-upstream`
+- `studio export`
 
 Existing project files must not be overwritten by default. Template conflicts are written to `.agent-kit/conflicts/`, and installed template hashes are tracked in `.agent-kit/manifest.json`.
+
+## Context And Session Surface
+
+Phase 9 adds a local-first Agent Studio workflow. The baseline implementation must not require a database, hosted service, background daemon, or direct model API credentials.
+
+Implemented commands:
+
+- `init --guided`
+- `onboard`
+- `context init`
+- `context scan`
+- `context ask`
+- `context render`
+- `context validate`
+- `context show`
+- `session start`
+- `session list`
+- `session active`
+- `session note`
+- `session decision`
+- `session handoff`
+- `session correct`
+- `session artifact`
+- `session verify`
+- `session render`
+- `session close`
+- `correction list`
+- `correction add`
+- `correction apply`
+- `correction retire`
+- `correction propose-upstream`
+- `studio export`
+
+Implemented local files:
+
+- `.agent-kit/project-context.json`
+- `.agent-kit/project-context.md`
+- `.agent-kit/corrections/project-rules.json`
+- `.agent-kit/corrections/agent-rules.json`
+- `.agent-kit/corrections/upstream-proposals.json`
+- `.agent-kit/council-sessions/<session-id>/session.json`
+- `.agent-kit/council-sessions/<session-id>/events.jsonl`
+- `.agent-kit/council-sessions/<session-id>/index.md`
+- `.agent-kit/council-sessions/<session-id>/transcript.md`
+- `.agent-kit/studio/index.html`
+
+`project-context.json` is the machine-readable source for product, audience, workflows, sensitive data, auth model, tenant model, integrations, UI direction, messaging, quality target, known constraints, and open questions.
+
+`events.jsonl` is the append-only source of truth for visible session events: agent messages, decisions, handoffs, risks, evidence, human corrections, artifacts, verification, open questions, and session status changes.
+
+Generated Markdown files are the primary human interface. They must include Mermaid handoff graphs, current status, agent streams, decision tables, correction summaries, required outputs, verification evidence, artifact links, and next actions.
+
+The static Studio export is an optional visual interface generated from the same local files. It must embed only redacted export-time JSON, render an SVG handoff graph, provide clickable transcript panels, avoid external assets, and require no server or database.
+
+Human corrections can be scoped to a session, the project, a specific agent, or an upstream proposal. Active project and agent corrections must be loaded by future IDE-agent work through installed assistant-adapter guidance.
+
+The package must not claim to expose private model reasoning. Agent Studio records visible work products, decisions, and evidence only.
+
+### Automated Verification Requirements
+
+Every context, session, correction, renderer, adapter, audit, and studio feature must ship with automated tests before it is marked complete.
+
+Required and current coverage:
+
+- Unit tests for schema validation, scanner output, guided answer normalization, correction scope handling, JSONL parsing, event validation, graph generation, Markdown rendering, redaction, path safety, and audit findings.
+- Fixture tests for empty projects, fresh installs, existing customized docs, old manifests, malformed context files, active corrections, unrendered sessions, incomplete completed sessions, and fake secret-looking values.
+- CLI smoke tests for `init --guided`, context scan/render/validate, session start/decision/handoff/correct/artifact/verify/render, static studio export, and audit.
+- Golden output tests for generated project context Markdown, session index Markdown, transcript Markdown, and expected audit output.
+- Regression tests proving existing `init`, `update`, `diff`, conflict handling, examples, and public package file allowlist behavior do not regress.
+- Security tests for path traversal, Markdown injection, secret redaction, malformed JSON/JSONL, unsafe static exports, and localhost-only live studio behavior when implemented.
+
+The shared `npm run release:check` gate includes `npm run smoke:studio`. Broken context/session/correction behavior should fail in automation before reaching user testing.
 
 ## Upgrade Surface
 
@@ -108,3 +205,5 @@ The release workflow must run typecheck, tests, build, dependency audit, SBOM ch
 - Keep detailed per-repo research findings out of the public npm package unless separately reviewed.
 - Run `npm audit --audit-level=moderate` before publishing.
 - Generate a CycloneDX SBOM from `package-lock.json`, upload release evidence, and attest the SBOM for the published tarball.
+- Do not record secrets, raw environment values, access tokens, database URLs, private customer data, or hidden model reasoning in project-context, correction, or session files.
+- Redact common secret patterns from recorded command output and generated Markdown.

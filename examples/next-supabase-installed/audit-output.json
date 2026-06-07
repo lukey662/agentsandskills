@@ -1,13 +1,14 @@
 {
   "summary": {
-    "pass": 56,
-    "warn": 2,
+    "pass": 60,
+    "warn": 3,
     "fail": 0
   },
   "readiness": {
     "level": "baseline-setup",
     "summary": "Agent kit setup is valid, but project-specific evidence still needs to replace starter placeholders.",
     "nextActions": [
+      "Run agent-kit onboard or agent-kit init --guided so agents can start with project-specific context.",
       "Replace TBD adapter rows with date, owner, evidence, model-selection status, and known limitations for each active IDE.",
       "Replace TBD/example rows with real project evidence, or document why an item is not applicable before claiming strong or best-practice maturity."
     ]
@@ -157,6 +158,32 @@
       "level": "pass",
       "area": "agents",
       "message": ".agent-kit/schemas/model-routing.schema.json is present and parseable."
+    },
+    {
+      "level": "pass",
+      "area": "agents",
+      "message": ".agent-kit/schemas/project-context.schema.json is present and parseable."
+    },
+    {
+      "level": "pass",
+      "area": "agents",
+      "message": ".agent-kit/schemas/correction-rules.schema.json is present and parseable."
+    },
+    {
+      "level": "pass",
+      "area": "agents",
+      "message": ".agent-kit/schemas/session-event.schema.json is present and parseable."
+    },
+    {
+      "level": "pass",
+      "area": "agents",
+      "message": ".agent-kit/schemas/studio-session.schema.json is present and parseable."
+    },
+    {
+      "level": "warn",
+      "area": "studio",
+      "message": ".agent-kit/project-context.json is missing.",
+      "remediation": "Run agent-kit onboard or agent-kit init --guided so agents can start with project-specific context."
     },
     {
       "level": "pass",

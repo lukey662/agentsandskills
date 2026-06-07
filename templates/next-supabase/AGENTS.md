@@ -2,7 +2,7 @@
 
 This project uses explicit agent roles so implementation, security, quality, and documentation do not collapse into one vague assistant.
 
-Use `.agent-kit/agent-roster.json` as the default council contract. Use `MODEL_ROUTING.md` and `.agent-kit/model-routing.json` to choose model profiles for each agent. When a request is ambiguous, planning-oriented, or cross-layer, start with Planner and follow the matching workflow in `AGENT_ROSTER.md`. Use `ASSISTANT_ADAPTERS.md` to confirm which AI coding tools load these instructions and how model selection is handled. Record meaningful council sessions in `COUNCIL.md` or a structured record that follows `.agent-kit/schemas/council-session.schema.json`.
+Use `.agent-kit/agent-roster.json` as the default council contract. Use `MODEL_ROUTING.md` and `.agent-kit/model-routing.json` to choose model profiles for each agent. Before meaningful work, read `.agent-kit/project-context.json` and `.agent-kit/project-context.md` when present, then apply active corrections from `.agent-kit/corrections/project-rules.json` and `.agent-kit/corrections/agent-rules.json`. When a request is ambiguous, planning-oriented, or cross-layer, start with Planner and follow the matching workflow in `AGENT_ROSTER.md`. Use `ASSISTANT_ADAPTERS.md` to confirm which AI coding tools load these instructions and how model selection is handled. Record meaningful council sessions in `COUNCIL.md` or the local Agent Studio files under `.agent-kit/council-sessions/`.
 
 ## Planner
 
@@ -121,7 +121,7 @@ Responsibilities:
 Use this order for feature work:
 
 1. Planner classifies the request, maps the workflow, and names the council.
-2. Planner starts or updates `COUNCIL.md` when the work is meaningful, risky, or cross-agent.
+2. Planner starts or updates an Agent Studio session with `agent-kit session start` when the work is meaningful, risky, or cross-agent, then records fallback notes in `COUNCIL.md` if CLI tooling is unavailable.
 3. Lead Architect maps affected layers and preserved behavior.
 4. Supabase/Postgres Engineer handles schema, RLS, and migrations when data/auth changes are involved.
 5. Next.js Engineer implements runtime behavior and UI.
@@ -131,7 +131,8 @@ Use this order for feature work:
 9. QA Engineer adds and runs tests.
 10. Documentation Maintainer updates living docs and council evidence.
 11. Deployment/Observability Engineer verifies release and upgrade readiness.
+12. The active agent records decisions, handoffs, corrections, artifacts, verification, and status with `agent-kit session ...` commands, then runs `agent-kit session render` so `index.md` and `transcript.md` are current. Run `agent-kit studio export` when the user needs a local visual session view.
 
 ## Council Rule
 
-Core changes cannot skip Planner or Lead Architect. Frontend changes cannot skip content/brand intake, creative-direction rationale, reference-led critique, product-quality scorecard, visual QA evidence, and Frontend Design Lead review. Public-facing or conversion-facing copy changes cannot skip Marketing Copy Lead discovery questions, value proposition, proof, objection, voice/tone, and CTA review. Auth, RLS, data mutation, dependency, secret, external-call, and release-risk changes cannot skip Security Reviewer. Behavior changes cannot skip QA evidence. Significant changes cannot skip Documentation Maintainer. Meaningful multi-agent work cannot skip a decision, risk, next-handoff, and evidence record. Work is not best-practice ready until it satisfies the relevant `QUALITY_GATES.md` evidence level.
+Core changes cannot skip Planner or Lead Architect. Frontend changes cannot skip content/brand intake, creative-direction rationale, reference-led critique, product-quality scorecard, visual QA evidence, and Frontend Design Lead review. Public-facing or conversion-facing copy changes cannot skip Marketing Copy Lead discovery questions, value proposition, proof, objection, voice/tone, and CTA review. Auth, RLS, data mutation, dependency, secret, external-call, and release-risk changes cannot skip Security Reviewer. Behavior changes cannot skip QA evidence. Significant changes cannot skip Documentation Maintainer. Meaningful multi-agent work cannot skip a decision, risk, next-handoff, and evidence record. Human corrections must be recorded before continuing work, and durable project or agent corrections must be applied in future sessions. Work is not best-practice ready until it satisfies the relevant `QUALITY_GATES.md` evidence level.

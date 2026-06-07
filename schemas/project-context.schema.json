@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-skills.dev/schemas/project-context.schema.json",
+  "title": "Agent Kit Project Context",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "projectName",
+    "productSummary",
+    "productCategory",
+    "primaryAudience",
+    "primaryWorkflows",
+    "businessCriticalBehavior",
+    "architecture",
+    "dataSensitivity",
+    "authModel",
+    "tenantModel",
+    "integrations",
+    "uiDirection",
+    "messaging",
+    "qualityTarget",
+    "knownConstraints",
+    "openQuestions",
+    "evidence",
+    "lastReviewedAt",
+    "owners"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "projectName": { "type": "string" },
+    "productSummary": { "type": "string" },
+    "productCategory": { "type": "string" },
+    "primaryAudience": { "type": "string" },
+    "primaryWorkflows": { "type": "array", "items": { "type": "string" } },
+    "businessCriticalBehavior": { "type": "array", "items": { "type": "string" } },
+    "architecture": {
+      "type": "object",
+      "required": ["scripts", "frameworks", "uiLibraries", "hasSupabase", "supabaseSignals", "testTools", "envExampleKeys", "deployment"],
+      "additionalProperties": false,
+      "properties": {
+        "packageManager": { "type": "string" },
+        "scripts": { "type": "array", "items": { "type": "string" } },
+        "frameworks": { "type": "array", "items": { "type": "string" } },
+        "uiLibraries": { "type": "array", "items": { "type": "string" } },
+        "hasSupabase": { "type": "boolean" },
+        "supabaseSignals": { "type": "array", "items": { "type": "string" } },
+        "testTools": { "type": "array", "items": { "type": "string" } },
+        "envExampleKeys": { "type": "array", "items": { "type": "string" } },
+        "deployment": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "dataSensitivity": { "type": "array", "items": { "type": "string" } },
+    "authModel": { "type": "string" },
+    "tenantModel": { "type": "string" },
+    "integrations": { "type": "array", "items": { "type": "string" } },
+    "uiDirection": {
+      "type": "object",
+      "required": ["preferred", "avoid"],
+      "additionalProperties": false,
+      "properties": {
+        "preferred": { "type": "string" },
+        "avoid": { "type": "string" }
+      }
+    },
+    "messaging": {
+      "type": "object",
+      "required": ["valueProposition", "proof", "objections"],
+      "additionalProperties": false,
+      "properties": {
+        "valueProposition": { "type": "string" },
+        "proof": { "type": "array", "items": { "type": "string" } },
+        "objections": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "qualityTarget": { "type": "string", "enum": ["baseline-setup", "needs-improvement", "best-practice-candidate"] },
+    "knownConstraints": { "type": "array", "items": { "type": "string" } },
+    "openQuestions": { "type": "array", "items": { "type": "string" } },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source", "note"],
+        "additionalProperties": false,
+        "properties": {
+          "source": { "type": "string", "minLength": 1 },
+          "note": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "lastReviewedAt": { "type": "string", "format": "date-time" },
+    "owners": { "type": "array", "items": { "type": "string" } }
+  }
+}

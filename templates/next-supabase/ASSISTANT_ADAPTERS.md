@@ -9,8 +9,17 @@ Canonical source of truth:
 - `.agent-kit/agent-roster.json`
 - `MODEL_ROUTING.md`
 - `.agent-kit/model-routing.json`
+- `.agent-kit/project-context.json`
+- `.agent-kit/project-context.md`
+- `.agent-kit/corrections/project-rules.json`
+- `.agent-kit/corrections/agent-rules.json`
 - `COUNCIL.md`
+- `.agent-kit/council-sessions/`
 - `.agent-kit/schemas/council-session.schema.json`
+- `.agent-kit/schemas/studio-session.schema.json`
+- `.agent-kit/schemas/session-event.schema.json`
+- `.agent-kit/schemas/project-context.schema.json`
+- `.agent-kit/schemas/correction-rules.schema.json`
 - `QUALITY_GATES.md`
 
 ## Active Tool Surfaces
@@ -33,6 +42,10 @@ Canonical source of truth:
 
 - Keep `AGENTS.md`, `AGENT_ROSTER.md`, and `.agent-kit/agent-roster.json` as the source of truth.
 - Adapter files should reference the council contract; they should not fork role definitions, security policy, frontend quality rules, or release gates.
+- Agents should read project context and active correction rules before meaningful work.
+- Agents should record meaningful decisions, handoffs, human corrections, artifacts, and verification with `agent-kit session ...` commands when the CLI is available.
+- Agents should run `agent-kit session render` after changing session evidence so Markdown views stay current.
+- Agents may run `agent-kit studio export` after rendering sessions when a local visual review page would help the user inspect collaboration.
 - Do not place secrets, tokens, credentials, private URLs, or customer data in assistant instruction files.
 - Keep commands concrete and verified. Document known failures or environment prerequisites.
 - Update this file when a tool is added, removed, or confirmed to load the project instructions.
@@ -47,4 +60,6 @@ Before claiming strong or best-practice maturity, replace the TBD rows above wit
 - The enforcement level: enforced, partial, advisory, or manual.
 - The command, screenshot, PR, or session evidence proving the instructions loaded.
 - Any manual invocation needed to select the correct agent, rule, or subagent.
+- The Agent Studio session path, rendered Markdown, or audit output proving the agent read context and recorded handoff evidence.
+- Optional `.agent-kit/studio/index.html` evidence when a static local Studio export was used.
 - The date and owner of the verification.

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-skills.dev/schemas/session-event.schema.json",
+  "title": "Agent Kit Session Event",
+  "type": "object",
+  "required": ["type", "createdAt"],
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "session_started",
+        "project_context_loaded",
+        "agent_message",
+        "agent_decision",
+        "handoff",
+        "human_correction",
+        "correction_promoted",
+        "artifact_recorded",
+        "command_recorded",
+        "verification_recorded",
+        "open_question",
+        "session_status_changed",
+        "session_rendered"
+      ]
+    },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "agentId": { "type": "string", "minLength": 1 },
+    "fromAgentId": { "type": "string", "minLength": 1 },
+    "toAgentId": { "type": "string", "minLength": 1 },
+    "text": { "type": "string" },
+    "decision": { "type": "string" },
+    "risk": { "type": "string" },
+    "evidence": { "type": "array", "items": { "type": "string" } },
+    "scope": { "type": "string", "enum": ["session", "project", "agent", "upstream-proposal"] },
+    "correctionId": { "type": "string", "minLength": 1 },
+    "artifactPath": { "type": "string", "minLength": 1 },
+    "command": { "type": "string", "minLength": 1 },
+    "result": { "type": "string", "enum": ["pass", "fail", "skipped"] },
+    "status": { "type": "string", "enum": ["planned", "in-progress", "blocked", "complete"] },
+    "notes": { "type": "string" }
+  }
+}

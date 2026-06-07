@@ -31,10 +31,12 @@ Use for meaningful multi-agent work, core changes, security-sensitive changes, f
 Required checks:
 - Select the workflow from `.agent-kit/agent-roster.json`.
 - Select or confirm the model profile from `MODEL_ROUTING.md` and `.agent-kit/model-routing.json`.
-- Record council-session evidence in `COUNCIL.md` or `.agent-kit/council-sessions/*.json` records that follow `.agent-kit/schemas/council-session.schema.json`.
+- Read `.agent-kit/project-context.json`, `.agent-kit/project-context.md`, and active correction files before routing meaningful work.
+- Record council-session evidence in Agent Studio with `agent-kit session ...` commands when available, or in `COUNCIL.md` / schema-backed records when CLI tooling is unavailable.
 - Capture each agent decision, risk, next handoff, and evidence.
 - Mark required outputs as missing, partial, complete, or not applicable.
 - Record verification commands, results, and skipped-test rationale.
+- Record human corrections before continuing and promote durable project or agent corrections when the correction should apply to future sessions.
 
 ## Upgrade Maintenance
 

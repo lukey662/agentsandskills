@@ -309,6 +309,31 @@ Acceptance:
 
 - The kit becomes a maintained project operating system, not a one-time prompt bundle.
 
+## Phase 9: Guided Context And Markdown Agent Studio
+
+- `[x]` Add `AGENT_STUDIO_PLAN.md` as the detailed implementation plan for project-context onboarding, council-session observability, human corrections, and optional local studio UI.
+- `[x]` Add local-first project context contracts: `.agent-kit/project-context.json`, `.agent-kit/project-context.md`, and `schemas/project-context.schema.json`.
+- `[x]` Implement guided onboarding commands: `agent-kit onboard`, `agent-kit context scan`, `agent-kit context ask`, `agent-kit context render`, and `agent-kit init --guided`.
+- `[x]` Add correction contracts and commands for session, project, agent, and upstream-proposal scopes under `.agent-kit/corrections/`.
+- `[x]` Add append-only council-session event logging under `.agent-kit/council-sessions/<session-id>/events.jsonl`.
+- `[x]` Implement session commands: `start`, `list`, `active`, `note`, `decision`, `handoff`, `correct`, `artifact`, `verify`, `render`, and `close`.
+- `[x]` Render session `index.md` and `transcript.md` from JSON/JSONL, including Mermaid handoff graphs, decisions, risks, human corrections, artifacts, verification, and next actions.
+- `[x]` Update installed `AGENTS.md`, `ASSISTANT_ADAPTERS.md`, `COUNCIL.md`, `QUALITY_GATES.md`, `SKILLS.md`, and Agent Handoff Tracing skill so IDE agents read project context and corrections before meaningful work.
+- `[x]` Add audit checks for missing or malformed project context, correction files, active sessions, unrendered session events, and completed sessions without required outputs or verification.
+- `[x]` Add automated test coverage for schema validation, JSONL parsing, Markdown rendering, correction promotion, secret redaction, path traversal rejection, old-install update behavior, fixture projects, golden outputs, and smoke onboarding.
+- `[x]` Add `npm run smoke:studio` and wire it into `npm run release:check` before any Agent Studio feature is marked complete.
+- `[x]` Add optional `agent-kit studio export` static HTML view after the Markdown-first workflow is useful.
+- `[x]` Defer live local GUI and direct AI API orchestration until the file protocol is proven.
+
+Acceptance:
+
+- A new project can install the kit, answer a short guided intake, and produce useful local context without a database, hosted service, or model API key.
+- A meaningful multi-agent task can be recorded as local JSON/JSONL and rendered to readable Markdown that shows agent messages, decisions, handoffs, risks, corrections, artifacts, verification, and next actions.
+- Human corrections can be promoted into durable project or agent rules and loaded by future IDE-agent work.
+- Audit can distinguish a generic baseline install from a context-aware install with active session evidence.
+- The Markdown-first flow works without SQLite, a web server, or a separate AI orchestration runtime.
+- Every completed Phase 9 feature is covered by automated unit, regression, smoke, and security tests, and the shared release gate fails before users see broken context/session/correction behavior.
+
 ## Current Next Actions
 
 1. Create or claim the npm scope `@agent-skills`.
@@ -317,7 +342,9 @@ Acceptance:
 4. Delete any legacy npm publish secrets after the trusted-publisher path is confirmed.
 5. Dispatch the `Release` workflow with `dry_run=false`.
 6. Verify public package install with `npm run publish:verify`.
-7. Continue Phase 8 maturity work: scheduled research refresh, stronger local override automation, stack expansion, and public-release readiness.
+7. Dogfood Markdown-first Agent Studio in at least one real downstream project and capture audit/session evidence.
+8. Dogfood `agent-kit studio export` in at least one real downstream project and capture whether the static view is useful enough before considering a live local GUI.
+9. Revisit live local GUI and direct AI API orchestration after the file protocol is proven.
 
 Latest release evidence:
 

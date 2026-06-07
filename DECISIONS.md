@@ -407,3 +407,23 @@ Add Marketing Copy Lead as a default council agent. Install `MESSAGING.md` as th
 ### Consequences
 
 Public-facing and conversion-facing copy now has an auditable owner and evidence path before implementation. The package becomes stricter for landing pages, onboarding, empty states, pricing, and CTA work, but it reduces the risk of vague SaaS language, invented proof, unsupported AI claims, dark patterns, or risky compliance and performance claims.
+
+## 2026-06-07 - Make Agent Studio Local And Markdown-First
+
+### Context
+
+The kit installs a strong council roster, skills, assistant adapters, model routing, and council-session evidence templates. The remaining adoption risk is that agents can still be counterproductive when they lack project-specific context or when their collaboration disappears into transient chat windows. Users need to see what agents decided, how they handed work off, and how human corrections change future behavior.
+
+A hosted dashboard, database, or direct AI orchestration layer would add operational and security complexity before the file protocol is proven. It would also make the package harder to adopt in existing projects.
+
+### Decision
+
+Add Phase 9 for a local-first Agent Studio workflow. The first implementation will use `.agent-kit/project-context.json`, `.agent-kit/corrections/*.json`, append-only `.agent-kit/council-sessions/*/events.jsonl`, and generated Markdown session views. IDE agents remain the default actor: they read context and corrections, then record decisions, handoffs, artifacts, verification, and user corrections through CLI helpers or structured file writes.
+
+Do not require SQLite, a hosted service, a background daemon, or model API credentials for the baseline workflow. Direct AI orchestration and live GUI/canvas views are deferred until the JSON/JSONL and Markdown contracts are useful by themselves.
+
+Make automated testing part of the Phase 9 definition of done. The release gate must run the Agent Studio smoke path so guided onboarding, context generation, correction persistence, session logging, Markdown rendering, static export, redaction, and audit behavior are checked before users test changes manually.
+
+### Consequences
+
+Installed projects get faster context capture, inspectable agent collaboration, durable human corrections, and a static local Studio view without adopting another software stack. The package must keep schemas, CLI commands, renderers, adapter instructions, audit checks, and tests aligned so context/session/export files stay valid and secret-safe. The design is less flashy than a full live GUI at first, but it keeps the source of truth reviewable in Git and lets future live studio views render over the same local files.

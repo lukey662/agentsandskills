@@ -33,6 +33,7 @@ describe("public package readiness", () => {
     expect(packageJson.scripts?.["sbom:check"]).toBe("node scripts/sbom-check.mjs");
     expect(packageJson.scripts?.["sbom:generate"]).toBe("node scripts/sbom-check.mjs --output sbom.cdx.json");
     expect(packageJson.scripts?.["publish:verify"]).toBe("node scripts/post-publish-verify.mjs");
+    expect(packageJson.scripts?.["smoke:studio"]).toBe("node scripts/smoke-studio.mjs");
     expect(packageJson.files).toContain("RESEARCH_CITATION_POLICY.md");
     expect(packageJson.files).toContain("CHANGELOG.md");
     expect(packageJson.files).toContain("CONTRIBUTING.md");
@@ -233,6 +234,10 @@ describe("public package readiness", () => {
     expect(existsSync(join(root, "templates", "next-supabase", "MODEL_ROUTING.md"))).toBe(true);
     expect(existsSync(join(root, "model-routing", "default-model-routing.json"))).toBe(true);
     expect(existsSync(join(root, "schemas", "model-routing.schema.json"))).toBe(true);
+    expect(existsSync(join(root, "schemas", "project-context.schema.json"))).toBe(true);
+    expect(existsSync(join(root, "schemas", "correction-rules.schema.json"))).toBe(true);
+    expect(existsSync(join(root, "schemas", "session-event.schema.json"))).toBe(true);
+    expect(existsSync(join(root, "schemas", "studio-session.schema.json"))).toBe(true);
 
     const modelRouting = JSON.parse(readFileSync(join(root, "model-routing", "default-model-routing.json"), "utf8")) as {
       profiles: Array<{ id: string }>;
@@ -258,6 +263,20 @@ describe("public package readiness", () => {
     expect(modelRouting.agentRoutes.every((route) => profileIds.has(route.profileId))).toBe(true);
     expect(readFileSync(join(root, "templates", "next-supabase", "MODEL_ROUTING.md"), "utf8")).toContain("June 2026 Commented Recommendations");
     expect(readFileSync(join(root, "src", "config", "contracts.ts"), "utf8")).toContain("ModelRoutingContract");
+  });
+
+  it("ships the static Agent Studio export command and smoke coverage", () => {
+    const cli = readFileSync(join(root, "src", "cli", "index.ts"), "utf8");
+    const exportModule = readFileSync(join(root, "src", "studio", "export.ts"), "utf8");
+    const smokeStudio = readFileSync(join(root, "scripts", "smoke-studio.mjs"), "utf8");
+
+    expect(cli).toContain("program.command(\"studio\")");
+    expect(cli).toContain("exportStaticStudio");
+    expect(exportModule).toContain("STUDIO_EXPORT_HTML");
+    expect(exportModule).toContain("agent-studio-data");
+    expect(exportModule).toContain("<svg");
+    expect(exportModule).toContain("<details");
+    expect(smokeStudio).toContain("[\"studio\", \"export\"]");
   });
 
   it("ships upgrade lifecycle assets", () => {
@@ -434,6 +453,10 @@ describe("public package readiness", () => {
     expect(releaseCheck).toContain("schemas/council-session.schema.json");
     expect(releaseCheck).toContain("schemas/audit-report.schema.json");
     expect(releaseCheck).toContain("schemas/model-routing.schema.json");
+    expect(releaseCheck).toContain("schemas/project-context.schema.json");
+    expect(releaseCheck).toContain("schemas/correction-rules.schema.json");
+    expect(releaseCheck).toContain("schemas/session-event.schema.json");
+    expect(releaseCheck).toContain("schemas/studio-session.schema.json");
     expect(releaseCheck).toContain("model-routing/default-model-routing.json");
     expect(releaseCheck).toContain("examples/next-supabase-installed/.agent-kit/agent-roster.json");
     expect(releaseCheck).toContain("examples/next-supabase-installed/.agent-kit/model-routing.json");
@@ -444,6 +467,7 @@ describe("public package readiness", () => {
     expect(releaseCheck).toContain("[\"run\", \"build\"]");
     expect(releaseCheck).toContain("[\"run\", \"examples:check\"]");
     expect(releaseCheck).toContain("[\"run\", \"smoke:install\"]");
+    expect(releaseCheck).toContain("[\"run\", \"smoke:studio\"]");
     expect(releaseCheck).toContain("[\"audit\", \"--audit-level=moderate\"]");
     expect(releaseCheck).toContain("[\"run\", \"sbom:check\"]");
     expect(releaseCheck).toContain("[\"pack\", \"--dry-run\"]");

@@ -50,11 +50,70 @@ The package deliberately separates AI operating mechanisms:
 - `.agent-kit/agent-roster.json` provides machine-readable council routing.
 - `.agent-kit/skills/` keeps reusable specialist workflows out of one-off prompts.
 - `MODEL_ROUTING.md` and `.agent-kit/model-routing.json` map agents to model profiles and record IDE enforcement limits.
+- `.agent-kit/project-context.json`, `.agent-kit/project-context.md`, and `.agent-kit/corrections/*.json` keep project-specific context and durable human corrections local.
+- `.agent-kit/council-sessions/*/events.jsonl` plus rendered Markdown make visible agent collaboration inspectable without a database.
 - `ASSISTANT_ADAPTERS.md` records active IDEs, model-selection status, tool/MCP setup, and evidence.
 - Optional hooks can enforce local policies, but they are not enabled by default because they execute local commands and require trust review.
-- CI and release gates enforce the package contract through audit, tests, install smoke, SBOM validation, and package dry run.
+- CI and release gates enforce the package contract through audit, tests, install smoke, Agent Studio smoke, SBOM validation, and package dry run.
 
 If a project stores structured council sessions in `.agent-kit/council-sessions/*.json`, audit validates each record against the runtime contract that mirrors `schemas/council-session.schema.json`.
+
+## Agent Studio
+
+Phase 9 is tracked in `ROADMAP.md` and detailed in `AGENT_STUDIO_PLAN.md`.
+
+The implemented Markdown-first Agent Studio workflow is local-first:
+
+- JSON and JSONL files are the durable source of truth.
+- Generated Markdown is the primary human interface.
+- `agent-kit studio export` provides a self-contained static HTML view for visual review.
+- IDE/chat agents remain the default actor that reads context and records updates.
+- No database, hosted service, background daemon, or model API key is required for the baseline workflow.
+- Optional static or live GUI views must render from the same local files rather than becoming a separate source of truth.
+
+Downstream files:
+
+- `.agent-kit/project-context.json`
+- `.agent-kit/project-context.md`
+- `.agent-kit/corrections/project-rules.json`
+- `.agent-kit/corrections/agent-rules.json`
+- `.agent-kit/council-sessions/<session-id>/session.json`
+- `.agent-kit/council-sessions/<session-id>/events.jsonl`
+- `.agent-kit/council-sessions/<session-id>/index.md`
+- `.agent-kit/council-sessions/<session-id>/transcript.md`
+- `.agent-kit/studio/index.html`
+
+Core commands:
+
+```bash
+agent-kit init --guided
+agent-kit onboard
+agent-kit context init
+agent-kit context scan
+agent-kit context ask
+agent-kit context render
+agent-kit context validate
+agent-kit context show
+agent-kit session start "Build checkout flow" --workflow frontend-change
+agent-kit session decision --agent planner --risk "Generic UI risk" "Use frontend-change workflow."
+agent-kit session handoff --from planner --to frontend-design-lead --decision "Start design intake." --risk "Generic UI risk."
+agent-kit session correct --agent frontend-design-lead --scope project "Keep UI dense and operational."
+agent-kit session artifact --file DESIGN.md --note "Design direction reviewed."
+agent-kit session verify --command "npm test" --result pass --notes "Tests passed."
+agent-kit session render
+agent-kit session close --status complete
+agent-kit correction list
+agent-kit correction add --scope project "Prefer operational density over hero-style marketing layout."
+agent-kit correction apply --id project-ui-density
+agent-kit correction retire project-ui-density --reason "Superseded by DESIGN.md update."
+agent-kit correction propose-upstream project-ui-density
+agent-kit studio export
+agent-kit audit --json
+```
+
+Every Agent Studio milestone must include automated tests with the feature. Current coverage includes unit tests, fixture-project tests, CLI smoke tests, example snapshot checks, regression tests for install/update/diff behavior, and security tests for redaction, path traversal, malformed JSON/JSONL, static export secret safety, and secret-looking values. `npm run smoke:studio` is wired into `npm run release:check` so context/session/correction/export regressions fail before user testing.
+
+Direct AI orchestration can be added later as an opt-in mode, but baseline Agent Studio works through installed IDE agents and local file updates.
 
 Audit validates frontend maturity beyond tokens and states. `DESIGN.md` must capture brand, content, user needs, creative direction, reference set, anti-references, distinctiveness, critique guidance, frontend distinctiveness benchmark, frontend product-quality scorecard, and design tokens. `STYLE_GUIDE.md` must require content-first creative direction before implementation. `TESTING.md` must document visual QA or visual-regression evidence for important UI changes.
 

@@ -10,6 +10,8 @@ The package answers one practical question:
 
 This is not just a prompt bundle. A project gets machine-readable agent routing, model profile routing, schema-backed council evidence, living documentation templates, research-backed quality gates, and CLI checks for drift.
 
+It also includes a local Agent Studio workflow: project context, durable human corrections, append-only session events, and rendered Markdown transcripts that work without a database, web server, background daemon, or separate model API key.
+
 ## Quick Start
 
 Use this in a Next.js + Supabase project after the public package is available on npm:
@@ -59,6 +61,22 @@ Default routing:
 
 For meaningful multi-agent work, record the decision, risk, next handoff, required outputs, and verification evidence in `COUNCIL.md` or `.agent-kit/council-sessions/*.json`.
 
+For local Agent Studio sessions, use:
+
+```bash
+agent-kit init --guided
+agent-kit context validate
+agent-kit session start "Build checkout flow" --workflow frontend-change
+agent-kit session decision --agent planner --risk "Generic UI risk" "Use frontend-change workflow."
+agent-kit session handoff --from planner --to frontend-design-lead --decision "Start design intake." --risk "Generic UI risk."
+agent-kit session correct --agent frontend-design-lead --scope project "Keep UI dense and operational."
+agent-kit session verify --command "npm test" --result pass --notes "Tests passed."
+agent-kit session render
+agent-kit correction list
+agent-kit studio export
+agent-kit audit --json
+```
+
 ## What Gets Installed
 
 Root markdown docs:
@@ -87,7 +105,8 @@ The `.agent-kit/` folder includes:
 
 - `agent-roster.json` for default workflow routing.
 - `model-routing.json` for provider-neutral model profile routing.
-- `schemas/` for agent roster, council-session, model-routing, and audit-report contracts.
+- `project-context.json`, `project-context.md`, `corrections/`, and `council-sessions/` for local Agent Studio context, correction rules, session events, and rendered transcripts.
+- `schemas/` for agent roster, council-session, model-routing, project context, correction rules, session events, studio sessions, and audit-report contracts.
 - `agents/`, `skills/`, `prompts/`, and `checklists/`.
 - `assistant-adapters/` for Codex/AGENTS.md-compatible tools, GitHub Copilot/VS Code, Cursor, and Claude Code.
 - `design-briefs/` for SaaS, admin, marketplace, content, tool, ecommerce, portfolio/venue, education, community/social, and AI workflow surfaces.
@@ -99,6 +118,11 @@ The `.agent-kit/` folder includes:
 agent-kit audit
 agent-kit audit --json
 agent-kit audit --min-readiness baseline-setup
+agent-kit context init
+agent-kit session start "Short task name"
+agent-kit session render
+agent-kit correction list
+agent-kit studio export
 agent-kit diff
 agent-kit update
 agent-kit add skill frontend-design-system
@@ -123,6 +147,7 @@ Agent Kit separates the mechanisms that make AI coding repeatable:
 - Skills: `.agent-kit/skills/` keeps specialist workflows reusable.
 - Model routing: `MODEL_ROUTING.md` and `.agent-kit/model-routing.json` map agents to model profiles.
 - Messaging: `MESSAGING.md` records audience, pain, outcome, proof, objections, voice, and conversion evidence for public-facing copy.
+- Local Agent Studio: `.agent-kit/project-context.*`, `.agent-kit/corrections/*.json`, and `.agent-kit/council-sessions/*` keep context, corrections, decisions, handoffs, artifacts, verification, and rendered Markdown transcripts local.
 - Tools and MCP: `ASSISTANT_ADAPTERS.md` records browser, GitHub, Figma, Supabase, docs, or other connector setup.
 - Hooks and CI: optional local enforcement plus `agent-kit audit`, tests, install smoke, SBOM, and release gates.
 

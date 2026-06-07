@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-skills.dev/schemas/studio-session.schema.json",
+  "title": "Agent Kit Studio Session",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "sessionId",
+    "title",
+    "createdAt",
+    "updatedAt",
+    "status",
+    "workflowId",
+    "request",
+    "affectedLayers",
+    "qualityTarget",
+    "requiredOutputs"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "sessionId": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "updatedAt": { "type": "string", "format": "date-time" },
+    "status": { "type": "string", "enum": ["planned", "in-progress", "blocked", "complete"] },
+    "workflowId": { "type": "string", "minLength": 1 },
+    "request": { "type": "string", "minLength": 1 },
+    "affectedLayers": { "type": "array", "items": { "type": "string" } },
+    "activeAgentId": { "type": "string" },
+    "nextAgentId": { "type": "string" },
+    "qualityTarget": { "type": "string", "enum": ["baseline-setup", "needs-improvement", "best-practice-candidate"] },
+    "requiredOutputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "status"],
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "status": { "type": "string", "enum": ["missing", "partial", "complete", "not-applicable"] },
+          "evidence": { "type": "string" }
+        }
+      }
+    },
+    "renderedAt": { "type": "string", "format": "date-time" }
+  }
+}

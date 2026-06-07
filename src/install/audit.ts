@@ -1,10 +1,20 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
-import { AgentRosterContract, CouncilSessionContract, ModelRoutingContract, formatContractIssues } from "../config/contracts.js";
+import {
+  AgentRosterContract,
+  CorrectionRulesContract,
+  CouncilSessionContract,
+  ModelRoutingContract,
+  ProjectContextContract,
+  SessionEventContract,
+  StudioSessionContract,
+  formatContractIssues
+} from "../config/contracts.js";
 import { DEFAULT_AGENT_ROSTER_TARGET, DEFAULT_MODEL_ROUTING_TARGET, ROOT_DOCS } from "../config/defaults.js";
 import type { AuditFinding, AuditReadiness, AuditReport, StackProfile } from "../config/types.js";
 import { listFilesRecursive, sha256 } from "../utils/fs.js";
 import { findPackageRoot } from "../utils/package-root.js";
+import { AGENT_RULES_JSON, CONTEXT_JSON, CONTEXT_MD, PROJECT_RULES_JSON, STUDIO_EXPORT_HTML, containsLikelySecret } from "../studio/shared.js";
 import { readManifest } from "./install.js";
 
 interface TemplateOverride {
@@ -78,7 +88,16 @@ const REQUIRED_SKILL_IDS = [
   "deployment-observability"
 ];
 
-const REQUIRED_SCHEMA_FILES = ["agent-roster.schema.json", "council-session.schema.json", "audit-report.schema.json", "model-routing.schema.json"] as const;
+const REQUIRED_SCHEMA_FILES = [
+  "agent-roster.schema.json",
+  "council-session.schema.json",
+  "audit-report.schema.json",
+  "model-routing.schema.json",
+  "project-context.schema.json",
+  "correction-rules.schema.json",
+  "session-event.schema.json",
+  "studio-session.schema.json"
+] as const;
 const COUNCIL_SESSION_DIR = ".agent-kit/council-sessions";
 
 export const READINESS_ORDER = ["needs-setup", "baseline-setup", "needs-improvement", "best-practice-candidate"] as const;
@@ -384,7 +403,7 @@ function addCouncilSessionRecordFindings(cwd: string, findings: AuditFinding[]):
   const sessionsRoot = join(cwd, COUNCIL_SESSION_DIR);
   if (!existsSync(sessionsRoot)) return;
 
-  const sessionFiles = listFilesRecursive(sessionsRoot).filter((file) => file.endsWith(".json"));
+  const sessionFiles = listFilesRecursive(sessionsRoot).filter((file) => file.endsWith(".json") && !file.endsWith("/session.json"));
   if (sessionFiles.length === 0) return;
 
   let invalidCount = 0;
@@ -452,6 +471,257 @@ function addSchemaFindings(cwd: string, findings: AuditFinding[]): void {
         area: "agents",
         message: `.agent-kit/schemas/${schemaFile} is not valid JSON Schema.`,
         remediation: "Restore the schema from the package or rerun agent-kit update."
+      });
+    }
+  }
+}
+
+function addAgentStudioFindings(cwd: string, findings: AuditFinding[]): void {
+  const contextPath = join(cwd, CONTEXT_JSON);
+  if (!existsSync(contextPath)) {
+    findings.push({
+      level: "warn",
+      area: "studio",
+      message: `${CONTEXT_JSON} is missing.`,
+      remediation: "Run agent-kit onboard or agent-kit init --guided so agents can start with project-specific context."
+    });
+  } else {
+    try {
+      const parsed = JSON.parse(readFileSync(contextPath, "utf8")) as unknown;
+      const result = ProjectContextContract.safeParse(parsed);
+      if (!result.success) {
+        findings.push({
+          level: "fail",
+          area: "studio",
+          message: `${CONTEXT_JSON} does not match the project-context contract.`,
+          remediation: `Fix project context before relying on guided agent behavior. First issue: ${formatContractIssues(result.error)[0]}`
+        });
+      } else {
+        const missingHighValue = [
+          ["product summary", result.data.productSummary],
+          ["primary audience", result.data.primaryAudience],
+          ["auth model", result.data.authModel],
+          ["tenant model", result.data.tenantModel]
+        ].filter(([, value]) => typeof value === "string" && !value.trim());
+        if (missingHighValue.length > 0 || result.data.primaryWorkflows.length === 0) {
+          findings.push({
+            level: "warn",
+            area: "studio",
+            message: `${CONTEXT_JSON} is valid but still missing high-value project context.`,
+            remediation: "Answer product summary, audience, workflows, auth/tenant model, UI direction, value proposition, and quality target before claiming context-aware setup."
+          });
+        } else {
+          findings.push({
+            level: "pass",
+            area: "studio",
+            message: "Project context is valid and contains high-value onboarding context."
+          });
+        }
+      }
+    } catch {
+      findings.push({
+        level: "fail",
+        area: "studio",
+        message: `${CONTEXT_JSON} is not valid JSON.`,
+        remediation: "Regenerate project context with agent-kit context init or fix the JSON syntax."
+      });
+    }
+  }
+
+  const contextMdPath = join(cwd, CONTEXT_MD);
+  if (existsSync(contextPath) && !existsSync(contextMdPath)) {
+    findings.push({
+      level: "warn",
+      area: "studio",
+      message: `${CONTEXT_MD} is missing while project context JSON exists.`,
+      remediation: "Run agent-kit context render so humans can review the context agents will load."
+    });
+  }
+
+  for (const relativePath of [PROJECT_RULES_JSON, AGENT_RULES_JSON]) {
+    const path = join(cwd, relativePath);
+    if (!existsSync(path)) continue;
+    try {
+      const parsed = JSON.parse(readFileSync(path, "utf8")) as unknown;
+      const result = CorrectionRulesContract.safeParse(parsed);
+      if (!result.success) {
+        findings.push({
+          level: "fail",
+          area: "studio",
+          message: `${relativePath} does not match the correction-rules contract.`,
+          remediation: `Fix correction rules before relying on persistent human feedback. First issue: ${formatContractIssues(result.error)[0]}`
+        });
+      } else if (result.data.rules.some((rule) => rule.status === "active")) {
+        findings.push({
+          level: "pass",
+          area: "studio",
+          message: `${relativePath} contains valid active correction rules.`
+        });
+      }
+    } catch {
+      findings.push({
+        level: "fail",
+        area: "studio",
+        message: `${relativePath} is not valid JSON.`,
+        remediation: "Fix the JSON syntax or regenerate correction files with agent-kit correction commands."
+      });
+    }
+  }
+
+  const studioExportPath = join(cwd, STUDIO_EXPORT_HTML);
+  if (existsSync(studioExportPath)) {
+    const exportHtml = readFileSync(studioExportPath, "utf8");
+    if (containsLikelySecret(exportHtml)) {
+      findings.push({
+        level: "fail",
+        area: "studio",
+        message: `${STUDIO_EXPORT_HTML} appears to contain a secret-like value.`,
+        remediation: "Regenerate the static studio export after redacting sensitive context, session, correction, and artifact data."
+      });
+    } else if (!exportHtml.includes("agent-studio-data") || !exportHtml.includes("Agent Studio")) {
+      findings.push({
+        level: "warn",
+        area: "studio",
+        message: `${STUDIO_EXPORT_HTML} does not look like a complete Agent Studio export.`,
+        remediation: "Regenerate it with agent-kit studio export."
+      });
+    } else {
+      findings.push({
+        level: "pass",
+        area: "studio",
+        message: `${STUDIO_EXPORT_HTML} is present and does not contain known secret patterns.`
+      });
+    }
+  }
+
+  const sessionsRoot = join(cwd, COUNCIL_SESSION_DIR);
+  if (!existsSync(sessionsRoot)) return;
+
+  const files = listFilesRecursive(sessionsRoot);
+  const studioSessionFiles = files.filter((file) => file.endsWith("/session.json"));
+  for (const sessionFile of studioSessionFiles) {
+    const sessionRelative = `${COUNCIL_SESSION_DIR}/${sessionFile}`;
+    const sessionDir = sessionFile.replace(/\/session\.json$/, "");
+    const eventsRelative = `${COUNCIL_SESSION_DIR}/${sessionDir}/events.jsonl`;
+    const indexRelative = `${COUNCIL_SESSION_DIR}/${sessionDir}/index.md`;
+    const transcriptRelative = `${COUNCIL_SESSION_DIR}/${sessionDir}/transcript.md`;
+
+    let sessionResult: ReturnType<typeof StudioSessionContract.safeParse> | null = null;
+    try {
+      sessionResult = StudioSessionContract.safeParse(JSON.parse(readFileSync(join(sessionsRoot, sessionFile), "utf8")) as unknown);
+      if (!sessionResult.success) {
+        findings.push({
+          level: "fail",
+          area: "studio",
+          message: `${sessionRelative} does not match the studio-session contract.`,
+          remediation: `Fix session metadata. First issue: ${formatContractIssues(sessionResult.error)[0]}`
+        });
+        continue;
+      }
+    } catch {
+      findings.push({
+        level: "fail",
+        area: "studio",
+        message: `${sessionRelative} is not valid JSON.`,
+        remediation: "Fix session metadata JSON before relying on rendered session evidence."
+      });
+      continue;
+    }
+
+    const eventsPath = join(cwd, eventsRelative);
+    if (!existsSync(eventsPath)) {
+      findings.push({
+        level: "fail",
+        area: "studio",
+        message: `${eventsRelative} is missing.`,
+        remediation: "Record session events or remove the incomplete studio session folder."
+      });
+      continue;
+    }
+
+    const eventText = readFileSync(eventsPath, "utf8");
+    if (containsLikelySecret(eventText)) {
+      findings.push({
+        level: "fail",
+        area: "studio",
+        message: `${eventsRelative} appears to contain a secret-like value.`,
+        remediation: "Redact tokens, database URLs, env values, and private customer data from session logs."
+      });
+    }
+
+    const eventLines = eventText.split(/\r?\n/).filter((line) => line.trim().length > 0);
+    let validEvents = 0;
+    let verificationCount = 0;
+    for (const [index, line] of eventLines.entries()) {
+      try {
+        const result = SessionEventContract.safeParse(JSON.parse(line) as unknown);
+        if (!result.success) {
+          findings.push({
+            level: "fail",
+            area: "studio",
+            message: `${eventsRelative} line ${index + 1} does not match the session-event contract.`,
+            remediation: `Fix the event row. First issue: ${formatContractIssues(result.error)[0]}`
+          });
+        } else {
+          validEvents += 1;
+          if (result.data.type === "verification_recorded") verificationCount += 1;
+        }
+      } catch {
+        findings.push({
+          level: "fail",
+          area: "studio",
+          message: `${eventsRelative} line ${index + 1} is not valid JSON.`,
+          remediation: "Fix malformed JSONL before rendering or auditing session history."
+        });
+      }
+    }
+
+    if (!existsSync(join(cwd, indexRelative)) || !existsSync(join(cwd, transcriptRelative))) {
+      findings.push({
+        level: "warn",
+        area: "studio",
+        message: `${sessionDir} has unrendered session Markdown.`,
+        remediation: "Run agent-kit session render so humans can inspect the current agent transcript and handoffs."
+      });
+    } else {
+      const indexText = readFileSync(join(cwd, indexRelative), "utf8");
+      const transcriptText = readFileSync(join(cwd, transcriptRelative), "utf8");
+      if (containsLikelySecret(indexText) || containsLikelySecret(transcriptText)) {
+        findings.push({
+          level: "fail",
+          area: "studio",
+          message: `${sessionDir} rendered Markdown appears to contain a secret-like value.`,
+          remediation: "Regenerate Markdown after redacting sensitive values from the event log."
+        });
+      }
+      if (statSync(eventsPath).mtimeMs > statSync(join(cwd, indexRelative)).mtimeMs) {
+        findings.push({
+          level: "warn",
+          area: "studio",
+          message: `${sessionDir} has events newer than rendered Markdown.`,
+          remediation: "Run agent-kit session render after recording new events."
+        });
+      }
+    }
+
+    const session = sessionResult.data;
+    if (session.status === "complete") {
+      const missingOutputs = session.requiredOutputs.filter((output) => output.status === "missing" || output.status === "partial");
+      if (missingOutputs.length > 0 || verificationCount === 0) {
+        findings.push({
+          level: "fail",
+          area: "studio",
+          message: `${sessionRelative} is complete but lacks required outputs or verification evidence.`,
+          remediation: "Do not mark sessions complete until required outputs are complete or not-applicable and verification evidence is recorded."
+        });
+      }
+    }
+
+    if (validEvents > 0) {
+      findings.push({
+        level: "pass",
+        area: "studio",
+        message: `${sessionDir} has ${validEvents} valid Agent Studio events.`
       });
     }
   }
@@ -1013,6 +1283,7 @@ export function auditProject(cwd: string): AuditFinding[] {
   addAgentRosterFindings(cwd, findings);
   addSchemaFindings(cwd, findings);
   addCouncilSessionRecordFindings(cwd, findings);
+  addAgentStudioFindings(cwd, findings);
 
   for (const doc of ROOT_DOCS) {
     if (existsSync(join(cwd, doc))) {

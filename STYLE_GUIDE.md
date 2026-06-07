@@ -38,6 +38,18 @@
 - Handoffs should name decision, risk, next owner, and required verification evidence.
 - Audit failures for missing council routing are treated as setup failures, not optional style drift.
 
+## Agent Studio And Context Style
+
+- Keep Agent Studio local-first: JSON/JSONL files are the machine-readable source of truth, and generated Markdown is the human-readable interface.
+- Do not require SQLite, a hosted database, a background daemon, or model API credentials for baseline context, session, correction, or rendering workflows.
+- Treat session event logs as append-only. Corrections add new events and status changes; they do not silently rewrite prior agent messages.
+- Record visible agent outputs, decisions, handoffs, risks, artifacts, verification, and user corrections. Do not claim to expose hidden model reasoning.
+- Store human corrections with explicit scope: `session`, `project`, `agent`, or `upstream-proposal`.
+- Redact secrets, raw environment values, access tokens, database URLs, private customer data, and other sensitive data before writing context, session, correction, or Markdown files.
+- Generated Markdown should be deterministic, link back to source JSON/JSONL files, and include Mermaid graphs only when they remain readable in common Markdown previewers.
+- Static Studio exports must remain self-contained, use export-time redacted data, avoid external assets, and never read live files from the browser.
+- Do not mark an Agent Studio item complete until automated coverage exists for its schema, CLI path, renderer or audit behavior, and relevant security edge cases.
+
 ## Messaging And Copy Style
 
 - Keep `MESSAGING.md` current when positioning, value proposition, voice, CTAs, onboarding, empty states, pricing, or public-facing copy changes.
