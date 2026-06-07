@@ -22,6 +22,7 @@ concurrency:
 jobs:
   analyze:
     name: Analyze JavaScript and TypeScript
+    if: ${{ github.repository_visibility == 'public' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
 

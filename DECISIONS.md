@@ -455,3 +455,17 @@ Pin the workflow to the current published upstream release tag `ossf/scorecard-a
 ### Consequences
 
 The Scorecard workflow can resolve deterministically on GitHub-hosted runners and will stop failing private-repo pushes for a public-readiness check that cannot publish useful public results yet. When the repo is made public, Scorecard runs automatically again. Future Scorecard upgrades should be explicit workflow changes with normal release-gate review.
+
+## 2026-06-07 - Gate CodeQL Until Code Scanning Is Available
+
+### Context
+
+The pushed `CodeQL` workflow reached analysis but failed because code scanning is not enabled for the private repository. The action reported `Resource not accessible by integration` against the workflow-run API and noted that code scanning must be enabled in repository settings.
+
+### Decision
+
+Run the CodeQL job only when `github.repository_visibility == 'public'`. Keep package security coverage active through `npm run release:check`, dependency audit, SBOM validation, local tests, and the release workflow while the repo remains private.
+
+### Consequences
+
+Private-repo pushes no longer fail on a GitHub code-scanning feature that is unavailable in the current repository settings. CodeQL starts running automatically once the repo is made public. If private GitHub Advanced Security/code scanning is enabled before publication, this gate can be revisited deliberately.
