@@ -59,6 +59,7 @@ describe("Startup setup wizard", () => {
     expect(html).toContain("Agent Kit");
     expect(html).toContain("section-nav");
     expect(html).toContain("aria-live");
+    expect(html).toContain("Open Agent Office");
     expect(html).not.toContain("ADMIN_EMAILS");
     expect(html).not.toContain("Ingest source content");
   });

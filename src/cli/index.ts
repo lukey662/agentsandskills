@@ -50,10 +50,16 @@ async function runSetupServer(options: { port: number; host: string; open?: bool
     port: options.port,
     host: options.host
   });
-  console.log(`Agent Kit setup office running at ${handle.url}`);
-  console.log("Pixel office is the default view. Form fallback: /wizard");
-  console.log("Step through Quick, Standard, or Complete setup. Press Ctrl+C to stop the server.");
-  if (options.open) openBrowser(handle.url);
+  if (handle.portFallback) {
+    console.warn(
+      `Port ${handle.requestedPort} is in use — an old setup server may still be running. Kill it and restart to load the latest Agent Office.`
+    );
+    console.warn(`Using fallback port ${handle.port} instead.`);
+  }
+  console.log(`Agent Kit v${PACKAGE_VERSION} — ${handle.defaultView} view at ${handle.url}/`);
+  console.log(`Pixel office (default): ${handle.url}/  |  Form fallback: ${handle.url}/wizard`);
+  console.log("Pick Quick, Standard, or Complete on first visit. Press Ctrl+C to stop.");
+  if (options.open) openBrowser(`${handle.url}/`);
   await new Promise<void>((resolve) => {
     const shutdown = () => {
       handle.close().finally(resolve);

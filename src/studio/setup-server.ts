@@ -43,6 +43,9 @@ export interface SetupServerOptions {
 export interface SetupServerHandle {
   url: string;
   port: number;
+  requestedPort: number;
+  portFallback: boolean;
+  defaultView: "office";
   close: () => Promise<void>;
 }
 
@@ -122,15 +125,25 @@ function buildStatePayload(cwd: string): Record<string, unknown> {
   };
 }
 
+function sendRedirect(response: ServerResponse, location: string): void {
+  response.writeHead(302, { Location: location, "Cache-Control": "no-store" });
+  response.end();
+}
+
 async function handleRequest(cwd: string, request: IncomingMessage, response: ServerResponse): Promise<void> {
   const url = new URL(request.url ?? "/", "http://127.0.0.1");
 
-  if (request.method === "GET" && (url.pathname === "/" || url.pathname === "/office")) {
+  if (request.method === "GET" && url.pathname === "/setup/wizard") {
+    sendRedirect(response, "/wizard");
+    return;
+  }
+
+  if (request.method === "GET" && (url.pathname === "/" || url.pathname === "/office" || url.pathname === "/setup")) {
     sendHtml(response, renderSetupOfficeHtmlWithContext(cwd));
     return;
   }
 
-  if (request.method === "GET" && (url.pathname === "/wizard" || url.pathname === "/setup")) {
+  if (request.method === "GET" && url.pathname === "/wizard") {
     sendHtml(response, renderSetupWizardHtmlWithContext(cwd));
     return;
   }
@@ -305,10 +318,12 @@ export async function startSetupServer(options: SetupServerOptions): Promise<Set
   });
 
   let port = requestedPort;
+  let portFallback = false;
   try {
     port = await listen(server, host, requestedPort);
   } catch (error) {
-    if (requestedPort === DEFAULT_PORT && error instanceof Error && "code" in error && error.code === "EADDRINUSE") {
+    if (error instanceof Error && "code" in error && error.code === "EADDRINUSE") {
+      portFallback = true;
       port = await listen(server, host, 0);
     } else {
       throw error;
@@ -318,6 +333,9 @@ export async function startSetupServer(options: SetupServerOptions): Promise<Set
   return {
     url: `http://${host}:${port}`,
     port,
+    requestedPort,
+    portFallback,
+    defaultView: "office",
     close: () =>
       new Promise((resolve, reject) => {
         server.close((closeError) => {

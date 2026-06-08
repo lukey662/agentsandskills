@@ -32,10 +32,123 @@ body {
   min-height: 100vh;
 }
 
+.office-banner {
+  background: linear-gradient(90deg, #0f766e, #115e59);
+  border-bottom: 1px solid #0d9488;
+  padding: 0;
+  text-align: center;
+}
+
+.office-banner-link {
+  display: block;
+  padding: 14px 20px;
+  color: #fff;
+  text-decoration: none;
+}
+
+.office-banner-link:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.office-banner-title {
+  display: block;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.office-banner-sub {
+  display: block;
+  font-size: 13px;
+  opacity: 0.9;
+  margin-top: 2px;
+}
+
+.office-cta-card {
+  display: block;
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(153, 246, 228, 0.12);
+  border: 2px solid #99f6e4;
+  color: #f8fafc;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.office-cta-card:hover {
+  background: rgba(153, 246, 228, 0.22);
+}
+
+.office-cta-label {
+  display: block;
+  font-weight: 700;
+  font-size: 15px;
+  color: #99f6e4;
+}
+
+.office-cta-desc {
+  display: block;
+  font-size: 12px;
+  color: #cbd5e1;
+  margin: 4px 0 8px;
+}
+
+.office-cta-action {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #5eead4;
+}
+
+.office-footer-btn {
+  background: #115e59 !important;
+  color: #fff !important;
+  text-decoration: none;
+  border: 2px solid #99f6e4;
+}
+
+.office-footer-btn:hover {
+  background: #0f766e !important;
+}
+
+.office-promo {
+  margin: 0 0 20px;
+  padding: 16px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ecfdf5, #ccfbf1);
+  border: 2px solid #99f6e4;
+}
+
+.office-promo h3 {
+  margin: 0 0 6px;
+  font-size: 17px;
+  color: var(--accent-dark);
+}
+
+.office-promo p {
+  margin: 0 0 12px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.office-promo .btn {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.office-promo .btn:hover {
+  background: var(--accent-dark);
+}
+
 .shell {
   display: grid;
   grid-template-columns: 260px minmax(0, 1fr);
-  min-height: 100vh;
+  min-height: calc(100vh - 72px);
 }
 
 @media (max-width: 860px) {
@@ -320,10 +433,17 @@ textarea { min-height: 120px; resize: vertical; }
 .footer {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 10px;
-  margin-top: 24px;
   flex-wrap: wrap;
+  margin-top: 24px;
   max-width: 720px;
+}
+
+.footer-actions {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
 }
 
 button.btn {

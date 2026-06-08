@@ -206,9 +206,16 @@
       .map((s) => '<span class="pill">' + escapeHtml(s) + "</span>")
       .join("");
     const agentCount = state.agents.length || boot.agents?.length || 0;
+    const officePromo =
+      '<div class="office-promo">' +
+      "<h3>Try the Agent Office</h3>" +
+      "<p>Walk a pixel office floor — click agent desks to brief your team, or visit zone stations for product, security, and design setup.</p>" +
+      '<a href="/" class="btn">Open Agent Office →</a>' +
+      "</div>";
     return (
-      '<div class="eyebrow">Setup home</div>' +
-      "<h2>Brief your agent team</h2>" +
+      officePromo +
+      '<div class="eyebrow">Form view · setup home</div>' +
+      "<h2>Brief your agent team (step-by-step)</h2>" +
       '<p class="why">You have <strong>' +
       agentCount +
       " specialists</strong> — planner, architect, engineers, design, copy, security, QA, and more. They already know their fields. This wizard captures what is unique about <em>your</em> project, like briefing freelancers you just hired.</p>" +

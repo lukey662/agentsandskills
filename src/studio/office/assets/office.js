@@ -2,7 +2,7 @@
 (function officeApp() {
   const boot = window.OFFICE_BOOT || {};
   const TILE = boot.tileSize || 16;
-  const SCALE = boot.scale || 3;
+  const SCALE = boot.scale || 6;
   const MAP_W = boot.mapWidth || 28;
   const MAP_H = boot.mapHeight || 18;
 
@@ -45,10 +45,20 @@
     reviewModal: document.getElementById("review-modal"),
     reviewList: document.getElementById("review-list"),
     reviewCancel: document.getElementById("review-cancel"),
-    reviewSave: document.getElementById("review-save")
+    reviewSave: document.getElementById("review-save"),
+    nameplateLayer: document.getElementById("nameplate-layer"),
+    officeHint: document.getElementById("office-hint"),
+    canvasWrap: document.querySelector(".canvas-wrap")
   };
 
-  const ctx = els.canvas.getContext("2d");
+  const ctx = els.canvas?.getContext("2d");
+  if (!ctx || !els.canvas) {
+    if (els.status) {
+      els.status.className = "status error";
+      els.status.textContent = "Canvas failed to initialize.";
+    }
+    return;
+  }
   els.canvas.style.width = MAP_W * TILE * SCALE + "px";
   els.canvas.style.height = MAP_H * TILE * SCALE + "px";
 
@@ -110,7 +120,11 @@
     updateProgressUi();
     renderStationList();
     if (state.depth === "undecided") showDepthModal();
-    else els.depthModal.hidden = true;
+    else {
+      els.depthModal.hidden = true;
+      showOfficeHint();
+    }
+    renderNameplates();
   }
 
   function updateProgressUi() {
@@ -163,6 +177,43 @@
     });
   }
 
+  function showOfficeHint() {
+    if (!els.officeHint) return;
+    els.officeHint.classList.remove("hidden");
+    window.clearTimeout(showOfficeHint._timer);
+    showOfficeHint._timer = window.setTimeout(() => {
+      els.officeHint.classList.add("hidden");
+    }, 8000);
+  }
+
+  function renderNameplates() {
+    if (!els.nameplateLayer || !els.canvasWrap) return;
+    const canvasRect = els.canvas.getBoundingClientRect();
+    const wrapRect = els.canvasWrap.getBoundingClientRect();
+    const offsetLeft = canvasRect.left - wrapRect.left;
+    const offsetTop = canvasRect.top - wrapRect.top;
+    const scaleX = canvasRect.width / (MAP_W * TILE);
+    const scaleY = canvasRect.height / (MAP_H * TILE);
+    els.nameplateLayer.innerHTML = visibleStations()
+      .map((station) => {
+        const cx = offsetLeft + (station.x + station.w / 2) * TILE * scaleX;
+        const cy = offsetTop + station.y * TILE * scaleY - 4;
+        const st = stationStatus(station);
+        return (
+          '<span class="nameplate ' +
+          st +
+          '" style="left:' +
+          cx +
+          "px;top:" +
+          cy +
+          'px">' +
+          escapeHtml(station.label) +
+          "</span>"
+        );
+      })
+      .join("");
+  }
+
   function showDepthModal() {
     els.depthModal.hidden = false;
     els.depthGrid.innerHTML = [
@@ -191,9 +242,19 @@
         });
         els.depthModal.hidden = true;
         renderStationList();
-        setStatus("ok", "Depth set to " + state.depth + ". Explore the office.");
+        renderNameplates();
+        showOfficeHint();
+        setStatus("ok", "Depth set to " + state.depth + ". Click a desk to brief an agent.");
       });
     });
+  }
+
+  function drawZoneLabel(station) {
+    const x = station.x * TILE + 6;
+    const y = station.y * TILE + station.h * TILE - 6;
+    ctx.fillStyle = "#e2e8f0";
+    ctx.font = "8px monospace";
+    ctx.fillText(station.label.slice(0, 14), x, y);
   }
 
   // --- Pixel drawing ---
@@ -281,6 +342,7 @@
           review: "#1e4a3a"
         };
         drawZone(station, colors[station.id] || colors[station.section] || "#334155");
+        drawZoneLabel(station);
       }
     }
     for (const station of stations) {
@@ -294,6 +356,7 @@
       const hovered = stations.find((s) => s.id === state.hoverId);
       if (hovered) drawHighlight(hovered);
     }
+    if (state.frame % 30 === 0) renderNameplates();
   }
 
   function canvasCoords(event) {
@@ -632,7 +695,7 @@
     window.requestAnimationFrame(loop);
   }
 
-  loadState()
-    .then(() => loop())
-    .catch((error) => setStatus("error", error.message));
+  loop();
+  loadState().catch((error) => setStatus("error", error.message));
+  window.addEventListener("resize", () => renderNameplates());
 })();

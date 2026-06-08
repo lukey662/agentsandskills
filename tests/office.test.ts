@@ -54,21 +54,28 @@ describe("Agent Office setup view", () => {
     expect(stations.filter((s) => s.kind === "agent").length).toBe(agents.length);
   });
 
-  it("serves office at / and wizard at /wizard", async () => {
+  it("serves office at /, /setup, and wizard at /wizard", async () => {
     const root = tempProject();
     const server = await startSetupServer({ cwd: root, port: 0 });
     try {
-      const officeRes = await fetch(`${server.url}/`);
-      expect(officeRes.ok).toBe(true);
-      const officeHtml = await officeRes.text();
-      expect(officeHtml).toContain("Agent Office");
-      expect(officeHtml).toContain("OFFICE_BOOT");
+      for (const path of ["/", "/setup", "/office"]) {
+        const res = await fetch(`${server.url}${path}`);
+        expect(res.ok).toBe(true);
+        const html = await res.text();
+        expect(html).toContain("Agent Office");
+        expect(html).toContain('data-view="office-v1"');
+      }
+
+      const redirectRes = await fetch(`${server.url}/setup/wizard`, { redirect: "manual" });
+      expect(redirectRes.status).toBe(302);
+      expect(redirectRes.headers.get("location")).toBe("/wizard");
 
       const wizardRes = await fetch(`${server.url}/wizard`);
       expect(wizardRes.ok).toBe(true);
       const wizardHtml = await wizardRes.text();
       expect(wizardHtml).toContain("Setup Wizard");
-      expect(wizardHtml).toContain("Back to office");
+      expect(wizardHtml).toContain("Open Agent Office");
+      expect(wizardHtml).toContain('data-view="wizard-v1"');
     } finally {
       await server.close();
     }

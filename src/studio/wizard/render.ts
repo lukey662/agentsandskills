@@ -6,6 +6,7 @@ import { getSetupFormViewModel, RECOMMENDED_SUPABASE_AUTH } from "../setup-form.
 import { getIdeSurfaces } from "./checklist.js";
 import { buildAgentWizardSteps, loadProjectRosterAgents } from "./roster.js";
 import { WIZARD_STEPS, type WizardStepDef } from "./steps.js";
+import { PACKAGE_VERSION } from "../../config/defaults.js";
 
 const PRODUCT_CATEGORIES = [
   "content-app",
@@ -79,11 +80,21 @@ export function renderSetupWizardHtml(boot?: WizardBootConfig): string {
   <title>Agent Kit Setup Wizard</title>
   <style>${css}</style>
 </head>
-<body>
+<body data-view="wizard-v1" data-kit-version="${PACKAGE_VERSION}">
+  <div class="office-banner" role="navigation" aria-label="Agent Office">
+    <a href="/" class="office-banner-link">
+      <span class="office-banner-title">Open Agent Office</span>
+      <span class="office-banner-sub">Pixel setup — walk the floor, click desks, brief your team</span>
+    </a>
+  </div>
   <div class="shell">
     <aside class="rail" aria-label="Setup progress">
-      <h1>Agent Kit</h1>
-      <p style="margin:0 0 12px"><a href="/" style="color:#99f6e4;font-size:13px">← Back to office</a></p>
+      <h1>Form view</h1>
+      <a href="/" class="office-cta-card">
+        <span class="office-cta-label">Agent Office</span>
+        <span class="office-cta-desc">Gamified pixel setup (recommended)</span>
+        <span class="office-cta-action">Open office →</span>
+      </a>
       <div class="project" id="project-name">…</div>
       <div class="ring-wrap">
         <div class="ring" id="progress-ring" style="--pct: 0"><span id="ring-pct">0%</span></div>
@@ -98,8 +109,9 @@ export function renderSetupWizardHtml(boot?: WizardBootConfig): string {
       <div id="status" class="status" role="status" aria-live="polite"></div>
       <article class="card" id="wizard-card" aria-labelledby="step-title"></article>
       <div class="footer" id="wizard-footer">
-        <button type="button" class="btn secondary hidden" id="back-btn">Back</button>
-        <div style="display:flex;gap:10px;margin-left:auto">
+        <a href="/" class="btn office-footer-btn">Agent Office</a>
+        <div class="footer-actions">
+          <button type="button" class="btn secondary hidden" id="back-btn">Back</button>
           <button type="button" class="btn primary" id="next-btn">Next</button>
           <button type="button" class="btn primary hidden" id="save-btn">Save project context</button>
         </div>

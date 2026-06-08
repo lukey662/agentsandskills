@@ -60,7 +60,14 @@ If a project stores structured council sessions in `.agent-kit/council-sessions/
 
 ## Startup Wizard (Agent Office)
 
-`agent-kit setup` serves a local-only **Agent Office** at `http://127.0.0.1:9321` (default). The pixel top-down office is the default view: click agents at desks to brief them, or visit zone stations (IDE terminal, product board, security door, etc.). Form view remains at `/wizard` for accessibility and speed.
+`agent-kit setup` serves a local-only **Agent Office** at `http://127.0.0.1:9321` (default). Routes:
+
+| URL | View |
+| --- | --- |
+| `/` or `/setup` or `/office` | Pixel Agent Office (default) |
+| `/wizard` | Form wizard fallback |
+
+The office is a top-down canvas: click agents at desks to brief them, or visit zone stations (IDE terminal, product board, security door, etc.).
 
 Writes:
 
@@ -84,7 +91,9 @@ agent-kit init --stack next-supabase --no-setup
 agent-kit setup --status
 ```
 
-Form fallback: open `/wizard` from the office header or use `agent-kit setup` and navigate to `/wizard`.
+Form fallback: open `/wizard` from the office header or the banner at the top of the form view.
+
+**Note:** npm `0.1.1` does not include Agent Office — use a local build from `main` or wait for the next publish after `0.1.2`.
 
 ## Agent Studio
 

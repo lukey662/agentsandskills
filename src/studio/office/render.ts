@@ -7,6 +7,7 @@ import { getIdeSurfaces } from "../wizard/checklist.js";
 import { loadProjectRosterAgents } from "../wizard/roster.js";
 import { CANVAS_SCALE, MAP_HEIGHT, MAP_WIDTH, TILE_SIZE, buildOfficeStations } from "./map.js";
 import type { OfficeBootConfig } from "./types.js";
+import { PACKAGE_VERSION } from "../../config/defaults.js";
 
 const PRODUCT_CATEGORIES = [
   "content-app",
@@ -80,7 +81,7 @@ export function renderSetupOfficeHtml(boot?: OfficeBootConfig): string {
   <title>Agent Kit — Setup Office</title>
   <style>${css}</style>
 </head>
-<body>
+<body data-view="office-v1" data-kit-version="${PACKAGE_VERSION}">
   <header class="office-header">
     <div class="brand">
       <h1>Agent Office</h1>
@@ -102,10 +103,12 @@ export function renderSetupOfficeHtml(boot?: OfficeBootConfig): string {
       <canvas id="office-floor" width="${MAP_WIDTH * TILE_SIZE}" height="${MAP_HEIGHT * TILE_SIZE}" role="img" aria-labelledby="canvas-desc"></canvas>
       <p id="canvas-desc" class="sr-only">Top-down pixel office. Click agents at desks or zone stations to configure your project.</p>
       <div id="hover-label" class="hover-label hidden" aria-hidden="true"></div>
+      <div id="nameplate-layer" class="nameplate-layer" aria-hidden="true"></div>
+      <div id="office-hint" class="office-hint hidden" role="status">Click a desk or zone to brief your agent team.</div>
     </div>
   </main>
   <div id="status" class="status" role="status" aria-live="polite"></div>
-  <div id="depth-modal" class="modal" hidden>
+  <div id="depth-modal" class="modal modal-blur" hidden>
     <div class="modal-card" role="dialog" aria-labelledby="depth-title" aria-modal="true">
       <h2 id="depth-title">Choose setup depth</h2>
       <p class="why">Unlocks more stations on the office floor.</p>

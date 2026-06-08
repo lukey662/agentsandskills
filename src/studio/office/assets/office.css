@@ -148,6 +148,48 @@ body {
   background: #0f172a;
 }
 
+.nameplate-layer {
+  position: absolute;
+  inset: 20px;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.nameplate {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  background: rgba(15, 23, 42, 0.9);
+  color: #f8fafc;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid #475569;
+  white-space: nowrap;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nameplate.done {
+  border-color: rgba(74, 222, 128, 0.6);
+  color: #bbf7d0;
+}
+
+.office-hint {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 118, 110, 0.95);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  z-index: 10;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
 #office-floor {
   image-rendering: pixelated;
   image-rendering: crisp-edges;
@@ -313,6 +355,11 @@ body {
   justify-content: center;
   z-index: 60;
   padding: 20px;
+}
+
+.modal-blur:not([hidden]) {
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(2px);
 }
 
 .modal[hidden],

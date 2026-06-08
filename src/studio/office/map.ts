@@ -5,7 +5,7 @@ import type { OfficeStation } from "./types.js";
 export const MAP_WIDTH = 28;
 export const MAP_HEIGHT = 18;
 export const TILE_SIZE = 16;
-export const CANVAS_SCALE = 3;
+export const CANVAS_SCALE = 6;
 
 const ALL_DEPTHS: WizardDepth[] = ["quick", "standard", "complete", "undecided"];
 const STANDARD_DEPTHS: WizardDepth[] = ["standard", "complete"];
