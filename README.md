@@ -17,9 +17,16 @@ It also includes a local Agent Studio workflow: project context, durable human c
 Use this in a Next.js + Supabase project after the public package is available on npm:
 
 ```bash
-npx @appsforgood/next-supabase-kit init --stack next-supabase
+npx @appsforgood/next-supabase-kit init --stack next-supabase --setup --open
 npx @appsforgood/next-supabase-kit audit
 npx @appsforgood/next-supabase-kit audit --min-readiness baseline-setup
+```
+
+After install, the **Agent Office** setup view teaches agents about your project (~10 min). Resume anytime:
+
+```bash
+npx @appsforgood/next-supabase-kit setup --open
+npx @appsforgood/next-supabase-kit setup --status
 ```
 
 The installer preserves existing docs. If a file already exists and differs from the template, the new version is written to `.agent-kit/conflicts/` for review.
@@ -64,6 +71,7 @@ For meaningful multi-agent work, record the decision, risk, next handoff, requir
 For local Agent Studio sessions, use:
 
 ```bash
+agent-kit setup
 agent-kit init --guided
 agent-kit context validate
 agent-kit session start "Build checkout flow" --workflow frontend-change

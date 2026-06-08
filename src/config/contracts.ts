@@ -350,6 +350,26 @@ export type CorrectionRulesContractValue = z.infer<typeof CorrectionRulesContrac
 export type StudioSessionContractValue = z.infer<typeof StudioSessionContract>;
 export type SessionEventContractValue = z.infer<typeof SessionEventContract>;
 
+export const OnboardingStateContract = z
+  .object({
+    schemaVersion: z.literal(1),
+    depth: z.enum(["quick", "standard", "complete", "undecided"]),
+    startedAt: z.string().datetime(),
+    lastVisitedAt: z.string().datetime(),
+    completedAt: z.string().datetime().optional(),
+    completedSections: z.array(z.string()),
+    skippedSections: z.array(z.string()),
+    currentSection: z.string(),
+    currentStep: z.number().int().min(0),
+    wizardVersion: z.string(),
+    ideSurface: z.enum(["cursor", "copilot", "claude", "codex", "other"]).optional(),
+    ideVerifiedAt: z.string().datetime().optional(),
+    visualQaTier: z.enum(["baseline", "strong", "mature"]).optional()
+  })
+  .strict();
+
+export type OnboardingStateContractValue = z.infer<typeof OnboardingStateContract>;
+
 export function formatContractIssues(error: z.ZodError): string[] {
   return error.issues.map((issue) => {
     const path = issue.path.length > 0 ? issue.path.join(".") : "<root>";

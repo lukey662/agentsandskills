@@ -8,6 +8,7 @@ Use this file when upgrading Agent Kit, Next.js, Supabase, shared UI primitives,
 npx @appsforgood/next-supabase-kit@latest doctor
 npx @appsforgood/next-supabase-kit@latest diff
 npx @appsforgood/next-supabase-kit@latest update
+npx @appsforgood/next-supabase-kit@latest setup --status
 npx @appsforgood/next-supabase-kit@latest audit --min-readiness baseline-setup
 ```
 

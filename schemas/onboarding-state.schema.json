@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-skills.dev/schemas/onboarding-state.schema.json",
+  "title": "Agent Kit Onboarding State",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "depth",
+    "startedAt",
+    "lastVisitedAt",
+    "completedSections",
+    "skippedSections",
+    "currentSection",
+    "currentStep",
+    "wizardVersion"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "depth": { "type": "string", "enum": ["quick", "standard", "complete", "undecided"] },
+    "startedAt": { "type": "string", "format": "date-time" },
+    "lastVisitedAt": { "type": "string", "format": "date-time" },
+    "completedAt": { "type": "string", "format": "date-time" },
+    "completedSections": { "type": "array", "items": { "type": "string" } },
+    "skippedSections": { "type": "array", "items": { "type": "string" } },
+    "currentSection": { "type": "string" },
+    "currentStep": { "type": "integer", "minimum": 0 },
+    "wizardVersion": { "type": "string" },
+    "ideSurface": { "type": "string", "enum": ["cursor", "copilot", "claude", "codex", "other"] },
+    "ideVerifiedAt": { "type": "string", "format": "date-time" },
+    "visualQaTier": { "type": "string", "enum": ["baseline", "strong", "mature"] }
+  }
+}

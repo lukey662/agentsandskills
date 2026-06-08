@@ -55,6 +55,7 @@ export function ensureStudioDirs(cwd: string): void {
   ensureDir(join(cwd, AGENT_KIT_DIR));
   ensureDir(join(cwd, CORRECTIONS_DIR));
   ensureDir(join(cwd, COUNCIL_SESSIONS_DIR));
+  ensureDir(join(cwd, AGENT_KIT_DIR, "onboarding"));
 }
 
 export function readJsonFile<T>(cwd: string, relativePath: string): T | null {

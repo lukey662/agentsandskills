@@ -10,6 +10,10 @@ import { proposeUpdates, summarizeFindings } from "../research/summarize.js";
 import { addCorrection, applyCorrection, listCorrections, proposeCorrectionUpstream, retireCorrection } from "../studio/corrections.js";
 import { initProjectContext, renderProjectContext, scanProjectContext, validateProjectContext } from "../studio/context.js";
 import { exportStaticStudio } from "../studio/export.js";
+import { getSetupProgress, onboardingStateExists } from "../studio/onboarding-state.js";
+import { openBrowser } from "../studio/setup-browser.js";
+import { formatInitSummary, promptStartSetup } from "../studio/setup-init.js";
+import { startSetupServer } from "../studio/setup-server.js";
 import {
   closeSession,
   getActiveSessionId,
@@ -40,23 +44,63 @@ program
   .description("Next.js + Supabase agent, skill, docs, design, and research kit.")
   .version(PACKAGE_VERSION);
 
+async function runSetupServer(options: { port: number; host: string; open?: boolean }): Promise<void> {
+  const handle = await startSetupServer({
+    cwd: process.cwd(),
+    port: options.port,
+    host: options.host
+  });
+  console.log(`Agent Kit setup office running at ${handle.url}`);
+  console.log("Pixel office is the default view. Form fallback: /wizard");
+  console.log("Step through Quick, Standard, or Complete setup. Press Ctrl+C to stop the server.");
+  if (options.open) openBrowser(handle.url);
+  await new Promise<void>((resolve) => {
+    const shutdown = () => {
+      handle.close().finally(resolve);
+    };
+    process.once("SIGINT", shutdown);
+    process.once("SIGTERM", shutdown);
+  });
+}
+
 program
   .command("init")
   .description("Install agent-kit docs and library files into a project.")
   .option("--stack <stack>", "Stack profile to install.", "next-supabase")
   .option("--force", "Overwrite existing docs instead of writing conflicts.")
   .option("--guided", "Also create local project context files from a non-interactive scan.")
-  .action((options: { stack: "next-supabase"; force?: boolean; guided?: boolean }) => {
+  .option("--json", "Print machine-readable JSON output.")
+  .option("--setup", "Start the setup wizard after install.")
+  .option("--no-setup", "Skip the post-install setup wizard prompt.")
+  .option("--open", "Open the setup wizard in your default browser.")
+  .action(async (options: {
+    stack: "next-supabase";
+    force?: boolean;
+    guided?: boolean;
+    json?: boolean;
+    setup?: boolean;
+    noSetup?: boolean;
+    open?: boolean;
+  }) => {
+    const cwd = process.cwd();
     const result = initProject({
-      cwd: process.cwd(),
+      cwd,
       stack: options.stack,
       force: Boolean(options.force)
     });
-    if (options.guided) {
-      console.log(JSON.stringify({ install: result, context: initProjectContext(process.cwd()) }, null, 2));
-      return;
+    const contextResult = options.guided ? initProjectContext(cwd) : undefined;
+
+    if (options.json) {
+      console.log(JSON.stringify(contextResult ? { install: result, context: contextResult } : result, null, 2));
+    } else {
+      console.log(formatInitSummary(result));
     }
-    console.log(JSON.stringify(result, null, 2));
+
+    const shouldPrompt = !options.noSetup && !options.json;
+    const startWizard = Boolean(options.setup) || (shouldPrompt && (await promptStartSetup(true)));
+    if (startWizard) {
+      await runSetupServer({ port: 9321, host: "127.0.0.1", open: Boolean(options.open) });
+    }
   });
 
 program
@@ -131,9 +175,19 @@ program
   .command("doctor")
   .description("Validate local CLI runtime prerequisites.")
   .action(() => {
+    const cwd = process.cwd();
     console.log("agent-kit doctor");
     console.log(`node: ${process.version}`);
     console.log(`available skills: ${listSkills().length}`);
+    if (onboardingStateExists(cwd)) {
+      const progress = getSetupProgress(cwd);
+      console.log(`setup progress: ${progress.percent}% (depth: ${progress.depth})`);
+      if (!progress.quickComplete) {
+        console.log("tip: run agent-kit setup --open to finish project context onboarding.");
+      }
+    } else {
+      console.log("tip: run agent-kit init then agent-kit setup to onboard this project.");
+    }
     console.log("status: ok");
   });
 
@@ -143,6 +197,24 @@ program
   .option("--refresh", "Refresh inferred context from the current project state.")
   .action(() => {
     console.log(JSON.stringify(initProjectContext(process.cwd()), null, 2));
+  });
+
+program
+  .command("setup")
+  .description("Start the local Agent Office setup view for project context.")
+  .option("--port <number>", "Port to listen on.", (value) => Number.parseInt(value, 10), 9321)
+  .option("--host <host>", "Host to bind.", "127.0.0.1")
+  .option("--open", "Open the wizard in your default browser.")
+  .option("--status", "Print setup progress and exit.")
+  .action(async (options: { port: number; host: string; open?: boolean; status?: boolean }) => {
+    const cwd = process.cwd();
+    if (options.status) {
+      const progress = getSetupProgress(cwd);
+      console.log(JSON.stringify(progress, null, 2));
+      process.exitCode = progress.quickComplete ? 0 : 1;
+      return;
+    }
+    await runSetupServer({ port: options.port, host: options.host, open: Boolean(options.open) });
   });
 
 const context = program.command("context").description("Manage local project context for Agent Studio.");
@@ -166,6 +238,12 @@ context
   .description("Print unanswered high-value project context questions.")
   .action(() => {
     const result = initProjectContext(process.cwd());
+    if (result.openQuestions.length === 0) {
+      console.log("No open project-context questions.");
+      return;
+    }
+    console.log("Answer these in the web setup wizard with: agent-kit setup --open");
+    console.log("Check progress with: agent-kit setup --status");
     for (const question of result.openQuestions) console.log(`- ${question}`);
   });
 

@@ -34,7 +34,9 @@ describe("public package readiness", () => {
     expect(packageJson.scripts?.["sbom:generate"]).toBe("node scripts/sbom-check.mjs --output sbom.cdx.json");
     expect(packageJson.scripts?.["publish:verify"]).toBe("node scripts/post-publish-verify.mjs");
     expect(packageJson.scripts?.["smoke:studio"]).toBe("node scripts/smoke-studio.mjs");
+    expect(packageJson.scripts?.["smoke:setup"]).toBe("node scripts/smoke-setup.mjs");
     expect(packageJson.scripts?.["smoke:audit-gate"]).toBe("node scripts/smoke-audit-gate.mjs");
+    expect(packageJson.files).toContain("dist/studio/wizard/assets");
     expect(packageJson.files).toContain("RESEARCH_CITATION_POLICY.md");
     expect(packageJson.files).toContain("CHANGELOG.md");
     expect(packageJson.files).toContain("CONTRIBUTING.md");
@@ -240,6 +242,7 @@ describe("public package readiness", () => {
     expect(existsSync(join(root, "schemas", "correction-rules.schema.json"))).toBe(true);
     expect(existsSync(join(root, "schemas", "session-event.schema.json"))).toBe(true);
     expect(existsSync(join(root, "schemas", "studio-session.schema.json"))).toBe(true);
+    expect(existsSync(join(root, "schemas", "onboarding-state.schema.json"))).toBe(true);
 
     const modelRouting = JSON.parse(readFileSync(join(root, "model-routing", "default-model-routing.json"), "utf8")) as {
       profiles: Array<{ id: string }>;
@@ -459,6 +462,7 @@ describe("public package readiness", () => {
     expect(releaseCheck).toContain("schemas/correction-rules.schema.json");
     expect(releaseCheck).toContain("schemas/session-event.schema.json");
     expect(releaseCheck).toContain("schemas/studio-session.schema.json");
+    expect(releaseCheck).toContain("schemas/onboarding-state.schema.json");
     expect(releaseCheck).toContain("model-routing/default-model-routing.json");
     expect(releaseCheck).toContain("examples/next-supabase-installed/.agent-kit/agent-roster.json");
     expect(releaseCheck).toContain("examples/next-supabase-installed/.agent-kit/model-routing.json");
@@ -470,6 +474,7 @@ describe("public package readiness", () => {
     expect(releaseCheck).toContain("[\"run\", \"examples:check\"]");
     expect(releaseCheck).toContain("[\"run\", \"smoke:install\"]");
     expect(releaseCheck).toContain("[\"run\", \"smoke:studio\"]");
+    expect(releaseCheck).toContain("[\"run\", \"smoke:setup\"]");
     expect(releaseCheck).toContain("[\"run\", \"smoke:audit-gate\"]");
     expect(releaseCheck).toContain("[\"audit\", \"--audit-level=moderate\"]");
     expect(releaseCheck).toContain("[\"run\", \"sbom:check\"]");

@@ -15,6 +15,7 @@ import type { AuditFinding, AuditReadiness, AuditReport, StackProfile } from "..
 import { listFilesRecursive, sha256 } from "../utils/fs.js";
 import { findPackageRoot } from "../utils/package-root.js";
 import { AGENT_RULES_JSON, CONTEXT_JSON, CONTEXT_MD, PROJECT_RULES_JSON, STUDIO_EXPORT_HTML, containsLikelySecret } from "../studio/shared.js";
+import { getSetupProgress, onboardingStateExists } from "../studio/onboarding-state.js";
 import { readManifest } from "./install.js";
 
 interface TemplateOverride {
@@ -96,7 +97,8 @@ const REQUIRED_SCHEMA_FILES = [
   "project-context.schema.json",
   "correction-rules.schema.json",
   "session-event.schema.json",
-  "studio-session.schema.json"
+  "studio-session.schema.json",
+  "onboarding-state.schema.json"
 ] as const;
 const COUNCIL_SESSION_DIR = ".agent-kit/council-sessions";
 
@@ -483,7 +485,7 @@ function addAgentStudioFindings(cwd: string, findings: AuditFinding[]): void {
       level: "warn",
       area: "studio",
       message: `${CONTEXT_JSON} is missing.`,
-      remediation: "Run agent-kit onboard or agent-kit init --guided so agents can start with project-specific context."
+      remediation: "Run agent-kit setup, agent-kit onboard, or agent-kit init --guided so agents can start with project-specific context."
     });
   } else {
     try {
@@ -508,13 +510,37 @@ function addAgentStudioFindings(cwd: string, findings: AuditFinding[]): void {
             level: "warn",
             area: "studio",
             message: `${CONTEXT_JSON} is valid but still missing high-value project context.`,
-            remediation: "Answer product summary, audience, workflows, auth/tenant model, UI direction, value proposition, and quality target before claiming context-aware setup."
+            remediation: "Answer product summary, audience, workflows, auth/tenant model, UI direction, value proposition, and quality target with agent-kit setup or by editing .agent-kit/project-context.json."
           });
         } else {
           findings.push({
             level: "pass",
             area: "studio",
             message: "Project context is valid and contains high-value onboarding context."
+          });
+        }
+        if (onboardingStateExists(cwd)) {
+          const progress = getSetupProgress(cwd);
+          if (!progress.quickComplete) {
+            findings.push({
+              level: "warn",
+              area: "studio",
+              message: `Setup wizard progress is ${progress.percent}% complete (depth: ${progress.depth}).`,
+              remediation: "Run agent-kit setup --open to finish project context onboarding, or agent-kit setup --status to inspect progress."
+            });
+          } else {
+            findings.push({
+              level: "pass",
+              area: "studio",
+              message: "Setup wizard quick path is complete."
+            });
+          }
+        } else if (missingHighValue.length === 0 && result.data.primaryWorkflows.length > 0) {
+          findings.push({
+            level: "warn",
+            area: "studio",
+            message: "Project context exists but setup wizard state has not been recorded.",
+            remediation: "Run agent-kit setup --open once so onboarding progress and depth are tracked locally."
           });
         }
       }

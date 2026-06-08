@@ -20,6 +20,8 @@
   },
   "files": [
     "dist",
+    "dist/studio/wizard/assets",
+    "dist/studio/office/assets",
     "templates",
     "agents",
     "skills",
@@ -63,7 +65,7 @@
   },
   "packageManager": "npm@11.6.2",
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && node scripts/copy-studio-assets.mjs",
     "dev": "tsx src/cli/index.ts",
     "typecheck": "tsc --noEmit",
     "lint": "tsc --noEmit",
@@ -72,6 +74,7 @@
     "smoke": "node dist/index.js doctor",
     "smoke:install": "node scripts/smoke-install.mjs",
     "smoke:studio": "node scripts/smoke-studio.mjs",
+    "smoke:setup": "node scripts/smoke-setup.mjs",
     "smoke:audit-gate": "node scripts/smoke-audit-gate.mjs",
     "examples:check": "node scripts/example-check.mjs",
     "version:check": "node scripts/version-check.mjs",

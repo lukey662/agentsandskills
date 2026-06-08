@@ -58,6 +58,34 @@ The package deliberately separates AI operating mechanisms:
 
 If a project stores structured council sessions in `.agent-kit/council-sessions/*.json`, audit validates each record against the runtime contract that mirrors `schemas/council-session.schema.json`.
 
+## Startup Wizard (Agent Office)
+
+`agent-kit setup` serves a local-only **Agent Office** at `http://127.0.0.1:9321` (default). The pixel top-down office is the default view: click agents at desks to brief them, or visit zone stations (IDE terminal, product board, security door, etc.). Form view remains at `/wizard` for accessibility and speed.
+
+Writes:
+
+- `.agent-kit/project-context.json` and `.agent-kit/project-context.md`
+- `.agent-kit/agent-briefs.md` — per-agent project briefings
+- `.agent-kit/onboarding/state.json` and `wizard-draft.json` — resume state
+
+Progressive depth:
+
+| Depth | Time | Covers |
+| --- | --- | --- |
+| Quick | ~10 min | IDE, agent briefings, product, access, UI, messaging |
+| Standard | ~15 min | Quick + visual QA tier in `TESTING.md` |
+| Complete | ~25 min | Standard + DESIGN/MESSAGING intake drafts |
+
+Install hooks:
+
+```bash
+agent-kit init --stack next-supabase --setup --open
+agent-kit init --stack next-supabase --no-setup
+agent-kit setup --status
+```
+
+Form fallback: open `/wizard` from the office header or use `agent-kit setup` and navigate to `/wizard`.
+
 ## Agent Studio
 
 Phase 9 is tracked in `ROADMAP.md` and detailed in `AGENT_STUDIO_PLAN.md`.
@@ -66,6 +94,7 @@ The implemented Markdown-first Agent Studio workflow is local-first:
 
 - JSON and JSONL files are the durable source of truth.
 - Generated Markdown is the primary human interface.
+- `agent-kit setup` serves the local Agent Office (default) and form wizard (`/wizard`) for project onboarding. Placeholders and Supabase baselines stay generic; each downstream project supplies its own product-specific values.
 - `agent-kit studio export` provides a self-contained static HTML view for visual review.
 - IDE/chat agents remain the default actor that reads context and records updates.
 - No database, hosted service, background daemon, or model API key is required for the baseline workflow.
@@ -75,6 +104,7 @@ Downstream files:
 
 - `.agent-kit/project-context.json`
 - `.agent-kit/project-context.md`
+- `.agent-kit/agent-briefs.md`
 - `.agent-kit/corrections/project-rules.json`
 - `.agent-kit/corrections/agent-rules.json`
 - `.agent-kit/council-sessions/<session-id>/session.json`
@@ -86,6 +116,7 @@ Downstream files:
 Core commands:
 
 ```bash
+agent-kit setup
 agent-kit init --guided
 agent-kit onboard
 agent-kit context init

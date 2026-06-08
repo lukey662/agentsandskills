@@ -2,7 +2,7 @@
 
 This project uses explicit agent roles so implementation, security, quality, and documentation do not collapse into one vague assistant.
 
-Use `.agent-kit/agent-roster.json` as the default council contract. Use `MODEL_ROUTING.md` and `.agent-kit/model-routing.json` to choose model profiles for each agent. Before meaningful work, read `.agent-kit/project-context.json` and `.agent-kit/project-context.md` when present, then apply active corrections from `.agent-kit/corrections/project-rules.json` and `.agent-kit/corrections/agent-rules.json`. When a request is ambiguous, planning-oriented, or cross-layer, start with Planner and follow the matching workflow in `AGENT_ROSTER.md`. Use `ASSISTANT_ADAPTERS.md` to confirm which AI coding tools load these instructions and how model selection is handled. Record meaningful council sessions in `COUNCIL.md` or the local Agent Studio files under `.agent-kit/council-sessions/`.
+Use `.agent-kit/agent-roster.json` as the default council contract. Use `MODEL_ROUTING.md` and `.agent-kit/model-routing.json` to choose model profiles for each agent. Before meaningful work, read `.agent-kit/project-context.json`, `.agent-kit/project-context.md`, and `.agent-kit/agent-briefs.md` when present, then apply active corrections from `.agent-kit/corrections/project-rules.json` and `.agent-kit/corrections/agent-rules.json`. When a request is ambiguous, planning-oriented, or cross-layer, start with Planner and follow the matching workflow in `AGENT_ROSTER.md`. Use `ASSISTANT_ADAPTERS.md` to confirm which AI coding tools load these instructions and how model selection is handled. Record meaningful council sessions in `COUNCIL.md` or the local Agent Studio files under `.agent-kit/council-sessions/`.
 
 ## Planner
 

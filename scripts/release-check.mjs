@@ -20,6 +20,7 @@ const jsonFiles = [
   "schemas/correction-rules.schema.json",
   "schemas/session-event.schema.json",
   "schemas/studio-session.schema.json",
+  "schemas/onboarding-state.schema.json",
   "examples/next-supabase-installed/.agent-kit/agent-roster.json",
   "examples/next-supabase-installed/.agent-kit/model-routing.json",
   "examples/next-supabase-installed/.agent-kit/manifest.json",
@@ -57,6 +58,7 @@ run("Build", ["run", "build"]);
 run("Example consistency check", ["run", "examples:check"]);
 run("Install smoke", ["run", "smoke:install"]);
 run("Agent Studio smoke", ["run", "smoke:studio"]);
+run("Setup wizard smoke", ["run", "smoke:setup"]);
 run("Baseline audit gate smoke", ["run", "smoke:audit-gate"]);
 run("Dependency audit", ["audit", "--audit-level=moderate"]);
 run("SBOM check", ["run", "sbom:check"]);

@@ -8,6 +8,9 @@ import { initProject } from "../src/install/install.js";
 import { initProjectContext, validateProjectContext } from "../src/studio/context.js";
 import { addCorrection, applyCorrection, listCorrections, retireCorrection } from "../src/studio/corrections.js";
 import { exportStaticStudio } from "../src/studio/export.js";
+import { applySetupFormAnswers, getSetupFormViewModel } from "../src/studio/setup-form.js";
+import { renderSetupWizardHtml } from "../src/studio/wizard/render.js";
+import { startSetupServer } from "../src/studio/setup-server.js";
 import {
   closeSession,
   recordArtifact,
@@ -281,5 +284,62 @@ describe("Agent Studio local workflow", () => {
     expect(existsSync(join(root, ".agent-kit", "schemas", "correction-rules.schema.json"))).toBe(true);
     expect(existsSync(join(root, ".agent-kit", "schemas", "session-event.schema.json"))).toBe(true);
     expect(existsSync(join(root, ".agent-kit", "schemas", "studio-session.schema.json"))).toBe(true);
+  });
+
+  it("renders a multi-step setup wizard page", () => {
+    const html = renderSetupWizardHtml();
+    expect(html).toContain("Agent Kit");
+    expect(html).toContain("section-nav");
+    expect(html).toContain("wizard-card");
+    expect(html).not.toContain("ADMIN_EMAILS");
+    expect(html).not.toContain("Ingest source content");
+  });
+
+  it("saves project context through the local setup wizard API", async () => {
+    const root = tempProject();
+    initProjectContext(root);
+    const server = await startSetupServer({ cwd: root, port: 0 });
+
+    try {
+      const viewResponse = await fetch(`${server.url}/api/context`);
+      expect(viewResponse.ok).toBe(true);
+      const viewModel = (await viewResponse.json()) as { projectName: string; openQuestions: string[] };
+      expect(viewModel.projectName).toBe("studio-test-project");
+      expect(viewModel.openQuestions.length).toBeGreaterThan(0);
+
+      const saveResponse = await fetch(`${server.url}/api/context`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productSummary: "Test product summary for studio setup.",
+          productCategory: "content-app",
+          primaryAudience: "Leaders",
+          primaryWorkflows: "Workflow one\nWorkflow two\nWorkflow three",
+          authModel: "Supabase Auth with admin allowlist.",
+          tenantModel: "single-user",
+          uiPreferred: "Clear and readable.",
+          uiAvoid: "Generic dashboards.",
+          valueProposition: "Users complete the primary workflow faster with less manual work.",
+          proof: "Human-reviewed drafts",
+          objections: "Too much AI slop — Every publish requires review.",
+          qualityTarget: "needs-improvement",
+          owner: "qa-owner"
+        })
+      });
+      expect(saveResponse.ok).toBe(true);
+      const saved = (await saveResponse.json()) as { openQuestions: string[] };
+      expect(saved.openQuestions).toHaveLength(0);
+
+      const markdown = readFileSync(join(root, ".agent-kit", "project-context.md"), "utf8");
+      expect(markdown).toContain("Test product summary for studio setup.");
+      expect(getSetupFormViewModel(root).form.productSummary).toContain("Test product summary");
+
+      const audit = createAuditReport(root);
+      expect(
+        audit.findings.some((finding) => finding.message.includes("Project context is valid and contains high-value onboarding context"))
+      ).toBe(true);
+    } finally {
+      await server.close();
+    }
   });
 });

@@ -2,6 +2,34 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-06-08 - Agent Office As Default Setup Presentation
+
+### Context
+
+The setup wizard captured project context through a stepped form. Users expected a visual, browser-based experience that introduces the council agents by name and makes setup feel like briefing a team — not filling a generic SaaS form.
+
+### Decision
+
+Add a pixel-art top-down **Agent Office** as the default view for `agent-kit setup` (`GET /`). Keep the existing form wizard at `/wizard` as an accessibility and power-user fallback. Reuse the same local APIs (`/api/state`, `/api/draft`, `/api/context`, checklist endpoints) and file outputs — the office is presentation only, not a new source of truth. Bind the server to localhost only; ship office CSS/JS under `dist/studio/office/assets/`.
+
+### Consequences
+
+Setup is more discoverable and aligned with the agent-roster mental model. Canvas rendering uses procedural pixel tiles and role-based agent sprites in v1 (no hosted assets). Users who prefer forms or screen readers can use `/wizard` and the station list sidebar. Future live studio GUI work should still render from the same JSON/JSONL contracts.
+
+## 2026-06-08 - Progressive Local Startup Wizard
+
+### Context
+
+Fresh installs had valid kit assets but empty project context. Terminal-only onboarding (`context ask`) was easy to miss and hard to resume.
+
+### Decision
+
+Add a local-only setup wizard (`agent-kit setup`) with progressive depth (Quick, Standard, Complete), resume state in `.agent-kit/onboarding/state.json`, and post-install prompts via `agent-kit init --setup`. Do not add npm `postinstall` hooks; consumers run the kit through `npx` and `init`.
+
+### Consequences
+
+Downstream projects get a guided, generic UX with project-specific answers stored locally. The kit ships wizard CSS/JS assets under `dist/studio/wizard/assets/`. Optional Standard/Complete steps remain non-blocking for Quick completion.
+
 ## 2026-06-02 - Track Research Evidence In Git
 
 ### Context

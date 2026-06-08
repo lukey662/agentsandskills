@@ -60,7 +60,7 @@ function inferOpenQuestions(context: ProjectContextContractValue): string[] {
   if (context.primaryWorkflows.length === 0) missing.push("What are the top three user workflows?");
   if (!context.uiDirection.preferred.trim()) missing.push("What should the UI feel like, and what should it avoid?");
   if (!context.messaging.valueProposition.trim()) missing.push("What value proposition and proof should public copy use?");
-  return unique([...context.openQuestions, ...missing]);
+  return unique(missing);
 }
 
 export function scanProjectContext(cwd: string): ProjectContextContractValue {
@@ -142,7 +142,8 @@ function uniqueEvidence(items: ProjectContextContractValue["evidence"]): Project
 
 export function writeProjectContext(cwd: string, context: ProjectContextContractValue): ContextCommandResult {
   ensureStudioDirs(cwd);
-  const parsed = ProjectContextContract.parse(context);
+  const withOpenQuestions = { ...context, openQuestions: inferOpenQuestions(context) };
+  const parsed = ProjectContextContract.parse(withOpenQuestions);
   writeJsonFile(cwd, CONTEXT_JSON, parsed);
   const markdown = renderProjectContextMarkdown(parsed);
   writeTextFile(cwd, CONTEXT_MD, markdown);
