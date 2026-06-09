@@ -91,7 +91,6 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
-    "@rolldown/binding-win32-x64-msvc": "^1.0.3",
     "@types/node": "^22.10.5",
     "tsup": "^8.3.5",
     "tsx": "^4.19.2",
