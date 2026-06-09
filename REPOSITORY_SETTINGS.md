@@ -33,6 +33,7 @@ Create environment `npm-publish` with:
 - Deployment branches restricted to `main` and release events.
 - No npm publish token secret for the trusted-publishing flow.
 - Any legacy npm token secrets deleted after Trusted Publishing is confirmed.
+- Optional fallback: a maintainer npm publish token secret on the `npm-publish` environment when trusted publishing returns 404 on PUT.
 
 The npm trusted publisher must match:
 

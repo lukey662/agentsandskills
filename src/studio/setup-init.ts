@@ -12,6 +12,15 @@ export function formatInitSummary(result: InitResult): string {
   if (result.conflicts.length > 0) {
     lines.push(`Conflicts to review: ${result.conflicts.length} → see .agent-kit/conflicts/`);
   }
+  if (result.contextPath) {
+    lines.push(`Project context: ${result.contextPath}`);
+  }
+  if (result.activation?.activated.length) {
+    lines.push(`IDE activation: ${result.activation.activated.join(", ")}`);
+  }
+  if ([...result.copied, ...result.unchanged].some((path) => path.includes("agent-kit-audit.yml"))) {
+    lines.push("CI template: .github/workflows/agent-kit-audit.yml");
+  }
   lines.push("", "Next: teach agents about your project with the setup wizard (~5 min).", "  agent-kit setup --open");
   return lines.join("\n");
 }

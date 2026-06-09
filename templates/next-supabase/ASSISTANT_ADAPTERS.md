@@ -26,10 +26,10 @@ Canonical source of truth:
 
 | Tool | Instruction surface | Instruction status | Model-selection status | Enforcement | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| Codex / AGENTS.md-compatible tools | `AGENTS.md`, optional `.codex/config.toml`, optional `.codex/agents/*.toml` | TBD | TBD | Partial | TBD | Confirm the tool loads root `AGENTS.md`, follows council routing, and uses `MODEL_ROUTING.md` for model choice. |
-| GitHub Copilot / VS Code | `.github/copilot-instructions.md` and `.github/instructions/*.instructions.md` | TBD | TBD | Advisory | TBD | Use `.agent-kit/assistant-adapters/github-copilot-instructions.md`, `github-next-supabase.instructions.md`, and `model-selection/github-copilot-model-selection.md` as starting points. |
+| Codex / AGENTS.md-compatible tools | `AGENTS.md`, optional `.codex/config.toml`, optional `.codex/agents/*.toml` | TBD | TBD | Partial | TBD | Run `agent-kit init --activate codex` to copy optional `.codex/config.toml`. Confirm the tool loads root `AGENTS.md`. |
+| GitHub Copilot / VS Code | `.github/copilot-instructions.md` and `.github/instructions/*.instructions.md` | TBD | TBD | Advisory | TBD | Run `agent-kit init --activate copilot` to promote Copilot instruction files. |
 | Cursor | `.cursor/rules/cursor-agent-kit.mdc` and `.cursor/rules/cursor-model-selection.mdc` | Active on init | Advisory | Advisory | `agent-kit init` copies canonical rules from `.agent-kit/assistant-adapters/`; verify in Cursor Settings > Rules that both rules load. | `agent-kit init` installs `.cursor/rules/cursor-agent-kit.mdc` and `.cursor/rules/cursor-model-selection.mdc`. Re-run `agent-kit diff` after kit updates if the canonical adapter files changed. |
-| Claude Code | `.claude/agents/*.md` and optional `CLAUDE.md` | TBD | TBD | Partial | TBD | Use `.agent-kit/assistant-adapters/claude-code-subagents.md` and `model-selection/claude-code-subagents-with-models.md` as starting points. |
+| Claude Code | `.claude/agents/*.md` and optional `CLAUDE.md` | TBD | TBD | Partial | TBD | Run `agent-kit init --activate claude` to generate subagents from `.agent-kit/agent-roster.json` and install `CLAUDE.md`. |
 
 ## Model Selection
 

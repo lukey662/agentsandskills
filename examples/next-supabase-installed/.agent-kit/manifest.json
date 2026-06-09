@@ -1,8 +1,8 @@
 {
   "packageName": "@appsforgood/next-supabase-kit",
-  "packageVersion": "0.1.2",
+  "packageVersion": "0.1.3",
   "stack": "next-supabase",
-  "installedAt": "2026-06-07T13:07:50.510Z",
+  "installedAt": "2026-06-09T23:21:22.591Z",
   "docs": [
     "AGENTS.md",
     "AGENT_ROSTER.md",
@@ -39,7 +39,7 @@
   "templateHashes": {
     "AGENTS.md": "c7f3e7360938a1ed804d2110e9af96e6f09d50c49138063bef0db1642ddaf84f",
     "AGENT_ROSTER.md": "fb88198d0a5f911ec8cbaa2850c1a47e1dbd1fe2c8144f9ce633bbfc1ec414d3",
-    "ASSISTANT_ADAPTERS.md": "d6154a64d77f37cdcfa1f6e59c7d30fc0728c07553551ea77c4fe8d14f1c7365",
+    "ASSISTANT_ADAPTERS.md": "80cc528255a42cd92327ed822bdbc6f2ef922fc73a2a8e20d63db7705d7728c2",
     "COUNCIL.md": "40bec9051664c9c38b8360ee16f21b5e4716030d19c493cdec67395ab06528e1",
     "SKILLS.md": "3c3c2eb40438a42026479dccac7bbf084ba22e2d758c425dff59385d05eae3bd",
     "SPEC.md": "8a12bae351b0ceda50dfb2e63ec68767e27f68ffdc15f25bb21bba189855578e",

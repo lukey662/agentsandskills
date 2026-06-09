@@ -4,7 +4,7 @@ applyTo: "app/**/*.{ts,tsx},src/app/**/*.{ts,tsx},pages/**/*.{ts,tsx},src/pages/
 
 # Next.js + Supabase Agent Kit Instructions
 
-Follow `AGENTS.md`, `AGENT_ROSTER.md`, `.agent-kit/agent-roster.json`, `MODEL_ROUTING.md`, `.agent-kit/model-routing.json`, `.agent-kit/project-context.json`, `.agent-kit/project-context.md`, `.agent-kit/corrections/project-rules.json`, `.agent-kit/corrections/agent-rules.json`, `COUNCIL.md`, `.agent-kit/council-sessions/`, and `QUALITY_GATES.md`.
+Follow `AGENTS.md`, `AGENT_ROSTER.md`, `.agent-kit/agent-roster.json`, `MODEL_ROUTING.md`, `.agent-kit/model-routing.json`, `.agent-kit/project-context.json`, `.agent-kit/project-context.md`, `.agent-kit/agent-briefs.md` when present, `.agent-kit/corrections/project-rules.json`, `.agent-kit/corrections/agent-rules.json`, `COUNCIL.md`, `.agent-kit/council-sessions/`, and `QUALITY_GATES.md`.
 
 ## Next.js
 

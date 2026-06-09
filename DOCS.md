@@ -15,7 +15,16 @@ Package-level research decisions are recorded in `DECISIONS.md`.
 
 ## Install Behavior
 
-`agent-kit init --stack next-supabase` installs root markdown docs and copies library assets into `.agent-kit/`.
+`agent-kit init --stack next-supabase` installs root markdown docs, copies library assets into `.agent-kit/`, runs a lightweight project scan to create `.agent-kit/project-context.json`, installs Cursor rules, and ships `.github/workflows/agent-kit-audit.yml`.
+
+Promote other IDE surfaces with:
+
+```bash
+agent-kit init --activate claude    # .claude/agents/*.md + CLAUDE.md
+agent-kit init --activate copilot   # .github/copilot-instructions.md
+agent-kit init --activate codex     # .codex/config.toml
+agent-kit init --activate all       # all of the above (Cursor rules remain on every init)
+```
 
 Existing files are never overwritten by default. Conflicting template updates are written to `.agent-kit/conflicts/`.
 
@@ -88,7 +97,13 @@ agent-kit studio serve --open
 | `GET /api/sessions/:id/events` | Read redacted `events.jsonl` |
 | `GET /api/events/stream` | SSE stream when events append |
 
-Record work with existing CLI commands (`session start`, `session note`, `session handoff`, etc.). The live view updates when `events.jsonl` changes — no IDE chat scraping.
+Record work with existing CLI commands (`session start`, `session note`, `session handoff`, etc.) or batch them:
+
+```bash
+agent-kit session checkpoint --file .agent-kit/checkpoint.json
+```
+
+The live view updates when `events.jsonl` changes — no IDE chat scraping.
 
 Static fallback: `agent-kit studio export` → `.agent-kit/studio/index.html`.
 
@@ -138,6 +153,7 @@ agent-kit session correct --agent frontend-design-lead --scope project "Keep UI 
 agent-kit session artifact --file DESIGN.md --note "Design direction reviewed."
 agent-kit session verify --command "npm test" --result pass --notes "Tests passed."
 agent-kit session output "visual QA evidence" --status not-applicable --evidence "No UI change."
+agent-kit session checkpoint --file .agent-kit/checkpoint.json
 agent-kit session render
 agent-kit session close --status complete
 agent-kit correction list

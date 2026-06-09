@@ -1334,29 +1334,30 @@ export function auditProject(cwd: string): AuditFinding[] {
   addQualityGateFindings(cwd, findings);
   addUpgradeFindings(cwd, findings);
   addProjectEvidenceFindings(cwd, findings);
+  addProjectRealityFindings(cwd, findings);
 
   const security = readDoc(cwd, "SECURITY.md");
   if (!includesAny(security, ["OWASP", "Top 10"])) {
     findings.push({
       level: "fail",
-      area: "security",
-      message: "SECURITY.md does not explicitly reference OWASP Top 10 review.",
+      area: "docs-hygiene",
+      message: "SECURITY.md does not explicitly reference OWASP Top 10 review (docs hygiene check).",
       remediation: "Add OWASP Top 10 coverage to the security checklist."
     });
   }
   if (!includesAny(security, ["RLS", "row level security"])) {
     findings.push({
       level: "fail",
-      area: "security",
-      message: "SECURITY.md does not explicitly cover Supabase RLS.",
+      area: "docs-hygiene",
+      message: "SECURITY.md does not explicitly cover Supabase RLS (docs hygiene check).",
       remediation: "Require authorization to be enforced in Postgres RLS, not only in the UI."
     });
   }
   if (!includesAny(security, ["service-role", "service role"])) {
     findings.push({
       level: "warn",
-      area: "security",
-      message: "SECURITY.md does not mention service-role key isolation.",
+      area: "docs-hygiene",
+      message: "SECURITY.md does not mention service-role key isolation (docs hygiene check).",
       remediation: "Document that service-role keys are server-only and never exposed to client bundles."
     });
   }
@@ -1367,21 +1368,133 @@ export function auditProject(cwd: string): AuditFinding[] {
   if (!includesAny(testing, ["Playwright", "smoke"])) {
     findings.push({
       level: "warn",
-      area: "testing",
-      message: "TESTING.md does not require Playwright or smoke coverage.",
+      area: "docs-hygiene",
+      message: "TESTING.md does not require Playwright or smoke coverage (docs hygiene check).",
       remediation: "Define critical-path Playwright smoke tests for auth and primary workflows."
     });
   }
   if (!includesAny(testing, ["visual regression", "visual QA", "screenshot evidence", "toHaveScreenshot", "Storybook", "Chromatic", "Argos"])) {
     findings.push({
       level: "warn",
-      area: "testing",
-      message: "TESTING.md does not define visual QA or visual-regression evidence.",
+      area: "docs-hygiene",
+      message: "TESTING.md does not define visual QA or visual-regression evidence (docs hygiene check).",
       remediation: "Document the visual QA tier: screenshot review, Playwright screenshots, Storybook visual tests, or a visual-regression service for important UI changes."
     });
   }
 
   return findings;
+}
+
+function readPackageJson(cwd: string): { scripts?: Record<string, string> } | null {
+  const path = join(cwd, "package.json");
+  if (!existsSync(path)) return null;
+  try {
+    return JSON.parse(readFileSync(path, "utf8")) as { scripts?: Record<string, string> };
+  } catch {
+    return null;
+  }
+}
+
+function addProjectRealityFindings(cwd: string, findings: AuditFinding[]): void {
+  const migrationsDir = join(cwd, "supabase", "migrations");
+  if (existsSync(migrationsDir)) {
+    const sqlFiles = listFilesRecursive(migrationsDir).filter((file) => file.endsWith(".sql"));
+    if (sqlFiles.length === 0) {
+      findings.push({
+        level: "warn",
+        area: "project-reality",
+        message: "supabase/migrations exists but contains no SQL migration files.",
+        remediation: "Add versioned SQL migrations or remove the empty migrations directory if Supabase is not in use."
+      });
+    } else {
+      const rlsFiles = sqlFiles.filter((file) => {
+        const content = readFileSync(join(migrationsDir, file), "utf8");
+        return /enable\s+row\s+level\s+security/i.test(content);
+      });
+      if (rlsFiles.length === 0) {
+        findings.push({
+          level: "fail",
+          area: "project-reality",
+          message: "No Supabase migration enables row level security.",
+          remediation: "Add `ALTER TABLE ... ENABLE ROW LEVEL SECURITY` (or equivalent) in supabase/migrations before shipping user data."
+        });
+      } else {
+        findings.push({
+          level: "pass",
+          area: "project-reality",
+          message: `Supabase migrations enable RLS in ${rlsFiles.length} file(s).`
+        });
+      }
+    }
+  }
+
+  const packageJson = readPackageJson(cwd);
+  if (!packageJson) {
+    findings.push({
+      level: "warn",
+      area: "project-reality",
+      message: "No package.json found to verify test scripts.",
+      remediation: "Add package.json with test, lint, and build scripts appropriate to the stack."
+    });
+  } else {
+    const scripts = packageJson.scripts ?? {};
+    const testScript = scripts.test ?? scripts["test:unit"] ?? scripts["test:ci"];
+    if (!testScript) {
+      findings.push({
+        level: "warn",
+        area: "project-reality",
+        message: "package.json has no test script (test, test:unit, or test:ci).",
+        remediation: "Add a test script and document it in TESTING.md."
+      });
+    } else {
+      findings.push({
+        level: "pass",
+        area: "project-reality",
+        message: "package.json defines a test script."
+      });
+    }
+  }
+
+  const trackedSourceFiles = listFilesRecursive(cwd).filter((file) => {
+    if (file.includes("node_modules/") || file.includes(".agent-kit/")) return false;
+    return /\.(ts|tsx|js|jsx|env|json)$/.test(file);
+  });
+  const secretHits = trackedSourceFiles
+    .map((file) => {
+      const content = readFileSync(join(cwd, file), "utf8");
+      return containsLikelySecret(content) ? file : null;
+    })
+    .filter((file): file is string => file !== null)
+    .slice(0, 5);
+  if (secretHits.length > 0) {
+    findings.push({
+      level: "fail",
+      area: "project-reality",
+      message: `Possible committed secret patterns detected in: ${secretHits.join(", ")}.`,
+      remediation: "Remove secrets from tracked files, rotate exposed credentials, and use environment variables."
+    });
+  } else if (trackedSourceFiles.length > 0) {
+    findings.push({
+      level: "pass",
+      area: "project-reality",
+      message: "No obvious committed secret patterns detected in tracked source files."
+    });
+  }
+
+  if (!existsSync(join(cwd, CONTEXT_JSON))) {
+    findings.push({
+      level: "warn",
+      area: "project-reality",
+      message: ".agent-kit/project-context.json is missing.",
+      remediation: "Run agent-kit init or agent-kit context init to create project context."
+    });
+  } else {
+    findings.push({
+      level: "pass",
+      area: "project-reality",
+      message: ".agent-kit/project-context.json exists."
+    });
+  }
 }
 
 function createReadiness(findings: AuditFinding[], summary: AuditReport["summary"]): AuditReadiness {

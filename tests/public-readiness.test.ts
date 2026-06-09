@@ -427,11 +427,11 @@ describe("public package readiness", () => {
     expect(release).toContain("actions/upload-artifact");
     expect(release).toContain("actions/attest-sbom");
     expect(release).toContain("sbom-path: release-artifacts/sbom.cdx.json");
-    expect(release).toContain('npm publish "./${{ steps.pack.outputs.tarball }}" --access public');
+    expect(release).toContain('npm publish "${tarball}" --access public');
     expect(release).toContain("node scripts/post-publish-verify.mjs");
     expect(ci).toContain("npm run release:check");
     expect(release).toContain("Validate manual publish ref");
-    expect(release).not.toContain("NODE_AUTH_TOKEN");
+    expect(release).toContain("secrets.NPM_TOKEN");
     expect(supplyChain).toContain("Trusted Publishing");
     expect(supplyChain).toContain("provenance");
     expect(supplyChain).toContain("SBOM");

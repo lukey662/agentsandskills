@@ -11,6 +11,7 @@ Use `AGENTS.md` as the primary project instruction surface.
 - `.agent-kit/model-routing.json`
 - `.agent-kit/project-context.json`
 - `.agent-kit/project-context.md`
+- `.agent-kit/agent-briefs.md` when present
 - `.agent-kit/corrections/project-rules.json`
 - `.agent-kit/corrections/agent-rules.json`
 - `COUNCIL.md`
@@ -23,7 +24,7 @@ When a task is planning-oriented, ambiguous, risky, frontend-facing, security-se
 
 Use `MODEL_ROUTING.md` to choose the model profile or reasoning effort for the active role. Exact model names belong in dated config comments, not in the role definitions.
 
-Before meaningful work, load project context and active correction rules. For meaningful handoffs, record visible decisions and evidence with `agent-kit session ...` commands, then run `agent-kit session render`.
+Before meaningful work, load project context, agent briefs when present, and active correction rules. For meaningful handoffs, record visible decisions and evidence with `agent-kit session checkpoint --file <json>` or individual `agent-kit session ...` commands, then run `agent-kit session render`.
 
 ## Verification
 

@@ -29,6 +29,7 @@ import {
   renderActiveSession,
   startSession
 } from "../studio/session.js";
+import { checkpointSessionFromFile } from "../studio/session-checkpoint.js";
 import { readTextFile } from "../studio/shared.js";
 import { PACKAGE_VERSION } from "../config/defaults.js";
 
@@ -75,7 +76,8 @@ program
   .description("Install agent-kit docs and library files into a project.")
   .option("--stack <stack>", "Stack profile to install.", "next-supabase")
   .option("--force", "Overwrite existing docs instead of writing conflicts.")
-  .option("--guided", "Also create local project context files from a non-interactive scan.")
+  .option("--activate <targets...>", "Promote IDE adapters: cursor, claude, codex, copilot, or all.")
+  .option("--guided", "Deprecated alias for default project context scan (always runs on init).")
   .option("--json", "Print machine-readable JSON output.")
   .option("--setup", "Start the setup wizard after install.")
   .option("--no-setup", "Skip the post-install setup wizard prompt.")
@@ -84,6 +86,7 @@ program
     stack: "next-supabase";
     force?: boolean;
     guided?: boolean;
+    activate?: string[];
     json?: boolean;
     setup?: boolean;
     noSetup?: boolean;
@@ -93,12 +96,12 @@ program
     const result = initProject({
       cwd,
       stack: options.stack,
-      force: Boolean(options.force)
+      force: Boolean(options.force),
+      ...(options.activate ? { activate: options.activate } : {})
     });
-    const contextResult = options.guided ? initProjectContext(cwd) : undefined;
 
     if (options.json) {
-      console.log(JSON.stringify(contextResult ? { install: result, context: contextResult } : result, null, 2));
+      console.log(JSON.stringify(result, null, 2));
     } else {
       console.log(formatInitSummary(result));
     }
@@ -409,6 +412,14 @@ session
   .description("Render active session Markdown files.")
   .action(() => {
     console.log(JSON.stringify(renderActiveSession(process.cwd()), null, 2));
+  });
+
+session
+  .command("checkpoint")
+  .description("Apply a batch of session events from a JSON or Markdown checkpoint file.")
+  .requiredOption("--file <file>", "Checkpoint file (.json or .md) relative to the project root.")
+  .action((options: { file: string }) => {
+    console.log(JSON.stringify(checkpointSessionFromFile(process.cwd(), options.file), null, 2));
   });
 
 session

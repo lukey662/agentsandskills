@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.3
+
+- Added **`agent-kit init --activate`** for Claude Code (`.claude/agents/*.md`, `CLAUDE.md`), Copilot (`.github/copilot-instructions.md`), and Codex (`.codex/config.toml`) IDE parity.
+- Plain **`agent-kit init`** now always creates `.agent-kit/project-context.json` and ships `.github/workflows/agent-kit-audit.yml`.
+- Added code-aware audit tier (`project-reality` vs `docs-hygiene`): Supabase migration RLS parsing, test-script verification, and secret-pattern scanning.
+- Added **`agent-kit session checkpoint --file`** batch API for council evidence logging.
+- Reference `.agent-kit/agent-briefs.md` in all assistant adapters.
+- Release workflow supports optional maintainer npm token fallback when trusted publishing returns 404.
+
 ## 0.1.2
 
 - Added pixel **Agent Office** as the default `agent-kit setup` view with canvas agents, break-room amenities (coffee, water cooler), agent movement, and high-res floor rendering.

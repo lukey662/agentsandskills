@@ -2,6 +2,27 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-06-10 - IDE Parity, Honest Audit, And Session Batch API
+
+### Context
+
+The kit promised multi-IDE agent council support but only Cursor rules were promoted on init. Audit checked markdown keywords without parsing Supabase migrations. Council session logging required many CLI calls per workflow.
+
+### Decision
+
+- Add `agent-kit init --activate <cursor|claude|codex|copilot|all>` to promote adapter templates to real IDE paths and generate Claude subagents from the roster.
+- Always run the lightweight project context scan on plain `init`.
+- Ship `.github/workflows/agent-kit-audit.yml` on init as the first consumer enforcement loop.
+- Split audit findings into `docs-hygiene` and `project-reality` areas.
+- Add `agent-kit session checkpoint --file` for batch council evidence.
+- Allow optional maintainer npm publish token fallback in the Release workflow when trusted publishing returns 404.
+
+### Consequences
+
+- Claude Code friction drops from manual subagent creation to one command.
+- Fresh installs always have `.agent-kit/project-context.json` for agents to read.
+- Publish still requires npm org trusted publishing configuration or a maintainer token secret on the `npm-publish` environment.
+
 ## 2026-06-08 - Live Local Studio Serve (Milestone 8 Partial)
 
 ### Context

@@ -1,7 +1,7 @@
 import type { AgentKitConfig } from "./types.js";
 
 export const PACKAGE_NAME = "@appsforgood/next-supabase-kit";
-export const PACKAGE_VERSION = "0.1.2";
+export const PACKAGE_VERSION = "0.1.3";
 
 export const DEFAULT_CONFIG: AgentKitConfig = {
   stack: "next-supabase",
@@ -72,5 +72,26 @@ export const CURSOR_ADAPTER_FILES = [
   {
     source: "assistant-adapters/model-selection/cursor-model-selection.mdc",
     target: ".cursor/rules/cursor-model-selection.mdc"
+  }
+] as const;
+
+export const COPILOT_INSTRUCTION_FILES = [
+  {
+    source: "assistant-adapters/github-copilot-instructions.md",
+    target: ".github/copilot-instructions.md"
+  },
+  {
+    source: "assistant-adapters/github-next-supabase.instructions.md",
+    target: ".github/instructions/next-supabase.instructions.md"
+  }
+] as const;
+
+export const CODEX_CONFIG_SOURCE = "assistant-adapters/model-selection/codex-config.example.toml";
+export const CLAUDE_TEMPLATE = "templates/next-supabase/CLAUDE.md";
+
+export const CI_TEMPLATE_FILES = [
+  {
+    source: "templates/next-supabase/.github/workflows/agent-kit-audit.yml",
+    target: ".github/workflows/agent-kit-audit.yml"
   }
 ] as const;

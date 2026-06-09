@@ -339,7 +339,7 @@ describe("auditProject", () => {
     writeFileSync(join(root, "TESTING.md"), "Playwright smoke\n");
 
     const findings = auditProject(root);
-    expect(findings.some((finding) => finding.area === "testing" && finding.message.includes("visual QA"))).toBe(true);
+    expect(findings.some((finding) => finding.area === "docs-hygiene" && finding.message.includes("visual QA"))).toBe(true);
   });
 
   it("warns when DESIGN.md lacks content-first design direction", () => {
@@ -455,5 +455,36 @@ describe("auditProject", () => {
     expect(findings.some((finding) => finding.message === "AGENTS.md has a documented local override.")).toBe(true);
     expect(findings.some((finding) => finding.message.includes("AGENTS.md is locally customized"))).toBe(false);
     rmSync(target, { recursive: true, force: true });
+  });
+
+  it("detects missing RLS in Supabase migrations", () => {
+    mkdirSync(join(root, "supabase", "migrations"), { recursive: true });
+    writeFileSync(join(root, "supabase", "migrations", "001_init.sql"), "create table profiles (id uuid primary key);\n");
+    writeFileSync(join(root, "package.json"), JSON.stringify({ scripts: { test: "vitest run" } }, null, 2));
+
+    const findings = auditProject(root);
+    expect(findings.some((finding) => finding.area === "project-reality" && finding.level === "fail" && finding.message.includes("row level security"))).toBe(
+      true
+    );
+  });
+
+  it("passes project-reality RLS when migrations enable RLS", () => {
+    mkdirSync(join(root, "supabase", "migrations"), { recursive: true });
+    writeFileSync(
+      join(root, "supabase", "migrations", "001_profiles.sql"),
+      "alter table profiles enable row level security;\n"
+    );
+    writeFileSync(join(root, "package.json"), JSON.stringify({ scripts: { test: "vitest run" } }, null, 2));
+
+    const findings = auditProject(root);
+    expect(findings.some((finding) => finding.area === "project-reality" && finding.level === "pass" && finding.message.includes("enable RLS"))).toBe(
+      true
+    );
+  });
+
+  it("labels SECURITY.md keyword checks as docs-hygiene", () => {
+    writeFileSync(join(root, "SECURITY.md"), "General security notes only.\n");
+    const findings = auditProject(root);
+    expect(findings.some((finding) => finding.area === "docs-hygiene" && finding.message.includes("OWASP"))).toBe(true);
   });
 });

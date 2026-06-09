@@ -16,6 +16,9 @@
 |-- TESTING.md
 |-- DEPLOYMENT.md
 |-- UPGRADE.md
+|-- .github
+|   `-- workflows
+|       `-- agent-kit-audit.yml
 |-- .cursor
 |   `-- rules
 |       |-- cursor-agent-kit.mdc
@@ -24,6 +27,8 @@
     |-- manifest.json
     |-- agent-roster.json
     |-- model-routing.json
+    |-- project-context.json
+    |-- project-context.md
     |-- config.json
     |-- overrides.json
     |-- agents/

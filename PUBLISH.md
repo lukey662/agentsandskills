@@ -11,6 +11,8 @@ Use this runbook to publish `@appsforgood/next-supabase-kit` and run post-publis
 
 ## Publish Steps
 
+If GitHub Release publish fails with **404 on PUT**, npm trusted publishing is not linked to the `@appsforgood` org scope yet. Fix trusted publishing in npm (package + org) **or** add a maintainer npm publish token secret with publish rights to the `npm-publish` environment. The Release workflow uses that secret as a fallback when present.
+
 ### Option A: GitHub Release (preferred)
 
 1. Merge release-ready changes to `main`.

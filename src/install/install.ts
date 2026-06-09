@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
+  CI_TEMPLATE_FILES,
   CURSOR_ADAPTER_FILES,
   DEFAULT_AGENT_ROSTER_SOURCE,
   DEFAULT_AGENT_ROSTER_TARGET,
@@ -13,13 +14,16 @@ import {
   ROOT_DOCS
 } from "../config/defaults.js";
 import type { InstallManifest, StackProfile } from "../config/types.js";
+import { initProjectContext } from "../studio/context.js";
 import { copyDirectory, copyTextWithConflict, ensureDir, sha256, writeText } from "../utils/fs.js";
 import { findPackageRoot } from "../utils/package-root.js";
+import { activateIdeTargets, parseActivateTargets, type ActivateIdeResult, type IdeTarget } from "./ide-activate.js";
 
 export interface InitOptions {
   cwd: string;
   stack?: StackProfile;
   force?: boolean;
+  activate?: string[];
 }
 
 export interface InitResult {
@@ -28,6 +32,8 @@ export interface InitResult {
   conflicts: string[];
   overwritten: string[];
   manifestPath: string;
+  contextPath?: string;
+  activation?: ActivateIdeResult;
 }
 
 export function initProject(options: InitOptions): InitResult {
@@ -122,8 +128,37 @@ export function initProject(options: InitOptions): InitResult {
   const overridesPath = join(cwd, ".agent-kit", "overrides.json");
   if (!existsSync(overridesPath)) writeText(overridesPath, `${JSON.stringify({ templates: {} }, null, 2)}\n`);
 
+  for (const template of CI_TEMPLATE_FILES) {
+    const ciCopy = copyTextWithConflict(join(packageRoot, template.source), cwd, template.target, {
+      force: Boolean(options.force),
+      conflictRoot: join(cwd, ".agent-kit", "conflicts")
+    });
+    if (ciCopy.action === "created") result.copied.push(ciCopy.target);
+    if (ciCopy.action === "unchanged") result.unchanged.push(ciCopy.target);
+    if (ciCopy.action === "overwritten") result.overwritten.push(ciCopy.target);
+    if (ciCopy.action === "conflict") result.conflicts.push(`${ciCopy.target} -> ${ciCopy.conflictPath}`);
+  }
+
+  const context = initProjectContext(cwd);
+  result.contextPath = context.contextPath;
+
+  const activateTargets = parseActivateTargets(options.activate);
+  if (activateTargets.length > 0) {
+    result.activation = activateIdeTargets({
+      cwd,
+      targets: activateTargets,
+      force: Boolean(options.force)
+    });
+    result.copied.push(...result.activation.copied.filter((path) => !result.copied.includes(path)));
+    result.unchanged.push(...result.activation.unchanged.filter((path) => !result.unchanged.includes(path)));
+    result.conflicts.push(...result.activation.conflicts.filter((path) => !result.conflicts.includes(path)));
+    result.overwritten.push(...result.activation.overwritten.filter((path) => !result.overwritten.includes(path)));
+  }
+
   return result;
 }
+
+export { type IdeTarget };
 
 export function readManifest(cwd: string): InstallManifest | null {
   const manifestPath = join(cwd, ".agent-kit", "manifest.json");
