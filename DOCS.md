@@ -67,33 +67,30 @@ If a project stores structured council sessions in `.agent-kit/council-sessions/
 | `/` or `/setup` or `/office` | Pixel Agent Office (default) |
 | `/wizard` | Form wizard fallback |
 
-The office is a top-down canvas: click agents at desks to brief them, or visit zone stations (IDE terminal, product board, security door, etc.).
+The office is a top-down canvas: click agents at desks to brief them, visit zone stations, or stroll to the **coffee machine** and **water cooler** in the break room. Agents move on the floor; progress is unified with onboarding state.
 
-Writes:
+Writes: `.agent-kit/project-context.json`, `project-context.md`, `agent-briefs.md`, `onboarding/state.json`, `wizard-draft.json`.
 
-- `.agent-kit/project-context.json` and `.agent-kit/project-context.md`
-- `.agent-kit/agent-briefs.md` — per-agent project briefings
-- `.agent-kit/onboarding/state.json` and `wizard-draft.json` — resume state
+**Note:** Requires `@appsforgood/next-supabase-kit@0.1.2` or later (local build from `main` until published).
 
-Progressive depth:
+## Live Studio (session mirror)
 
-| Depth | Time | Covers |
-| --- | --- | --- |
-| Quick | ~10 min | IDE, agent briefings, product, access, UI, messaging |
-| Standard | ~15 min | Quick + visual QA tier in `TESTING.md` |
-| Complete | ~25 min | Standard + DESIGN/MESSAGING intake drafts |
-
-Install hooks:
+`agent-kit studio serve` starts a localhost-only **live Agent Office** (default port `9331`) that mirrors council session activity:
 
 ```bash
-agent-kit init --stack next-supabase --setup --open
-agent-kit init --stack next-supabase --no-setup
-agent-kit setup --status
+agent-kit studio serve --open
 ```
 
-Form fallback: open `/wizard` from the office header or the banner at the top of the form view.
+| Endpoint | Purpose |
+| --- | --- |
+| `GET /` | Live office canvas + transcript panel |
+| `GET /api/sessions` | List sessions + active id |
+| `GET /api/sessions/:id/events` | Read redacted `events.jsonl` |
+| `GET /api/events/stream` | SSE stream when events append |
 
-**Note:** npm `0.1.1` does not include Agent Office — use a local build from `main` or wait for the next publish after `0.1.2`.
+Record work with existing CLI commands (`session start`, `session note`, `session handoff`, etc.). The live view updates when `events.jsonl` changes — no IDE chat scraping.
+
+Static fallback: `agent-kit studio export` → `.agent-kit/studio/index.html`.
 
 ## Agent Studio
 

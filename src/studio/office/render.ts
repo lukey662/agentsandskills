@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { findPackageRoot } from "../../utils/package-root.js";
 import { scanProjectContext } from "../context.js";
 import { getSetupFormViewModel, RECOMMENDED_SUPABASE_AUTH } from "../setup-form.js";
+import { getActiveSessionId } from "../session.js";
 import { getIdeSurfaces } from "../wizard/checklist.js";
 import { loadProjectRosterAgents } from "../wizard/roster.js";
 import { CANVAS_SCALE, MAP_HEIGHT, MAP_WIDTH, TILE_SIZE, buildOfficeStations } from "./map.js";
@@ -55,57 +56,70 @@ export function buildOfficeBootConfig(cwd: string, viewModel: ReturnType<typeof 
 }
 
 export function renderSetupOfficeHtml(boot?: OfficeBootConfig): string {
+  return renderOfficeHtml(boot, "setup");
+}
+
+function renderOfficeHtml(boot: OfficeBootConfig | undefined, mode: "setup" | "studio"): string {
   const css = readOfficeAsset("office.css");
   const js = readOfficeAsset("office.js");
   const bootJson = JSON.stringify(
-    boot ?? {
-      mapWidth: MAP_WIDTH,
-      mapHeight: MAP_HEIGHT,
-      tileSize: TILE_SIZE,
-      scale: CANVAS_SCALE,
-      stations: [],
-      agents: [],
-      categories: PRODUCT_CATEGORIES,
-      tenantModels: TENANT_MODELS,
-      ideSurfaces: [],
-      hasSupabase: false,
-      stackSignals: []
+    {
+      ...(boot ?? {
+        mapWidth: MAP_WIDTH,
+        mapHeight: MAP_HEIGHT,
+        tileSize: TILE_SIZE,
+        scale: CANVAS_SCALE,
+        stations: [],
+        agents: [],
+        categories: PRODUCT_CATEGORIES,
+        tenantModels: TENANT_MODELS,
+        ideSurfaces: [],
+        hasSupabase: false,
+        stackSignals: []
+      }),
+      mode
     }
   ).replace(/</g, "\\u003c");
+
+  const isStudio = mode === "studio";
+  const title = isStudio ? "Agent Kit — Live Studio" : "Agent Kit — Setup Office";
+  const dataView = isStudio ? "studio-v1" : "office-v1";
 
   return `<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Agent Kit — Setup Office</title>
+  <title>${title}</title>
   <style>${css}</style>
 </head>
-<body data-view="office-v1" data-kit-version="${PACKAGE_VERSION}">
+<body data-view="${dataView}" data-kit-version="${PACKAGE_VERSION}">
   <header class="office-header">
     <div class="brand">
-      <h1>Agent Office</h1>
+      <h1>${isStudio ? "Live Agent Studio" : "Agent Office"}</h1>
       <p class="project-name" id="project-name">…</p>
     </div>
     <div class="header-actions">
-      <span class="progress-pill" id="progress-pill">0% ready</span>
-      <a class="btn secondary" href="/wizard">Form view</a>
-      <button type="button" class="btn primary" id="review-btn">Review &amp; save</button>
+      <span class="progress-pill" id="progress-pill">${isStudio ? "Live" : "0% ready"}</span>
+      ${isStudio ? '<span class="session-pill" id="session-pill">No session</span>' : '<a class="btn secondary" href="/wizard">Form view</a>'}
+      ${isStudio ? "" : '<button type="button" class="btn primary" id="review-btn">Review &amp; save</button>'}
     </div>
   </header>
-  <main class="office-main">
-    <aside class="station-list" aria-label="Setup stations">
+  <main class="office-main${isStudio ? " studio-layout" : ""}">
+    <aside class="station-list${isStudio ? " hidden" : ""}" aria-label="Setup stations">
       <h2>Stations</h2>
       <p class="hint">Keyboard-friendly list — same actions as the office floor.</p>
       <ul id="station-list"></ul>
     </aside>
     <div class="canvas-wrap">
       <canvas id="office-floor" width="${MAP_WIDTH * TILE_SIZE}" height="${MAP_HEIGHT * TILE_SIZE}" role="img" aria-labelledby="canvas-desc"></canvas>
-      <p id="canvas-desc" class="sr-only">Top-down pixel office. Click agents at desks or zone stations to configure your project.</p>
+      <p id="canvas-desc" class="sr-only">${isStudio ? "Live council session office floor with agent speech bubbles." : "Top-down pixel office. Click agents at desks or zone stations to configure your project."}</p>
       <div id="hover-label" class="hover-label hidden" aria-hidden="true"></div>
+      <div id="bubble-layer" class="bubble-layer" aria-hidden="true"></div>
       <div id="nameplate-layer" class="nameplate-layer" aria-hidden="true"></div>
-      <div id="office-hint" class="office-hint hidden" role="status">Click a desk or zone to brief your agent team.</div>
+      <div id="office-hint" class="office-hint hidden" role="status">${isStudio ? "Watching council session events…" : "Click a desk or zone to brief your agent team."}</div>
     </div>
+    ${isStudio ? '<aside class="transcript-panel" id="transcript-panel" aria-label="Session transcript"><h2>Transcript</h2><ol id="transcript-list"></ol></aside>' : ""}
   </main>
   <div id="status" class="status" role="status" aria-live="polite"></div>
   <div id="depth-modal" class="modal modal-blur" hidden>
@@ -142,6 +156,33 @@ export function renderSetupOfficeHtml(boot?: OfficeBootConfig): string {
 </html>`;
 }
 
+export function renderLiveStudioHtml(boot?: OfficeBootConfig): string {
+  return renderOfficeHtml(boot, "studio");
+}
+
+export function renderLiveStudioHtmlWithContext(cwd: string): string {
+  const viewModel = getSetupFormViewModel(cwd);
+  const context = scanProjectContext(cwd);
+  const boot = buildOfficeBootConfig(cwd, viewModel);
+  let activeSessionId = "";
+  try {
+    activeSessionId = getActiveSessionId(cwd);
+  } catch {
+    activeSessionId = "";
+  }
+  const stackSignals = [
+    ...context.architecture.frameworks,
+    ...context.architecture.testTools.slice(0, 2),
+    ...(viewModel.hasSupabase ? ["supabase"] : [])
+  ].filter(Boolean);
+  return renderLiveStudioHtml({
+    ...boot,
+    mode: "studio",
+    activeSessionId,
+    stackSignals: [...new Set(stackSignals)]
+  });
+}
+
 export function renderSetupOfficeHtmlWithContext(cwd: string): string {
   const viewModel = getSetupFormViewModel(cwd);
   const context = scanProjectContext(cwd);
@@ -151,5 +192,5 @@ export function renderSetupOfficeHtmlWithContext(cwd: string): string {
     ...context.architecture.testTools.slice(0, 2),
     ...(viewModel.hasSupabase ? ["supabase"] : [])
   ].filter(Boolean);
-  return renderSetupOfficeHtml({ ...boot, stackSignals: [...new Set(stackSignals)] });
+  return renderSetupOfficeHtml({ ...boot, mode: "setup", stackSignals: [...new Set(stackSignals)] });
 }

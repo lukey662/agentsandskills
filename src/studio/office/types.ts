@@ -3,7 +3,9 @@ import type { WizardDepth, WizardSectionId } from "../wizard/steps.js";
 
 export type AgentRoleSprite = "planner" | "engineer" | "design" | "ops";
 
-export type OfficeStationKind = "zone" | "agent" | "review";
+export type OfficeStationKind = "zone" | "agent" | "review" | "amenity";
+
+export type OfficeAmenityId = "coffee" | "cooler";
 
 export interface OfficeStation {
   id: string;
@@ -11,7 +13,8 @@ export interface OfficeStation {
   label: string;
   section: WizardSectionId | "agent";
   agentId?: string;
-  /** Tile coordinates (16px tiles) */
+  amenityId?: OfficeAmenityId;
+  /** Tile coordinates */
   x: number;
   y: number;
   w: number;
@@ -20,6 +23,7 @@ export interface OfficeStation {
 }
 
 export interface OfficeBootConfig {
+  mode?: "setup" | "studio";
   mapWidth: number;
   mapHeight: number;
   tileSize: number;
@@ -32,6 +36,7 @@ export interface OfficeBootConfig {
   ideSurfaces: { id: string; label: string; path: string }[];
   hasSupabase: boolean;
   stackSignals: string[];
+  activeSessionId?: string;
 }
 
 export function agentRoleSprite(agentId: string): AgentRoleSprite {

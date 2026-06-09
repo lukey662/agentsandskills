@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.2
+
+- Added pixel **Agent Office** as the default `agent-kit setup` view with canvas agents, break-room amenities (coffee, water cooler), agent movement, and high-res floor rendering.
+- Added local setup wizard form fallback at `/wizard`, progressive depth (Quick/Standard/Complete), resume state, and agent briefing drafts.
+- Fixed setup routing so `/setup` serves the office; added form-to-office navigation, port-in-use CLI warnings, and `data-view` markers for debugging.
+- Added **`agent-kit studio serve`** — localhost live session viewer with SSE event stream, speech bubbles, and transcript panel reusing the office canvas.
+
 ## 0.1.1
 
 - Completed npm package rename from `@agent-skills/next-supabase-kit` to `@appsforgood/next-supabase-kit` across CLI defaults, shipped docs, templates, examples, tests, and release scripts.

@@ -326,7 +326,8 @@ Acceptance:
 - `[x]` Add automated test coverage for schema validation, JSONL parsing, Markdown rendering, correction promotion, secret redaction, path traversal rejection, old-install update behavior, fixture projects, golden outputs, and smoke onboarding.
 - `[x]` Add `npm run smoke:studio` and wire it into `npm run release:check` before any Agent Studio feature is marked complete.
 - `[x]` Add optional `agent-kit studio export` static HTML view after the Markdown-first workflow is useful.
-- `[x]` Defer live local GUI and direct AI API orchestration until the file protocol is proven.
+- `[x]` Add `agent-kit studio serve` — localhost live office with SSE session events (Milestone 8 partial).
+- `[ ]` Defer direct AI API orchestration until the file protocol is proven across more projects.
 
 Acceptance:
 
@@ -355,7 +356,7 @@ Latest release evidence:
 - Package metadata now targets public npm package `@appsforgood/next-supabase-kit`.
 - Release workflow uses npm Trusted Publishing/OIDC instead of a long-lived publish token.
 - Public install verification uses `npx` without a package token and requires clean temp init plus zero-failure audit.
-- Public release evidence: `@appsforgood/next-supabase-kit@0.1.1` published on npm with full `@appsforgood` package identity; `npm run publish:verify` passed (public doctor, clean init, zero-failure baseline audit).
+- Public release evidence: `@appsforgood/next-supabase-kit@0.1.1` published on npm; **0.1.2** adds Agent Office polish + `studio serve` (pending publish after `npm run release:check`).
 
 Latest dogfood evidence:
 

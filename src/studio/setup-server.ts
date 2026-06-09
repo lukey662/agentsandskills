@@ -9,6 +9,7 @@ import {
   getSetupProgress,
   loadOnboardingState,
   markQuickPathComplete,
+  markSectionComplete,
   saveOnboardingState
 } from "./onboarding-state.js";
 import { saveIdeChecklist, writeVisualQaTier, type IdeSurface } from "./wizard/checklist.js";
@@ -31,8 +32,11 @@ import {
   saveMessagingDraft
 } from "./wizard/drafts.js";
 import { renderSetupOfficeHtmlWithContext } from "./office/render.js";
+import { buildOfficeStations } from "./office/map.js";
+import { allAgentBriefsComplete, wizardSectionForStation } from "./office/section-map.js";
+import type { OfficeStation } from "./office/types.js";
 import { renderSetupWizardHtmlWithContext } from "./wizard/render.js";
-import type { WizardDepth } from "./wizard/steps.js";
+import type { WizardDepth, WizardSectionId } from "./wizard/steps.js";
 
 export interface SetupServerOptions {
   cwd: string;
@@ -130,6 +134,24 @@ function sendRedirect(response: ServerResponse, location: string): void {
   response.end();
 }
 
+function findOfficeStation(cwd: string, stationId: string): OfficeStation | undefined {
+  const agents = loadProjectRosterAgents(cwd);
+  return buildOfficeStations(agents).find((s) => s.id === stationId);
+}
+
+function markOfficeSectionComplete(cwd: string, stationId: string, form: Record<string, string>): void {
+  const station = findOfficeStation(cwd, stationId);
+  if (!station) return;
+  const section = wizardSectionForStation(station);
+  if (!section) return;
+  if (section === "team") {
+    const agentIds = loadProjectRosterAgents(cwd).map((a) => a.id);
+    if (allAgentBriefsComplete(form, agentIds)) markSectionComplete(cwd, "team");
+    return;
+  }
+  markSectionComplete(cwd, section);
+}
+
 async function handleRequest(cwd: string, request: IncomingMessage, response: ServerResponse): Promise<void> {
   const url = new URL(request.url ?? "/", "http://127.0.0.1");
 
@@ -161,12 +183,15 @@ async function handleRequest(cwd: string, request: IncomingMessage, response: Se
   if (request.method === "PATCH" && url.pathname === "/api/state") {
     try {
       const body = (await readJsonBody(request)) as Record<string, unknown>;
+      if (typeof body.completeSection === "string") {
+        markSectionComplete(cwd, body.completeSection as WizardSectionId);
+      }
       const patch: Record<string, unknown> = {};
       if (body.depth) patch.depth = body.depth as WizardDepth;
       if (body.currentSection) patch.currentSection = String(body.currentSection);
       if (typeof body.currentStep === "number") patch.currentStep = body.currentStep;
       if (Array.isArray(body.completedSections)) patch.completedSections = body.completedSections;
-      saveOnboardingState(cwd, patch);
+      if (Object.keys(patch).length > 0) saveOnboardingState(cwd, patch);
       sendJson(response, 200, buildStatePayload(cwd));
     } catch (error) {
       sendJson(response, 400, { error: error instanceof Error ? error.message : String(error) });
@@ -196,12 +221,16 @@ async function handleRequest(cwd: string, request: IncomingMessage, response: Se
 
   if (request.method === "POST" && url.pathname === "/api/draft") {
     try {
-      const body = (await readJsonBody(request)) as { form?: Record<string, string> };
+      const body = (await readJsonBody(request)) as {
+        form?: Record<string, string>;
+        stationId?: string;
+      };
       const form = body.form ?? {};
       saveWizardDraft(cwd, {
         form: extractSetupFormFromWizardForm(form),
         agentBriefs: extractAgentBriefsFromForm(form)
       });
+      if (body.stationId) markOfficeSectionComplete(cwd, body.stationId, form);
       sendJson(response, 200, buildStatePayload(cwd));
     } catch (error) {
       sendJson(response, 400, { error: error instanceof Error ? error.message : String(error) });
@@ -225,6 +254,7 @@ async function handleRequest(cwd: string, request: IncomingMessage, response: Se
       const body = (await readJsonBody(request)) as { ideSurface?: IdeSurface };
       if (!body.ideSurface) throw new Error("ideSurface is required.");
       const result = saveIdeChecklist(cwd, body.ideSurface);
+      markSectionComplete(cwd, "ide");
       sendJson(response, 200, { ...result, ...buildStatePayload(cwd) });
     } catch (error) {
       sendJson(response, 400, { error: error instanceof Error ? error.message : String(error) });
@@ -237,6 +267,7 @@ async function handleRequest(cwd: string, request: IncomingMessage, response: Se
       const body = (await readJsonBody(request)) as { tier?: "baseline" | "strong" | "mature" };
       if (!body.tier) throw new Error("tier is required.");
       const result = writeVisualQaTier(cwd, body.tier);
+      markSectionComplete(cwd, "visualQa");
       sendJson(response, 200, { ...result, ...buildStatePayload(cwd) });
     } catch (error) {
       sendJson(response, 400, { error: error instanceof Error ? error.message : String(error) });
@@ -256,6 +287,7 @@ async function handleRequest(cwd: string, request: IncomingMessage, response: Se
         contentInventory: String(body.contentInventory ?? ""),
         antiReferences: String(body.antiReferences ?? "")
       });
+      markSectionComplete(cwd, "designDoc");
       sendJson(response, 200, { draft, preview: previewDesignMarkdown(draft), ...buildStatePayload(cwd) });
     } catch (error) {
       sendJson(response, 400, { error: error instanceof Error ? error.message : String(error) });
@@ -271,6 +303,7 @@ async function handleRequest(cwd: string, request: IncomingMessage, response: Se
         pain: String(body.pain ?? ""),
         outcome: String(body.outcome ?? "")
       });
+      markSectionComplete(cwd, "messagingDoc");
       sendJson(response, 200, { draft, preview: previewMessagingMarkdown(draft), ...buildStatePayload(cwd) });
     } catch (error) {
       sendJson(response, 400, { error: error instanceof Error ? error.message : String(error) });
@@ -281,6 +314,7 @@ async function handleRequest(cwd: string, request: IncomingMessage, response: Se
   if (request.method === "POST" && url.pathname === "/api/drafts/apply") {
     try {
       const results = applyDrafts(cwd);
+      markSectionComplete(cwd, "applyDrafts");
       sendJson(response, 200, { results, ...buildStatePayload(cwd) });
     } catch (error) {
       sendJson(response, 400, { error: error instanceof Error ? error.message : String(error) });

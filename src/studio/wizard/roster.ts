@@ -71,7 +71,7 @@ export function loadProjectRosterAgents(cwd: string): RosterAgent[] {
       id: agent.id,
       name: agent.name ?? agent.id,
       roleSummary: fromFile ?? FALLBACK_SUMMARIES[agent.id] ?? "Specialist agent on your project council.",
-      file: agent.file
+      ...(agent.file ? { file: agent.file } : {})
     };
   });
 }
@@ -90,20 +90,22 @@ export function buildAgentWizardSteps(cwd: string): AgentWizardStep[] {
       agentName: "",
       roleSummary: "",
       depth: depths,
-      optional: true
+      optional: true as const
     },
-    ...agents.map((agent) => ({
-      id: `brief-${agent.id}`,
-      section: "team" as const,
-      title: `Brief ${agent.name}`,
-      why: `${agent.roleSummary} What should they know about this project that is not obvious from the repo?`,
-      fields: [`agentBrief_${agent.id}`],
-      agentId: agent.id,
-      agentName: agent.name,
-      roleSummary: agent.roleSummary,
-      depth: depths,
-      optional: true
-    }))
+    ...agents.map(
+      (agent): AgentWizardStep => ({
+        id: `brief-${agent.id}`,
+        section: "team",
+        title: `Brief ${agent.name}`,
+        why: `${agent.roleSummary} What should they know about this project that is not obvious from the repo?`,
+        fields: [`agentBrief_${agent.id}`],
+        agentId: agent.id,
+        agentName: agent.name,
+        roleSummary: agent.roleSummary,
+        depth: depths,
+        optional: true
+      })
+    )
   ];
 }
 

@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-06-08 - Live Local Studio Serve (Milestone 8 Partial)
+
+### Context
+
+The Markdown-first session protocol (`events.jsonl`) was proven in CLI and static export, but users wanted to **see agent conversations on the office floor** while work happens.
+
+### Decision
+
+Add `agent-kit studio serve` — a localhost-only server (`127.0.0.1`) that reuses the Agent Office canvas in `studio` mode, reads the same session files, and pushes updates via SSE when `events.jsonl` changes. No new state shape; no IDE chat scraping.
+
+### Consequences
+
+Live visibility is opt-in and local. Direct AI orchestration (Milestone 9) remains deferred. Studio and setup servers share office assets but different routes and boot mode.
+
 ## 2026-06-08 - Agent Office As Default Setup Presentation
 
 ### Context

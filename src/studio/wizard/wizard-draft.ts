@@ -110,13 +110,13 @@ export function extractSetupFormFromWizardForm(form: Record<string, string>): Se
     objections: form.objections ?? "",
     qualityTarget: (form.qualityTarget as SetupFormPayload["qualityTarget"]) ?? "baseline-setup",
     owner: form.owner ?? "",
-    ideSurface: form.ideSurface,
-    visualQaTier: form.visualQaTier,
-    designAudience: form.designAudience,
-    designContent: form.designContent,
-    designAntiReferences: form.designAntiReferences,
-    msgAudience: form.msgAudience,
-    msgPain: form.msgPain,
-    msgOutcome: form.msgOutcome
+    ...(form.ideSurface ? { ideSurface: form.ideSurface } : {}),
+    ...(form.visualQaTier ? { visualQaTier: form.visualQaTier } : {}),
+    ...(form.designAudience ? { designAudience: form.designAudience } : {}),
+    ...(form.designContent ? { designContent: form.designContent } : {}),
+    ...(form.designAntiReferences ? { designAntiReferences: form.designAntiReferences } : {}),
+    ...(form.msgAudience ? { msgAudience: form.msgAudience } : {}),
+    ...(form.msgPain ? { msgPain: form.msgPain } : {}),
+    ...(form.msgOutcome ? { msgOutcome: form.msgOutcome } : {})
   };
 }

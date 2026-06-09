@@ -148,14 +148,14 @@ export function parseSetupFormPayload(raw: unknown): SetupFormPayload {
     objections: String(body.objections ?? ""),
     qualityTarget,
     owner: String(body.owner ?? ""),
-    ideSurface: body.ideSurface ? String(body.ideSurface) : undefined,
-    visualQaTier: body.visualQaTier ? String(body.visualQaTier) : undefined,
-    designAudience: body.designAudience ? String(body.designAudience) : undefined,
-    designContent: body.designContent ? String(body.designContent) : undefined,
-    designAntiReferences: body.designAntiReferences ? String(body.designAntiReferences) : undefined,
-    msgAudience: body.msgAudience ? String(body.msgAudience) : undefined,
-    msgPain: body.msgPain ? String(body.msgPain) : undefined,
-    msgOutcome: body.msgOutcome ? String(body.msgOutcome) : undefined
+    ...(body.ideSurface ? { ideSurface: String(body.ideSurface) } : {}),
+    ...(body.visualQaTier ? { visualQaTier: String(body.visualQaTier) } : {}),
+    ...(body.designAudience ? { designAudience: String(body.designAudience) } : {}),
+    ...(body.designContent ? { designContent: String(body.designContent) } : {}),
+    ...(body.designAntiReferences ? { designAntiReferences: String(body.designAntiReferences) } : {}),
+    ...(body.msgAudience ? { msgAudience: String(body.msgAudience) } : {}),
+    ...(body.msgPain ? { msgPain: String(body.msgPain) } : {}),
+    ...(body.msgOutcome ? { msgOutcome: String(body.msgOutcome) } : {})
   };
 }
 

@@ -14,6 +14,7 @@ import { getSetupProgress, onboardingStateExists } from "../studio/onboarding-st
 import { openBrowser } from "../studio/setup-browser.js";
 import { formatInitSummary, promptStartSetup } from "../studio/setup-init.js";
 import { startSetupServer } from "../studio/setup-server.js";
+import { startStudioServer } from "../studio/studio-server.js";
 import {
   closeSession,
   getActiveSessionId,
@@ -475,7 +476,40 @@ correction
     console.log(JSON.stringify(proposeCorrectionUpstream(process.cwd(), id), null, 2));
   });
 
-const studio = program.command("studio").description("Export local Agent Studio views.");
+const studio = program.command("studio").description("Export and serve local Agent Studio views.");
+
+async function runStudioServer(options: { port: number; host: string; open?: boolean }): Promise<void> {
+  const handle = await startStudioServer({
+    cwd: process.cwd(),
+    port: options.port,
+    host: options.host
+  });
+  if (handle.portFallback) {
+    console.warn(
+      `Port ${handle.requestedPort} is in use — using fallback port ${handle.port}. Kill the old process to avoid confusion.`
+    );
+  }
+  console.log(`Agent Kit v${PACKAGE_VERSION} — live studio at ${handle.url}/`);
+  console.log("SSE: GET /api/events/stream  |  Press Ctrl+C to stop.");
+  if (options.open) openBrowser(`${handle.url}/`);
+  await new Promise<void>((resolve) => {
+    const shutdown = () => {
+      handle.close().finally(resolve);
+    };
+    process.once("SIGINT", shutdown);
+    process.once("SIGTERM", shutdown);
+  });
+}
+
+studio
+  .command("serve")
+  .description("Start localhost live Agent Studio viewer with SSE session events.")
+  .option("--port <number>", "Port to listen on.", (value) => Number.parseInt(value, 10), 9331)
+  .option("--host <host>", "Host to bind.", "127.0.0.1")
+  .option("--open", "Open the studio in your default browser.")
+  .action(async (options: { port: number; host: string; open?: boolean }) => {
+    await runStudioServer(options);
+  });
 
 studio
   .command("export")

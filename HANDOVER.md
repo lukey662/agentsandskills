@@ -1,6 +1,6 @@
 # Session Handover — Agent Office Setup
 
-Last updated: 2026-06-08
+Last updated: 2026-06-09
 
 ## What shipped
 
@@ -18,17 +18,29 @@ Initial commit: `4d2b2a1` (Agent Office + setup wizard). Follow-up commit (this 
 
 **Self-check:** page title **“Agent Kit — Setup Office”** = office; **“Agent Kit Setup Wizard”** = form.
 
-## Running locally (required until npm publish)
+## Running locally
 
-npm `0.1.1` does **not** include Agent Office. Use a local build from this repo:
+Requires **0.1.2+** (or local build until npm publish):
 
 ```bash
 cd "/Volumes/Mac eSSD/BaseRepo"
-npm install && npm run build && npm test
+npm install && npm run build
 
-# From a downstream project (e.g. AI news):
-node "/Volumes/Mac eSSD/BaseRepo/dist/index.js" setup --port 3003 --open
+# Setup office (onboarding):
+node dist/index.js setup --port 3003 --open
+
+# Live studio (council sessions):
+node dist/index.js studio serve --open
 ```
+
+## Polish in 0.1.2
+
+- High-res canvas (24px tiles, retina DPR)
+- Break room: coffee machine + water cooler with idle animation
+- Agent movement (break strolls, working animation at desks)
+- Unified progress with onboarding `completedSections`
+- Publishing Desk (`applyDrafts`) for Complete depth
+- `agent-kit studio serve` for live session transcript + speech bubbles
 
 If you still see the form at `/`, an **old setup server** is probably bound to that port. Kill it and restart with the local `dist/index.js` build above.
 
@@ -61,6 +73,6 @@ Kit was installed with `init --stack next-supabase`. Setup should be run from th
 
 ## Next steps (optional)
 
-- Bump to `0.1.2` and publish so `npx @appsforgood/next-supabase-kit setup` serves Agent Office.
+- Publish `@appsforgood/next-supabase-kit@0.1.2` so `npx` serves Agent Office and `studio serve`.
 - Run setup on AI news through the office flow and complete agent briefings + product context.
-- Future live studio GUI should still render from the same JSON/JSONL contracts (see `DECISIONS.md`).
+- Milestone 9 direct AI orchestration remains deferred (see `RUNTIME_ORCHESTRATION_SCOPE.md`).

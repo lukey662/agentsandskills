@@ -1,10 +1,16 @@
 /* global OFFICE_BOOT */
 (function officeApp() {
   const boot = window.OFFICE_BOOT || {};
-  const TILE = boot.tileSize || 16;
-  const SCALE = boot.scale || 6;
+  const isStudio = boot.mode === "studio";
+  const TILE = boot.tileSize || 24;
+  const SCALE = boot.scale || 4;
   const MAP_W = boot.mapWidth || 28;
   const MAP_H = boot.mapHeight || 18;
+  const BREAK_RUG = { x: 11, y: 9, w: 7, h: 4 };
+  const AMENITY_MSG = {
+    coffee: ["Fresh brew — back to work!", "Caffeine acquired.", "One more espresso?"],
+    cooler: ["Hydration break.", "Cold water hits different.", "Stay hydrated, ship faster."]
+  };
 
   const ROLE_COLORS = {
     planner: ["#7c3aed", "#5b21b6"],
@@ -23,13 +29,22 @@
     hoverId: null,
     activeStationId: null,
     frame: 0,
-    reducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    reducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    depthSweep: null,
+    confetti: [],
+    handoffPulse: null,
+    studioSessionId: boot.activeSessionId || "",
+    studioEvents: [],
+    speechBubbles: []
   };
+
+  const agentRuntime = {};
 
   const els = {
     canvas: document.getElementById("office-floor"),
     projectName: document.getElementById("project-name"),
     progressPill: document.getElementById("progress-pill"),
+    sessionPill: document.getElementById("session-pill"),
     stationList: document.getElementById("station-list"),
     status: document.getElementById("status"),
     hoverLabel: document.getElementById("hover-label"),
@@ -47,8 +62,10 @@
     reviewCancel: document.getElementById("review-cancel"),
     reviewSave: document.getElementById("review-save"),
     nameplateLayer: document.getElementById("nameplate-layer"),
+    bubbleLayer: document.getElementById("bubble-layer"),
     officeHint: document.getElementById("office-hint"),
-    canvasWrap: document.querySelector(".canvas-wrap")
+    canvasWrap: document.querySelector(".canvas-wrap"),
+    transcriptList: document.getElementById("transcript-list")
   };
 
   const ctx = els.canvas?.getContext("2d");
@@ -59,8 +76,51 @@
     }
     return;
   }
-  els.canvas.style.width = MAP_W * TILE * SCALE + "px";
-  els.canvas.style.height = MAP_H * TILE * SCALE + "px";
+
+  const logicalW = MAP_W * TILE;
+  const logicalH = MAP_H * TILE;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  els.canvas.width = logicalW * dpr;
+  els.canvas.height = logicalH * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  els.canvas.style.width = logicalW * SCALE + "px";
+  els.canvas.style.height = logicalH * SCALE + "px";
+
+  function wizardSectionForStation(station) {
+    if (!station || station.kind === "amenity") return null;
+    if (station.kind === "agent") return "team";
+    if (station.section === "agent") return "team";
+    return station.section;
+  }
+
+  function allAgentBriefsComplete() {
+    const ids = state.agents.map((a) => a.id);
+    if (!ids.length) return false;
+    return ids.every((id) => Boolean(state.form["agentBrief_" + id]?.trim()));
+  }
+
+  function initAgentRuntime() {
+    for (const station of state.stations) {
+      if (station.kind !== "agent" || !station.agentId) continue;
+      const hx = station.x + 1;
+      const hy = station.y + 1;
+      agentRuntime[station.agentId] = {
+        tileX: hx,
+        tileY: hy,
+        targetX: hx,
+        targetY: hy,
+        homeX: hx,
+        homeY: hy,
+        state: "idle",
+        direction: "down",
+        frame: 0,
+        breakTimer: 120 + Math.floor(Math.random() * 180),
+        breakTarget: null
+      };
+    }
+  }
+
+  initAgentRuntime();
 
   function setStatus(kind, message) {
     els.status.className = kind ? "status " + kind : "status";
@@ -109,7 +169,20 @@
     return data;
   }
 
+  function stationStatus(station) {
+    const sectionId = wizardSectionForStation(station);
+    if (!sectionId) return "open";
+    const sections = state.progress?.sections || [];
+    const match = sections.find((s) => s.id === sectionId);
+    if (match) return match.status === "done" ? "done" : "open";
+    return "open";
+  }
+
   async function loadState() {
+    if (isStudio) {
+      await loadStudioState();
+      return;
+    }
     const data = await api("/api/state");
     state.form = data.form || {};
     state.progress = data.progress || {};
@@ -127,35 +200,157 @@
     renderNameplates();
   }
 
-  function updateProgressUi() {
-    const pct = state.progress?.percent ?? 0;
-    els.progressPill.textContent = pct + "% ready";
+  async function loadStudioState() {
+    const sessionsRes = await api("/api/sessions");
+    state.studioSessionId = sessionsRes.activeSessionId || boot.activeSessionId || "";
+    if (els.sessionPill) {
+      els.sessionPill.textContent = state.studioSessionId ? state.studioSessionId.slice(0, 24) : "No session";
+    }
+    if (els.projectName) els.projectName.textContent = sessionsRes.sessions?.[0]?.title || "Council session";
+    if (els.officeHint) {
+      els.officeHint.classList.remove("hidden");
+      window.setTimeout(() => els.officeHint?.classList.add("hidden"), 6000);
+    }
+    connectStudioStream();
   }
 
-  function stationStatus(station) {
-    if (station.kind === "agent" && station.agentId) {
-      const brief = state.form["agentBrief_" + station.agentId]?.trim();
-      return brief ? "done" : "open";
+  function connectStudioStream() {
+    if (!state.studioSessionId) return;
+    const url = "/api/events/stream?sessionId=" + encodeURIComponent(state.studioSessionId);
+    const source = new EventSource(url);
+    source.addEventListener("snapshot", (ev) => {
+      try {
+        const payload = JSON.parse(ev.data);
+        state.studioEvents = payload.events || [];
+        renderTranscript();
+      } catch {
+        // ignore
+      }
+    });
+    source.addEventListener("event", (ev) => {
+      try {
+        const payload = JSON.parse(ev.data);
+        if (payload.event) {
+          state.studioEvents.push(payload.event);
+          renderTranscript();
+          handleStudioEvent(payload.event);
+        }
+      } catch {
+        // ignore
+      }
+    });
+    source.onerror = () => {
+      source.close();
+    };
+  }
+
+  function eventLabel(event) {
+    if (event.text) return event.text;
+    if (event.decision) return event.decision;
+    if (event.type === "handoff") return "Handoff → " + (event.toAgentId || "?");
+    if (event.command) return event.command;
+    return event.type;
+  }
+
+  function renderTranscript() {
+    if (!els.transcriptList) return;
+    els.transcriptList.innerHTML = state.studioEvents
+      .slice(-80)
+      .map(
+        (ev) =>
+          '<li><span class="tx-time">' +
+          escapeHtml((ev.createdAt || "").slice(11, 19)) +
+          '</span> <strong>' +
+          escapeHtml(ev.agentId || ev.fromAgentId || "session") +
+          "</strong> " +
+          escapeHtml(eventLabel(ev)) +
+          "</li>"
+      )
+      .join("");
+    els.transcriptList.scrollTop = els.transcriptList.scrollHeight;
+  }
+
+  function handleStudioEvent(event) {
+    const agentId = event.agentId || event.fromAgentId;
+    if (agentId && agentRuntime[agentId]) {
+      agentRuntime[agentId].state = event.type === "handoff" ? "walking" : "working";
+      addSpeechBubble(agentId, eventLabel(event));
     }
-    if (station.section === "ide") return state.form.ideSurface ? "done" : "open";
-    if (station.section === "product") {
-      return state.form.productSummary?.trim() && state.form.primaryAudience?.trim() ? "done" : "open";
+    if (event.type === "handoff" && event.fromAgentId && event.toAgentId) {
+      state.handoffPulse = { frame: 0, from: event.fromAgentId, to: event.toAgentId };
+      const toRt = agentRuntime[event.toAgentId];
+      if (toRt) {
+        toRt.state = "walking";
+        toRt.targetX = toRt.homeX;
+        toRt.targetY = toRt.homeY;
+      }
     }
-    if (station.section === "access") return state.form.authModel?.trim() ? "done" : "open";
-    if (station.section === "ui") return state.form.uiPreferred?.trim() ? "done" : "open";
-    if (station.section === "messaging") return state.form.valueProposition?.trim() ? "done" : "open";
-    if (station.section === "visualQa") return state.form.visualQaTier ? "done" : "open";
-    if (station.section === "designDoc") {
-      return state.form.designAudience?.trim() || state.form.designContent?.trim() ? "done" : "open";
+  }
+
+  function addSpeechBubble(agentId, text) {
+    const station = state.stations.find((s) => s.agentId === agentId);
+    if (!station) return;
+    const rt = agentRuntime[agentId];
+    const cx = (rt ? rt.tileX : station.x + 1) * TILE;
+    const cy = (rt ? rt.tileY : station.y) * TILE;
+    state.speechBubbles.push({
+      agentId,
+      text: String(text).slice(0, 72),
+      x: cx,
+      y: cy - 8,
+      frame: 0,
+      ttl: state.reducedMotion ? 120 : 240
+    });
+    renderSpeechDom();
+  }
+
+  function renderSpeechDom() {
+    if (!els.bubbleLayer) return;
+    const canvasRect = els.canvas.getBoundingClientRect();
+    const wrapRect = els.canvasWrap?.getBoundingClientRect() || canvasRect;
+    const offsetLeft = canvasRect.left - wrapRect.left;
+    const offsetTop = canvasRect.top - wrapRect.top;
+    const scaleX = canvasRect.width / logicalW;
+    const scaleY = canvasRect.height / logicalH;
+    els.bubbleLayer.innerHTML = state.speechBubbles
+      .map((b) => {
+        const left = offsetLeft + b.x * scaleX;
+        const top = offsetTop + b.y * scaleY - 28;
+        return (
+          '<span class="speech-bubble" style="left:' +
+          left +
+          "px;top:" +
+          top +
+          'px">' +
+          escapeHtml(b.text) +
+          "</span>"
+        );
+      })
+      .join("");
+  }
+
+  function updateProgressUi() {
+    const pct = state.progress?.percent ?? 0;
+    if (els.progressPill) els.progressPill.textContent = pct + "% ready";
+  }
+
+  function spawnConfetti(x, y) {
+    if (state.reducedMotion) return;
+    for (let i = 0; i < 12; i += 1) {
+      state.confetti.push({
+        x,
+        y,
+        vx: (Math.random() - 0.5) * 2,
+        vy: -Math.random() * 2 - 0.5,
+        color: ["#4ade80", "#99f6e4", "#fbbf24", "#f472b6"][i % 4],
+        ttl: 60 + Math.floor(Math.random() * 30)
+      });
     }
-    if (station.section === "messagingDoc") {
-      return state.form.msgPain?.trim() || state.form.msgOutcome?.trim() ? "done" : "open";
-    }
-    return "open";
   }
 
   function renderStationList() {
-    const items = visibleStations();
+    if (!els.stationList) return;
+    const items = visibleStations().filter((s) => s.kind !== "amenity");
     els.stationList.innerHTML = items
       .map((s) => {
         const st = stationStatus(s);
@@ -192,9 +387,10 @@
     const wrapRect = els.canvasWrap.getBoundingClientRect();
     const offsetLeft = canvasRect.left - wrapRect.left;
     const offsetTop = canvasRect.top - wrapRect.top;
-    const scaleX = canvasRect.width / (MAP_W * TILE);
-    const scaleY = canvasRect.height / (MAP_H * TILE);
+    const scaleX = canvasRect.width / logicalW;
+    const scaleY = canvasRect.height / logicalH;
     els.nameplateLayer.innerHTML = visibleStations()
+      .filter((s) => s.kind !== "amenity")
       .map((station) => {
         const cx = offsetLeft + (station.x + station.w / 2) * TILE * scaleX;
         const cy = offsetTop + station.y * TILE * scaleY - 4;
@@ -215,6 +411,7 @@
   }
 
   function showDepthModal() {
+    if (!els.depthModal) return;
     els.depthModal.hidden = false;
     els.depthGrid.innerHTML = [
       ["quick", "Quick (~10 min)", "IDE, agent briefings, product essentials."],
@@ -235,6 +432,7 @@
     els.depthGrid.querySelectorAll("[data-depth]").forEach((btn) => {
       btn.addEventListener("click", async () => {
         state.depth = btn.getAttribute("data-depth");
+        state.depthSweep = { frame: 0, depth: state.depth };
         await api("/api/state", {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -249,33 +447,46 @@
     });
   }
 
-  function drawZoneLabel(station) {
-    const x = station.x * TILE + 6;
-    const y = station.y * TILE + station.h * TILE - 6;
-    ctx.fillStyle = "#e2e8f0";
-    ctx.font = "8px monospace";
-    ctx.fillText(station.label.slice(0, 14), x, y);
-  }
-
-  // --- Pixel drawing ---
   function fillRect(x, y, w, h, color) {
     ctx.fillStyle = color;
     ctx.fillRect(x, y, w, h);
+  }
+
+  function inBreakRug(tx, ty) {
+    return tx >= BREAK_RUG.x && tx < BREAK_RUG.x + BREAK_RUG.w && ty >= BREAK_RUG.y && ty < BREAK_RUG.y + BREAK_RUG.h;
   }
 
   function drawFloor() {
     for (let ty = 0; ty < MAP_H; ty += 1) {
       for (let tx = 0; tx < MAP_W; tx += 1) {
         const edge = tx === 0 || ty === 0 || tx === MAP_W - 1 || ty === MAP_H - 1;
-        fillRect(tx * TILE, ty * TILE, TILE, TILE, edge ? "#475569" : (tx + ty) % 2 ? "#334155" : "#3f4f63");
+        let base = (tx + ty) % 2 ? "#334155" : "#3f4f63";
+        if (inBreakRug(tx, ty)) base = (tx + ty) % 2 ? "#4a3728" : "#5c4433";
+        fillRect(tx * TILE, ty * TILE, TILE, TILE, edge ? "#475569" : base);
       }
     }
+    for (let wx = 3; wx < MAP_W - 3; wx += 7) {
+      fillRect(wx * TILE + 4, 2, TILE - 8, 6, "#bae6fd");
+      fillRect(wx * TILE + 6, 4, TILE - 12, 2, "#e0f2fe");
+    }
+    fillRect(BREAK_RUG.x * TILE, BREAK_RUG.y * TILE, BREAK_RUG.w * TILE, 3, "#78716c");
   }
 
-  function drawDesk(tx, ty, lampOn) {
-    fillRect(tx * TILE, ty * TILE + 10, TILE * 3, 6, "#78716c");
-    fillRect(tx * TILE + 4, ty * TILE + 4, TILE * 3 - 8, 8, "#a8a29e");
-    fillRect(tx * TILE + TILE * 3 - 6, ty * TILE + 2, 4, 6, lampOn ? "#fbbf24" : "#64748b");
+  function drawZoneProps(station) {
+    const x = station.x * TILE;
+    const y = station.y * TILE;
+    if (station.id === "ide") {
+      fillRect(x + 8, y + 8, TILE - 4, TILE - 8, "#0ea5e9");
+      fillRect(x + TILE, y + 10, 6, 4, "#38bdf8");
+    } else if (station.id === "product") {
+      fillRect(x + 10, y + 6, TILE * 2, 8, "#fef08a");
+      fillRect(x + TILE * 2, y + 8, 4, 12, "#ca8a04");
+    } else if (station.id === "access") {
+      fillRect(x + TILE, y + TILE, 8, TILE, "#991b1b");
+      fillRect(x + TILE + 2, y + TILE + 4, 4, 8, "#fca5a5");
+    } else if (station.id === "review") {
+      fillRect(x + 12, y + 6, TILE * 2, TILE - 4, "#ecfccb");
+    }
   }
 
   function drawZone(station, color) {
@@ -288,20 +499,78 @@
     fillRect(x, y + h - 3, w, 3, "#64748b");
     fillRect(x, y, 3, h, "#94a3b8");
     fillRect(x + w - 3, y, 3, h, "#64748b");
+    drawZoneProps(station);
   }
 
-  function drawAgent(tx, ty, role, frame, lampOn) {
-    drawDesk(tx, ty, lampOn);
+  function drawZoneLabel(station) {
+    ctx.fillStyle = "#e2e8f0";
+    ctx.font = "9px monospace";
+    ctx.fillText(station.label.slice(0, 14), station.x * TILE + 6, station.y * TILE + station.h * TILE - 6);
+  }
+
+  function drawDesk(tx, ty, lampOn, working) {
+    fillRect(tx * TILE, ty * TILE + TILE - 8, TILE * 3, 8, "#78716c");
+    fillRect(tx * TILE + 6, ty * TILE + 8, TILE * 3 - 12, 12, "#a8a29e");
+    fillRect(tx * TILE + TILE * 3 - 10, ty * TILE + 4, 6, 10, lampOn ? "#fbbf24" : "#64748b");
+    if (working) {
+      fillRect(tx * TILE + 10, ty * TILE + 10, TILE * 2 - 8, 10, "#1e293b");
+      fillRect(tx * TILE + 12, ty * TILE + 12, TILE * 2 - 12, 6, "#38bdf8");
+    }
+  }
+
+  function drawAgentSprite(px, py, role, frame, working) {
     const colors = ROLE_COLORS[role] || ROLE_COLORS.ops;
     const bob = state.reducedMotion ? 0 : Math.sin(frame * 0.08) * 1;
-    const ax = tx * TILE + 8;
-    const ay = ty * TILE + 2 + bob;
-    fillRect(ax + 4, ay, 8, 8, colors[0]);
-    fillRect(ax + 2, ay + 8, 12, 10, colors[1]);
-    fillRect(ax, ay + 10, 4, 6, colors[1]);
-    fillRect(ax + 12, ay + 10, 4, 6, colors[1]);
-    fillRect(ax + 5, ay + 2, 2, 2, "#fff");
-    fillRect(ax + 9, ay + 2, 2, 2, "#fff");
+    const ax = px + 8;
+    const ay = py + bob;
+    fillRect(ax + 6, ay, 10, 10, colors[0]);
+    fillRect(ax + 4, ay + 10, 14, 12, colors[1]);
+    fillRect(ax + 2, ay + 12, 5, 8, colors[1]);
+    fillRect(ax + 15, ay + 12, 5, 8, colors[1]);
+    fillRect(ax + 7, ay + 3, 2, 2, "#fff");
+    fillRect(ax + 11, ay + 3, 2, 2, "#fff");
+    if (working) {
+      fillRect(ax + 16, ay + 14, 8, 4, "#64748b");
+    }
+  }
+
+  function drawAgentAtDesk(station, frame, working) {
+    drawDesk(station.x, station.y, stationStatus(station) === "done", working);
+    const role = agentRole(station.agentId);
+    drawAgentSprite(station.x * TILE, station.y * TILE + 2, role, frame, working);
+  }
+
+  function drawAgent(station, frame) {
+    const rt = agentRuntime[station.agentId];
+    const working = rt?.state === "working" || (state.activeStationId === station.id && !isStudio);
+    if (rt && (rt.state === "walking" || rt.state === "break")) {
+      const px = rt.tileX * TILE;
+      const py = rt.tileY * TILE;
+      drawAgentSprite(px, py, agentRole(station.agentId), rt.frame, false);
+      return;
+    }
+    drawAgentAtDesk(station, frame, working);
+  }
+
+  function drawAmenity(station) {
+    const x = station.x * TILE;
+    const y = station.y * TILE;
+    if (station.amenityId === "coffee") {
+      fillRect(x + 4, y + 6, TILE + 8, TILE - 4, "#57534e");
+      fillRect(x + 10, y + 2, 10, 8, "#292524");
+      if (!state.reducedMotion) {
+        const steam = Math.sin(state.frame * 0.12 + x) * 2;
+        fillRect(x + 12, y - 4 + steam, 3, 6, "rgba(255,255,255,0.35)");
+        fillRect(x + 18, y - 6 + steam * 0.8, 3, 8, "rgba(255,255,255,0.25)");
+      }
+    } else if (station.amenityId === "cooler") {
+      fillRect(x + 2, y + 4, TILE + 4, TILE * 2 - 6, "#e2e8f0");
+      fillRect(x + 8, y + 8, 8, 10, "#38bdf8");
+      if (!state.reducedMotion && state.frame % 20 < 10) {
+        fillRect(x + 20, y + 6, 2, 2, "#fef08a");
+        fillRect(x + 22, y + 10, 2, 2, "#fef08a");
+      }
+    }
   }
 
   function drawHighlight(station) {
@@ -315,13 +584,109 @@
   }
 
   function drawLabel(station) {
-    const st = stationStatus(station);
-    if (st !== "done") return;
+    if (stationStatus(station) !== "done") return;
     const cx = (station.x + station.w / 2) * TILE;
     const cy = station.y * TILE - 4;
-    fillRect(cx - 4, cy - 4, 8, 8, "#4ade80");
-    fillRect(cx - 2, cy - 1, 4, 2, "#fff");
-    fillRect(cx - 1, cy, 2, 3, "#fff");
+    fillRect(cx - 5, cy - 5, 10, 10, "#4ade80");
+    fillRect(cx - 3, cy - 1, 6, 2, "#fff");
+    fillRect(cx - 1, cy, 2, 4, "#fff");
+  }
+
+  function drawDepthSweep() {
+    if (!state.depthSweep) return;
+    state.depthSweep.frame += 1;
+    const alpha = Math.max(0, 1 - state.depthSweep.frame / 90);
+    ctx.fillStyle = "rgba(153, 246, 228, " + alpha * 0.25 + ")";
+    ctx.fillRect(0, 0, logicalW, logicalH);
+    if (state.depthSweep.frame > 90) state.depthSweep = null;
+  }
+
+  function drawConfetti() {
+    state.confetti = state.confetti.filter((p) => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.05;
+      p.ttl -= 1;
+      fillRect(p.x, p.y, 3, 3, p.color);
+      return p.ttl > 0;
+    });
+  }
+
+  function drawHandoffPulse() {
+    if (!state.handoffPulse) return;
+    state.handoffPulse.frame += 1;
+    const fromSt = state.stations.find((s) => s.agentId === state.handoffPulse.from);
+    const toSt = state.stations.find((s) => s.agentId === state.handoffPulse.to);
+    if (fromSt && toSt) {
+      const fx = (fromSt.x + 1) * TILE;
+      const fy = (fromSt.y + 1) * TILE;
+      const tx = (toSt.x + 1) * TILE;
+      const ty = (toSt.y + 1) * TILE;
+      const t = state.handoffPulse.frame / 60;
+      const alpha = Math.max(0, 1 - t);
+      ctx.strokeStyle = "rgba(251, 191, 36, " + alpha + ")";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(fx, fy);
+      ctx.lineTo(tx, ty);
+      ctx.stroke();
+    }
+    if (state.handoffPulse.frame > 60) state.handoffPulse = null;
+  }
+
+  function updateAgents() {
+    if (state.reducedMotion || isStudio) return;
+    for (const station of state.stations) {
+      if (station.kind !== "agent" || !station.agentId) continue;
+      const rt = agentRuntime[station.agentId];
+      if (!rt) continue;
+      rt.frame += 1;
+
+      const panelOpenForThis = state.activeStationId === station.id;
+      if (panelOpenForThis) {
+        rt.state = "working";
+        rt.targetX = rt.homeX;
+        rt.targetY = rt.homeY;
+      } else if (rt.state === "working") {
+        rt.state = "idle";
+      }
+
+      if (rt.state === "idle" || rt.state === "break") {
+        rt.breakTimer -= 1;
+        if (rt.breakTimer <= 0 && rt.state === "idle") {
+          const amenity = state.stations.find((s) => s.kind === "amenity" && s.amenityId);
+          if (amenity) {
+            rt.state = "break";
+            rt.breakTarget = amenity.amenityId;
+            rt.targetX = amenity.x + amenity.w / 2;
+            rt.targetY = amenity.y + amenity.h / 2;
+          }
+          rt.breakTimer = 180 + Math.floor(Math.random() * 240);
+        }
+        if (rt.state === "break" && Math.abs(rt.tileX - rt.targetX) < 0.05 && Math.abs(rt.tileY - rt.targetY) < 0.05) {
+          if (rt.breakTimer <= 60) {
+            rt.state = "walking";
+            rt.targetX = rt.homeX;
+            rt.targetY = rt.homeY;
+          }
+        }
+      }
+
+      if (rt.state === "walking" || rt.state === "break") {
+        const speed = 0.06;
+        const dx = rt.targetX - rt.tileX;
+        const dy = rt.targetY - rt.tileY;
+        if (Math.abs(dx) < 0.04 && Math.abs(dy) < 0.04) {
+          rt.tileX = rt.targetX;
+          rt.tileY = rt.targetY;
+          if (rt.state === "walking" && rt.tileX === rt.homeX && rt.tileY === rt.homeY) rt.state = "idle";
+        } else {
+          rt.tileX += Math.sign(dx) * Math.min(Math.abs(dx), speed);
+          rt.tileY += Math.sign(dy) * Math.min(Math.abs(dy), speed);
+          rt.direction = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "right" : "left") : dy > 0 ? "down" : "up";
+        }
+      }
+    }
   }
 
   function renderOffice() {
@@ -339,30 +704,39 @@
           visualQa: "#1e3a4a",
           designDoc: "#2a2a4a",
           messagingDoc: "#4a2a3a",
+          applyDrafts: "#2a4a3a",
           review: "#1e4a3a"
         };
         drawZone(station, colors[station.id] || colors[station.section] || "#334155");
         drawZoneLabel(station);
       }
+      if (station.kind === "amenity") drawAmenity(station);
     }
     for (const station of stations) {
-      if (station.kind === "agent" && station.agentId) {
-        const role = agentRole(station.agentId);
-        drawAgent(station.x, station.y, role, state.frame, stationStatus(station) === "done");
-      }
+      if (station.kind === "agent" && station.agentId) drawAgent(station, state.frame);
       drawLabel(station);
+    }
+    drawDepthSweep();
+    drawHandoffPulse();
+    drawConfetti();
+    state.speechBubbles = state.speechBubbles.filter((b) => {
+      b.frame += 1;
+      return b.frame < b.ttl;
+    });
+    if (state.frame % 30 === 0) {
+      renderNameplates();
+      renderSpeechDom();
     }
     if (state.hoverId) {
       const hovered = stations.find((s) => s.id === state.hoverId);
       if (hovered) drawHighlight(hovered);
     }
-    if (state.frame % 30 === 0) renderNameplates();
   }
 
   function canvasCoords(event) {
     const rect = els.canvas.getBoundingClientRect();
-    const x = ((event.clientX - rect.left) / rect.width) * MAP_W * TILE;
-    const y = ((event.clientY - rect.top) / rect.height) * MAP_H * TILE;
+    const x = ((event.clientX - rect.left) / rect.width) * logicalW;
+    const y = ((event.clientY - rect.top) / rect.height) * logicalH;
     return { x, y };
   }
 
@@ -528,12 +902,18 @@
   }
 
   function openStation(stationId) {
+    if (isStudio) return;
     if (state.depth === "undecided") {
       showDepthModal();
       return;
     }
     const station = visibleStations().find((s) => s.id === stationId);
     if (!station) return;
+    if (station.kind === "amenity") {
+      const msgs = AMENITY_MSG[station.amenityId] || ["Nice break."];
+      setStatus("ok", msgs[Math.floor(Math.random() * msgs.length)]);
+      return;
+    }
     if (station.kind === "review") {
       openReview();
       return;
@@ -556,6 +936,26 @@
   function closePanel() {
     els.panel.classList.add("hidden");
     state.activeStationId = null;
+  }
+
+  async function markStationProgress(station) {
+    const sectionId = wizardSectionForStation(station);
+    if (!sectionId) return;
+    if (sectionId === "team" && !allAgentBriefsComplete()) return;
+    const prev = stationStatus(station);
+    await api("/api/state", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ completeSection: sectionId, currentSection: sectionId })
+    });
+    const data = await api("/api/state");
+    state.progress = data.progress;
+    state.onboarding = data.onboarding;
+    if (prev !== "done" && stationStatus(station) === "done") {
+      const cx = (station.x + station.w / 2) * TILE;
+      const cy = station.y * TILE;
+      spawnConfetti(cx, cy);
+    }
   }
 
   async function savePanel() {
@@ -604,8 +1004,7 @@
           })
         });
       }
-      const data = await api("/api/state");
-      state.progress = data.progress;
+      await markStationProgress(station);
       updateProgressUi();
       renderStationList();
       closePanel();
@@ -649,53 +1048,58 @@
     }
   }
 
-  // Events
-  els.canvas.addEventListener("mousemove", (event) => {
-    const { x, y } = canvasCoords(event);
-    const hit = hitTest(x, y);
-    state.hoverId = hit ? hit.id : null;
-    if (hit) {
-      els.hoverLabel.textContent = hit.label + (stationStatus(hit) === "done" ? " ✓" : "");
-      els.hoverLabel.classList.remove("hidden");
-      els.hoverLabel.style.left = event.clientX + 12 + "px";
-      els.hoverLabel.style.top = event.clientY + 12 + "px";
-    } else {
+  if (!isStudio) {
+    els.canvas.addEventListener("mousemove", (event) => {
+      const { x, y } = canvasCoords(event);
+      const hit = hitTest(x, y);
+      state.hoverId = hit ? hit.id : null;
+      if (hit) {
+        els.hoverLabel.textContent = hit.label + (stationStatus(hit) === "done" ? " ✓" : "");
+        els.hoverLabel.classList.remove("hidden");
+        els.hoverLabel.style.left = event.clientX + 12 + "px";
+        els.hoverLabel.style.top = event.clientY + 12 + "px";
+      } else {
+        els.hoverLabel.classList.add("hidden");
+      }
+    });
+
+    els.canvas.addEventListener("mouseleave", () => {
+      state.hoverId = null;
       els.hoverLabel.classList.add("hidden");
-    }
-  });
+    });
 
-  els.canvas.addEventListener("mouseleave", () => {
-    state.hoverId = null;
-    els.hoverLabel.classList.add("hidden");
-  });
+    els.canvas.addEventListener("click", (event) => {
+      const { x, y } = canvasCoords(event);
+      const hit = hitTest(x, y);
+      if (hit) openStation(hit.id);
+    });
 
-  els.canvas.addEventListener("click", (event) => {
-    const { x, y } = canvasCoords(event);
-    const hit = hitTest(x, y);
-    if (hit) openStation(hit.id);
-  });
+    if (els.panelClose) els.panelClose.addEventListener("click", closePanel);
+    if (els.panelCancel) els.panelCancel.addEventListener("click", closePanel);
+    if (els.panelSave) els.panelSave.addEventListener("click", savePanel);
+    if (els.reviewBtn) els.reviewBtn.addEventListener("click", openReview);
+    if (els.reviewCancel) els.reviewCancel.addEventListener("click", () => els.reviewModal.classList.add("hidden"));
+    if (els.reviewSave) els.reviewSave.addEventListener("click", saveProject);
 
-  els.panelClose.addEventListener("click", closePanel);
-  els.panelCancel.addEventListener("click", closePanel);
-  els.panelSave.addEventListener("click", savePanel);
-  els.reviewBtn.addEventListener("click", openReview);
-  els.reviewCancel.addEventListener("click", () => els.reviewModal.classList.add("hidden"));
-  els.reviewSave.addEventListener("click", saveProject);
-
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      closePanel();
-      els.reviewModal.classList.add("hidden");
-    }
-  });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closePanel();
+        if (els.reviewModal) els.reviewModal.classList.add("hidden");
+      }
+    });
+  }
 
   function loop() {
     state.frame += 1;
+    updateAgents();
     renderOffice();
     window.requestAnimationFrame(loop);
   }
 
   loop();
   loadState().catch((error) => setStatus("error", error.message));
-  window.addEventListener("resize", () => renderNameplates());
+  window.addEventListener("resize", () => {
+    renderNameplates();
+    renderSpeechDom();
+  });
 })();

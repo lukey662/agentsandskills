@@ -51,6 +51,8 @@ describe("Agent Office setup view", () => {
     const agents = loadProjectRosterAgents(root);
     const stations = buildOfficeStations(agents);
     expect(stations.some((s) => s.id === "ide")).toBe(true);
+    expect(stations.some((s) => s.amenityId === "coffee")).toBe(true);
+    expect(stations.some((s) => s.amenityId === "cooler")).toBe(true);
     expect(stations.filter((s) => s.kind === "agent").length).toBe(agents.length);
   });
 
@@ -96,6 +98,7 @@ describe("Agent Office setup view", () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          stationId: "agent-planner",
           form: {
             ideSurface: "cursor",
             productSummary: "Office smoke product.",

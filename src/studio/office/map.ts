@@ -4,8 +4,8 @@ import type { OfficeStation } from "./types.js";
 
 export const MAP_WIDTH = 28;
 export const MAP_HEIGHT = 18;
-export const TILE_SIZE = 16;
-export const CANVAS_SCALE = 6;
+export const TILE_SIZE = 24;
+export const CANVAS_SCALE = 4;
 
 const ALL_DEPTHS: WizardDepth[] = ["quick", "standard", "complete", "undecided"];
 const STANDARD_DEPTHS: WizardDepth[] = ["standard", "complete"];
@@ -50,10 +50,47 @@ const ZONE_STATIONS: Omit<OfficeStation, "agentId">[] = [
     h: 3,
     depths: COMPLETE_DEPTHS
   },
-  { id: "review", kind: "review", label: "Review Board", section: "review", x: 12, y: 8, w: 4, h: 2, depths: ALL_DEPTHS }
+  {
+    id: "applyDrafts",
+    kind: "zone",
+    label: "Publishing Desk",
+    section: "applyDrafts",
+    x: 9,
+    y: 8,
+    w: 3,
+    h: 2,
+    depths: COMPLETE_DEPTHS
+  },
+  { id: "review", kind: "review", label: "Review Board", section: "review", x: 16, y: 8, w: 4, h: 2, depths: ALL_DEPTHS },
+  {
+    id: "coffee",
+    kind: "amenity",
+    label: "Coffee Machine",
+    section: "agent",
+    amenityId: "coffee",
+    x: 12,
+    y: 10,
+    w: 2,
+    h: 2,
+    depths: ALL_DEPTHS
+  },
+  {
+    id: "cooler",
+    kind: "amenity",
+    label: "Water Cooler",
+    section: "agent",
+    amenityId: "cooler",
+    x: 14,
+    y: 10,
+    w: 2,
+    h: 2,
+    depths: ALL_DEPTHS
+  }
 ];
 
-/** Place agent desks in two rows inside the office floor. */
+/** Break-room rug tile bounds (inclusive tile coords). */
+export const BREAK_ROOM_RUG = { x: 11, y: 9, w: 7, h: 4 };
+
 function agentDeskPositions(count: number): { x: number; y: number }[] {
   const positions: { x: number; y: number }[] = [];
   const cols = Math.min(5, Math.ceil(count / 2));
@@ -89,4 +126,10 @@ export function buildOfficeStations(agents: RosterAgent[]): OfficeStation[] {
 export function stationsForDepth(stations: OfficeStation[], depth: WizardDepth): OfficeStation[] {
   if (depth === "undecided") return stations.filter((s) => s.depths.includes("quick"));
   return stations.filter((s) => s.depths.includes(depth));
+}
+
+export function amenityTileCenter(amenityId: "coffee" | "cooler"): { x: number; y: number } {
+  const station = ZONE_STATIONS.find((s) => s.amenityId === amenityId);
+  if (!station) return { x: 13, y: 10 };
+  return { x: station.x + station.w / 2, y: station.y + station.h / 2 };
 }
