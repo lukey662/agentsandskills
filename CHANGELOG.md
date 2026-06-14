@@ -7,6 +7,7 @@
 - Fixed package-source audit mode so the source repository validates shipped templates and package assets without requiring installed-project root docs such as `AGENTS.md` or `.agent-kit/manifest.json`.
 - Updated development dependencies for TypeScript 6 and Node 25 type coverage, while preserving the package runtime floor at Node 20.
 - Hardened GitHub CI by keeping OpenSSF Scorecard write scopes at job level and documenting Dependency Review's dependency-graph requirement.
+- Updated `actions/upload-artifact` to v7 in release and research workflows to avoid the GitHub Actions Node 20 runtime deprecation window.
 - Added an `esbuild` override to clear the release-gate dependency audit without downgrading `tsup`.
 - Added **`agent-kit init --activate`** for Claude Code (`.claude/agents/*.md`, `CLAUDE.md`), Copilot (`.github/copilot-instructions.md`), and Codex (`.codex/config.toml`) IDE parity.
 - Plain **`agent-kit init`** now always creates `.agent-kit/project-context.json` and ships `.github/workflows/agent-kit-audit.yml`.
