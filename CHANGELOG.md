@@ -14,7 +14,7 @@
 - Added code-aware audit tier (`project-reality` vs `docs-hygiene`): Supabase migration RLS parsing, test-script verification, and secret-pattern scanning.
 - Added **`agent-kit session checkpoint --file`** batch API for council evidence logging.
 - Reference `.agent-kit/agent-briefs.md` in all assistant adapters.
-- Release workflow supports optional maintainer npm token fallback when trusted publishing returns 404.
+- Release workflow publishes through npm Trusted Publishing/OIDC without `NODE_AUTH_TOKEN`, avoiding OTP-bound token automation.
 
 ## 0.1.2
 

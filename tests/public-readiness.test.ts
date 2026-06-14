@@ -464,7 +464,8 @@ describe("public package readiness", () => {
     expect(release).toContain("node scripts/post-publish-verify.mjs");
     expect(ci).toContain("npm run release:check");
     expect(release).toContain("Validate manual publish ref");
-    expect(release).toContain("secrets.NPM_TOKEN");
+    expect(release).not.toContain("NODE_AUTH_TOKEN");
+    expect(release).not.toContain("secrets.NPM_TOKEN");
     expect(supplyChain).toContain("Trusted Publishing");
     expect(supplyChain).toContain("provenance");
     expect(supplyChain).toContain("SBOM");

@@ -92,17 +92,10 @@ jobs:
 
       - name: Publish to public npm
         if: github.event_name == 'release' || github.event.inputs.dry_run == 'false'
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           set -euo pipefail
           tarball="./${{ steps.pack.outputs.tarball }}"
-          if [ -n "${NODE_AUTH_TOKEN:-}" ]; then
-            echo "Publishing with NPM_TOKEN fallback (trusted publishing unavailable or org scope blocked)."
-            npm publish "${tarball}" --access public
-          else
-            npm publish "${tarball}" --access public
-          fi
+          npm publish "${tarball}" --access public
 
       - name: Verify published package install
         if: github.event_name == 'release' || github.event.inputs.dry_run == 'false'
