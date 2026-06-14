@@ -88,10 +88,10 @@
     "pack:check": "npm pack --dry-run"
   },
   "dependencies": {
-    "@octokit/rest": "^21.1.1",
-    "commander": "^12.1.0",
+    "@octokit/rest": "^22.0.1",
+    "commander": "^15.0.0",
     "simple-git": "^3.27.0",
-    "zod": "^3.24.1"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/node": "^25.9.3",
