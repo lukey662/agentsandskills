@@ -11,7 +11,7 @@ Use this runbook to publish `@appsforgood/next-supabase-kit` and run post-publis
 
 ## Publish Steps
 
-If GitHub Release publish fails with an npm trusted publishing or OIDC error, fix the npm Trusted Publisher settings for the package and `npm-publish` environment. The Release workflow intentionally does not set `NODE_AUTH_TOKEN`; OTP-bound token automation should not be used for normal publishing.
+If GitHub Release publish fails with an npm trusted publishing or OIDC error, fix the npm Trusted Publisher settings for the package and `npm-publish` environment. The Release workflow intentionally does not set a publish token, scrubs inherited `NODE_AUTH_TOKEN` from the publish process, and uses a token-free npm config so OIDC is the only automated publish path. OTP-bound token automation should not be used for normal publishing.
 
 ### Option A: GitHub Release (preferred)
 

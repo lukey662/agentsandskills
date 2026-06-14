@@ -9,6 +9,7 @@
 - Hardened GitHub CI by keeping OpenSSF Scorecard write scopes at job level and documenting Dependency Review's dependency-graph requirement.
 - Updated `actions/upload-artifact` to v7 in release and research workflows to avoid the GitHub Actions Node 20 runtime deprecation window.
 - Added an `esbuild` override to clear the release-gate dependency audit without downgrading `tsup`.
+- Hardened npm Trusted Publishing by scrubbing inherited `NODE_AUTH_TOKEN` state and publishing with a token-free npm config.
 - Added **`agent-kit init --activate`** for Claude Code (`.claude/agents/*.md`, `CLAUDE.md`), Copilot (`.github/copilot-instructions.md`), and Codex (`.codex/config.toml`) IDE parity.
 - Plain **`agent-kit init`** now always creates `.agent-kit/project-context.json` and ships `.github/workflows/agent-kit-audit.yml`.
 - Added code-aware audit tier (`project-reality` vs `docs-hygiene`): Supabase migration RLS parsing, test-script verification, and secret-pattern scanning.

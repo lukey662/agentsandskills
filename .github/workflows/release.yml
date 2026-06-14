@@ -95,7 +95,10 @@ jobs:
         run: |
           set -euo pipefail
           tarball="./${{ steps.pack.outputs.tarball }}"
-          npm publish "${tarball}" --access public
+          publish_npmrc="$(mktemp)"
+          trap 'rm -f "${publish_npmrc}"' EXIT
+          printf '%s\n' 'registry=https://registry.npmjs.org/' > "${publish_npmrc}"
+          env -u NODE_AUTH_TOKEN NPM_CONFIG_USERCONFIG="${publish_npmrc}" npm publish "${tarball}" --access public
 
       - name: Verify published package install
         if: github.event_name == 'release' || github.event.inputs.dry_run == 'false'

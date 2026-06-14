@@ -224,7 +224,7 @@ Release workflow requirements:
 - GitHub environment: `npm-publish`
 - Publish trigger: published GitHub Release or manual workflow dispatch with `dry_run=false`
 - Publish authentication: npm Trusted Publishing through GitHub Actions OIDC
-- Publish command: create a package tarball, attest the SBOM for that tarball, then run `npm publish <tarball> --access public`
+- Publish command: create a package tarball, attest the SBOM for that tarball, scrub inherited npm token state, then run `npm publish <tarball> --access public` with a token-free npm config
 - Public install verification: `npx @appsforgood/next-supabase-kit doctor`
 
 The release workflow must run typecheck, tests, build, dependency audit, SBOM check, install smoke, and package dry run before publishing.
@@ -233,6 +233,7 @@ The release workflow must run typecheck, tests, build, dependency audit, SBOM ch
 
 - Do not store long-lived npm publish tokens in GitHub Actions.
 - Use least-privilege release credentials: OIDC for publish.
+- Do not let inherited `NODE_AUTH_TOKEN` or setup-node user config become a publish fallback.
 - Keep detailed per-repo research findings out of the public npm package unless separately reviewed.
 - Run `npm audit --audit-level=moderate` before publishing.
 - Generate a CycloneDX SBOM from `package-lock.json`, upload release evidence, and attest the SBOM for the published tarball.

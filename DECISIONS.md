@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-06-14 - Scrub Ambient NPM Tokens During Trusted Publish
+
+### Context
+
+GitHub environment variables can inject `NODE_AUTH_TOKEN` into release jobs even when the workflow does not declare an npm publish secret. npm may then fall back to token authentication and fail with permission-like registry errors instead of using the configured OIDC trusted publisher.
+
+### Decision
+
+Keep npm Trusted Publishing as the only automated publish path. Before `npm publish`, the Release workflow writes a minimal token-free npm config and invokes npm with `NODE_AUTH_TOKEN` removed from the publish process.
+
+### Consequences
+
+Publish failures now point at the real trust boundary: npm Trusted Publisher configuration, package ownership, or registry availability. The workflow does not rely on long-lived bypass-2FA publish tokens and remains compatible with GitHub OIDC provenance.
+
 ## 2026-06-14 - Runtime Commands Are Adapter Surfaces
 
 ### Context
@@ -49,13 +63,13 @@ The kit promised multi-IDE agent council support but only Cursor rules were prom
 - Ship `.github/workflows/agent-kit-audit.yml` on init as the first consumer enforcement loop.
 - Split audit findings into `docs-hygiene` and `project-reality` areas.
 - Add `agent-kit session checkpoint --file` for batch council evidence.
-- Allow optional maintainer npm publish token fallback in the Release workflow when trusted publishing returns 404.
+- Reject npm publish-token fallback in the Release workflow; Trusted Publishing or an explicit maintainer-local OTP publish are the only package write paths.
 
 ### Consequences
 
 - Claude Code friction drops from manual subagent creation to one command.
 - Fresh installs always have `.agent-kit/project-context.json` for agents to read.
-- Publish still requires npm org trusted publishing configuration or a maintainer token secret on the `npm-publish` environment.
+- Publish still requires npm org trusted publishing configuration, or a deliberate maintainer-local OTP bootstrap outside automated release.
 
 ## 2026-06-08 - Live Local Studio Serve (Milestone 8 Partial)
 

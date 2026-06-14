@@ -18,6 +18,7 @@
 
 - Release workflows must be deterministic and credential-minimal.
 - Publish steps must use npm Trusted Publishing, not bypass-2FA publish tokens.
+- Publish steps must scrub inherited npm token state before `npm publish`.
 - Private install verification may use a read-only npm token and must fail closed or skip explicitly when the token is absent.
 - Dry runs must execute quality gates without requiring npm package credentials.
 

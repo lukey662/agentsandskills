@@ -317,7 +317,7 @@ Release process:
 5. Confirm the npm Trusted Publisher settings match the release workflow exactly.
 6. Publish the draft GitHub Release, or manually dispatch `Release` with `dry_run=false`.
 7. The `Release` workflow runs the same quality gates as CI.
-8. The workflow validates the GitHub OIDC context, packs the package into a tarball, generates a CycloneDX SBOM, attests the SBOM against the tarball, and publishes that same tarball with `npm publish <tarball> --access public`.
+8. The workflow validates the GitHub OIDC context, packs the package into a tarball, generates a CycloneDX SBOM, attests the SBOM against the tarball, scrubs inherited npm token state, and publishes that same tarball with a token-free npm config through `npm publish <tarball> --access public`.
 9. The workflow verifies public package installation with `node scripts/post-publish-verify.mjs`, which waits for `npm view`, runs public `npx doctor`, runs `init` in a clean temp project, and requires `audit --json` to report zero failures.
 
 Do not use a bypass-2FA publish token for automation. If npm will not allow Trusted Publishing to be configured before the package exists, bootstrap the first version with a one-time manual OTP publish from a verified local checkout or another npm-approved package-creation path, then use Trusted Publishing for future releases.
