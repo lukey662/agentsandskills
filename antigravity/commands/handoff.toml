@@ -1,0 +1,16 @@
+name = "handoff"
+description = "Record durable Agent Studio handoff evidence between council roles."
+
+prompt = """
+Run the Agent Kit handoff workflow.
+
+Canonical sources: COUNCIL.md, .agent-kit/council-sessions/, .agent-kit/schemas/session-event.schema.json, AGENT_ROSTER.md, and .agent-kit/agent-roster.json.
+
+Workflow:
+1. Identify source agent, target agent, decision, risk, and evidence.
+2. Use `agent-kit session handoff --from <agent> --to <agent> --decision <decision> --risk <risk> --evidence <evidence>`.
+3. Mark required outputs with `agent-kit session output`.
+4. Run `agent-kit session render`.
+
+Required outputs: source agent, target agent, decision, risk, evidence path, required-output status, rendered session path.
+"""

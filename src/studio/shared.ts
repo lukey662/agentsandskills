@@ -18,7 +18,7 @@ const SECRET_PATTERNS = [
   /github_pat_[A-Za-z0-9_]{20,}/g,
   /sk_(?:live|test)_[A-Za-z0-9_]{8,}/g,
   /sbp_[A-Za-z0-9_]{12,}/g,
-  /(?:SUPABASE_SERVICE_ROLE_KEY|DATABASE_URL|OPENAI_API_KEY|ANTHROPIC_API_KEY|GITHUB_TOKEN)=["']?[^"'\s]+/gi,
+  /(?:SUPABASE_SERVICE_ROLE_KEY|DATABASE_URL|OPENAI_API_KEY|ANTHROPIC_API_KEY|GITHUB_TOKEN)=(?!\\n|\\r|\\r\\n)["']?[A-Za-z0-9][A-Za-z0-9_./+:-]+/gi,
   /postgres(?:ql)?:\/\/[^\s)]+/gi
 ];
 

@@ -2,7 +2,7 @@
   "packageName": "@appsforgood/next-supabase-kit",
   "packageVersion": "0.1.3",
   "stack": "next-supabase",
-  "installedAt": "2026-06-09T23:21:22.591Z",
+  "installedAt": "2026-06-14T04:35:38.435Z",
   "docs": [
     "AGENTS.md",
     "AGENT_ROSTER.md",
@@ -27,6 +27,7 @@
     "skills",
     "prompts",
     "checklists",
+    "runtime-skills",
     "design-adapters",
     "assistant-adapters",
     "design-briefs",
@@ -39,20 +40,20 @@
   "templateHashes": {
     "AGENTS.md": "c7f3e7360938a1ed804d2110e9af96e6f09d50c49138063bef0db1642ddaf84f",
     "AGENT_ROSTER.md": "fb88198d0a5f911ec8cbaa2850c1a47e1dbd1fe2c8144f9ce633bbfc1ec414d3",
-    "ASSISTANT_ADAPTERS.md": "80cc528255a42cd92327ed822bdbc6f2ef922fc73a2a8e20d63db7705d7728c2",
+    "ASSISTANT_ADAPTERS.md": "7deab45792ad5724c292f99fda64ea24d84dbdf81204a8fa0371325dbc86671b",
     "COUNCIL.md": "40bec9051664c9c38b8360ee16f21b5e4716030d19c493cdec67395ab06528e1",
     "SKILLS.md": "3c3c2eb40438a42026479dccac7bbf084ba22e2d758c425dff59385d05eae3bd",
-    "SPEC.md": "8a12bae351b0ceda50dfb2e63ec68767e27f68ffdc15f25bb21bba189855578e",
-    "DECISIONS.md": "89b1c8d70450dae83d8b877d5c6acb6517a3555321fdc6fb7259726e06beebab",
-    "DOCS.md": "40a3f03278785b7edc8f43fc0c9a72f2ab33f966efe391039cda27c33b6899f1",
+    "SPEC.md": "bb0406a141338b630a82026e4a2bb37f38448b3641d3b3ada62d146711a4fbfe",
+    "DECISIONS.md": "0c08d1106a40f829b197d552d0397c9bcd9af7e168a55c47ff5be033c6035ec6",
+    "DOCS.md": "4a2940e8d2526d4ad8f481c82451dd65d62f0420638795580a5f04dacec237de",
     "DESIGN.md": "70f52e539073e7c4c1d37e63c9a21672a3221d2931d3ff284058dabf60243530",
     "MESSAGING.md": "f1f7c0f11796820b60bb44e42a65749763f7167944ba6acf092a1cf7b59e50de",
-    "MODEL_ROUTING.md": "0835335a03c1c24275e4a1ddb7905062858035079f9010c14a6a9d70ce7831a7",
-    "QUALITY_GATES.md": "0de13d3add75dfa0c01b957cf6b3a1ae552dd7dab2a2e1c17be74263b6b6950d",
+    "MODEL_ROUTING.md": "f0ca3bd12872cd5f61ff4c6bef670249c0a0188f20c049cb0d09d84219b1839c",
+    "QUALITY_GATES.md": "df9a39ad301394f7f58bc3dd5bf52f9fafeefffdc240fb7ae6a9b6a74b8da0b5",
     "STYLE_GUIDE.md": "dcaed2d7885e920060d74e4ba5a8d548a08a729a3efc178434a17b5a182fb628",
     "SECURITY.md": "f046e4dc794f49700ddee4cb866e2ba1983a1b71268f2e244892d615b41714f8",
-    "TESTING.md": "183f9ca56b95f6390bcfda75a3da3bd22298c8c6ff0d815982022b2af74da75d",
+    "TESTING.md": "30ef3fa51a6b8e0b5ef608d7b7c448d6a7958bc87c27e15786a54f361fc7ef23",
     "DEPLOYMENT.md": "c33d949c2b1850f8ee6c38e5ec565325c3d47f4daac13b81c75e1b35655ea174",
-    "UPGRADE.md": "1f3389e2434a828c2198bf7cbdc4a4b2313de11222bc36997fce1e559dc7799b"
+    "UPGRADE.md": "d4678475458744dee7c1f23b69c04e3cf82d9e896196e62455585aaae5d3a25a"
   }
 }

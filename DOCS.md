@@ -8,6 +8,7 @@ The package has four main subsystems:
 - Install and audit logic in `src/install`
 - GitHub research and repo analysis in `src/research`
 - Static installable assets in `templates`, `agents`, `skills`, `prompts`, `checklists`, `design-adapters`, `design-briefs`, `profiles`, `rosters`, `model-routing`, and `schemas`
+- Runtime adapter assets in `antigravity` and portable skill wrappers in `runtime-skills`
 
 The CLI reads bundled assets from the package root so the same commands work in local development and after build.
 
@@ -23,6 +24,7 @@ Promote other IDE surfaces with:
 agent-kit init --activate claude    # .claude/agents/*.md + CLAUDE.md
 agent-kit init --activate copilot   # .github/copilot-instructions.md
 agent-kit init --activate codex     # .codex/config.toml
+agent-kit init --activate antigravity # .antigravity plugin, commands, and runtime SKILL.md wrappers
 agent-kit init --activate all       # all of the above (Cursor rules remain on every init)
 ```
 
@@ -43,9 +45,19 @@ New manifests include `templateHashes` for each root markdown template. `agent-k
 
 Assistant adapter templates are installed into `.agent-kit/assistant-adapters/`. `ASSISTANT_ADAPTERS.md` records which tool surfaces are active, including AGENTS.md-compatible tools, GitHub Copilot/VS Code instructions, Cursor project rules, Claude Code subagents, model-selection status, enforcement level, and evidence.
 
+Antigravity activation installs `.antigravity/agent-kit/plugin.json`, `.antigravity/agent-kit/commands/*.toml`, `.antigravity/runtime-skills/*/SKILL.md`, and `.antigravity/agent-kit/README.md`. Validate it with:
+
+```bash
+agent-kit adapter validate antigravity
+```
+
+Native runtime commands are adapters only. They expose `/setup`, `/audit`, `/plan`, `/handoff`, `/frontend`, `/security`, `/copy`, `/ship`, and `/upgrade`, but the canonical behavior still lives in `AGENTS.md`, `.agent-kit/agent-roster.json`, `QUALITY_GATES.md`, `.agent-kit/skills/`, and Agent Studio session evidence.
+
 `UPGRADE.md` records the downstream upgrade flow for `agent-kit diff`, `agent-kit update`, framework codemods, Supabase migration review, release notes, audit thresholds, and rollback evidence.
 
 Use `agent-kit audit --json` for machine-readable output in scripts or CI. The output shape is documented by `schemas/audit-report.schema.json` and installed to `.agent-kit/schemas/audit-report.schema.json`.
+
+Use `agent-kit package validate` from the source repository before release. It checks runtime adapter assets, portable skills, docs, example snapshots, package file allowlists, and source-package audit behavior.
 
 Audit also validates the default council roster against the runtime contract that mirrors `schemas/agent-roster.schema.json`. Missing roster files, malformed roster shape, missing default agents, missing skill routing, or a core-change workflow without Lead Architect produce audit failures. Missing schema files, incomplete `COUNCIL.md` handoff evidence, or missing model-routing evidence produce warnings so existing installs can upgrade without being blocked.
 
@@ -56,8 +68,10 @@ Audit also validates the default council roster against the runtime contract tha
 The package deliberately separates AI operating mechanisms:
 
 - Instruction files steer behavior in Codex/AGENTS.md-compatible tools, Copilot, Cursor, and Claude Code.
+- Runtime command files steer Antigravity-style command entrypoints without becoming canonical policy.
 - `.agent-kit/agent-roster.json` provides machine-readable council routing.
 - `.agent-kit/skills/` keeps reusable specialist workflows out of one-off prompts.
+- `runtime-skills/*/SKILL.md` provides portable wrappers for runtimes that discover skill directories.
 - `MODEL_ROUTING.md` and `.agent-kit/model-routing.json` map agents to model profiles and record IDE enforcement limits.
 - `.agent-kit/project-context.json`, `.agent-kit/project-context.md`, and `.agent-kit/corrections/*.json` keep project-specific context and durable human corrections local.
 - `.agent-kit/council-sessions/*/events.jsonl` plus rendered Markdown make visible agent collaboration inspectable without a database.

@@ -1,0 +1,18 @@
+name = "plan"
+description = "Create an implementation-ready Agent Kit plan through Planner and Lead Architect routing."
+
+prompt = """
+Run the planning workflow.
+
+Canonical sources: AGENTS.md, AGENT_ROSTER.md, .agent-kit/agent-roster.json, MODEL_ROUTING.md, .agent-kit/model-routing.json, .agent-kit/project-context.md, .agent-kit/corrections/project-rules.json, COUNCIL.md, and QUALITY_GATES.md.
+
+Workflow:
+1. Start with Planner.
+2. Name the active workflow and maturity target from QUALITY_GATES.md.
+3. Map affected layers: data, business logic, presentation, auth, deployment, docs, and tests.
+4. Name preserved behavior and compatibility constraints.
+5. Route core changes through Lead Architect before implementation.
+6. Record decision, risk, next handoff, and required outputs with `agent-kit session ...` when available.
+
+Required outputs: goal, affected layers, preserved capabilities, implementation sequence, risks, tests, docs, handoffs, acceptance criteria.
+"""

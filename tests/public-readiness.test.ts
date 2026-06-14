@@ -36,6 +36,7 @@ describe("public package readiness", () => {
     expect(packageJson.scripts?.["smoke:studio"]).toBe("node scripts/smoke-studio.mjs");
     expect(packageJson.scripts?.["smoke:setup"]).toBe("node scripts/smoke-setup.mjs");
     expect(packageJson.scripts?.["smoke:audit-gate"]).toBe("node scripts/smoke-audit-gate.mjs");
+    expect(packageJson.scripts?.["package:validate"]).toBe("node dist/index.js package validate");
     expect(packageJson.files).toContain("dist/studio/wizard/assets");
     expect(packageJson.files).toContain("RESEARCH_CITATION_POLICY.md");
     expect(packageJson.files).toContain("CHANGELOG.md");
@@ -51,6 +52,8 @@ describe("public package readiness", () => {
     expect(packageJson.files).toContain("research/proposed-updates.md");
     expect(packageJson.files).toContain("schemas");
     expect(packageJson.files).toContain("assistant-adapters");
+    expect(packageJson.files).toContain("antigravity");
+    expect(packageJson.files).toContain("runtime-skills");
     expect(packageJson.files).toContain("model-routing");
     expect(packageJson.files).toContain("UPGRADE.md");
     expect(packageJson.files).not.toContain("research/findings");
@@ -206,6 +209,7 @@ describe("public package readiness", () => {
     expect(existsSync(join(root, "assistant-adapters", "github-next-supabase.instructions.md"))).toBe(true);
     expect(existsSync(join(root, "assistant-adapters", "cursor-agent-kit.mdc"))).toBe(true);
     expect(existsSync(join(root, "assistant-adapters", "claude-code-subagents.md"))).toBe(true);
+    expect(existsSync(join(root, "assistant-adapters", "antigravity.md"))).toBe(true);
     expect(existsSync(join(root, "assistant-adapters", "model-selection", "codex-config.example.toml"))).toBe(true);
     expect(existsSync(join(root, "assistant-adapters", "model-selection", "claude-code-subagents-with-models.md"))).toBe(true);
     expect(existsSync(join(root, "assistant-adapters", "model-selection", "cursor-model-selection.mdc"))).toBe(true);
@@ -215,6 +219,7 @@ describe("public package readiness", () => {
     const cursor = readFileSync(join(root, "assistant-adapters", "cursor-agent-kit.mdc"), "utf8");
     const copilot = readFileSync(join(root, "assistant-adapters", "github-copilot-instructions.md"), "utf8");
     const claude = readFileSync(join(root, "assistant-adapters", "claude-code-subagents.md"), "utf8");
+    const antigravity = readFileSync(join(root, "assistant-adapters", "antigravity.md"), "utf8");
     const codexModel = readFileSync(join(root, "assistant-adapters", "model-selection", "codex-config.example.toml"), "utf8");
 
     expect(setup).toContain("AGENTS.md");
@@ -225,13 +230,40 @@ describe("public package readiness", () => {
     expect(setup).toContain(".cursor/rules/cursor-agent-kit.mdc");
     expect(setup).toContain(".cursor/rules/cursor-model-selection.mdc");
     expect(setup).toContain(".claude/agents/*.md");
+    expect(setup).toContain(".antigravity/agent-kit/plugin.json");
     expect(cursor).toContain("alwaysApply: true");
     expect(cursor).toContain("MODEL_ROUTING.md");
     expect(copilot).toContain("agent-kit audit --min-readiness");
     expect(copilot).toContain("MODEL_ROUTING.md");
     expect(claude).toContain(".claude/");
     expect(claude).toContain("MODEL_ROUTING.md");
+    expect(antigravity).toContain("agent-kit adapter validate antigravity");
+    expect(antigravity).toContain("AGENTS.md");
     expect(codexModel).toContain("June 2026 Agent Kit suggested baseline");
+  });
+
+  it("ships Antigravity native commands and portable runtime skills", () => {
+    const requiredCommands = ["setup", "audit", "plan", "handoff", "frontend", "security", "copy", "ship", "upgrade"];
+    for (const command of requiredCommands) {
+      const commandPath = join(root, "antigravity", "commands", `${command}.toml`);
+      expect(existsSync(commandPath)).toBe(true);
+      const text = readFileSync(commandPath, "utf8");
+      expect(text).toContain(`name = "${command}"`);
+      expect(text).toContain("Canonical sources:");
+      expect(text).toContain("Required outputs:");
+    }
+
+    const plugin = JSON.parse(readFileSync(join(root, "antigravity", "plugin.json"), "utf8")) as {
+      commands: Array<{ name: string }>;
+      skills: Array<{ name: string; path: string }>;
+    };
+    expect(plugin.commands.map((command) => command.name)).toEqual(requiredCommands);
+    expect(plugin.skills.length).toBeGreaterThan(20);
+    expect(plugin.skills.every((skill) => skill.path.includes("../runtime-skills/"))).toBe(true);
+
+    const planningSkill = readFileSync(join(root, "runtime-skills", "planning-council", "SKILL.md"), "utf8");
+    expect(planningSkill).toContain("name: planning-council");
+    expect(planningSkill).toContain("skills/planning-council.md");
   });
 
   it("ships model-routing assets for agent model selection", () => {
@@ -265,6 +297,7 @@ describe("public package readiness", () => {
     expect(toolNames).toContain("Claude Code");
     expect(toolNames).toContain("Cursor");
     expect(toolNames).toContain("GitHub Copilot");
+    expect(toolNames).toContain("Antigravity");
     expect(modelRouting.agentRoutes.every((route) => profileIds.has(route.profileId))).toBe(true);
     expect(readFileSync(join(root, "templates", "next-supabase", "MODEL_ROUTING.md"), "utf8")).toContain("June 2026 Commented Recommendations");
     expect(readFileSync(join(root, "src", "config", "contracts.ts"), "utf8")).toContain("ModelRoutingContract");
@@ -453,6 +486,7 @@ describe("public package readiness", () => {
     expect(release).toContain("npm run release:check");
 
     expect(releaseCheck).toContain("research/scan-config.json");
+    expect(releaseCheck).toContain("antigravity/plugin.json");
     expect(releaseCheck).toContain("rosters/next-supabase-default-council.json");
     expect(releaseCheck).toContain("schemas/agent-roster.schema.json");
     expect(releaseCheck).toContain("schemas/council-session.schema.json");
@@ -471,6 +505,7 @@ describe("public package readiness", () => {
     expect(releaseCheck).toContain("[\"run\", \"typecheck\"]");
     expect(releaseCheck).toContain("[\"test\"]");
     expect(releaseCheck).toContain("[\"run\", \"build\"]");
+    expect(releaseCheck).toContain("[\"run\", \"package:validate\"]");
     expect(releaseCheck).toContain("[\"run\", \"examples:check\"]");
     expect(releaseCheck).toContain("[\"run\", \"smoke:install\"]");
     expect(releaseCheck).toContain("[\"run\", \"smoke:studio\"]");

@@ -17,6 +17,7 @@ Document:
 
 - Agent council routing in `.agent-kit/agent-roster.json`
 - Assistant activation surfaces in `ASSISTANT_ADAPTERS.md`
+- Optional runtime adapter surfaces such as `.antigravity/agent-kit/` and `.antigravity/runtime-skills/`
 - Model profile routing in `MODEL_ROUTING.md` and `.agent-kit/model-routing.json`
 - Council-session evidence in `COUNCIL.md`
 - Agent, council-session, model-routing, and audit-report schemas in `.agent-kit/schemas/`
@@ -38,6 +39,7 @@ Document primary workflows, including:
 
 - Planning and core-change handoffs from `AGENT_ROSTER.md`
 - Tool-specific assistant activation from `ASSISTANT_ADAPTERS.md`
+- Runtime command validation with `agent-kit adapter validate antigravity` when Antigravity is active
 - Model-selection setup, enforcement status, and limitations from `MODEL_ROUTING.md`
 - Council-session evidence capture from `COUNCIL.md`
 - Upgrade review, conflict handling, migration review, and rollback evidence from `UPGRADE.md`
@@ -52,6 +54,8 @@ Document primary workflows, including:
 - Admin workflow
 - Data creation and update workflow
 - Deployment workflow
+
+Runtime command files are adapters only. Native commands such as `/plan`, `/security`, `/frontend`, `/copy`, `/handoff`, `/audit`, `/setup`, `/upgrade`, and `/ship` should point back to `AGENTS.md`, `.agent-kit/agent-roster.json`, `QUALITY_GATES.md`, `.agent-kit/skills/`, and Agent Studio evidence.
 
 ## Integration Points
 

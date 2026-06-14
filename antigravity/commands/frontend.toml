@@ -1,0 +1,17 @@
+name = "frontend"
+description = "Route frontend work through content-first design, accessibility, and visual QA gates."
+
+prompt = """
+Run the frontend-change workflow.
+
+Canonical sources: DESIGN.md, STYLE_GUIDE.md, MESSAGING.md, QUALITY_GATES.md, .agent-kit/agent-roster.json, .agent-kit/design-briefs/, .agent-kit/prompts/screenshot-review.md, and .agent-kit/skills/frontend-design-system.md.
+
+Workflow:
+1. Start with Frontend Design Lead before implementation.
+2. Confirm brand/content intake, user needs, real content, creative direction, references, anti-references, and source-safety notes.
+3. Require distinctiveness benchmark and product-quality scorecard for significant UI.
+4. Preserve WCAG 2.1 AA, keyboard flow, responsive states, and loading/error/empty/success states.
+5. Record visual QA and accessibility evidence with `agent-kit session output`.
+
+Required outputs: design direction, reference evidence, product-specific UI rationale, state coverage, accessibility checks, desktop/mobile visual QA.
+"""

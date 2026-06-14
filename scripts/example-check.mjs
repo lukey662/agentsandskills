@@ -62,6 +62,7 @@ function assertTreeSummary() {
     "model-routing.json",
     "agents/",
     "skills/",
+    "runtime-skills/",
     "prompts/",
     "checklists/",
     "design-adapters/",

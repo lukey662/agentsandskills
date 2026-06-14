@@ -77,12 +77,12 @@ describe("update older installs", () => {
     expect(preview.changed).toEqual(expect.arrayContaining(["AGENTS.md", "SKILLS.md", "SPEC.md"]));
     expect(preview.agentRoster).toBe("missing");
     expect(preview.modelRouting).toBe("missing");
-    expect(preview.libraryFolders.missing).toEqual(expect.arrayContaining(["assistant-adapters", "rosters", "schemas"]));
+    expect(preview.libraryFolders.missing).toEqual(expect.arrayContaining(["assistant-adapters", "runtime-skills", "rosters", "schemas"]));
     expect(preview.preview.wouldCreate).toEqual(
       expect.arrayContaining(["DESIGN.md", "MESSAGING.md", "MODEL_ROUTING.md", "QUALITY_GATES.md", "UPGRADE.md", ".agent-kit/agent-roster.json", ".agent-kit/model-routing.json"])
     );
     expect(preview.preview.wouldWriteConflicts).toEqual(expect.arrayContaining(["AGENTS.md", "SKILLS.md", "SPEC.md"]));
-    expect(preview.preview.wouldRefreshLibraryFolders).toEqual(expect.arrayContaining(["assistant-adapters", "schemas"]));
+    expect(preview.preview.wouldRefreshLibraryFolders).toEqual(expect.arrayContaining(["assistant-adapters", "runtime-skills", "schemas"]));
     expect(preview.preview.wouldCreateAgentRoster).toBe(true);
     expect(preview.preview.wouldWriteAgentRosterConflict).toBe(false);
     expect(preview.preview.wouldCreateModelRouting).toBe(true);
@@ -113,6 +113,7 @@ describe("update older installs", () => {
     expect(existsSync(join(root, ".agent-kit", "schemas", "model-routing.schema.json"))).toBe(true);
     expect(existsSync(join(root, ".agent-kit", "assistant-adapters", "README.md"))).toBe(true);
     expect(existsSync(join(root, ".agent-kit", "assistant-adapters", "model-selection", "codex-config.example.toml"))).toBe(true);
+    expect(existsSync(join(root, ".agent-kit", "runtime-skills", "planning-council", "SKILL.md"))).toBe(true);
     expect(existsSync(join(root, ".agent-kit", "skills", "reference-led-design-critique.md"))).toBe(true);
 
     const manifest = JSON.parse(readFileSync(join(root, ".agent-kit", "manifest.json"), "utf8")) as {
@@ -127,6 +128,7 @@ describe("update older installs", () => {
     expect(manifest.docs).toContain("MODEL_ROUTING.md");
     expect(manifest.docs).toContain("UPGRADE.md");
     expect(manifest.libraryFolders).toContain("assistant-adapters");
+    expect(manifest.libraryFolders).toContain("runtime-skills");
     expect(manifest.libraryFolders).toContain("schemas");
     expect(manifest.agentRoster).toBe(".agent-kit/agent-roster.json");
     expect(manifest.modelRouting).toBe(".agent-kit/model-routing.json");

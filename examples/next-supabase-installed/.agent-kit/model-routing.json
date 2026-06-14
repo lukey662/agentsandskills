@@ -153,6 +153,13 @@
       "modelSelection": "Use Copilot chat or coding-agent model selection where available; repo instructions advise but do not force model selection",
       "enforcement": "advisory",
       "adapter": ".agent-kit/assistant-adapters/model-selection/github-copilot-model-selection.md"
+    },
+    {
+      "tool": "Antigravity",
+      "instructionSurface": ".antigravity/agent-kit/plugin.json, .antigravity/agent-kit/commands/*.toml, and .antigravity/runtime-skills/*/SKILL.md",
+      "modelSelection": "Use Antigravity runtime or workspace model controls where available; native commands advise Agent Kit model profiles but do not force provider selection",
+      "enforcement": "advisory",
+      "adapter": ".agent-kit/assistant-adapters/antigravity.md"
     }
   ],
   "updatePolicy": [

@@ -47,6 +47,7 @@ describe("auditProject", () => {
           "skills",
           "prompts",
           "checklists",
+          "runtime-skills",
           "design-adapters",
           "assistant-adapters",
           "design-briefs",
@@ -164,6 +165,7 @@ describe("auditProject", () => {
     expect(manifest.libraryFolders).toContain("rosters");
     expect(manifest.libraryFolders).toContain("schemas");
     expect(manifest.libraryFolders).toContain("assistant-adapters");
+    expect(manifest.libraryFolders).toContain("runtime-skills");
     expect(readFileSync(join(target, ".agent-kit", "agent-roster.json"), "utf8")).toContain('"defaultWorkflow": "planning"');
     expect(readFileSync(join(target, ".agent-kit", "model-routing.json"), "utf8")).toContain('"id": "next-supabase-default-model-routing"');
     expect(readFileSync(join(target, ".agent-kit", "assistant-adapters", "README.md"), "utf8")).toContain("Assistant Adapters");

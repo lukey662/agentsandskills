@@ -16,9 +16,10 @@ Before publishing a new package version:
 1. Update `CHANGELOG.md` with user-visible changes, migration notes, and deprecations.
 2. Update `ROADMAP.md` and `BEST_PRACTICE_EVIDENCE.md` when a research finding becomes enforced behavior.
 3. Run `npm run release:check`.
-4. Confirm the pack dry run includes only public-safe files.
-5. Publish through npm Trusted Publishing.
-6. Verify public install with `npx @appsforgood/next-supabase-kit`.
+4. Run `agent-kit package validate` from the source repository when runtime adapter or package assets changed.
+5. Confirm the pack dry run includes only public-safe files.
+6. Publish through npm Trusted Publishing.
+7. Verify public install with `npx @appsforgood/next-supabase-kit`.
 
 ## Downstream Upgrade Checklist
 
@@ -28,6 +29,7 @@ From a downstream project:
 npx @appsforgood/next-supabase-kit@latest doctor
 npx @appsforgood/next-supabase-kit@latest diff
 npx @appsforgood/next-supabase-kit@latest update
+npx @appsforgood/next-supabase-kit@latest adapter validate antigravity
 npx @appsforgood/next-supabase-kit@latest audit --min-readiness baseline-setup
 ```
 
@@ -48,8 +50,9 @@ npx @appsforgood/next-supabase-kit@latest audit --min-readiness best-practice-ca
 3. Check `.agent-kit/conflicts/` before accepting template updates.
 4. Preserve valid local customizations in `.agent-kit/overrides.json`.
 5. Review `AGENTS.md`, `AGENT_ROSTER.md`, `ASSISTANT_ADAPTERS.md`, `MODEL_ROUTING.md`, `COUNCIL.md`, `QUALITY_GATES.md`, `SECURITY.md`, `TESTING.md`, `DEPLOYMENT.md`, and this file.
-6. Run project tests and release checks before merging.
-7. Record any accepted deviations in `DECISIONS.md`.
+6. If using Antigravity, review `.antigravity/agent-kit/plugin.json`, `.antigravity/agent-kit/commands/*.toml`, and `.antigravity/runtime-skills/*/SKILL.md`.
+7. Run project tests and release checks before merging.
+8. Record any accepted deviations in `DECISIONS.md`.
 
 ## Next.js And Supabase Stack Upgrades
 

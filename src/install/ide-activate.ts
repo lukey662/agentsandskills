@@ -1,20 +1,25 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
+  ANTIGRAVITY_COMMANDS_SOURCE_DIR,
+  ANTIGRAVITY_COMMANDS_TARGET_DIR,
+  ANTIGRAVITY_PLUGIN_FILES,
+  ANTIGRAVITY_RUNTIME_SKILLS_TARGET_DIR,
   CLAUDE_TEMPLATE,
   CODEX_CONFIG_SOURCE,
   COPILOT_INSTRUCTION_FILES,
-  CURSOR_ADAPTER_FILES
+  CURSOR_ADAPTER_FILES,
+  RUNTIME_SKILLS_SOURCE_DIR
 } from "../config/defaults.js";
-import { copyTextWithConflict, ensureDir, writeText } from "../utils/fs.js";
+import { copyTextWithConflict, ensureDir, listFilesRecursive, writeText } from "../utils/fs.js";
 import { findPackageRoot } from "../utils/package-root.js";
 import { loadProjectRosterAgents } from "../studio/wizard/roster.js";
 
-export type IdeTarget = "cursor" | "claude" | "codex" | "copilot";
+export type IdeTarget = "cursor" | "claude" | "codex" | "copilot" | "antigravity";
 
 export interface ActivateIdeOptions {
   cwd: string;
-  targets: IdeTarget[];
+  targets: Array<IdeTarget | "all">;
   force?: boolean;
 }
 
@@ -30,7 +35,7 @@ const CANONICAL_READ_LIST =
   "`AGENTS.md`, `AGENT_ROSTER.md`, `.agent-kit/agent-roster.json`, `MODEL_ROUTING.md`, `.agent-kit/model-routing.json`, `.agent-kit/project-context.json`, `.agent-kit/project-context.md`, `.agent-kit/agent-briefs.md` when present, `.agent-kit/corrections/project-rules.json`, `.agent-kit/corrections/agent-rules.json`, `COUNCIL.md`, `.agent-kit/council-sessions/`, and `QUALITY_GATES.md`";
 
 function normalizeTargets(targets: string[]): IdeTarget[] {
-  const allowed = new Set<IdeTarget>(["cursor", "claude", "codex", "copilot"]);
+  const allowed = new Set<IdeTarget>(["cursor", "claude", "codex", "copilot", "antigravity"]);
   const normalized = new Set<IdeTarget>();
   for (const target of targets) {
     const value = target.trim().toLowerCase();
@@ -116,6 +121,45 @@ function generateClaudeSubagents(cwd: string, packageRoot: string, force: boolea
   copyAdapterFile(cwd, packageRoot, CLAUDE_TEMPLATE, "CLAUDE.md", force, result);
 }
 
+function copyDirectoryAsConflicts(
+  cwd: string,
+  packageRoot: string,
+  sourceDir: string,
+  targetDir: string,
+  force: boolean,
+  result: ActivateIdeResult
+): void {
+  for (const file of listFilesRecursive(join(packageRoot, sourceDir))) {
+    copyAdapterFile(cwd, packageRoot, join(sourceDir, file), join(targetDir, file).replace(/\\/g, "/"), force, result);
+  }
+}
+
+function installAntigravityAdapter(cwd: string, packageRoot: string, force: boolean, result: ActivateIdeResult): void {
+  ensureDir(join(cwd, ".antigravity", "agent-kit", "commands"));
+  ensureDir(join(cwd, ".antigravity", "runtime-skills"));
+
+  for (const file of ANTIGRAVITY_PLUGIN_FILES) {
+    copyAdapterFile(cwd, packageRoot, file.source, file.target, force, result);
+  }
+
+  copyDirectoryAsConflicts(
+    cwd,
+    packageRoot,
+    ANTIGRAVITY_COMMANDS_SOURCE_DIR,
+    ANTIGRAVITY_COMMANDS_TARGET_DIR,
+    force,
+    result
+  );
+  copyDirectoryAsConflicts(
+    cwd,
+    packageRoot,
+    RUNTIME_SKILLS_SOURCE_DIR,
+    ANTIGRAVITY_RUNTIME_SKILLS_TARGET_DIR,
+    force,
+    result
+  );
+}
+
 function updateAssistantAdaptersTable(cwd: string, activated: Set<IdeTarget>): void {
   const path = join(cwd, "ASSISTANT_ADAPTERS.md");
   if (!existsSync(path)) return;
@@ -147,6 +191,13 @@ function updateAssistantAdaptersTable(cwd: string, activated: Set<IdeTarget>): v
     content = content.replace(
       /\| Codex \/ AGENTS\.md-compatible tools \|[^|]*\|[^|]*\|[^|]*\|[^|]*\|[^|]*\|[^|]*\|/,
       "| Codex / AGENTS.md-compatible tools | `AGENTS.md`, `.codex/config.toml` | Active | Partial | Partial | Root `AGENTS.md` on init; optional `.codex/config.toml` via `agent-kit init --activate codex`. | Confirm Codex loads root `AGENTS.md` and optional model routing comments. |"
+    );
+  }
+
+  if (activated.has("antigravity") && content.includes("| Antigravity |")) {
+    content = content.replace(
+      /\| Antigravity \|[^|]*\|[^|]*\|[^|]*\|[^|]*\|[^|]*\|[^|]*\|/,
+      "| Antigravity | `.antigravity/agent-kit/plugin.json`, `.antigravity/agent-kit/commands/*.toml`, `.antigravity/runtime-skills/*/SKILL.md` | Active | Advisory | Advisory | `agent-kit init --activate antigravity` on ${today}; run `agent-kit adapter validate antigravity`. | Native commands wrap the Agent Kit council/session contract; runtime validation is structural unless `agy` is installed. |"
     );
   }
 
@@ -195,6 +246,10 @@ export function activateIdeTargets(options: ActivateIdeOptions): ActivateIdeResu
   if (activated.has("codex")) {
     ensureDir(join(cwd, ".codex"));
     copyAdapterFile(cwd, packageRoot, CODEX_CONFIG_SOURCE, ".codex/config.toml", force, result);
+  }
+
+  if (activated.has("antigravity")) {
+    installAntigravityAdapter(cwd, packageRoot, force, result);
   }
 
   updateAssistantAdaptersTable(cwd, activated);

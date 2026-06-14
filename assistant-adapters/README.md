@@ -21,6 +21,7 @@ Adapters should point back to those files. Do not maintain separate policy, secu
 - `github-next-supabase.instructions.md`: path-aware Copilot/VS Code instructions for Next.js and Supabase files.
 - `cursor-agent-kit.mdc`: Cursor project-rule template.
 - `claude-code-subagents.md`: Claude Code project subagent template guidance.
+- `antigravity.md`: Antigravity plugin, command, runtime skill, and validation guidance.
 - `model-selection/`: dated setup examples for Codex, Claude Code, Cursor, and GitHub Copilot model routing.
 
 ## Activation Rule

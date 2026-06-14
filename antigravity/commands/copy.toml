@@ -1,0 +1,16 @@
+name = "copy"
+description = "Route public-facing and conversion-facing copy through messaging and proof gates."
+
+prompt = """
+Run the marketing-copy workflow.
+
+Canonical sources: MESSAGING.md, DESIGN.md, QUALITY_GATES.md, .agent-kit/agent-roster.json, .agent-kit/skills/positioning-messaging.md, and .agent-kit/skills/conversion-copywriting.md.
+
+Workflow:
+1. Start with Marketing Copy Lead for public-facing, onboarding, pricing, CTA, landing, empty-state, or conversion-facing copy.
+2. Confirm audience, pain, outcome, differentiator, proof, objections, voice, and conversion goal.
+3. Mark unsupported claims as assumptions.
+4. Handoff accepted copy to Frontend Design Lead for hierarchy and layout fit.
+
+Required outputs: audience, problem/pain/outcome, value proposition, proof, objections, voice/tone, CTA hierarchy, risky-claim review.
+"""

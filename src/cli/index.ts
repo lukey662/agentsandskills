@@ -1,6 +1,7 @@
 import { Command } from "commander";
 import type { AuditReadinessLevel } from "../config/types.js";
 import { addSkill, listSkills } from "../install/add-skill.js";
+import { validateAdapter, validatePackage, type AdapterValidationTarget, type ValidationReport } from "../install/adapter-validate.js";
 import { READINESS_ORDER, createAuditReport, isAuditReadinessLevel, meetsMinimumReadiness } from "../install/audit.js";
 import { diffProject } from "../install/diff.js";
 import { initProject } from "../install/install.js";
@@ -76,7 +77,7 @@ program
   .description("Install agent-kit docs and library files into a project.")
   .option("--stack <stack>", "Stack profile to install.", "next-supabase")
   .option("--force", "Overwrite existing docs instead of writing conflicts.")
-  .option("--activate <targets...>", "Promote IDE adapters: cursor, claude, codex, copilot, or all.")
+  .option("--activate <targets...>", "Promote IDE/runtime adapters: cursor, claude, codex, copilot, antigravity, or all.")
   .option("--guided", "Deprecated alias for default project context scan (always runs on init).")
   .option("--json", "Print machine-readable JSON output.")
   .option("--setup", "Start the setup wizard after install.")
@@ -199,6 +200,50 @@ program
       console.log("tip: run agent-kit init then agent-kit setup to onboard this project.");
     }
     console.log("status: ok");
+  });
+
+function printValidationReport(report: ValidationReport, json?: boolean): void {
+  if (json) {
+    console.log(JSON.stringify(report, null, 2));
+    return;
+  }
+  console.log(`SUMMARY pass=${report.summary.pass} warn=${report.summary.warn} fail=${report.summary.fail}`);
+  for (const finding of report.findings) {
+    const prefix = finding.level.toUpperCase().padEnd(4);
+    console.log(`${prefix} ${finding.area}: ${finding.message}`);
+    if (finding.remediation) console.log(`     remediation: ${finding.remediation}`);
+  }
+}
+
+const adapter = program.command("adapter").description("Validate runtime and IDE adapter assets.");
+
+adapter
+  .command("validate [target]")
+  .description("Validate adapter assets. Targets: antigravity, cursor, claude, codex, copilot, all.")
+  .option("--json", "Print machine-readable JSON output.")
+  .action((target: AdapterValidationTarget | undefined, options: { json?: boolean }) => {
+    const selected = target ?? "antigravity";
+    const allowed = new Set(["antigravity", "cursor", "claude", "codex", "copilot", "all"]);
+    if (!allowed.has(selected)) {
+      console.error(`Invalid adapter target "${selected}". Expected one of: ${[...allowed].join(", ")}.`);
+      process.exitCode = 1;
+      return;
+    }
+    const report = validateAdapter(process.cwd(), selected);
+    printValidationReport(report, Boolean(options.json));
+    if (report.summary.fail > 0) process.exitCode = 1;
+  });
+
+const packageCommand = program.command("package").description("Validate package-source release assets.");
+
+packageCommand
+  .command("validate")
+  .description("Validate package assets, runtime adapters, docs, examples, and source audit behavior.")
+  .option("--json", "Print machine-readable JSON output.")
+  .action((options: { json?: boolean }) => {
+    const report = validatePackage(process.cwd());
+    printValidationReport(report, Boolean(options.json));
+    if (report.summary.fail > 0) process.exitCode = 1;
   });
 
 program

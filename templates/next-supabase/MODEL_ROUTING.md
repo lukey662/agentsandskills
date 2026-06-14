@@ -40,6 +40,7 @@ Canonical source of truth:
 | Claude Code | `CLAUDE.md`, `.claude/agents/*.md` | Unverified | Partial | Record date, owner, subagent files, and model frontmatter behavior. |
 | Cursor | `.cursor/rules/*.mdc` | Unverified | Advisory | Record date, owner, model picker/team setting, and loaded rule evidence. |
 | GitHub Copilot | `.github/copilot-instructions.md`, `.github/instructions/*.instructions.md` | Unverified | Advisory | Record date, owner, selected chat/coding-agent model, and loaded instruction evidence. |
+| Antigravity | `.antigravity/agent-kit/plugin.json`, `.antigravity/agent-kit/commands/*.toml`, `.antigravity/runtime-skills/*/SKILL.md` | Unverified | Advisory | Record date, owner, `agent-kit adapter validate antigravity`, and optional native `agy plugin validate` output. |
 
 ## June 2026 Commented Recommendations
 
@@ -95,6 +96,17 @@ June 2026 Agent Kit suggestion:
 - Select the strongest available model for architecture, security, RLS, and release-risk review.
 - Use a faster model for docs-only or low-risk mechanical changes.
 - Repository instructions advise model choice; Copilot model selection remains tool/user controlled.
+-->
+```
+
+### Antigravity
+
+```md
+<!--
+June 2026 Agent Kit suggestion:
+- Use native `/plan`, `/security`, `/frontend`, `/copy`, `/handoff`, `/audit`, `/setup`, `/upgrade`, and `/ship` commands as runtime entrypoints.
+- Keep model choice aligned with MODEL_ROUTING.md profiles, but record that Antigravity model enforcement is advisory unless the runtime/workspace provides stronger controls.
+- Validate structural assets with `agent-kit adapter validate antigravity`; native `agy plugin validate` is optional when the CLI is installed.
 -->
 ```
 

@@ -10,6 +10,7 @@ const repoRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const jsonFiles = [
   "package.json",
   "research/scan-config.json",
+  "antigravity/plugin.json",
   "rosters/next-supabase-default-council.json",
   "model-routing/default-model-routing.json",
   "schemas/agent-roster.schema.json",
@@ -55,6 +56,7 @@ run("Version consistency check", ["run", "version:check"]);
 run("Typecheck", ["run", "typecheck"]);
 run("Test", ["test"]);
 run("Build", ["run", "build"]);
+run("Package asset validation", ["run", "package:validate"]);
 run("Example consistency check", ["run", "examples:check"]);
 run("Install smoke", ["run", "smoke:install"]);
 run("Agent Studio smoke", ["run", "smoke:studio"]);

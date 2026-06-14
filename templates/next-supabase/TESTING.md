@@ -9,6 +9,7 @@ Testing should be proportional to risk. Auth, data mutations, payments, admin ac
 - Integration tests for API, Server Actions, and Supabase interactions where practical.
 - Playwright smoke tests for auth and critical user workflows.
 - Visual QA for important user-facing screens and reusable component states.
+- Runtime adapter validation for plugin manifests, native commands, portable `SKILL.md` wrappers, source-of-truth references, package allowlists, and secret safety.
 
 ## Critical Smoke Paths
 
@@ -52,6 +53,7 @@ Recommended baseline:
 - `agent-kit audit --min-readiness baseline-setup`
 - Playwright smoke tests for critical paths
 - Visual QA evidence for high-risk UI changes
+- `agent-kit adapter validate antigravity` and `agent-kit package validate` when adapter/package assets change
 
 ## Security-Focused Tests
 
@@ -62,6 +64,7 @@ Prioritize:
 - Unauthorized API calls
 - RLS-protected reads and writes
 - Service-role-only operations
+- Secret-like values in runtime adapter assets, generated sessions, static exports, docs, and package files
 
 ## Test Gaps
 

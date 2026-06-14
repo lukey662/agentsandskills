@@ -27,6 +27,8 @@ After install, the **Agent Office** setup view teaches agents about your project
 ```bash
 npx @appsforgood/next-supabase-kit setup --open
 npx @appsforgood/next-supabase-kit setup --status
+npx @appsforgood/next-supabase-kit init --activate antigravity
+npx @appsforgood/next-supabase-kit adapter validate antigravity
 ```
 
 The installer preserves existing docs. If a file already exists and differs from the template, the new version is written to `.agent-kit/conflicts/` for review.
@@ -116,8 +118,9 @@ The `.agent-kit/` folder includes:
 - `model-routing.json` for provider-neutral model profile routing.
 - `project-context.json`, `project-context.md`, `corrections/`, and `council-sessions/` for local Agent Studio context, correction rules, session events, and rendered transcripts.
 - `schemas/` for agent roster, council-session, model-routing, project context, correction rules, session events, studio sessions, and audit-report contracts.
-- `agents/`, `skills/`, `prompts/`, and `checklists/`.
-- `assistant-adapters/` for Codex/AGENTS.md-compatible tools, GitHub Copilot/VS Code, Cursor, and Claude Code.
+- `agents/`, `skills/`, `runtime-skills/`, `prompts/`, and `checklists/`.
+- `assistant-adapters/` for Codex/AGENTS.md-compatible tools, GitHub Copilot/VS Code, Cursor, Claude Code, and Antigravity.
+- `antigravity/` for native command and plugin assets.
 - `design-briefs/` for SaaS, admin, marketplace, content, tool, ecommerce, portfolio/venue, education, community/social, and AI workflow surfaces.
 - `profiles/` for product-type and adjacent-stack adaptation.
 
@@ -127,6 +130,8 @@ The `.agent-kit/` folder includes:
 agent-kit audit
 agent-kit audit --json
 agent-kit audit --min-readiness baseline-setup
+agent-kit adapter validate antigravity
+agent-kit package validate
 agent-kit context init
 agent-kit session start "Short task name"
 agent-kit session output "verification evidence" --status complete --evidence "npm test"
@@ -155,6 +160,8 @@ Agent Kit separates the mechanisms that make AI coding repeatable:
 - Instructions: `AGENTS.md`, assistant adapters, and IDE-specific rule files.
 - Roster: `.agent-kit/agent-roster.json` chooses agents, workflows, and handoffs.
 - Skills: `.agent-kit/skills/` keeps specialist workflows reusable.
+- Runtime commands: Antigravity `commands/*.toml` expose `/setup`, `/audit`, `/plan`, `/handoff`, `/frontend`, `/security`, `/copy`, `/ship`, and `/upgrade` as native adapter entrypoints.
+- Portable skills: `runtime-skills/*/SKILL.md` wraps canonical `skills/*.md` files for runtimes that discover skill directories.
 - Model routing: `MODEL_ROUTING.md` and `.agent-kit/model-routing.json` map agents to model profiles.
 - Messaging: `MESSAGING.md` records audience, pain, outcome, proof, objections, voice, and conversion evidence for public-facing copy.
 - Local Agent Studio: `.agent-kit/project-context.*`, `.agent-kit/corrections/*.json`, and `.agent-kit/council-sessions/*` keep context, corrections, decisions, handoffs, required-output status, artifacts, verification, and rendered Markdown transcripts local.
@@ -162,6 +169,8 @@ Agent Kit separates the mechanisms that make AI coding repeatable:
 - Hooks and CI: optional local enforcement plus `agent-kit audit`, tests, install smoke, SBOM, and release gates.
 
 Some IDEs can partially enforce model settings; others only let project files advise the user. The kit records that difference instead of pretending every tool can force per-agent model selection.
+
+Runtime command files are adapters only. `AGENTS.md`, `.agent-kit/agent-roster.json`, `QUALITY_GATES.md`, and Agent Studio session evidence remain the canonical operating model.
 
 ## Frontend Quality Bar
 

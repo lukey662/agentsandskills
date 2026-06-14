@@ -51,6 +51,7 @@ export const LIBRARY_FOLDERS = [
   "skills",
   "prompts",
   "checklists",
+  "runtime-skills",
   "design-adapters",
   "assistant-adapters",
   "design-briefs",
@@ -88,6 +89,22 @@ export const COPILOT_INSTRUCTION_FILES = [
 
 export const CODEX_CONFIG_SOURCE = "assistant-adapters/model-selection/codex-config.example.toml";
 export const CLAUDE_TEMPLATE = "templates/next-supabase/CLAUDE.md";
+
+export const ANTIGRAVITY_PLUGIN_FILES = [
+  {
+    source: "antigravity/plugin.json",
+    target: ".antigravity/agent-kit/plugin.json"
+  },
+  {
+    source: "assistant-adapters/antigravity.md",
+    target: ".antigravity/agent-kit/README.md"
+  }
+] as const;
+
+export const ANTIGRAVITY_COMMANDS_SOURCE_DIR = "antigravity/commands";
+export const ANTIGRAVITY_COMMANDS_TARGET_DIR = ".antigravity/agent-kit/commands";
+export const RUNTIME_SKILLS_SOURCE_DIR = "runtime-skills";
+export const ANTIGRAVITY_RUNTIME_SKILLS_TARGET_DIR = ".antigravity/runtime-skills";
 
 export const CI_TEMPLATE_FILES = [
   {

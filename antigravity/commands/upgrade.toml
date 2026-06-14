@@ -1,0 +1,17 @@
+name = "upgrade"
+description = "Plan and verify Agent Kit, framework, dependency, and adapter upgrades with rollback evidence."
+
+prompt = """
+Run the upgrade-maintenance workflow.
+
+Canonical sources: UPGRADE.md, CHANGELOG.md, DECISIONS.md, DEPLOYMENT.md, .agent-kit/skills/upgrade-maintenance.md, and QUALITY_GATES.md.
+
+Workflow:
+1. Run `agent-kit diff` before accepting template changes.
+2. Preserve local overrides and review `.agent-kit/conflicts/`.
+3. Check framework release notes, codemods, migrations, generated types, RLS impact, and rollback risk when applicable.
+4. Run `agent-kit audit --min-readiness baseline-setup` after update.
+5. Record version, migration impact, verification, owner, and rollback evidence.
+
+Required outputs: version change, conflict review, migration impact, generated files/types, audit result, rollback plan, owner/date.
+"""

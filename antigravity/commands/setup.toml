@@ -1,0 +1,16 @@
+name = "setup"
+description = "Onboard the project into Agent Kit context and verify runtime adapter setup."
+
+prompt = """
+Run Agent Kit setup as a runtime command.
+
+Canonical sources: AGENTS.md, AGENT_ROSTER.md, .agent-kit/agent-roster.json, MODEL_ROUTING.md, .agent-kit/model-routing.json, QUALITY_GATES.md, and ASSISTANT_ADAPTERS.md.
+
+Workflow:
+1. Run or recommend `agent-kit setup --open` when project context is missing.
+2. Validate context with `agent-kit context validate`.
+3. Confirm adapter evidence in ASSISTANT_ADAPTERS.md.
+4. Record setup evidence in an Agent Studio session when meaningful work starts.
+
+Required outputs: project context status, active IDE/runtime surface, model-selection status, remaining setup gaps, verification command.
+"""

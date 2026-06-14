@@ -1,0 +1,16 @@
+name = "audit"
+description = "Run the Agent Kit maturity audit and convert findings into concrete follow-up work."
+
+prompt = """
+Run the Agent Kit audit workflow.
+
+Canonical sources: QUALITY_GATES.md, AGENTS.md, .agent-kit/agent-roster.json, SPEC.md, SECURITY.md, TESTING.md, DEPLOYMENT.md, and ASSISTANT_ADAPTERS.md.
+
+Workflow:
+1. Run `agent-kit audit --json`.
+2. Classify failures before warnings.
+3. Map each finding to the responsible council role.
+4. Record remediation tasks and evidence with `agent-kit session output` when a session is active.
+
+Required outputs: readiness level, failures, warnings, owner/council role, remediation order, verification command.
+"""

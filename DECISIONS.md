@@ -2,6 +2,24 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-06-14 - Runtime Commands Are Adapter Surfaces
+
+### Context
+
+The package had strong local-first council/session contracts, but runtime ergonomics were mostly exposed through docs and CLI commands. Antigravity-style runtimes can discover plugin manifests, native command files, and `SKILL.md` directories, so the package needed a native adapter surface without weakening the existing Agent Kit source of truth.
+
+### Decision
+
+- Add Antigravity as a first-class activation target with `agent-kit init --activate antigravity`.
+- Ship `antigravity/plugin.json`, `antigravity/commands/*.toml`, and `runtime-skills/*/SKILL.md`.
+- Add `agent-kit adapter validate antigravity` and `agent-kit package validate` so runtime adapter assets are release-gated.
+- Keep `AGENTS.md`, `.agent-kit/agent-roster.json`, `QUALITY_GATES.md`, canonical `skills/*.md`, and Agent Studio session records as the source of truth.
+- Treat native runtime commands as dispatch wrappers for existing workflows, required outputs, and session evidence.
+
+### Consequences
+
+Antigravity users get `/setup`, `/audit`, `/plan`, `/handoff`, `/frontend`, `/security`, `/copy`, `/ship`, and `/upgrade` entrypoints. The adapter is structurally validated without requiring `agy` to be installed. Future runtime adapters must follow the same rule: improve invocation ergonomics without forking role policy, security gates, model routing, or documentation contracts.
+
 ## 2026-06-10 - IDE Parity, Honest Audit, And Session Batch API
 
 ### Context

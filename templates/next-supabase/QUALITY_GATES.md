@@ -20,6 +20,7 @@ Baseline means the project is usable and the agent kit can audit it.
 - `AGENTS.md`, `AGENT_ROSTER.md`, `ASSISTANT_ADAPTERS.md`, `COUNCIL.md`, `SPEC.md`, `DECISIONS.md`, `DOCS.md`, `DESIGN.md`, `MESSAGING.md`, `MODEL_ROUTING.md`, `STYLE_GUIDE.md`, `SECURITY.md`, `TESTING.md`, `DEPLOYMENT.md`, and `UPGRADE.md` exist.
 - `.agent-kit/agent-roster.json`, `.agent-kit/model-routing.json`, and `.agent-kit/schemas/` exist.
 - `.agent-kit/assistant-adapters/` exists.
+- Runtime adapters such as Antigravity are validated with `agent-kit adapter validate <target>` before being treated as active.
 - Agent Studio schemas for project context, correction rules, session events, and studio sessions exist when the installed kit version includes them.
 - Planner is the default planning route.
 - Lead Architect reviews core changes.
@@ -59,6 +60,7 @@ Best-practice means evidence can survive handoff, release, and later audit.
 - Public-facing and conversion-facing copy starts from discovery questions, audience, pain, outcome, differentiator, proof, objections, voice/tone, and CTA hierarchy, with unsupported claims marked as assumptions.
 - Test evidence includes the smallest useful unit/regression checks plus critical-path smoke coverage.
 - Release evidence includes install or production smoke, migration order, dependency audit, package or deployment verification, logs, and rollback notes.
+- Runtime adapter evidence includes command/plugin validation, portable `SKILL.md` coverage, package allowlist coverage, and proof that adapter files point back to Agent Kit source-of-truth contracts.
 - Repo health includes issue/PR templates, CODEOWNERS, dependency updates, CodeQL or equivalent scanning, dependency review, provenance expectations, support, conduct, and governance.
 - Public or shared package releases use Trusted Publishing or equivalent identity-bound release provenance.
 
@@ -73,6 +75,7 @@ Best-practice means evidence can survive handoff, release, and later audit.
 | Marketing/copy | Marketing Copy Lead, Frontend Design Lead, QA, Docs | `MESSAGING.md`, audience and pain, value proposition, proof, objections, voice/tone, CTA hierarchy, risky-claim review |
 | Security-sensitive | Security Reviewer, Lead Architect, QA | OWASP review, boundary validation, dependency/secret review, regression or smoke evidence |
 | Release/package | Deployment/Observability Engineer, Security Reviewer, QA, Docs | Release gate output, dependency audit, install/deploy smoke, provenance or publish identity evidence |
+| Runtime adapter/package | Planner, Lead Architect, Security Reviewer, QA, Docs | `agent-kit adapter validate`, `agent-kit package validate`, command/skill asset coverage, source-of-truth references, no secret-like runtime assets |
 | Upgrade/dependency | Planner, Lead Architect, Security Reviewer, QA, Docs, Deployment/Observability Engineer | Release notes, codemods or migration guide, `agent-kit diff`, conflict review, audit output, rollback notes |
 
 ## Evidence Rules
@@ -81,6 +84,7 @@ Best-practice means evidence can survive handoff, release, and later audit.
 - A test is not evidence unless it covers the behavior, risk, or contract being claimed.
 - A screenshot is not visual QA unless it covers the important viewport, state, and content.
 - A research finding is not a best practice until it is promoted into templates, skills, checklists, audit checks, tests, release gates, or documented decisions.
+- A runtime command is not canonical policy; it is accepted only when it wraps `AGENTS.md`, `.agent-kit/agent-roster.json`, `QUALITY_GATES.md`, canonical skills, and Agent Studio evidence.
 - A fresh install can be baseline setup while still warning on `TBD`, example rows, or starter instruction text; those placeholders must be replaced before claiming strong or best-practice maturity.
 - A local customization is acceptable only when `.agent-kit/overrides.json` explains why and when it was reviewed.
 - A human correction is not durable until it is stored in `.agent-kit/corrections/`, remains secret-safe, has a clear scope, and is visible to future agents through installed instructions.

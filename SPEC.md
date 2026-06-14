@@ -2,7 +2,7 @@
 
 ## Package Purpose
 
-`@appsforgood/next-supabase-kit` is a public reusable agent-kit package for Next.js and Supabase projects. It ships installable markdown templates, agents, skills, prompts, checklists, design adapters, assistant adapters, model-routing profiles, design briefs, stack profiles, agent rosters, messaging/copy evidence templates, and a CLI for installing, auditing, updating, and reviewing those assets.
+`@appsforgood/next-supabase-kit` is a public reusable agent-kit package for Next.js and Supabase projects. It ships installable markdown templates, agents, skills, portable runtime skills, prompts, checklists, design adapters, assistant adapters, Antigravity runtime commands, model-routing profiles, design briefs, stack profiles, agent rosters, messaging/copy evidence templates, and a CLI for installing, auditing, updating, and reviewing those assets.
 
 ## CLI Surface
 
@@ -15,6 +15,8 @@ Supported commands:
 - `diff`
 - `update`
 - `add skill`
+- `adapter validate`
+- `package validate`
 - `doctor`
 - `research discover`
 - `research scan`
@@ -56,6 +58,19 @@ Existing project files must not be overwritten by default. Template conflicts ar
 
 Downstream projects should record adapter activation evidence in `ASSISTANT_ADAPTERS.md`.
 
+`init --activate antigravity` installs:
+
+- `.antigravity/agent-kit/plugin.json`
+- `.antigravity/agent-kit/commands/*.toml`
+- `.antigravity/runtime-skills/*/SKILL.md`
+- `.antigravity/agent-kit/README.md`
+
+The Antigravity command layer exposes `/setup`, `/audit`, `/plan`, `/handoff`, `/frontend`, `/security`, `/copy`, `/ship`, and `/upgrade`. These command files must wrap the existing council/session contracts and must not fork role definitions, security policy, quality gates, or model-routing policy.
+
+`agent-kit adapter validate antigravity` validates the Antigravity manifest, command files, portable `SKILL.md` wrappers, source-of-truth references, package allowlist, and secret-safety. Native Antigravity CLI validation is optional because the package must remain usable where `agy` is not installed.
+
+`agent-kit package validate` runs from the source repository and validates runtime adapter assets, portable skills, docs, example snapshots, package allowlists, and source-package audit behavior.
+
 Release and CI gates include `npm run smoke:audit-gate`, which requires a fresh install to pass `agent-kit audit --min-readiness baseline-setup` with zero failures.
 
 ## Context And Session Surface
@@ -90,6 +105,8 @@ Implemented commands:
 - `correction retire`
 - `correction propose-upstream`
 - `studio export`
+- `adapter validate`
+- `package validate`
 
 Implemented local files:
 
@@ -116,6 +133,8 @@ Human corrections can be scoped to a session, the project, a specific agent, or 
 
 The package must not claim to expose private model reasoning. Agent Studio records visible work products, decisions, and evidence only.
 
+Runtime command files and portable skills are adapter surfaces. They are allowed to summarize routing and required outputs, but the canonical source of truth remains `AGENTS.md`, `.agent-kit/agent-roster.json`, `QUALITY_GATES.md`, `.agent-kit/skills/`, and Agent Studio JSON/JSONL session records.
+
 ### Automated Verification Requirements
 
 Every context, session, correction, renderer, adapter, audit, and studio feature must ship with automated tests before it is marked complete.
@@ -127,6 +146,7 @@ Required and current coverage:
 - CLI smoke tests for `init --guided`, context scan/render/validate, session start/decision/handoff/correct/artifact/verify/output/render, static studio export, and audit.
 - Golden output tests for generated project context Markdown, session index Markdown, transcript Markdown, and expected audit output.
 - Regression tests proving existing `init`, `update`, `diff`, conflict handling, examples, and public package file allowlist behavior do not regress.
+- Runtime adapter tests proving Antigravity activation, native command structure, plugin manifest references, portable `SKILL.md` wrappers, adapter validation, package validation, and package-root audit mode do not regress.
 - Security tests for path traversal, Markdown injection, secret redaction, malformed JSON/JSONL, unsafe static exports, and localhost-only live studio behavior when implemented.
 
 The shared `npm run release:check` gate includes `npm run smoke:studio`. Broken context/session/correction behavior should fail in automation before reaching user testing.

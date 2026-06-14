@@ -1,0 +1,17 @@
+name = "ship"
+description = "Make a GO/NO-GO release call from council, security, QA, docs, deployment, and rollback evidence."
+
+prompt = """
+Run the ship workflow.
+
+Canonical sources: QUALITY_GATES.md, TESTING.md, SECURITY.md, DEPLOYMENT.md, UPGRADE.md, COUNCIL.md, .agent-kit/council-sessions/, and .agent-kit/agent-roster.json.
+
+Workflow:
+1. Confirm implementation scope and preserved behavior.
+2. Require code review, Security Reviewer signoff, QA/test evidence, accessibility evidence when UI changed, docs evidence, deployment/observability review, and rollback plan.
+3. Run the project release gate, normally `npm run release:check` for this package or the project-specific equivalent.
+4. Record verification with `agent-kit session verify`.
+5. Return GO only when required outputs are complete or explicitly not-applicable.
+
+Required outputs: code review, security review, QA/test review, accessibility/doc/deployment checks, rollback plan, release command, GO/NO-GO verdict.
+"""

@@ -24,6 +24,7 @@ List behavior that must be preserved during changes:
 
 - Agent council routing in `.agent-kit/agent-roster.json`
 - Model profile routing in `MODEL_ROUTING.md` and `.agent-kit/model-routing.json`
+- Optional runtime adapter commands and portable `SKILL.md` wrappers, when activated
 - Council-session evidence in `COUNCIL.md`
 - Agent, council-session, model-routing, and audit-report schema contracts in `.agent-kit/schemas/`
 - Planner default ownership for planning and Lead Architect review for core changes
@@ -65,6 +66,7 @@ Record the current maturity target and evidence.
 | --- | --- | --- | --- | --- |
 | Council routing | TBD | TBD | TBD | `AGENT_ROSTER.md`, `COUNCIL.md` |
 | Model routing | TBD | TBD | TBD | `MODEL_ROUTING.md`, `ASSISTANT_ADAPTERS.md` |
+| Runtime adapters | TBD | TBD | TBD | `agent-kit adapter validate antigravity`, `.antigravity/agent-kit/`, `.antigravity/runtime-skills/` |
 | Architecture | TBD | TBD | TBD | Affected-layer map, `DECISIONS.md` |
 | Supabase/RLS | TBD | TBD | TBD | RLS inventory, migration tests |
 | Messaging | TBD | TBD | TBD | `MESSAGING.md`, proof map, objection handling, CTA hierarchy |

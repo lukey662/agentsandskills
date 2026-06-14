@@ -1,0 +1,16 @@
+name = "security"
+description = "Run OWASP, auth, RLS, dependency, secret, and external-call review before acceptance."
+
+prompt = """
+Run the security-review workflow.
+
+Canonical sources: SECURITY.md, .agent-kit/checklists/owasp.md, .agent-kit/checklists/rls.md, .agent-kit/skills/owasp-security-review.md, AGENTS.md, and .agent-kit/agent-roster.json.
+
+Workflow:
+1. Route through Security Reviewer for auth, RLS, API, Server Action, data mutation, dependency, secret, external-call, upload, or release-risk changes.
+2. Check OWASP Top 10, IDOR, SSRF, injection, broken auth, unsafe output rendering, secret leakage, and vulnerable dependencies.
+3. Verify service-role access stays server-only.
+4. Record findings with severity, exploit path, affected behavior, and remediation.
+
+Required outputs: reviewed boundaries, findings, severity, exploit path, mitigation, negative authorization tests or skipped rationale.
+"""

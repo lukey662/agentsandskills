@@ -30,6 +30,20 @@ Add new decisions above this line or keep newest first.
 
 Record major frontend choices here when a creative direction, reference set, anti-reference, brand constraint, information architecture, visual QA tier, or component-system rule materially affects implementation.
 
+## Runtime Adapter Rule
+
+### Context
+
+Agent Kit may expose runtime-native command surfaces such as Antigravity plugin commands.
+
+### Decision
+
+Runtime command files are adapters. `AGENTS.md`, `.agent-kit/agent-roster.json`, `QUALITY_GATES.md`, canonical `.agent-kit/skills/`, and Agent Studio session records remain the source of truth.
+
+### Consequences
+
+Native commands improve invocation ergonomics, but project policy, security gates, handoff rules, model routing, and documentation contracts stay centralized in Agent Kit files.
+
 ## Agent Kit Model Routing
 
 ### Context

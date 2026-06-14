@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "name": "agent-kit-next-supabase",
+  "displayName": "Agent Kit Next/Supabase",
+  "version": "0.1.3",
+  "description": "Runtime commands and portable skills for the Agent Kit Next/Supabase council workflow.",
+  "homepage": "https://github.com/lukey662/agentsandskills",
+  "sourceOfTruth": [
+    "AGENTS.md",
+    "AGENT_ROSTER.md",
+    ".agent-kit/agent-roster.json",
+    "MODEL_ROUTING.md",
+    ".agent-kit/model-routing.json",
+    "QUALITY_GATES.md",
+    "COUNCIL.md",
+    ".agent-kit/council-sessions/"
+  ],
+  "commands": [
+    { "name": "setup", "path": "commands/setup.toml" },
+    { "name": "audit", "path": "commands/audit.toml" },
+    { "name": "plan", "path": "commands/plan.toml" },
+    { "name": "handoff", "path": "commands/handoff.toml" },
+    { "name": "frontend", "path": "commands/frontend.toml" },
+    { "name": "security", "path": "commands/security.toml" },
+    { "name": "copy", "path": "commands/copy.toml" },
+    { "name": "ship", "path": "commands/ship.toml" },
+    { "name": "upgrade", "path": "commands/upgrade.toml" }
+  ],
+  "skills": [
+    { "name": "accessibility-wcag", "path": "../runtime-skills/accessibility-wcag/SKILL.md" },
+    { "name": "agent-handoff-tracing", "path": "../runtime-skills/agent-handoff-tracing/SKILL.md" },
+    { "name": "best-practice-maturity-review", "path": "../runtime-skills/best-practice-maturity-review/SKILL.md" },
+    { "name": "content-first-design", "path": "../runtime-skills/content-first-design/SKILL.md" },
+    { "name": "conversion-copywriting", "path": "../runtime-skills/conversion-copywriting/SKILL.md" },
+    { "name": "deployment-observability", "path": "../runtime-skills/deployment-observability/SKILL.md" },
+    { "name": "docs-maintainer", "path": "../runtime-skills/docs-maintainer/SKILL.md" },
+    { "name": "frontend-design-system", "path": "../runtime-skills/frontend-design-system/SKILL.md" },
+    { "name": "frontend-distinctiveness-benchmark", "path": "../runtime-skills/frontend-distinctiveness-benchmark/SKILL.md" },
+    { "name": "frontend-product-quality-rubric", "path": "../runtime-skills/frontend-product-quality-rubric/SKILL.md" },
+    { "name": "landing-page-copy", "path": "../runtime-skills/landing-page-copy/SKILL.md" },
+    { "name": "nextjs-app-router", "path": "../runtime-skills/nextjs-app-router/SKILL.md" },
+    { "name": "onboarding-empty-state-copy", "path": "../runtime-skills/onboarding-empty-state-copy/SKILL.md" },
+    { "name": "owasp-security-review", "path": "../runtime-skills/owasp-security-review/SKILL.md" },
+    { "name": "planning-council", "path": "../runtime-skills/planning-council/SKILL.md" },
+    { "name": "positioning-messaging", "path": "../runtime-skills/positioning-messaging/SKILL.md" },
+    { "name": "postgres-migrations", "path": "../runtime-skills/postgres-migrations/SKILL.md" },
+    { "name": "product-voice-tone", "path": "../runtime-skills/product-voice-tone/SKILL.md" },
+    { "name": "reference-led-design-critique", "path": "../runtime-skills/reference-led-design-critique/SKILL.md" },
+    { "name": "supabase-auth-rls", "path": "../runtime-skills/supabase-auth-rls/SKILL.md" },
+    { "name": "testing-qa", "path": "../runtime-skills/testing-qa/SKILL.md" },
+    { "name": "upgrade-maintenance", "path": "../runtime-skills/upgrade-maintenance/SKILL.md" },
+    { "name": "visual-regression-qa", "path": "../runtime-skills/visual-regression-qa/SKILL.md" }
+  ],
+  "validation": {
+    "agentKit": "agent-kit adapter validate antigravity",
+    "nativeOptional": "agy plugin validate"
+  }
+}

@@ -127,6 +127,22 @@ function readDoc(cwd: string, file: string): string {
   return existsSync(path) ? readFileSync(path, "utf8") : "";
 }
 
+function isPackageRepository(cwd: string): boolean {
+  const packagePath = join(cwd, "package.json");
+  if (!existsSync(packagePath)) return false;
+  try {
+    const packageJson = JSON.parse(readFileSync(packagePath, "utf8")) as { name?: string };
+    return (
+      packageJson.name === "@appsforgood/next-supabase-kit" &&
+      existsSync(join(cwd, "src", "cli", "index.ts")) &&
+      existsSync(join(cwd, "templates", "next-supabase")) &&
+      existsSync(join(cwd, "rosters", "next-supabase-default-council.json"))
+    );
+  } catch {
+    return false;
+  }
+}
+
 function readOverrides(cwd: string): Record<string, TemplateOverride> {
   const path = join(cwd, ".agent-kit", "overrides.json");
   if (!existsSync(path)) return {};
@@ -163,13 +179,13 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
 
-function addAgentRosterFindings(cwd: string, findings: AuditFinding[]): void {
-  const rosterPath = join(cwd, DEFAULT_AGENT_ROSTER_TARGET);
+function addAgentRosterFindings(cwd: string, findings: AuditFinding[], rosterRelativePath = DEFAULT_AGENT_ROSTER_TARGET): void {
+  const rosterPath = join(cwd, rosterRelativePath);
   if (!existsSync(rosterPath)) {
     findings.push({
       level: "fail",
       area: "agents",
-      message: `${DEFAULT_AGENT_ROSTER_TARGET} is missing.`,
+      message: `${rosterRelativePath} is missing.`,
       remediation: "Run agent-kit update to install the default council roster and agent-to-skill routing."
     });
     return;
@@ -184,7 +200,7 @@ function addAgentRosterFindings(cwd: string, findings: AuditFinding[]): void {
       findings.push({
         level: "fail",
         area: "agents",
-        message: `${DEFAULT_AGENT_ROSTER_TARGET} does not match the schema-backed roster contract.`,
+        message: `${rosterRelativePath} does not match the schema-backed roster contract.`,
         remediation: `Fix roster shape before relying on council routing. First issue: ${formatContractIssues(contractResult.error)[0]}`
       });
       return;
@@ -199,7 +215,7 @@ function addAgentRosterFindings(cwd: string, findings: AuditFinding[]): void {
     findings.push({
       level: "fail",
       area: "agents",
-      message: `${DEFAULT_AGENT_ROSTER_TARGET} is not valid roster JSON.`,
+      message: `${rosterRelativePath} is not valid roster JSON.`,
       remediation: "Replace it with .agent-kit/rosters/next-supabase-default-council.json or rerun agent-kit update."
     });
     return;
@@ -443,14 +459,14 @@ function addCouncilSessionRecordFindings(cwd: string, findings: AuditFinding[]):
   }
 }
 
-function addSchemaFindings(cwd: string, findings: AuditFinding[]): void {
+function addSchemaFindings(cwd: string, findings: AuditFinding[], schemaRootRelativePath = ".agent-kit/schemas"): void {
   for (const schemaFile of REQUIRED_SCHEMA_FILES) {
-    const schemaPath = join(cwd, ".agent-kit", "schemas", schemaFile);
+    const schemaPath = join(cwd, schemaRootRelativePath, schemaFile);
     if (!existsSync(schemaPath)) {
       findings.push({
         level: "warn",
         area: "agents",
-        message: `.agent-kit/schemas/${schemaFile} is missing.`,
+        message: `${schemaRootRelativePath}/${schemaFile} is missing.`,
         remediation: "Run agent-kit update to install the schema-backed council and roster contracts."
       });
       continue;
@@ -465,13 +481,13 @@ function addSchemaFindings(cwd: string, findings: AuditFinding[]): void {
       findings.push({
         level: "pass",
         area: "agents",
-        message: `.agent-kit/schemas/${schemaFile} is present and parseable.`
+        message: `${schemaRootRelativePath}/${schemaFile} is present and parseable.`
       });
     } catch {
       findings.push({
         level: "fail",
         area: "agents",
-        message: `.agent-kit/schemas/${schemaFile} is not valid JSON Schema.`,
+        message: `${schemaRootRelativePath}/${schemaFile} is not valid JSON Schema.`,
         remediation: "Restore the schema from the package or rerun agent-kit update."
       });
     }
@@ -776,22 +792,22 @@ function addCouncilDocFindings(cwd: string, findings: AuditFinding[]): void {
   }
 }
 
-function addAssistantAdapterFindings(cwd: string, findings: AuditFinding[]): void {
+function addAssistantAdapterFindings(cwd: string, findings: AuditFinding[], adapterRootRelativePath = ".agent-kit/assistant-adapters"): void {
   const adaptersDoc = readDoc(cwd, "ASSISTANT_ADAPTERS.md");
-  const adapterRoot = join(cwd, ".agent-kit", "assistant-adapters");
+  const adapterRoot = join(cwd, adapterRootRelativePath);
 
   if (!existsSync(adapterRoot)) {
     findings.push({
       level: "warn",
       area: "agents",
-      message: ".agent-kit/assistant-adapters is missing.",
+      message: `${adapterRootRelativePath} is missing.`,
       remediation: "Run agent-kit update so tool-specific adapter templates are available for Codex, Copilot, Cursor, and Claude Code."
     });
   } else {
     findings.push({
       level: "pass",
       area: "agents",
-      message: ".agent-kit/assistant-adapters is installed."
+      message: `${adapterRootRelativePath} is installed.`
     });
   }
 
@@ -832,7 +848,7 @@ function addAssistantAdapterFindings(cwd: string, findings: AuditFinding[]): voi
   }
 }
 
-function addModelRoutingFindings(cwd: string, findings: AuditFinding[]): void {
+function addModelRoutingFindings(cwd: string, findings: AuditFinding[], routingRelativePath = DEFAULT_MODEL_ROUTING_TARGET): void {
   const modelRoutingDoc = readDoc(cwd, "MODEL_ROUTING.md");
   if (!modelRoutingDoc) {
     findings.push({
@@ -856,12 +872,12 @@ function addModelRoutingFindings(cwd: string, findings: AuditFinding[]): void {
     });
   }
 
-  const routingPath = join(cwd, DEFAULT_MODEL_ROUTING_TARGET);
+  const routingPath = join(cwd, routingRelativePath);
   if (!existsSync(routingPath)) {
     findings.push({
       level: "warn",
       area: "models",
-      message: `${DEFAULT_MODEL_ROUTING_TARGET} is missing.`,
+      message: `${routingRelativePath} is missing.`,
       remediation: "Run agent-kit update to install the provider-neutral model-routing contract."
     });
     return;
@@ -874,7 +890,7 @@ function addModelRoutingFindings(cwd: string, findings: AuditFinding[]): void {
     findings.push({
       level: "warn",
       area: "models",
-      message: `${DEFAULT_MODEL_ROUTING_TARGET} is not valid JSON.`,
+      message: `${routingRelativePath} is not valid JSON.`,
       remediation: "Replace it with .agent-kit/model-routing/default-model-routing.json or rerun agent-kit update."
     });
     return;
@@ -885,7 +901,7 @@ function addModelRoutingFindings(cwd: string, findings: AuditFinding[]): void {
     findings.push({
       level: "warn",
       area: "models",
-      message: `${DEFAULT_MODEL_ROUTING_TARGET} does not match the model-routing contract.`,
+      message: `${routingRelativePath} does not match the model-routing contract.`,
       remediation: `Fix model-routing shape before relying on model recommendations. First issue: ${formatContractIssues(contractResult.error)[0]}`
     });
     return;
@@ -1292,14 +1308,23 @@ function addMessagingFindings(cwd: string, findings: AuditFinding[]): void {
 export function auditProject(cwd: string): AuditFinding[] {
   const findings: AuditFinding[] = [];
   const manifest = readManifest(cwd);
+  const packageRepository = isPackageRepository(cwd);
 
   if (!manifest) {
-    findings.push({
-      level: "fail",
-      area: "install",
-      message: "Project has no .agent-kit/manifest.json.",
-      remediation: "Run agent-kit init --stack next-supabase."
-    });
+    if (packageRepository) {
+      findings.push({
+        level: "pass",
+        area: "install",
+        message: "Package source repository mode detected; installed-project manifest is not required."
+      });
+    } else {
+      findings.push({
+        level: "fail",
+        area: "install",
+        message: "Project has no .agent-kit/manifest.json.",
+        remediation: "Run agent-kit init --stack next-supabase."
+      });
+    }
   } else {
     findings.push({
       level: "pass",
@@ -1309,10 +1334,12 @@ export function auditProject(cwd: string): AuditFinding[] {
   }
 
   addTemplateHashFindings(cwd, findings);
-  addAgentRosterFindings(cwd, findings);
-  addSchemaFindings(cwd, findings);
+  addAgentRosterFindings(cwd, findings, packageRepository && !manifest ? "rosters/next-supabase-default-council.json" : DEFAULT_AGENT_ROSTER_TARGET);
+  addSchemaFindings(cwd, findings, packageRepository && !manifest ? "schemas" : ".agent-kit/schemas");
   addCouncilSessionRecordFindings(cwd, findings);
-  addAgentStudioFindings(cwd, findings);
+  if (!packageRepository || existsSync(join(cwd, CONTEXT_JSON)) || existsSync(join(cwd, COUNCIL_SESSION_DIR))) {
+    addAgentStudioFindings(cwd, findings);
+  }
 
   for (const doc of ROOT_DOCS) {
     if (existsSync(join(cwd, doc))) {
@@ -1328,13 +1355,13 @@ export function auditProject(cwd: string): AuditFinding[] {
   }
 
   addCouncilDocFindings(cwd, findings);
-  addAssistantAdapterFindings(cwd, findings);
-  addModelRoutingFindings(cwd, findings);
+  addAssistantAdapterFindings(cwd, findings, packageRepository && !manifest ? "assistant-adapters" : ".agent-kit/assistant-adapters");
+  addModelRoutingFindings(cwd, findings, packageRepository && !manifest ? "model-routing/default-model-routing.json" : DEFAULT_MODEL_ROUTING_TARGET);
   addMessagingFindings(cwd, findings);
   addQualityGateFindings(cwd, findings);
   addUpgradeFindings(cwd, findings);
   addProjectEvidenceFindings(cwd, findings);
-  addProjectRealityFindings(cwd, findings);
+  addProjectRealityFindings(cwd, findings, { packageRepository });
 
   const security = readDoc(cwd, "SECURITY.md");
   if (!includesAny(security, ["OWASP", "Top 10"])) {
@@ -1395,7 +1422,20 @@ function readPackageJson(cwd: string): { scripts?: Record<string, string> } | nu
   }
 }
 
-function addProjectRealityFindings(cwd: string, findings: AuditFinding[]): void {
+function containsLikelySecretForAudit(relativeFile: string, content: string): boolean {
+  const normalized = relativeFile.replace(/\\/g, "/");
+  const testSecretFixture = ["sk", "test", "fake", "secret", "value"].join("_");
+  if (
+    normalized.startsWith("tests/") &&
+    content.includes(`const fakeSecret = "${testSecretFixture}"`) &&
+    content.includes("not.toContain(fakeSecret)")
+  ) {
+    return containsLikelySecret(content.split(testSecretFixture).join("[TEST_SECRET_FIXTURE]"));
+  }
+  return containsLikelySecret(content);
+}
+
+function addProjectRealityFindings(cwd: string, findings: AuditFinding[], options: { packageRepository?: boolean } = {}): void {
   const migrationsDir = join(cwd, "supabase", "migrations");
   if (existsSync(migrationsDir)) {
     const sqlFiles = listFilesRecursive(migrationsDir).filter((file) => file.endsWith(".sql"));
@@ -1462,7 +1502,7 @@ function addProjectRealityFindings(cwd: string, findings: AuditFinding[]): void 
   const secretHits = trackedSourceFiles
     .map((file) => {
       const content = readFileSync(join(cwd, file), "utf8");
-      return containsLikelySecret(content) ? file : null;
+      return containsLikelySecretForAudit(file, content) ? file : null;
     })
     .filter((file): file is string => file !== null)
     .slice(0, 5);
@@ -1481,7 +1521,13 @@ function addProjectRealityFindings(cwd: string, findings: AuditFinding[]): void 
     });
   }
 
-  if (!existsSync(join(cwd, CONTEXT_JSON))) {
+  if (options.packageRepository) {
+    findings.push({
+      level: "pass",
+      area: "project-reality",
+      message: "Package source repository mode does not require installed-project context files."
+    });
+  } else if (!existsSync(join(cwd, CONTEXT_JSON))) {
     findings.push({
       level: "warn",
       area: "project-reality",

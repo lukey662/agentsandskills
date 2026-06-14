@@ -20,7 +20,8 @@ try {
     throw new Error("dist/index.js is missing. Run npm run build before smoke:audit-gate.");
   }
 
-  run(["init", "--stack", "next-supabase"]);
+  run(["init", "--stack", "next-supabase", "--activate", "antigravity"]);
+  run(["adapter", "validate", "antigravity"]);
   const auditOutput = run(["audit", "--json", "--min-readiness", "baseline-setup"]);
   const auditReport = JSON.parse(auditOutput);
 
@@ -36,6 +37,12 @@ try {
 
   if (!existsSync(join(tempRoot, ".cursor", "rules", "cursor-agent-kit.mdc"))) {
     throw new Error("Expected init to install .cursor/rules/cursor-agent-kit.mdc for Cursor adapter activation.");
+  }
+  if (!existsSync(join(tempRoot, ".antigravity", "agent-kit", "plugin.json"))) {
+    throw new Error("Expected init --activate antigravity to install .antigravity/agent-kit/plugin.json.");
+  }
+  if (!existsSync(join(tempRoot, ".antigravity", "runtime-skills", "planning-council", "SKILL.md"))) {
+    throw new Error("Expected init --activate antigravity to install runtime SKILL.md wrappers.");
   }
 
   console.log(
