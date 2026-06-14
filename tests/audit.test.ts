@@ -1,4 +1,4 @@
-import { copyFileSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { copyFileSync, cpSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
@@ -124,6 +124,38 @@ describe("auditProject", () => {
     expect(report.readiness.level).toBe("needs-improvement");
     expect(AuditReportContract.safeParse(report).success).toBe(true);
     expect(report.findings.length).toBeGreaterThan(0);
+  });
+
+  it("does not require installed-project root docs when auditing the package source repository", () => {
+    const packageRoot = mkdtempSync(join(tmpdir(), "agent-kit-package-source-audit-"));
+    try {
+      mkdirSync(join(packageRoot, "src", "cli"), { recursive: true });
+      writeFileSync(
+        join(packageRoot, "package.json"),
+        JSON.stringify(
+          {
+            name: "@appsforgood/next-supabase-kit",
+            scripts: { test: "vitest run" }
+          },
+          null,
+          2
+        )
+      );
+      writeFileSync(join(packageRoot, "src", "cli", "index.ts"), "export {};\n");
+      cpSync(join(process.cwd(), "templates", "next-supabase"), join(packageRoot, "templates", "next-supabase"), { recursive: true });
+      cpSync(join(process.cwd(), "rosters"), join(packageRoot, "rosters"), { recursive: true });
+      cpSync(join(process.cwd(), "schemas"), join(packageRoot, "schemas"), { recursive: true });
+      cpSync(join(process.cwd(), "model-routing"), join(packageRoot, "model-routing"), { recursive: true });
+      cpSync(join(process.cwd(), "assistant-adapters"), join(packageRoot, "assistant-adapters"), { recursive: true });
+
+      const report = createAuditReport(packageRoot);
+      expect(report.summary.fail).toBe(0);
+      expect(report.findings.some((finding) => finding.message === "Package source repository mode detected; installed-project manifest is not required.")).toBe(true);
+      expect(report.findings.some((finding) => finding.level === "fail" && finding.message === "AGENTS.md is missing.")).toBe(false);
+      expect(report.findings.some((finding) => finding.message === "templates/next-supabase/AGENTS.md exists.")).toBe(true);
+    } finally {
+      rmSync(packageRoot, { recursive: true, force: true });
+    }
   });
 
   it("keeps the committed example audit output contract-valid", () => {

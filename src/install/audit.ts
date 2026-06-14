@@ -792,8 +792,13 @@ function addCouncilDocFindings(cwd: string, findings: AuditFinding[]): void {
   }
 }
 
-function addAssistantAdapterFindings(cwd: string, findings: AuditFinding[], adapterRootRelativePath = ".agent-kit/assistant-adapters"): void {
-  const adaptersDoc = readDoc(cwd, "ASSISTANT_ADAPTERS.md");
+function addAssistantAdapterFindings(
+  cwd: string,
+  findings: AuditFinding[],
+  adapterRootRelativePath = ".agent-kit/assistant-adapters",
+  docsCwd = cwd
+): void {
+  const adaptersDoc = readDoc(docsCwd, "ASSISTANT_ADAPTERS.md");
   const adapterRoot = join(cwd, adapterRootRelativePath);
 
   if (!existsSync(adapterRoot)) {
@@ -848,8 +853,8 @@ function addAssistantAdapterFindings(cwd: string, findings: AuditFinding[], adap
   }
 }
 
-function addModelRoutingFindings(cwd: string, findings: AuditFinding[], routingRelativePath = DEFAULT_MODEL_ROUTING_TARGET): void {
-  const modelRoutingDoc = readDoc(cwd, "MODEL_ROUTING.md");
+function addModelRoutingFindings(cwd: string, findings: AuditFinding[], routingRelativePath = DEFAULT_MODEL_ROUTING_TARGET, docsCwd = cwd): void {
+  const modelRoutingDoc = readDoc(docsCwd, "MODEL_ROUTING.md");
   if (!modelRoutingDoc) {
     findings.push({
       level: "warn",
@@ -1309,6 +1314,8 @@ export function auditProject(cwd: string): AuditFinding[] {
   const findings: AuditFinding[] = [];
   const manifest = readManifest(cwd);
   const packageRepository = isPackageRepository(cwd);
+  const packageSourceMode = packageRepository && !manifest;
+  const docsCwd = packageSourceMode ? join(cwd, "templates", "next-supabase") : cwd;
 
   if (!manifest) {
     if (packageRepository) {
@@ -1334,36 +1341,40 @@ export function auditProject(cwd: string): AuditFinding[] {
   }
 
   addTemplateHashFindings(cwd, findings);
-  addAgentRosterFindings(cwd, findings, packageRepository && !manifest ? "rosters/next-supabase-default-council.json" : DEFAULT_AGENT_ROSTER_TARGET);
-  addSchemaFindings(cwd, findings, packageRepository && !manifest ? "schemas" : ".agent-kit/schemas");
+  addAgentRosterFindings(cwd, findings, packageSourceMode ? "rosters/next-supabase-default-council.json" : DEFAULT_AGENT_ROSTER_TARGET);
+  addSchemaFindings(cwd, findings, packageSourceMode ? "schemas" : ".agent-kit/schemas");
   addCouncilSessionRecordFindings(cwd, findings);
   if (!packageRepository || existsSync(join(cwd, CONTEXT_JSON)) || existsSync(join(cwd, COUNCIL_SESSION_DIR))) {
     addAgentStudioFindings(cwd, findings);
   }
 
   for (const doc of ROOT_DOCS) {
-    if (existsSync(join(cwd, doc))) {
-      findings.push({ level: "pass", area: "docs", message: `${doc} exists.` });
+    const docPath = join(docsCwd, doc);
+    const displayPath = packageSourceMode ? `templates/next-supabase/${doc}` : doc;
+    if (existsSync(docPath)) {
+      findings.push({ level: "pass", area: "docs", message: `${displayPath} exists.` });
     } else {
       findings.push({
         level: doc === "MODEL_ROUTING.md" ? "warn" : "fail",
         area: "docs",
-        message: `${doc} is missing.`,
-        remediation: `Run agent-kit init or restore ${doc} from the next-supabase template.`
+        message: `${displayPath} is missing.`,
+        remediation: packageSourceMode
+          ? `Restore ${displayPath}; package source audits validate shipped templates instead of installed-project root docs.`
+          : `Run agent-kit init or restore ${doc} from the next-supabase template.`
       });
     }
   }
 
-  addCouncilDocFindings(cwd, findings);
-  addAssistantAdapterFindings(cwd, findings, packageRepository && !manifest ? "assistant-adapters" : ".agent-kit/assistant-adapters");
-  addModelRoutingFindings(cwd, findings, packageRepository && !manifest ? "model-routing/default-model-routing.json" : DEFAULT_MODEL_ROUTING_TARGET);
-  addMessagingFindings(cwd, findings);
-  addQualityGateFindings(cwd, findings);
-  addUpgradeFindings(cwd, findings);
-  addProjectEvidenceFindings(cwd, findings);
+  addCouncilDocFindings(docsCwd, findings);
+  addAssistantAdapterFindings(cwd, findings, packageSourceMode ? "assistant-adapters" : ".agent-kit/assistant-adapters", docsCwd);
+  addModelRoutingFindings(cwd, findings, packageSourceMode ? "model-routing/default-model-routing.json" : DEFAULT_MODEL_ROUTING_TARGET, docsCwd);
+  addMessagingFindings(docsCwd, findings);
+  addQualityGateFindings(docsCwd, findings);
+  addUpgradeFindings(docsCwd, findings);
+  addProjectEvidenceFindings(docsCwd, findings);
   addProjectRealityFindings(cwd, findings, { packageRepository });
 
-  const security = readDoc(cwd, "SECURITY.md");
+  const security = readDoc(docsCwd, "SECURITY.md");
   if (!includesAny(security, ["OWASP", "Top 10"])) {
     findings.push({
       level: "fail",
@@ -1389,9 +1400,9 @@ export function auditProject(cwd: string): AuditFinding[] {
     });
   }
 
-  addFrontendFindings(cwd, findings);
+  addFrontendFindings(docsCwd, findings);
 
-  const testing = readDoc(cwd, "TESTING.md");
+  const testing = readDoc(docsCwd, "TESTING.md");
   if (!includesAny(testing, ["Playwright", "smoke"])) {
     findings.push({
       level: "warn",

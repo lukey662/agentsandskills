@@ -279,6 +279,8 @@ Public OSS maintainability is tracked alongside package quality:
 
 These files are covered by public-readiness tests.
 
+Dependency Review requires GitHub dependency graph support for the repository. If the workflow reports that dependency review is not supported, enable vulnerability alerts/dependency graph in repository security settings before weakening the gate. OpenSSF Scorecard keeps write permissions scoped to the Scorecard job because the action rejects globally writable workflow permissions when publishing results.
+
 ## Delivery Tracking
 
 Use `ROADMAP.md` as the source of truth for phased implementation status and next actions.

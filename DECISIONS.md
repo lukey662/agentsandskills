@@ -20,6 +20,22 @@ The package had strong local-first council/session contracts, but runtime ergono
 
 Antigravity users get `/setup`, `/audit`, `/plan`, `/handoff`, `/frontend`, `/security`, `/copy`, `/ship`, and `/upgrade` entrypoints. The adapter is structurally validated without requiring `agy` to be installed. Future runtime adapters must follow the same rule: improve invocation ergonomics without forking role policy, security gates, model routing, or documentation contracts.
 
+## 2026-06-14 - Package Source Audits Validate Shipped Assets
+
+### Context
+
+`agent-kit audit` must remain strict for installed downstream projects, but the package repository is not itself an initialized downstream project. A clean GitHub checkout does not include generated root docs such as `AGENTS.md`, `COUNCIL.md`, `QUALITY_GATES.md`, or `.agent-kit/manifest.json`, so treating the package root as an installed project creates false CI failures.
+
+### Decision
+
+When the audit detects the Agent Kit source repository without an installed manifest, it validates committed source assets instead: `templates/next-supabase/*`, `rosters/`, `schemas/`, `assistant-adapters/`, `model-routing/`, package scripts, and source secret scanning. Installed projects still fail when required root docs or install contracts are absent.
+
+OpenSSF Scorecard keeps workflow-level permissions read-only and grants `security-events: write` plus `id-token: write` only at the Scorecard job. GitHub Dependency Review remains enabled as a pull-request gate, with repository vulnerability alerts/dependency graph enabled in GitHub settings.
+
+### Consequences
+
+CI now matches the package's ownership boundary: source checkouts prove shipped templates and package assets, while downstream installs prove installed files. The release gate no longer depends on untracked local generated docs. Scorecard publishing satisfies OSSF workflow restrictions without broad global write scopes, and Dependency Review can run once GitHub dependency graph support is enabled for the repository.
+
 ## 2026-06-10 - IDE Parity, Honest Audit, And Session Batch API
 
 ### Context

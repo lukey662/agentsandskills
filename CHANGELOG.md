@@ -2,6 +2,12 @@
 
 ## 0.1.3
 
+- Added Antigravity runtime adapter support with `agent-kit init --activate antigravity`, `antigravity/plugin.json`, native `/setup`, `/audit`, `/plan`, `/handoff`, `/frontend`, `/security`, `/copy`, `/ship`, and `/upgrade` command files, and portable `runtime-skills/*/SKILL.md` wrappers.
+- Added `agent-kit adapter validate` and `agent-kit package validate` so runtime adapter assets, package allowlists, portable skills, examples, and source-package audit behavior are release-gated.
+- Fixed package-source audit mode so the source repository validates shipped templates and package assets without requiring installed-project root docs such as `AGENTS.md` or `.agent-kit/manifest.json`.
+- Updated development dependencies for TypeScript 6 and Node 25 type coverage, while preserving the package runtime floor at Node 20.
+- Hardened GitHub CI by keeping OpenSSF Scorecard write scopes at job level and documenting Dependency Review's dependency-graph requirement.
+- Added an `esbuild` override to clear the release-gate dependency audit without downgrading `tsup`.
 - Added **`agent-kit init --activate`** for Claude Code (`.claude/agents/*.md`, `CLAUDE.md`), Copilot (`.github/copilot-instructions.md`), and Codex (`.codex/config.toml`) IDE parity.
 - Plain **`agent-kit init`** now always creates `.agent-kit/project-context.json` and ships `.github/workflows/agent-kit-audit.yml`.
 - Added code-aware audit tier (`project-reality` vs `docs-hygiene`): Supabase migration RLS parsing, test-script verification, and secret-pattern scanning.

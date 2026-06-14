@@ -77,4 +77,5 @@ Keep rollback evidence next to the upgrade:
 
 | Date | From | To | Scope | Evidence | Owner |
 | --- | --- | --- | --- | --- | --- |
+| 2026-06-14 | TypeScript 5 / Node 22 types | TypeScript 6 / Node 25 types | Dev dependency update for package validation and CI parity | `npm run typecheck`, `npm test`, `npm audit --audit-level=moderate` | Maintainers |
 | TBD | TBD | TBD | TBD | TBD | TBD |
