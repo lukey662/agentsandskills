@@ -26,9 +26,9 @@ Canonical source of truth:
 
 | Tool | Instruction surface | Instruction status | Model-selection status | Enforcement | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| Codex / AGENTS.md-compatible tools | `AGENTS.md`, optional `.codex/config.toml`, optional `.codex/agents/*.toml` | TBD | TBD | Partial | TBD | Run `agent-kit init --activate codex` to copy optional `.codex/config.toml`. Confirm the tool loads root `AGENTS.md`. |
+| Codex / AGENTS.md-compatible tools | `AGENTS.md`, `.codex/config.toml`, `.codex/agents/*.toml` | TBD | TBD | Partial | TBD | Run `agent-kit init --activate codex` to generate council custom agents and copy `.codex/config.toml`. |
 | GitHub Copilot / VS Code | `.github/copilot-instructions.md` and `.github/instructions/*.instructions.md` | TBD | TBD | Advisory | TBD | Run `agent-kit init --activate copilot` to promote Copilot instruction files. |
-| Cursor | `.cursor/rules/cursor-agent-kit.mdc` and `.cursor/rules/cursor-model-selection.mdc` | Active on init | Advisory | Advisory | `agent-kit init` copies canonical rules from `.agent-kit/assistant-adapters/`; verify in Cursor Settings > Rules that both rules load. | `agent-kit init` installs `.cursor/rules/cursor-agent-kit.mdc` and `.cursor/rules/cursor-model-selection.mdc`. Re-run `agent-kit diff` after kit updates if the canonical adapter files changed. |
+| Cursor | `.cursor/rules/*.mdc`, `.cursor/agents/*.md`, `.cursor/skills/*/SKILL.md` | Active on init (rules); subagents on `--activate cursor` | Advisory | Partial | Run `agent-kit init --activate cursor`; verify subagents. | Delegate to `.cursor/agents/` instead of role-playing the council. |
 | Claude Code | `.claude/agents/*.md` and optional `CLAUDE.md` | TBD | TBD | Partial | TBD | Run `agent-kit init --activate claude` to generate subagents from `.agent-kit/agent-roster.json` and install `CLAUDE.md`. |
 | Antigravity | `.antigravity/agent-kit/plugin.json`, `.antigravity/agent-kit/commands/*.toml`, `.antigravity/runtime-skills/*/SKILL.md` | TBD | TBD | Advisory | TBD | Run `agent-kit init --activate antigravity`, then `agent-kit adapter validate antigravity`; optional native validation is `agy plugin validate` when available. |
 
@@ -68,6 +68,30 @@ Verification steps:
 5. Record the verification date, owner, and evidence path in the Active Tool Surfaces table above.
 
 If a project already customized `.cursor/rules/`, review `.agent-kit/conflicts/` after `agent-kit update` before adopting newer adapter wording.
+
+Run `agent-kit init --activate cursor` to generate `.cursor/agents/*.md` and `.cursor/skills/*/SKILL.md` from the roster and kit skills.
+
+## Multi-agent delegation
+
+Same council playbook across IDEs — delegate to specialists instead of role-playing every role in one thread.
+
+| Risk / work | Cursor | Codex | Claude Code |
+| --- | --- | --- | --- |
+| Auth / RLS / secrets | `@security-reviewer` or Task `security-review` | spawn `security-reviewer.toml` | `@security-reviewer` |
+| Planning / scope | `@planner` | spawn `planner.toml` | `@planner` |
+| Frontend UI | `@frontend-design-lead` | spawn `frontend-design-lead.toml` | `@frontend-design-lead` |
+| QA / behavior changes | `@qa-engineer` or Task `bugbot` | spawn `qa-engineer.toml` | `@qa-engineer` |
+
+Record evidence with `agent-kit session checkpoint --file <json>` when the CLI is available.
+
+## Codex Activation
+
+`agent-kit init --activate codex` installs:
+
+- `.codex/config.toml`
+- `.codex/agents/*.toml` council custom agents with `model_reasoning_effort` from `.agent-kit/model-routing.json`
+
+Validate with `agent-kit adapter validate codex`.
 
 ## Antigravity Activation
 

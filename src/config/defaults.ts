@@ -1,7 +1,7 @@
 import type { AgentKitConfig } from "./types.js";
 
 export const PACKAGE_NAME = "@appsforgood/next-supabase-kit";
-export const PACKAGE_VERSION = "0.1.3";
+export const PACKAGE_VERSION = "0.1.4";
 
 export const DEFAULT_CONFIG: AgentKitConfig = {
   stack: "next-supabase",
@@ -73,6 +73,21 @@ export const CURSOR_ADAPTER_FILES = [
   {
     source: "assistant-adapters/model-selection/cursor-model-selection.mdc",
     target: ".cursor/rules/cursor-model-selection.mdc"
+  }
+] as const;
+
+export const CURSOR_SCOPED_ADAPTER_FILES = [
+  {
+    source: "assistant-adapters/cursor-planner.mdc",
+    target: ".cursor/rules/cursor-planner.mdc"
+  },
+  {
+    source: "assistant-adapters/cursor-security.mdc",
+    target: ".cursor/rules/cursor-security.mdc"
+  },
+  {
+    source: "assistant-adapters/cursor-frontend.mdc",
+    target: ".cursor/rules/cursor-frontend.mdc"
   }
 ] as const;
 

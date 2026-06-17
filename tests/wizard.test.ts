@@ -134,7 +134,7 @@ describe("Startup setup wizard", () => {
   it("writes visual QA tier and design draft helpers", () => {
     const root = tempProject();
     const ide = saveIdeChecklist(root, "cursor");
-    expect(ide.idePath).toContain(".cursor/rules");
+    expect(ide.idePath).toContain(".cursor/agents/planner.md");
     const qa = writeVisualQaTier(root, "strong");
     expect(qa.updated).toBe(true);
     saveDesignDraft(root, {

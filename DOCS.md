@@ -21,12 +21,21 @@ Package-level research decisions are recorded in `DECISIONS.md`.
 Promote other IDE surfaces with:
 
 ```bash
+agent-kit init --activate cursor    # .cursor/agents/*.md, .cursor/skills/*/SKILL.md, scoped rules
 agent-kit init --activate claude    # .claude/agents/*.md + CLAUDE.md
 agent-kit init --activate copilot   # .github/copilot-instructions.md
-agent-kit init --activate codex     # .codex/config.toml
+agent-kit init --activate codex     # .codex/config.toml + .codex/agents/*.toml
 agent-kit init --activate antigravity # .antigravity plugin, commands, and runtime SKILL.md wrappers
 agent-kit init --activate all       # all of the above (Cursor rules remain on every init)
 ```
+
+## Multi-agent fidelity tiers
+
+- **Tier A — policy-only:** plain `init` installs council docs + Cursor always-on rules. One agent role-plays the council.
+- **Tier B — native specialists:** `init --activate cursor|claude|codex` generates IDE-specific council subagents/custom agents from `.agent-kit/agent-roster.json`.
+- **Tier C — programmatic orchestration (future):** optional `agent-kit orchestrate` per `RUNTIME_ORCHESTRATION_SCOPE.md`.
+
+Validate activation with `agent-kit adapter validate cursor|codex|claude|all`.
 
 Existing files are never overwritten by default. Conflicting template updates are written to `.agent-kit/conflicts/`.
 
@@ -77,7 +86,7 @@ The package deliberately separates AI operating mechanisms:
 - `.agent-kit/council-sessions/*/events.jsonl` plus rendered Markdown make visible agent collaboration inspectable without a database.
 - `ASSISTANT_ADAPTERS.md` records active IDEs, model-selection status, tool/MCP setup, and evidence.
 - Optional hooks can enforce local policies, but they are not enabled by default because they execute local commands and require trust review.
-- CI and release gates enforce the package contract through audit, tests, install smoke, Agent Studio smoke, SBOM validation, and package dry run.
+- Optional Milestone 9 orchestration (`agent-kit orchestrate`) is scoped in `RUNTIME_ORCHESTRATION_SCOPE.md` and remains opt-in. It reuses the same roster and session contracts without replacing IDE subagents.
 
 If a project stores structured council sessions in `.agent-kit/council-sessions/*.json`, audit validates each record against the runtime contract that mirrors `schemas/council-session.schema.json`.
 

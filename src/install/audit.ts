@@ -17,6 +17,7 @@ import { findPackageRoot } from "../utils/package-root.js";
 import { AGENT_RULES_JSON, CONTEXT_JSON, CONTEXT_MD, PROJECT_RULES_JSON, STUDIO_EXPORT_HTML, containsLikelySecret } from "../studio/shared.js";
 import { getSetupProgress, onboardingStateExists } from "../studio/onboarding-state.js";
 import { readManifest } from "./install.js";
+import { assistantAdapterRowIsActive } from "./assistant-adapters-table.js";
 
 interface TemplateOverride {
   reason?: string;
@@ -824,13 +825,34 @@ function addAssistantAdapterFindings(
       area: "agents",
       message: "ASSISTANT_ADAPTERS.md does not map the council roster to supported tool instruction surfaces.",
       remediation:
-        "Document Codex/AGENTS.md, GitHub Copilot, Cursor rules, Claude Code subagents, and the source-of-truth rule for avoiding divergent agent instructions."
+        "Document Codex/AGENTS.md, GitHub Copilot, Cursor rules and subagents, Claude Code subagents, and the source-of-truth rule for avoiding divergent agent instructions."
     });
   } else {
     findings.push({
       level: "pass",
       area: "agents",
       message: "ASSISTANT_ADAPTERS.md maps the council roster to tool-specific instruction surfaces."
+    });
+  }
+
+  if (assistantAdapterRowIsActive(adaptersDoc, "Cursor") && !existsSync(join(cwd, ".cursor/agents/planner.md"))) {
+    findings.push({
+      level: "warn",
+      area: "agents",
+      message: "Cursor is marked Active but .cursor/agents/planner.md is missing.",
+      remediation: "Run agent-kit init --activate cursor to generate council subagents from the roster."
+    });
+  }
+
+  if (
+    assistantAdapterRowIsActive(adaptersDoc, "Codex / AGENTS.md-compatible tools") &&
+    !existsSync(join(cwd, ".codex/agents/planner.toml"))
+  ) {
+    findings.push({
+      level: "warn",
+      area: "agents",
+      message: "Codex is marked Active but .codex/agents/planner.toml is missing.",
+      remediation: "Run agent-kit init --activate codex to generate council custom agents from the roster."
     });
   }
 

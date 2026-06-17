@@ -18,6 +18,19 @@ Use `AGENTS.md` as the primary project instruction surface.
 - `.agent-kit/council-sessions/`
 - `QUALITY_GATES.md`
 
+## Council Custom Agents
+
+After `agent-kit init --activate codex`, council specialists live in `.codex/agents/*.toml`.
+
+Spawn a dedicated custom agent instead of role-playing the whole council in one thread:
+
+- **Planning / scope:** `.codex/agents/planner.toml`
+- **Security / RLS / secrets:** `.codex/agents/security-reviewer.toml` (high reasoning effort)
+- **Frontend UI:** `.codex/agents/frontend-design-lead.toml`
+- **QA / tests:** `.codex/agents/qa-engineer.toml`
+
+Each file sets `model_reasoning_effort` from `.agent-kit/model-routing.json`. Verify model names in your Codex environment against `MODEL_ROUTING.md`.
+
 ## Operating Rule
 
 When a task is planning-oriented, ambiguous, risky, frontend-facing, security-sensitive, or release-related, start from the roster workflow instead of treating the request as a single generic implementation pass.
@@ -34,3 +47,5 @@ Record in `ASSISTANT_ADAPTERS.md`:
 - The command, session, or screenshot that proves the instructions loaded.
 - The model-selection setting or profile used for the active role.
 - Any known limitations or manual invocation steps.
+
+Run `agent-kit adapter validate codex` after activation.

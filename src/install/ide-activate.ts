@@ -9,11 +9,17 @@ import {
   CODEX_CONFIG_SOURCE,
   COPILOT_INSTRUCTION_FILES,
   CURSOR_ADAPTER_FILES,
+  CURSOR_SCOPED_ADAPTER_FILES,
   RUNTIME_SKILLS_SOURCE_DIR
 } from "../config/defaults.js";
 import { copyTextWithConflict, ensureDir, listFilesRecursive, writeText } from "../utils/fs.js";
 import { findPackageRoot } from "../utils/package-root.js";
-import { loadProjectRosterAgents } from "../studio/wizard/roster.js";
+import {
+  generateCodexCustomAgents,
+  generateCursorSkillsFromKit,
+  generateCursorSubagents,
+  generateMarkdownSubagents
+} from "./roster-adapters.js";
 
 export type IdeTarget = "cursor" | "claude" | "codex" | "copilot" | "antigravity";
 
@@ -30,9 +36,6 @@ export interface ActivateIdeResult {
   conflicts: string[];
   overwritten: string[];
 }
-
-const CANONICAL_READ_LIST =
-  "`AGENTS.md`, `AGENT_ROSTER.md`, `.agent-kit/agent-roster.json`, `MODEL_ROUTING.md`, `.agent-kit/model-routing.json`, `.agent-kit/project-context.json`, `.agent-kit/project-context.md`, `.agent-kit/agent-briefs.md` when present, `.agent-kit/corrections/project-rules.json`, `.agent-kit/corrections/agent-rules.json`, `COUNCIL.md`, `.agent-kit/council-sessions/`, and `QUALITY_GATES.md`";
 
 function normalizeTargets(targets: string[]): IdeTarget[] {
   const allowed = new Set<IdeTarget>(["cursor", "claude", "codex", "copilot", "antigravity"]);
@@ -68,56 +71,8 @@ function copyAdapterFile(
   }
 }
 
-function buildClaudeSubagentMarkdown(agentId: string, name: string, description: string): string {
-  const defaultForHint =
-    agentId === "planner"
-      ? "Start with the Planner workflow."
-      : agentId === "lead-architect"
-        ? "Convene council for core changes before implementation."
-        : agentId === "frontend-design-lead"
-          ? "Require brand/content intake, creative-direction rationale, and visual QA evidence for UI changes."
-          : agentId === "security-reviewer"
-            ? "Review auth, RLS, data mutation, dependency, external-call, secret, and release-risk changes."
-            : `Use for ${name.toLowerCase()} work defined in the roster.`;
-
-  return `---
-name: ${agentId}
-description: ${description}
----
-
-Read ${CANONICAL_READ_LIST} before making routing or implementation decisions.
-
-${defaultForHint}
-
-Record meaningful decisions, risks, handoffs, human corrections, artifacts, evidence, and verification through \`agent-kit session checkpoint\` or individual \`agent-kit session ...\` commands when available.
-`;
-}
-
 function generateClaudeSubagents(cwd: string, packageRoot: string, force: boolean, result: ActivateIdeResult): void {
-  ensureDir(join(cwd, ".claude", "agents"));
-  const agents = loadProjectRosterAgents(cwd);
-  for (const agent of agents) {
-    const description =
-      agent.roleSummary.length > 180 ? `${agent.roleSummary.slice(0, 177)}...` : agent.roleSummary;
-    const target = `.claude/agents/${agent.id}.md`;
-    const content = buildClaudeSubagentMarkdown(agent.id, agent.name, description);
-    const targetPath = join(cwd, target);
-    if (!force && existsSync(targetPath)) {
-      const existing = readFileSync(targetPath, "utf8");
-      if (existing === content) {
-        result.unchanged.push(target);
-        continue;
-      }
-      const conflictPath = join(cwd, ".agent-kit", "conflicts", target.replace(/\//g, "__"));
-      ensureDir(join(cwd, ".agent-kit", "conflicts"));
-      writeText(conflictPath, existing);
-      result.conflicts.push(`${target} -> ${conflictPath}`);
-      continue;
-    }
-    writeText(targetPath, content);
-    result.copied.push(target);
-  }
-
+  generateMarkdownSubagents(cwd, ".claude/agents", { proactive: false, force, result });
   copyAdapterFile(cwd, packageRoot, CLAUDE_TEMPLATE, "CLAUDE.md", force, result);
 }
 
@@ -169,35 +124,35 @@ function updateAssistantAdaptersTable(cwd: string, activated: Set<IdeTarget>): v
   if (activated.has("cursor") && content.includes("| Cursor |")) {
     content = content.replace(
       /\| Cursor \|[^|]*\|[^|]*\|[^|]*\|[^|]*\|[^|]*\|[^|]*\|/,
-      "| Cursor | `.cursor/rules/cursor-agent-kit.mdc` and `.cursor/rules/cursor-model-selection.mdc` | Active on init | Advisory | Advisory | `agent-kit init` copies rules; verify in Cursor Settings > Rules. | Installed via `agent-kit init` or `agent-kit init --activate cursor`. |"
+      `| Cursor | \`.cursor/rules/*.mdc\`, \`.cursor/agents/*.md\`, \`.cursor/skills/*/SKILL.md\` | Active | Partial | Partial | \`agent-kit init --activate cursor\` on ${today}; verify subagents in Cursor. | Delegate to council subagents instead of role-playing; run \`agent-kit adapter validate cursor\`. |`
     );
   }
 
   if (activated.has("copilot") && content.includes("| GitHub Copilot")) {
     content = content.replace(
       /\| GitHub Copilot[^|]*\|[^|]*\|[^|]*\|[^|]*\|[^|]*\|[^|]*\|[^|]*\|/,
-      "| GitHub Copilot / VS Code | `.github/copilot-instructions.md` and `.github/instructions/next-supabase.instructions.md` | Active | Advisory | Advisory | `agent-kit init --activate copilot` on ${today}. | Copilot loads repository and path-specific instructions automatically in VS Code. |"
+      `| GitHub Copilot / VS Code | \`.github/copilot-instructions.md\` and \`.github/instructions/next-supabase.instructions.md\` | Active | Advisory | Advisory | \`agent-kit init --activate copilot\` on ${today}. | Copilot loads repository and path-specific instructions automatically in VS Code. |`
     );
   }
 
   if (activated.has("claude") && content.includes("| Claude Code |")) {
     content = content.replace(
       /\| Claude Code \|[^|]*\|[^|]*\|[^|]*\|[^|]*\|[^|]*\|[^|]*\|/,
-      "| Claude Code | `.claude/agents/*.md` and `CLAUDE.md` | Active | Partial | Partial | `agent-kit init --activate claude` generated subagents on ${today}. | Subagents generated from `.agent-kit/agent-roster.json`; verify in Claude Code project settings. |"
+      `| Claude Code | \`.claude/agents/*.md\` and \`CLAUDE.md\` | Active | Partial | Partial | \`agent-kit init --activate claude\` generated subagents on ${today}. | Subagents generated from \`.agent-kit/agent-roster.json\`; verify in Claude Code project settings. |`
     );
   }
 
   if (activated.has("codex") && content.includes("| Codex / AGENTS.md-compatible tools |")) {
     content = content.replace(
       /\| Codex \/ AGENTS\.md-compatible tools \|[^|]*\|[^|]*\|[^|]*\|[^|]*\|[^|]*\|[^|]*\|/,
-      "| Codex / AGENTS.md-compatible tools | `AGENTS.md`, `.codex/config.toml` | Active | Partial | Partial | Root `AGENTS.md` on init; optional `.codex/config.toml` via `agent-kit init --activate codex`. | Confirm Codex loads root `AGENTS.md` and optional model routing comments. |"
+      `| Codex / AGENTS.md-compatible tools | \`AGENTS.md\`, \`.codex/config.toml\`, \`.codex/agents/*.toml\` | Active | Partial | Partial | \`agent-kit init --activate codex\` on ${today}. | Spawn council custom agents from \`.codex/agents/\`; run \`agent-kit adapter validate codex\`. |`
     );
   }
 
   if (activated.has("antigravity") && content.includes("| Antigravity |")) {
     content = content.replace(
       /\| Antigravity \|[^|]*\|[^|]*\|[^|]*\|[^|]*\|[^|]*\|[^|]*\|/,
-      "| Antigravity | `.antigravity/agent-kit/plugin.json`, `.antigravity/agent-kit/commands/*.toml`, `.antigravity/runtime-skills/*/SKILL.md` | Active | Advisory | Advisory | `agent-kit init --activate antigravity` on ${today}; run `agent-kit adapter validate antigravity`. | Native commands wrap the Agent Kit council/session contract; runtime validation is structural unless `agy` is installed. |"
+      `| Antigravity | \`.antigravity/agent-kit/plugin.json\`, \`.antigravity/agent-kit/commands/*.toml\`, \`.antigravity/runtime-skills/*/SKILL.md\` | Active | Advisory | Advisory | \`agent-kit init --activate antigravity\` on ${today}; run \`agent-kit adapter validate antigravity\`. | Native commands wrap the Agent Kit council/session contract; runtime validation is structural unless \`agy\` is installed. |`
     );
   }
 
@@ -230,6 +185,11 @@ export function activateIdeTargets(options: ActivateIdeOptions): ActivateIdeResu
     for (const adapter of CURSOR_ADAPTER_FILES) {
       copyAdapterFile(cwd, packageRoot, adapter.source, adapter.target, force, result);
     }
+    for (const adapter of CURSOR_SCOPED_ADAPTER_FILES) {
+      copyAdapterFile(cwd, packageRoot, adapter.source, adapter.target, force, result);
+    }
+    generateCursorSubagents(cwd, force, result);
+    generateCursorSkillsFromKit(cwd, force, result);
   }
 
   if (activated.has("copilot")) {
@@ -246,6 +206,7 @@ export function activateIdeTargets(options: ActivateIdeOptions): ActivateIdeResu
   if (activated.has("codex")) {
     ensureDir(join(cwd, ".codex"));
     copyAdapterFile(cwd, packageRoot, CODEX_CONFIG_SOURCE, ".codex/config.toml", force, result);
+    generateCodexCustomAgents(cwd, force, result);
   }
 
   if (activated.has("antigravity")) {
@@ -255,4 +216,12 @@ export function activateIdeTargets(options: ActivateIdeOptions): ActivateIdeResu
   updateAssistantAdaptersTable(cwd, activated);
 
   return result;
+}
+
+export function ideSurfaceToActivateTarget(ideSurface: string): IdeTarget | null {
+  const value = ideSurface.trim().toLowerCase();
+  if (value === "cursor" || value === "claude" || value === "codex" || value === "copilot") {
+    return value;
+  }
+  return null;
 }

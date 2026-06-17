@@ -1,0 +1,16 @@
+---
+description: Require Frontend Design Lead evidence for significant UI and component work.
+globs:
+  - "src/app/**"
+  - "src/components/**"
+  - "**/*.css"
+alwaysApply: false
+---
+
+# Frontend design gate reminders
+
+Significant UI changes require **Frontend Design Lead** review: brand/content intake, creative-direction rationale, reference-led critique, product-quality scorecard, accessibility, and visual QA evidence.
+
+Delegate to `@frontend-design-lead` in `.cursor/agents/frontend-design-lead.md` for isolated design review context.
+
+Reject generic AI-looking UI that is not specific to the product workflow and content model.

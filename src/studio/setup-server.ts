@@ -12,6 +12,7 @@ import {
   markSectionComplete,
   saveOnboardingState
 } from "./onboarding-state.js";
+import { activateIdeTargets, ideSurfaceToActivateTarget } from "../install/ide-activate.js";
 import { saveIdeChecklist, writeVisualQaTier, type IdeSurface } from "./wizard/checklist.js";
 import { saveAgentBriefs } from "./wizard/agent-briefs.js";
 import {
@@ -253,9 +254,22 @@ async function handleRequest(cwd: string, request: IncomingMessage, response: Se
     try {
       const body = (await readJsonBody(request)) as { ideSurface?: IdeSurface };
       if (!body.ideSurface) throw new Error("ideSurface is required.");
+      const activateTarget = ideSurfaceToActivateTarget(body.ideSurface);
+      let activation:
+        | { activated: string[]; copied: string[]; unchanged: string[]; conflicts: string[] }
+        | undefined;
+      if (activateTarget) {
+        const activateResult = activateIdeTargets({ cwd, targets: [activateTarget] });
+        activation = {
+          activated: activateResult.activated,
+          copied: activateResult.copied,
+          unchanged: activateResult.unchanged,
+          conflicts: activateResult.conflicts
+        };
+      }
       const result = saveIdeChecklist(cwd, body.ideSurface);
       markSectionComplete(cwd, "ide");
-      sendJson(response, 200, { ...result, ...buildStatePayload(cwd) });
+      sendJson(response, 200, { ...result, activation, ...buildStatePayload(cwd) });
     } catch (error) {
       sendJson(response, 400, { error: error instanceof Error ? error.message : String(error) });
     }

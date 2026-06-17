@@ -1,0 +1,14 @@
+---
+description: Route ambiguous, planning, and cross-layer requests through the Planner workflow first.
+globs:
+  - "**/*"
+alwaysApply: false
+---
+
+# Planner routing
+
+When a request is ambiguous, planning-oriented, roadmap-related, or spans multiple layers, start with the **Planner** workflow before implementation.
+
+Delegate to the `@planner` subagent in `.cursor/agents/planner.md` when the task needs isolated planning context.
+
+Read project context, corrections, and `AGENT_ROSTER.md` before choosing a workflow.

@@ -6,10 +6,10 @@ import { nowIso, writeTextFile } from "../shared.js";
 export type IdeSurface = "cursor" | "copilot" | "claude" | "codex" | "other";
 
 const IDE_PATHS: Record<IdeSurface, string> = {
-  cursor: ".cursor/rules/cursor-agent-kit.mdc",
+  cursor: ".cursor/agents/planner.md",
   copilot: ".github/copilot-instructions.md",
-  claude: ".claude/agents/",
-  codex: "AGENTS.md",
+  claude: ".claude/agents/planner.md",
+  codex: ".codex/agents/planner.toml",
   other: "ASSISTANT_ADAPTERS.md"
 };
 
@@ -26,6 +26,12 @@ export function saveIdeChecklist(cwd: string, ideSurface: IdeSurface): { idePath
 
 export function detectIdeRulePresent(cwd: string, ideSurface: IdeSurface): boolean {
   const rel = IDE_PATHS[ideSurface];
+  if (ideSurface === "cursor") {
+    return (
+      existsSync(join(cwd, rel)) ||
+      existsSync(join(cwd, ".cursor/rules/cursor-agent-kit.mdc"))
+    );
+  }
   if (rel.endsWith("/")) {
     return existsSync(join(cwd, rel));
   }

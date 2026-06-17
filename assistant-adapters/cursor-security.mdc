@@ -1,0 +1,18 @@
+---
+description: Require Security Reviewer for auth, RLS, secrets, API mutations, and external calls.
+globs:
+  - "supabase/**"
+  - "**/auth/**"
+  - "**/api/**"
+  - "**/middleware.ts"
+  - "**/proxy.ts"
+alwaysApply: false
+---
+
+# Security gate reminders
+
+Auth, RLS, data mutation, dependency, secret, external-call, and release-risk changes require **Security Reviewer** review before acceptance.
+
+Delegate to `@security-reviewer` in `.cursor/agents/security-reviewer.md` or Task `security-review` for isolated review context.
+
+Verify OWASP Top 10, IDOR, SSRF, injection, broken auth, and least-privilege boundaries.

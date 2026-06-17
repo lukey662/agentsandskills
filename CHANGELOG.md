@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.4
+
+- Added true multi-agent IDE activation for **Cursor** (`.cursor/agents/*.md`, `.cursor/skills/*/SKILL.md`, scoped rules) and **Codex** (`.codex/agents/*.toml` with model routing effort) via `agent-kit init --activate cursor|codex`.
+- Added shared roster adapter generation (`roster-adapters.ts`) and assistant adapter table parsing so audit and `adapter validate` warn when Active Cursor/Codex rows lack specialist files.
+- Fixed setup wizard IDE activation order so `present` is detected after files are generated and conflicts are returned in the API response.
+- Quoted YAML frontmatter in generated Cursor/Claude subagents and Cursor skills so descriptions with colons or quotes remain valid.
+- Stopped post-copy mutation of existing `.codex/config.toml`; conflict-safe copy behavior now protects customized Codex config.
+- Fixed `cursor-planner.mdc` scoped rule frontmatter and expanded adapter validation, IDE activation, and SSE stream tests.
+
 ## 0.1.3
 
 - Added Antigravity runtime adapter support with `agent-kit init --activate antigravity`, `antigravity/plugin.json`, native `/setup`, `/audit`, `/plan`, `/handoff`, `/frontend`, `/security`, `/copy`, `/ship`, and `/upgrade` command files, and portable `runtime-skills/*/SKILL.md` wrappers.

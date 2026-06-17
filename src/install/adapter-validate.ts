@@ -10,6 +10,7 @@ import { containsLikelySecret } from "../studio/shared.js";
 import { listFilesRecursive } from "../utils/fs.js";
 import { createAuditReport } from "./audit.js";
 import type { IdeTarget } from "./ide-activate.js";
+import { assistantAdapterRowIsActive } from "./assistant-adapters-table.js";
 
 export type ValidationLevel = "pass" | "warn" | "fail";
 export type AdapterValidationTarget = IdeTarget | "all";
@@ -399,42 +400,161 @@ function validateAntigravity(cwd: string): ValidationReport {
 
 function validateBasicAdapter(cwd: string, target: Exclude<IdeTarget, "antigravity">): ValidationReport {
   const findings: ValidationFinding[] = [];
-  const sourcePaths: Record<Exclude<IdeTarget, "antigravity">, string[]> = {
-    cursor: ["assistant-adapters/cursor-agent-kit.mdc", "assistant-adapters/model-selection/cursor-model-selection.mdc"],
-    claude: ["assistant-adapters/claude-code-subagents.md"],
-    codex: ["assistant-adapters/codex-agents.md", "assistant-adapters/model-selection/codex-config.example.toml"],
-    copilot: ["assistant-adapters/github-copilot-instructions.md", "assistant-adapters/github-next-supabase.instructions.md"]
-  };
+  const isPackageSource =
+    existsSync(join(cwd, "package.json")) &&
+    existsSync(join(cwd, "src")) &&
+    existsSync(join(cwd, "templates"));
 
-  for (const relativePath of sourcePaths[target]) {
-    const path = join(cwd, relativePath);
-    if (!existsSync(path)) {
-      findings.push({
-        level: "fail",
-        area: "adapter",
-        message: `${relativePath} is missing.`,
-        remediation: "Restore the adapter template or run agent-kit update."
-      });
-      continue;
+  if (isPackageSource) {
+    const sourcePaths: Record<Exclude<IdeTarget, "antigravity">, string[]> = {
+      cursor: [
+        "assistant-adapters/cursor-agent-kit.mdc",
+        "assistant-adapters/model-selection/cursor-model-selection.mdc",
+        "assistant-adapters/cursor-planner.mdc"
+      ],
+      claude: ["assistant-adapters/claude-code-subagents.md"],
+      codex: ["assistant-adapters/codex-agents.md", "assistant-adapters/model-selection/codex-config.example.toml"],
+      copilot: ["assistant-adapters/github-copilot-instructions.md", "assistant-adapters/github-next-supabase.instructions.md"]
+    };
+
+    for (const relativePath of sourcePaths[target]) {
+      const path = join(cwd, relativePath);
+      if (!existsSync(path)) {
+        findings.push({
+          level: "fail",
+          area: "adapter",
+          message: `${relativePath} is missing.`,
+          remediation: "Restore the adapter template or run agent-kit update."
+        });
+        continue;
+      }
+      const text = readFileSync(path, "utf8");
+      addSecretFinding(relativePath, text, findings);
+      if (!text.includes("AGENTS.md") && !text.includes("MODEL_ROUTING.md")) {
+        findings.push({
+          level: "warn",
+          area: "adapter",
+          message: `${relativePath} does not clearly reference Agent Kit source-of-truth files.`,
+          remediation: "Adapter templates should point back to AGENTS.md, MODEL_ROUTING.md, and the roster contract."
+        });
+      }
     }
-    const text = readFileSync(path, "utf8");
-    addSecretFinding(relativePath, text, findings);
-    if (!text.includes("AGENTS.md") && !text.includes("MODEL_ROUTING.md")) {
-      findings.push({
-        level: "warn",
-        area: "adapter",
-        message: `${relativePath} does not clearly reference Agent Kit source-of-truth files.`,
-        remediation: "Adapter templates should point back to AGENTS.md, MODEL_ROUTING.md, and the roster contract."
-      });
-    }
+  } else {
+    findings.push(...validateInstalledIdeAdapter(cwd, target).findings);
   }
 
   if (findings.every((finding) => finding.level !== "fail")) {
     findings.push({
       level: "pass",
       area: "adapter",
-      message: `${target} adapter templates are present.`
+      message: `${target} adapter ${isPackageSource ? "templates are present" : "activation assets are present"}.`
     });
+  }
+
+  return report(target, findings);
+}
+
+function readAssistantAdaptersDoc(cwd: string): string {
+  const path = join(cwd, "ASSISTANT_ADAPTERS.md");
+  return existsSync(path) ? readFileSync(path, "utf8") : "";
+}
+
+function adaptersRowIsActive(doc: string, toolLabel: string): boolean {
+  return assistantAdapterRowIsActive(doc, toolLabel);
+}
+
+function validateInstalledIdeAdapter(cwd: string, target: Exclude<IdeTarget, "antigravity">): ValidationReport {
+  const findings: ValidationFinding[] = [];
+  const adaptersDoc = readAssistantAdaptersDoc(cwd);
+
+  if (target === "cursor") {
+    const rulesPath = join(cwd, ".cursor/rules/cursor-agent-kit.mdc");
+    if (!existsSync(rulesPath)) {
+      findings.push({
+        level: "fail",
+        area: "adapter",
+        message: ".cursor/rules/cursor-agent-kit.mdc is missing.",
+        remediation: "Run agent-kit init or agent-kit init --activate cursor."
+      });
+    } else {
+      addSecretFinding(".cursor/rules/cursor-agent-kit.mdc", readFileSync(rulesPath, "utf8"), findings);
+    }
+
+    const plannerAgent = join(cwd, ".cursor/agents/planner.md");
+    if (existsSync(plannerAgent)) {
+      findings.push({
+        level: "pass",
+        area: "adapter",
+        message: ".cursor/agents/planner.md is installed."
+      });
+    } else if (adaptersRowIsActive(adaptersDoc, "Cursor")) {
+      findings.push({
+        level: "warn",
+        area: "adapter",
+        message: "Cursor is marked Active but .cursor/agents/planner.md is missing.",
+        remediation: "Run agent-kit init --activate cursor to generate council subagents from the roster."
+      });
+    }
+
+    const skillSample = join(cwd, ".cursor/skills/planning-council/SKILL.md");
+    if (existsSync(skillSample)) {
+      findings.push({
+        level: "pass",
+        area: "adapter",
+        message: ".cursor/skills/*/SKILL.md project skills are installed."
+      });
+    }
+  }
+
+  if (target === "claude") {
+    const plannerAgent = join(cwd, ".claude/agents/planner.md");
+    if (!existsSync(plannerAgent)) {
+      findings.push({
+        level: "fail",
+        area: "adapter",
+        message: ".claude/agents/planner.md is missing.",
+        remediation: "Run agent-kit init --activate claude."
+      });
+    }
+  }
+
+  if (target === "codex") {
+    const configPath = join(cwd, ".codex/config.toml");
+    if (!existsSync(configPath)) {
+      findings.push({
+        level: "fail",
+        area: "adapter",
+        message: ".codex/config.toml is missing.",
+        remediation: "Run agent-kit init --activate codex."
+      });
+    }
+    const plannerAgent = join(cwd, ".codex/agents/planner.toml");
+    if (existsSync(plannerAgent)) {
+      findings.push({
+        level: "pass",
+        area: "adapter",
+        message: ".codex/agents/planner.toml is installed."
+      });
+    } else if (adaptersRowIsActive(adaptersDoc, "Codex / AGENTS.md-compatible tools")) {
+      findings.push({
+        level: "warn",
+        area: "adapter",
+        message: "Codex is marked Active but .codex/agents/planner.toml is missing.",
+        remediation: "Run agent-kit init --activate codex to generate council custom agents from the roster."
+      });
+    }
+  }
+
+  if (target === "copilot") {
+    const instructions = join(cwd, ".github/copilot-instructions.md");
+    if (!existsSync(instructions)) {
+      findings.push({
+        level: "fail",
+        area: "adapter",
+        message: ".github/copilot-instructions.md is missing.",
+        remediation: "Run agent-kit init --activate copilot."
+      });
+    }
   }
 
   return report(target, findings);

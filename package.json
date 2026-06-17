@@ -1,6 +1,6 @@
 {
   "name": "@appsforgood/next-supabase-kit",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Open agent council, skills, prompts, checklists, and markdown templates for Next.js and Supabase projects.",
   "type": "module",
   "repository": {

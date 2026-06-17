@@ -95,10 +95,15 @@ describe("agent-kit studio serve", () => {
       expect(streamRes.ok).toBe(true);
       expect(streamRes.headers.get("content-type")).toContain("text/event-stream");
       const reader = streamRes.body?.getReader();
-      const { value } = await reader!.read();
+      let chunk = "";
+      const deadline = Date.now() + 2000;
+      while (!chunk.includes("event: snapshot") && Date.now() < deadline) {
+        const { value, done } = await reader!.read();
+        if (done) break;
+        chunk += new TextDecoder().decode(value ?? new Uint8Array());
+      }
       controller.abort();
       await reader?.cancel().catch(() => undefined);
-      const chunk = new TextDecoder().decode(value ?? new Uint8Array());
       expect(chunk).toContain("event: snapshot");
     } finally {
       await server.close();
