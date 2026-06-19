@@ -14,7 +14,9 @@
     designDraft: null,
     messagingDraft: null,
     ideSurfaces: boot.ideSurfaces || [],
-    agents: boot.agents || []
+    agents: boot.agents || [],
+    agenticLevel: null,
+    lastAdapterValidation: null
   };
 
   const els = {
@@ -22,6 +24,7 @@
     projectName: document.getElementById("project-name"),
     ringPct: document.getElementById("ring-pct"),
     ring: document.getElementById("progress-ring"),
+    levelPill: document.getElementById("wizard-level-pill"),
     sectionNav: document.getElementById("section-nav"),
     card: document.getElementById("wizard-card"),
     footer: document.getElementById("wizard-footer"),
@@ -83,10 +86,16 @@
     state.designDraft = data.designDraft;
     state.messagingDraft = data.messagingDraft;
     if (Array.isArray(data.agents) && data.agents.length) state.agents = data.agents;
+    state.agenticLevel = data.agenticLevel || null;
     els.projectName.textContent = data.projectName || "your project";
     const pct = data.progress?.percent ?? 0;
     els.ringPct.textContent = pct + "%";
     els.ring.style.setProperty("--pct", String(pct));
+    if (els.levelPill && state.agenticLevel) {
+      els.levelPill.textContent =
+        "L" + state.agenticLevel.currentLevel + " → L" + state.agenticLevel.targetLevel;
+      els.levelPill.hidden = false;
+    }
     render();
   }
 
@@ -227,6 +236,7 @@
       pills +
       "</div>" +
       '<p class="why" style="margin-top:20px"><strong>Choose your path</strong></p>' +
+      agenticLevelHomeBlock() +
       '<div class="depth-grid">' +
       depthCard("quick", "Quick (~10 min)", "IDE setup, agent briefings, and product essentials.") +
       depthCard("standard", "Standard (~15 min)", "Quick plus visual QA tier for UI changes.") +
@@ -237,6 +247,21 @@
           escapeHtml(state.progress.recommendedNext) +
           "</strong></p>"
         : "")
+    );
+  }
+
+  function agenticLevelHomeBlock() {
+    const level = state.agenticLevel;
+    if (!level) return "";
+    return (
+      '<div class="agentic-level-card">' +
+      "<p><strong>Agentic level</strong> L" +
+      level.currentLevel +
+      " → target L" +
+      level.targetLevel +
+      " <span class=\"hint-inline\">(setup progress is separate from audit readiness and visual QA tiers)</span></p>" +
+      (level.maintainerNote ? "<p class=\"hint\">" + escapeHtml(level.maintainerNote) + "</p>" : "") +
+      "</div>"
     );
   }
 
@@ -374,7 +399,9 @@
       qualityTarget: () => {
         const q = state.form.qualityTarget || "baseline-setup";
         return (
-          '<label for="qualityTarget">Quality target</label><select id="qualityTarget" name="qualityTarget">' +
+          '<label for="qualityTarget">Audit readiness target</label>' +
+          '<p class="hint">This is your <strong>audit readiness</strong> goal (agent-kit audit), not Agentic L5/L6 or visual QA tier.</p>' +
+          '<select id="qualityTarget" name="qualityTarget">' +
           optionQuality("baseline-setup", "baseline-setup — kit installed, filling evidence", q) +
           optionQuality("needs-improvement", "needs-improvement — active delivery", q) +
           optionQuality("best-practice-candidate", "best-practice-candidate — clean audit goal", q) +
@@ -394,11 +421,13 @@
               "</option>"
           )
           .join("");
+        const chip = renderAdapterChip(state.lastAdapterValidation);
         return (
           '<label for="ideSurface">Primary AI coding tool</label><select id="ideSurface" name="ideSurface" required>' +
           '<option value="">Choose your IDE…</option>' +
           opts +
-          '</select><p class="why">We configure instructions for this path: <code id="ide-path"></code></p>'
+          '</select><p class="why">We configure instructions for this path: <code id="ide-path"></code></p>' +
+          chip
         );
       },
       visualQaTier: () => {
@@ -456,9 +485,49 @@
     );
   }
 
-  function renderComplete() {
+  function renderAdapterChip(validation) {
+    if (!validation || !validation.target) return "";
+    const kind = validation.fail > 0 ? "error" : validation.warn > 0 ? "warn" : "ok";
+    const label =
+      validation.fail > 0
+        ? "Adapter validate: " + validation.fail + " fail"
+        : validation.warn > 0
+          ? "Adapter validate: pass with warnings"
+          : "Adapter validate: pass";
     return (
-      '<div class="complete-icon" aria-hidden="true">✓</div><h2>Setup saved</h2><p class="why">Agents read <code>.agent-kit/project-context.md</code> and <code>.agent-kit/agent-briefs.md</code> before meaningful work.</p><ol class="next-steps"><li>Run <code>agent-kit audit</code></li><li>Reload your IDE so it picks up instructions for your chosen tool</li><li>Return anytime with <code>agent-kit setup</code></li></ol>'
+      '<p class="adapter-chip ' +
+      kind +
+      '" role="status">' +
+      escapeHtml(label) +
+      " (" +
+      escapeHtml(validation.target) +
+      ")</p>"
+    );
+  }
+
+  function renderComplete() {
+    const level = state.agenticLevel;
+    const climb = (level?.climbSteps || [])
+      .slice(0, 3)
+      .map((step) => "<li>" + escapeHtml(step.remediation) + "</li>")
+      .join("");
+    return (
+      '<div class="complete-icon" aria-hidden="true">✓</div><h2>Setup saved</h2>' +
+      (level
+        ? '<p class="why">Agentic level <strong>L' +
+          level.currentLevel +
+          "</strong> (target L" +
+          level.targetLevel +
+          ").</p>"
+        : "") +
+      '<p class="why">Agents read <code>.agent-kit/project-context.md</code> and <code>.agent-kit/agent-briefs.md</code> before meaningful work.</p>' +
+      '<ol class="next-steps">' +
+      "<li>Run eval loop from <code>LOOP_CODING.md</code>: <code>npm test</code>, <code>agent-kit audit --min-readiness baseline-setup</code></li>" +
+      "<li>Validate IDE adapters: <code>agent-kit adapter validate cursor|codex|all</code></li>" +
+      "<li>Reload your IDE so it picks up council subagents and rules</li>" +
+      "<li>Return anytime with <code>agent-kit setup</code></li>" +
+      "</ol>" +
+      (climb ? '<h3>Next climb steps</h3><ol class="next-steps">' + climb + "</ol>" : "")
     );
   }
 
@@ -619,11 +688,13 @@
       await patchState({ currentSection: step.section, currentStep: state.stepIndex });
     }
     if (step?.section === "ide" && fieldValue("ideSurface")) {
-      await api("/api/checklist/ide", {
+      const ideResult = await api("/api/checklist/ide", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ideSurface: fieldValue("ideSurface") })
       });
+      state.lastAdapterValidation = ideResult.adapterValidation || null;
+      state.agenticLevel = ideResult.agenticLevel || state.agenticLevel;
     }
     if (step?.section === "visualQa" && fieldValue("visualQaTier")) {
       await api("/api/checklist/visual-qa", {

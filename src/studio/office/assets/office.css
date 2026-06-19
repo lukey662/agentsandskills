@@ -79,11 +79,89 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
+.level-pill {
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(15, 118, 110, 0.35);
+  border: 1px solid rgba(153, 246, 228, 0.35);
+  font-variant-numeric: tabular-nums;
+}
+
+.iceberg-strip {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 4px;
+  padding: 8px 20px 10px;
+  background: #0a1620;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.iceberg-seg {
+  text-align: center;
+  font-size: 10px;
+  padding: 6px 4px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #94a3b8;
+  opacity: 0.55;
+}
+
+.iceberg-seg.current {
+  opacity: 1;
+  color: #ecfdf5;
+  border-color: rgba(153, 246, 228, 0.55);
+  background: rgba(15, 118, 110, 0.35);
+}
+
+.iceberg-seg.target {
+  opacity: 0.85;
+  border-style: dashed;
+}
+
+.iceberg-seg.deferred {
+  opacity: 0.35;
+  border-style: dotted;
+}
+
+.climb-panel {
+  margin: 0 0 12px;
+  padding: 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--line);
+}
+
+.climb-panel h3 {
+  margin: 0 0 8px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.climb-panel ol {
+  margin: 0 0 10px;
+  padding-left: 18px;
+  font-size: 12px;
+  color: var(--ink);
+}
+
+.climb-panel li {
+  margin-bottom: 6px;
+}
+
+.climb-refresh {
+  width: 100%;
+  font-size: 12px;
+  padding: 6px 8px;
+}
+
 .office-main {
   display: grid;
   grid-template-columns: 220px minmax(0, 1fr);
   gap: 0;
-  min-height: calc(100vh - 64px);
+  min-height: calc(100vh - 96px);
 }
 
 @media (max-width: 900px) {

@@ -28,6 +28,9 @@
     "wizardVersion": { "type": "string" },
     "ideSurface": { "type": "string", "enum": ["cursor", "copilot", "claude", "codex", "other"] },
     "ideVerifiedAt": { "type": "string", "format": "date-time" },
-    "visualQaTier": { "type": "string", "enum": ["baseline", "strong", "mature"] }
+    "visualQaTier": { "type": "string", "enum": ["baseline", "strong", "mature"] },
+    "targetAgenticLevel": { "type": "integer", "enum": [3, 4, 5, 6, 7, 8] },
+    "lastAgenticLevel": { "type": "integer", "enum": [3, 4, 5, 6] },
+    "lastAgenticComputedAt": { "type": "string", "format": "date-time" }
   }
 }

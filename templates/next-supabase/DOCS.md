@@ -11,6 +11,8 @@ npm run dev
 
 Add required environment variables in `.env.example`. Never place real secrets in docs.
 
+Run `agent-kit setup` to open Agent Office. The office and wizard show **Agentic Engineering Level** (L3–L6 computed from audit/adapter/context signals). See `LOOP_CODING.md` and kit `DOCS.md` for climb patterns. Do not confuse Agentic L5/L6 with audit readiness or visual QA tiers.
+
 ## Architecture Overview
 
 Document:

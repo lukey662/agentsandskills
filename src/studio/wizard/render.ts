@@ -101,6 +101,7 @@ export function renderSetupWizardHtml(boot?: WizardBootConfig): string {
         <div>
           <div style="font-weight:600;color:#f8fafc">Setup progress</div>
           <div style="font-size:13px;color:#94a3b8">Save anytime — resume with agent-kit setup</div>
+          <div class="wizard-level-pill" id="wizard-level-pill" hidden aria-live="polite">L3 → L5</div>
         </div>
       </div>
       <ul class="section-nav" id="section-nav"></ul>

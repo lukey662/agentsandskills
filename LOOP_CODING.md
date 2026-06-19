@@ -102,5 +102,6 @@ Record active MCP surfaces in `ASSISTANT_ADAPTERS.md` when they affect council b
 - `QUALITY_GATES.md` — Baseline / Strong / Mature evidence tiers
 - `COUNCIL.md` — session evidence template
 - `MAINTAINER_RELEASE.md` — kit maintainer release session checklist
+- `research/summaries/agentic-engineering-maturity-levels.md` — L3–L8 ladder and office integration
 - `TESTING.md` — project test and CI gate expectations
 - `PUBLISH.md` — npm publish runbook

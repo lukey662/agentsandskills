@@ -99,7 +99,8 @@ const REQUIRED_SCHEMA_FILES = [
   "correction-rules.schema.json",
   "session-event.schema.json",
   "studio-session.schema.json",
-  "onboarding-state.schema.json"
+  "onboarding-state.schema.json",
+  "agentic-level.schema.json"
 ] as const;
 const COUNCIL_SESSION_DIR = ".agent-kit/council-sessions";
 

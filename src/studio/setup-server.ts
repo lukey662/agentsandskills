@@ -38,6 +38,11 @@ import { allAgentBriefsComplete, wizardSectionForStation } from "./office/sectio
 import type { OfficeStation } from "./office/types.js";
 import { renderSetupWizardHtmlWithContext } from "./wizard/render.js";
 import type { WizardDepth, WizardSectionId } from "./wizard/steps.js";
+import {
+  computeAgenticLevel,
+  invalidateAgenticLevelCache,
+  summarizeAdapterValidation
+} from "./agentic-level.js";
 
 export interface SetupServerOptions {
   cwd: string;
@@ -101,7 +106,7 @@ function sendHtml(response: ServerResponse, html: string): void {
   response.end(html);
 }
 
-function buildStatePayload(cwd: string): Record<string, unknown> {
+function buildStatePayload(cwd: string, options: { forceAgenticRefresh?: boolean } = {}): Record<string, unknown> {
   ensureProjectContextForSetup(cwd);
   const viewModel = getSetupFormViewModel(cwd);
   const onboarding = loadOnboardingState(cwd);
@@ -109,6 +114,10 @@ function buildStatePayload(cwd: string): Record<string, unknown> {
   const designDraft = loadDesignDraft(cwd);
   const messagingDraft = loadMessagingDraft(cwd);
   const draft = loadWizardDraft(cwd);
+  const agenticLevel = computeAgenticLevel(
+    cwd,
+    options.forceAgenticRefresh ? { forceRefresh: true } : {}
+  );
   return {
     projectName: viewModel.projectName,
     form: buildWizardFormState(cwd),
@@ -121,6 +130,7 @@ function buildStatePayload(cwd: string): Record<string, unknown> {
     hasSupabase: viewModel.hasSupabase,
     onboarding,
     progress,
+    agenticLevel,
     designDraft,
     messagingDraft,
     draftUpdatedAt: draft.updatedAt,
@@ -192,8 +202,10 @@ async function handleRequest(cwd: string, request: IncomingMessage, response: Se
       if (body.currentSection) patch.currentSection = String(body.currentSection);
       if (typeof body.currentStep === "number") patch.currentStep = body.currentStep;
       if (Array.isArray(body.completedSections)) patch.completedSections = body.completedSections;
+      if (typeof body.targetAgenticLevel === "number") patch.targetAgenticLevel = body.targetAgenticLevel;
       if (Object.keys(patch).length > 0) saveOnboardingState(cwd, patch);
-      sendJson(response, 200, buildStatePayload(cwd));
+      invalidateAgenticLevelCache(cwd);
+      sendJson(response, 200, buildStatePayload(cwd, { forceAgenticRefresh: true }));
     } catch (error) {
       sendJson(response, 400, { error: error instanceof Error ? error.message : String(error) });
     }
@@ -207,8 +219,9 @@ async function handleRequest(cwd: string, request: IncomingMessage, response: Se
       const result = applySetupFormAnswers(cwd, payload);
       saveAgentBriefs(cwd, extractAgentBriefsFromForm(raw as Record<string, string>));
       markQuickPathComplete(cwd);
+      invalidateAgenticLevelCache(cwd);
       sendJson(response, 200, {
-        ...buildStatePayload(cwd),
+        ...buildStatePayload(cwd, { forceAgenticRefresh: true }),
         saved: true,
         contextPath: result.contextPath,
         markdownPath: result.markdownPath,
@@ -269,7 +282,14 @@ async function handleRequest(cwd: string, request: IncomingMessage, response: Se
       }
       const result = saveIdeChecklist(cwd, body.ideSurface);
       markSectionComplete(cwd, "ide");
-      sendJson(response, 200, { ...result, activation, ...buildStatePayload(cwd) });
+      invalidateAgenticLevelCache(cwd);
+      const adapterValidation = summarizeAdapterValidation(cwd, body.ideSurface);
+      sendJson(response, 200, {
+        ...result,
+        activation,
+        adapterValidation,
+        ...buildStatePayload(cwd, { forceAgenticRefresh: true })
+      });
     } catch (error) {
       sendJson(response, 400, { error: error instanceof Error ? error.message : String(error) });
     }
@@ -333,6 +353,12 @@ async function handleRequest(cwd: string, request: IncomingMessage, response: Se
     } catch (error) {
       sendJson(response, 400, { error: error instanceof Error ? error.message : String(error) });
     }
+    return;
+  }
+
+  if (request.method === "POST" && url.pathname === "/api/agentic-level/refresh") {
+    invalidateAgenticLevelCache(cwd);
+    sendJson(response, 200, buildStatePayload(cwd, { forceAgenticRefresh: true }));
     return;
   }
 

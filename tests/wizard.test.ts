@@ -58,6 +58,7 @@ describe("Startup setup wizard", () => {
     const html = renderSetupWizardHtml();
     expect(html).toContain("Agent Kit");
     expect(html).toContain("section-nav");
+    expect(html).toContain("wizard-level-pill");
     expect(html).toContain("aria-live");
     expect(html).toContain("Open Agent Office");
     expect(html).not.toContain("ADMIN_EMAILS");
@@ -126,6 +127,27 @@ describe("Startup setup wizard", () => {
       const saved = (await saveRes.json()) as { openQuestions: string[]; progress: { quickComplete: boolean } };
       expect(saved.openQuestions).toHaveLength(0);
       expect(saved.progress.quickComplete).toBe(true);
+    } finally {
+      await server.close();
+    }
+  });
+
+  it("returns adapter validation from IDE checklist API", async () => {
+    const root = tempProject();
+    const server = await startSetupServer({ cwd: root, port: 0 });
+    try {
+      const res = await fetch(`${server.url}/api/checklist/ide`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ideSurface: "cursor" })
+      });
+      expect(res.ok).toBe(true);
+      const data = (await res.json()) as {
+        adapterValidation?: { target: string | null; fail: number };
+        agenticLevel?: { currentLevel: number };
+      };
+      expect(data.adapterValidation?.target).toBe("cursor");
+      expect(data.agenticLevel?.currentLevel).toBeGreaterThanOrEqual(3);
     } finally {
       await server.close();
     }

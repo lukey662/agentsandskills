@@ -350,6 +350,16 @@ export type CorrectionRulesContractValue = z.infer<typeof CorrectionRulesContrac
 export type StudioSessionContractValue = z.infer<typeof StudioSessionContract>;
 export type SessionEventContractValue = z.infer<typeof SessionEventContract>;
 
+const AgenticLevelCore = z.union([z.literal(3), z.literal(4), z.literal(5), z.literal(6)]);
+const AgenticLevelTarget = z.union([
+  z.literal(3),
+  z.literal(4),
+  z.literal(5),
+  z.literal(6),
+  z.literal(7),
+  z.literal(8)
+]);
+
 export const OnboardingStateContract = z
   .object({
     schemaVersion: z.literal(1),
@@ -364,11 +374,39 @@ export const OnboardingStateContract = z
     wizardVersion: z.string(),
     ideSurface: z.enum(["cursor", "copilot", "claude", "codex", "other"]).optional(),
     ideVerifiedAt: z.string().datetime().optional(),
-    visualQaTier: z.enum(["baseline", "strong", "mature"]).optional()
+    visualQaTier: z.enum(["baseline", "strong", "mature"]).optional(),
+    targetAgenticLevel: AgenticLevelTarget.optional(),
+    lastAgenticLevel: AgenticLevelCore.optional(),
+    lastAgenticComputedAt: z.string().datetime().optional()
   })
   .strict();
 
 export type OnboardingStateContractValue = z.infer<typeof OnboardingStateContract>;
+
+export const AgenticLevelSignalContract = z
+  .object({
+    id: z.string().min(1),
+    level: AgenticLevelCore,
+    label: z.string().min(1),
+    pass: z.boolean(),
+    evidence: z.string().min(1),
+    remediation: z.string().min(1)
+  })
+  .strict();
+
+export const AgenticLevelContract = z
+  .object({
+    currentLevel: AgenticLevelCore,
+    targetLevel: AgenticLevelTarget,
+    maintainerProfile: z.boolean(),
+    computedAt: z.string().datetime(),
+    maintainerNote: z.string().optional(),
+    signals: z.array(AgenticLevelSignalContract),
+    climbSteps: z.array(AgenticLevelSignalContract)
+  })
+  .strict();
+
+export type AgenticLevelContractValue = z.infer<typeof AgenticLevelContract>;
 
 export function formatContractIssues(error: z.ZodError): string[] {
   return error.issues.map((issue) => {

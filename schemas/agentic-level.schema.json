@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-skills.dev/schemas/agentic-level.schema.json",
+  "title": "Agent Kit Agentic Level Report",
+  "type": "object",
+  "required": ["currentLevel", "targetLevel", "maintainerProfile", "computedAt", "signals"],
+  "additionalProperties": false,
+  "properties": {
+    "currentLevel": { "type": "integer", "enum": [3, 4, 5, 6] },
+    "targetLevel": { "type": "integer", "enum": [3, 4, 5, 6, 7, 8] },
+    "maintainerProfile": { "type": "boolean" },
+    "computedAt": { "type": "string", "format": "date-time" },
+    "maintainerNote": { "type": "string" },
+    "signals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "level", "label", "pass", "evidence", "remediation"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "level": { "type": "integer", "enum": [3, 4, 5, 6] },
+          "label": { "type": "string" },
+          "pass": { "type": "boolean" },
+          "evidence": { "type": "string" },
+          "remediation": { "type": "string" }
+        }
+      }
+    },
+    "climbSteps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "level", "label", "pass", "evidence", "remediation"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "level": { "type": "integer", "enum": [3, 4, 5, 6] },
+          "label": { "type": "string" },
+          "pass": { "type": "boolean" },
+          "evidence": { "type": "string" },
+          "remediation": { "type": "string" }
+        }
+      }
+    }
+  }
+}

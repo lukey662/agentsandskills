@@ -63,6 +63,7 @@ If you still see the form at `/`, an **old setup server** is probably bound to t
 - Office: `src/studio/office/` (`render.ts`, `map.ts`, `assets/office.js`, `office.css`)
 - Form wizard: `src/studio/wizard/`
 - APIs unchanged: `/api/state`, `/api/draft`, `/api/context`, checklist endpoints
+- Agentic level: `/api/agentic-level/refresh` (POST), `agenticLevel` on `/api/state` — see `src/studio/agentic-level.ts`
 - Writes: `.agent-kit/project-context.json`, `project-context.md`, `agent-briefs.md`, `onboarding/state.json`, `wizard-draft.json`
 
 ## Downstream example: AI news

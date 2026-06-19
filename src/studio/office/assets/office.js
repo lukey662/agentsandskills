@@ -35,7 +35,8 @@
     handoffPulse: null,
     studioSessionId: boot.activeSessionId || "",
     studioEvents: [],
-    speechBubbles: []
+    speechBubbles: [],
+    agenticLevel: null
   };
 
   const agentRuntime = {};
@@ -44,6 +45,11 @@
     canvas: document.getElementById("office-floor"),
     projectName: document.getElementById("project-name"),
     progressPill: document.getElementById("progress-pill"),
+    levelPill: document.getElementById("level-pill"),
+    icebergStrip: document.getElementById("iceberg-strip"),
+    climbPanel: document.getElementById("climb-panel"),
+    climbList: document.getElementById("climb-list"),
+    climbRefresh: document.getElementById("climb-refresh"),
     sessionPill: document.getElementById("session-pill"),
     stationList: document.getElementById("station-list"),
     status: document.getElementById("status"),
@@ -188,9 +194,11 @@
     state.progress = data.progress || {};
     state.onboarding = data.onboarding || {};
     state.depth = data.onboarding?.depth || "undecided";
+    state.agenticLevel = data.agenticLevel || null;
     if (Array.isArray(data.agents) && data.agents.length) state.agents = data.agents;
     els.projectName.textContent = data.projectName || "your project";
     updateProgressUi();
+    updateAgenticLevelUi();
     renderStationList();
     if (state.depth === "undecided") showDepthModal();
     else {
@@ -332,6 +340,69 @@
   function updateProgressUi() {
     const pct = state.progress?.percent ?? 0;
     if (els.progressPill) els.progressPill.textContent = pct + "% ready";
+  }
+
+  function updateAgenticLevelUi() {
+    const level = state.agenticLevel;
+    if (!level || isStudio) return;
+    const current = level.currentLevel ?? 3;
+    const target = level.targetLevel ?? 5;
+    if (els.levelPill) {
+      els.levelPill.textContent = "L" + current + " → L" + target;
+      els.levelPill.setAttribute(
+        "aria-label",
+        "Agentic engineering level " + current + ", target level " + target
+      );
+    }
+    if (els.icebergStrip) {
+      els.icebergStrip.innerHTML = [3, 4, 5, 6, 7, 8]
+        .map((n) => {
+          let cls = "iceberg-seg";
+          if (n === current) cls += " current";
+          if (n === target && n !== current) cls += " target";
+          if (n >= 7) cls += " deferred";
+          return '<span class="' + cls + '">L' + n + "</span>";
+        })
+        .join("");
+    }
+    const steps = level.climbSteps || [];
+    if (els.climbPanel && els.climbList) {
+      if (current >= target || steps.length === 0) {
+        els.climbPanel.hidden = true;
+      } else {
+        els.climbPanel.hidden = false;
+        els.climbList.innerHTML = steps
+          .slice(0, 3)
+          .map(
+            (step) =>
+              "<li><strong>L" +
+              step.level +
+              "</strong> " +
+              escapeHtml(step.label) +
+              " — " +
+              escapeHtml(step.remediation) +
+              "</li>"
+          )
+          .join("");
+      }
+    }
+    if (level.maintainerNote && els.status && !els.status.textContent) {
+      setStatus("ok", level.maintainerNote);
+    }
+  }
+
+  if (els.climbRefresh) {
+    els.climbRefresh.addEventListener("click", async () => {
+      try {
+        const data = await api("/api/agentic-level/refresh", { method: "POST" });
+        state.agenticLevel = data.agenticLevel;
+        state.progress = data.progress;
+        updateAgenticLevelUi();
+        setStatus("ok", "Agentic level refreshed.");
+      } catch (error) {
+        setStatus("error", error.message);
+      }
+    });
   }
 
   function spawnConfetti(x, y) {

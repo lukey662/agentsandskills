@@ -1,6 +1,6 @@
 {
   "summary": {
-    "pass": 64,
+    "pass": 65,
     "warn": 5,
     "fail": 0
   },
@@ -19,7 +19,7 @@
     {
       "level": "pass",
       "area": "install",
-      "message": "Agent kit installed at version 0.1.4."
+      "message": "Agent kit installed at version 0.1.5."
     },
     {
       "level": "pass",
@@ -190,6 +190,11 @@
       "level": "pass",
       "area": "agents",
       "message": ".agent-kit/schemas/onboarding-state.schema.json is present and parseable."
+    },
+    {
+      "level": "pass",
+      "area": "agents",
+      "message": ".agent-kit/schemas/agentic-level.schema.json is present and parseable."
     },
     {
       "level": "warn",

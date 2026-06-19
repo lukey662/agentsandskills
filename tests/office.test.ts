@@ -42,6 +42,9 @@ describe("Agent Office setup view", () => {
     expect(html).toContain("Agent Office");
     expect(html).toContain("office-floor");
     expect(html).toContain("station-list");
+    expect(html).toContain("level-pill");
+    expect(html).toContain("iceberg-strip");
+    expect(html).toContain("climb-panel");
     expect(html).toContain("Form view");
     expect(html).toContain("aria-live");
   });
@@ -78,6 +81,23 @@ describe("Agent Office setup view", () => {
       expect(wizardHtml).toContain("Setup Wizard");
       expect(wizardHtml).toContain("Open Agent Office");
       expect(wizardHtml).toContain('data-view="wizard-v1"');
+    } finally {
+      await server.close();
+    }
+  });
+
+  it("includes agentic level in setup state payload", async () => {
+    const root = tempProject();
+    const server = await startSetupServer({ cwd: root, port: 0 });
+    try {
+      const res = await fetch(`${server.url}/api/state`);
+      expect(res.ok).toBe(true);
+      const data = (await res.json()) as {
+        agenticLevel?: { currentLevel: number; targetLevel: number; signals: unknown[] };
+      };
+      expect(data.agenticLevel?.currentLevel).toBeGreaterThanOrEqual(3);
+      expect(data.agenticLevel?.targetLevel).toBe(5);
+      expect(Array.isArray(data.agenticLevel?.signals)).toBe(true);
     } finally {
       await server.close();
     }

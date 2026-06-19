@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.5
+
+- Added computed **Agentic Engineering Level** (L3–L6) in Agent Office and setup wizard: iceberg strip, climb checklist, `/api/state` payload, and `POST /api/agentic-level/refresh`.
+- Added [`src/studio/agentic-level.ts`](src/studio/agentic-level.ts), [`schemas/agentic-level.schema.json`](schemas/agentic-level.schema.json), and maintainer-profile L6 signals for kit source repos.
+- Extended setup wizard with adapter validate chip on IDE activation, audit-readiness vs Agentic level copy, and `LOOP_CODING.md` eval-loop next steps on complete.
+- Added [`research/summaries/agentic-engineering-maturity-levels.md`](research/summaries/agentic-engineering-maturity-levels.md) and cross-links from `DOCS.md`, `HANDOVER.md`, and `LOOP_CODING.md`.
+
 ## 0.1.4
 
 - Added true multi-agent IDE activation for **Cursor** (`.cursor/agents/*.md`, `.cursor/skills/*/SKILL.md`, scoped rules) and **Codex** (`.codex/agents/*.toml` with model routing effort) via `agent-kit init --activate cursor|codex`.

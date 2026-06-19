@@ -1,6 +1,6 @@
 {
   "packageName": "@appsforgood/next-supabase-kit",
-  "packageVersion": "0.1.4",
+  "packageVersion": "0.1.5",
   "stack": "next-supabase",
   "installedAt": "2026-06-17T11:49:38.732Z",
   "docs": [
@@ -46,7 +46,7 @@
     "SKILLS.md": "3c3c2eb40438a42026479dccac7bbf084ba22e2d758c425dff59385d05eae3bd",
     "SPEC.md": "bb0406a141338b630a82026e4a2bb37f38448b3641d3b3ada62d146711a4fbfe",
     "DECISIONS.md": "0c08d1106a40f829b197d552d0397c9bcd9af7e168a55c47ff5be033c6035ec6",
-    "DOCS.md": "4a2940e8d2526d4ad8f481c82451dd65d62f0420638795580a5f04dacec237de",
+    "DOCS.md": "da6a9006daf78bf410051153fe2838417b7f46459904582c2259ec1dba4bd29f",
     "DESIGN.md": "70f52e539073e7c4c1d37e63c9a21672a3221d2931d3ff284058dabf60243530",
     "MESSAGING.md": "f1f7c0f11796820b60bb44e42a65749763f7167944ba6acf092a1cf7b59e50de",
     "MODEL_ROUTING.md": "f0ca3bd12872cd5f61ff4c6bef670249c0a0188f20c049cb0d09d84219b1839c",

@@ -101,14 +101,21 @@ function renderOfficeHtml(boot: OfficeBootConfig | undefined, mode: "setup" | "s
     </div>
     <div class="header-actions">
       <span class="progress-pill" id="progress-pill">${isStudio ? "Live" : "0% ready"}</span>
+      ${isStudio ? "" : '<span class="level-pill" id="level-pill" aria-live="polite">L3 → L5</span>'}
       ${isStudio ? '<span class="session-pill" id="session-pill">No session</span>' : '<a class="btn secondary" href="/wizard">Form view</a>'}
       ${isStudio ? "" : '<button type="button" class="btn primary" id="review-btn">Review &amp; save</button>'}
     </div>
   </header>
+  ${isStudio ? "" : '<div class="iceberg-strip" id="iceberg-strip" aria-label="Agentic engineering levels L3 through L8"></div>'}
   <main class="office-main${isStudio ? " studio-layout" : ""}">
     <aside class="station-list${isStudio ? " hidden" : ""}" aria-label="Setup stations">
       <h2>Stations</h2>
       <p class="hint">Keyboard-friendly list — same actions as the office floor.</p>
+      <div class="climb-panel" id="climb-panel" hidden>
+        <h3>Climb checklist</h3>
+        <ol id="climb-list"></ol>
+        <button type="button" class="btn secondary climb-refresh" id="climb-refresh">Refresh level</button>
+      </div>
       <ul id="station-list"></ul>
     </aside>
     <div class="canvas-wrap">

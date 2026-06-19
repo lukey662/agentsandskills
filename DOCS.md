@@ -271,6 +271,16 @@ Policy:
 
 Do not commit the maintainer overlay unless the project explicitly changes policy in `DECISIONS.md`.
 
+### Agentic levels in Agent Office
+
+`agent-kit setup` computes an **Agentic Engineering Level** (L3–L6 from signals; L7–L8 shown as deferred). The setup office and wizard display **current → target** level, an iceberg strip, and climb checklist steps derived from audit, adapter validation, and project context completeness.
+
+- Scoring: [`src/studio/agentic-level.ts`](src/studio/agentic-level.ts)
+- Report schema: [`schemas/agentic-level.schema.json`](schemas/agentic-level.schema.json)
+- Research summary: [`research/summaries/agentic-engineering-maturity-levels.md`](research/summaries/agentic-engineering-maturity-levels.md)
+
+Refresh after local audit or activation: `POST /api/agentic-level/refresh` while the setup server is running, or re-open `agent-kit setup`.
+
 ## CI
 
 GitHub Actions runs on pushes and pull requests to `main`.
