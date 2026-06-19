@@ -47,4 +47,10 @@ describe("adapter validation", () => {
     ).toBe(true);
     expect(report.findings.some((finding) => finding.message.includes("Cursor is marked Active but"))).toBe(false);
   });
+
+  it("validates all shipped IDE adapter templates from source", () => {
+    const report = validateAdapter(process.cwd(), "all");
+    expect(report.summary.fail).toBe(0);
+    expect(report.findings.some((finding) => finding.level === "pass")).toBe(true);
+  });
 });

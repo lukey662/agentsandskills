@@ -57,6 +57,8 @@
     "SUPPLY_CHAIN.md",
     "BEST_PRACTICE_EVIDENCE.md",
     "DOGFOOD.md",
+    "LOOP_CODING.md",
+    "MAINTAINER_RELEASE.md",
     "RESEARCH_CITATION_POLICY.md",
     "UPGRADE.md",
     "SECURITY.md",
@@ -85,7 +87,9 @@
     "sbom:generate": "node scripts/sbom-check.mjs --output sbom.cdx.json",
     "publish:verify": "node scripts/post-publish-verify.mjs",
     "release:check": "node scripts/release-check.mjs",
-    "pack:check": "npm pack --dry-run"
+    "pack:check": "npm pack --dry-run",
+    "dogfood:init": "node scripts/dogfood-init.mjs",
+    "adapter:validate": "node dist/index.js adapter validate all"
   },
   "dependencies": {
     "@octokit/rest": "^21.1.1",

@@ -4,7 +4,7 @@ Use this runbook to publish `@appsforgood/next-supabase-kit` and run post-publis
 
 ## Preconditions
 
-1. `npm run release:check` passes locally and in CI.
+1. `npm run release:check` passes locally and in CI (includes `npm run adapter:validate` for all IDE adapter templates).
 2. `@appsforgood` npm org access and Trusted Publishing are configured for `lukey662/agentsandskills`.
 3. GitHub environment `npm-publish` exists with OIDC trusted publishing to npm.
 4. `CHANGELOG.md` contains a release section aligned with `package.json`.
@@ -53,3 +53,4 @@ Requires npm login with publish rights to `@appsforgood/next-supabase-kit`.
 1. Mark `[x] Publish public v0.1 package` in [ROADMAP.md](ROADMAP.md).
 2. Update [DOGFOOD.md](DOGFOOD.md) with publish verification evidence.
 3. Verify Quick Start in [README.md](README.md) works with public `npx`.
+4. Record release session evidence per [MAINTAINER_RELEASE.md](MAINTAINER_RELEASE.md).

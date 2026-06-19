@@ -257,6 +257,20 @@ npm test
 npm run build
 ```
 
+### Maintainer dogfood
+
+BaseRepo is the Agent Kit **source repository**, not a downstream install. Maintainers still dogfood the same CLI consumers use, but the overlay stays **local and gitignored** so kit source (`templates/`, `assistant-adapters/`, tracked docs like `DOCS.md` and `SPEC.md`) remains the commit surface.
+
+Policy:
+
+- Run `npm run dogfood:init` to execute `agent-kit init --stack next-supabase --activate cursor --activate codex` against the repo root.
+- Generated `.agent-kit/`, `.codex/`, council docs from init (`AGENTS.md`, `COUNCIL.md`, etc.), and npm pack tarballs at repo root are listed in `.gitignore`.
+- `.cursor/` was already gitignored; Cursor activation from dogfood init writes there locally.
+- Validate locally with `node dist/index.js adapter validate cursor|codex` after activation.
+- Record release evidence with [MAINTAINER_RELEASE.md](MAINTAINER_RELEASE.md) and loop patterns in [LOOP_CODING.md](LOOP_CODING.md).
+
+Do not commit the maintainer overlay unless the project explicitly changes policy in `DECISIONS.md`.
+
 ## CI
 
 GitHub Actions runs on pushes and pull requests to `main`.
@@ -265,7 +279,8 @@ Required gates:
 
 - `npm install --global npm@11.6.2`
 - `npm ci`
-- `npm run release:check`
+- `npm run release:check` (includes `npm run adapter:validate` for all shipped IDE adapter templates)
+- `npm run smoke:audit-gate`
 
 `npm run release:check` validates JSON assets, checks package version consistency, typechecks, runs tests, builds, checks committed example output against the current CLI, install-smokes the packed package, runs dependency audit, validates CycloneDX SBOM generation, and performs package dry run. CI and release workflows both use this command so local and remote gates stay aligned.
 

@@ -1,6 +1,6 @@
 {
   "summary": {
-    "pass": 62,
+    "pass": 64,
     "warn": 5,
     "fail": 0
   },
@@ -95,6 +95,11 @@
       "level": "pass",
       "area": "templates",
       "message": "TESTING.md matches the current bundled template."
+    },
+    {
+      "level": "pass",
+      "area": "templates",
+      "message": "LOOP_CODING.md matches the current bundled template."
     },
     {
       "level": "pass",
@@ -266,6 +271,11 @@
       "level": "pass",
       "area": "docs",
       "message": "TESTING.md exists."
+    },
+    {
+      "level": "pass",
+      "area": "docs",
+      "message": "LOOP_CODING.md exists."
     },
     {
       "level": "pass",

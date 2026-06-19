@@ -55,6 +55,16 @@ Recommended baseline:
 - Visual QA evidence for high-risk UI changes
 - `agent-kit adapter validate antigravity` and `agent-kit package validate` when adapter/package assets change
 
+### Eval-driven PR loop
+
+Repeat **implement → check → fix** until tests and audit pass. See the kit's [LOOP_CODING.md](LOOP_CODING.md) for loop types, council handoffs, and safe automation limits. Minimum check commands:
+
+```bash
+npm test
+agent-kit audit --min-readiness baseline-setup
+agent-kit adapter validate all   # when IDE or adapter assets change
+```
+
 ## Security-Focused Tests
 
 Prioritize:

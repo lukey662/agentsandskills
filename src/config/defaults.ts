@@ -42,6 +42,7 @@ export const ROOT_DOCS = [
   "STYLE_GUIDE.md",
   "SECURITY.md",
   "TESTING.md",
+  "LOOP_CODING.md",
   "DEPLOYMENT.md",
   "UPGRADE.md"
 ] as const;

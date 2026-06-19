@@ -119,3 +119,18 @@ Covered by `tests/update.test.ts`.
 - Activate at least one assistant adapter in a real project and record whether the chosen tool loads the canonical council instructions.
 - Apply the reference-led design critique gate to one real frontend change with desktop/mobile screenshot evidence.
 - After public publish, run `npm run publish:verify` to verify registry visibility, public `npx doctor`, clean temp `init`, and `audit --json` with zero failures.
+
+## BaseRepo Maintainer Dogfood Policy
+
+Date: 2026-06-17
+Policy: **gitignored local overlay + bootstrap script** (not committed to kit source)
+
+| Item | Detail |
+| --- | --- |
+| Bootstrap | `npm run dogfood:init` runs `agent-kit init --stack next-supabase --activate cursor --activate codex` against the repo root |
+| Gitignore | `.agent-kit/`, `.codex/`, init-generated council docs at repo root, and local pack tarballs — see `.gitignore` and [DOCS.md](DOCS.md#maintainer-dogfood) |
+| Validation | `node dist/index.js adapter validate cursor\|codex` after bootstrap |
+| Release evidence | [MAINTAINER_RELEASE.md](MAINTAINER_RELEASE.md) session checklist; loop patterns in [LOOP_CODING.md](LOOP_CODING.md) |
+| Rationale | Kit source stays in `templates/` and tracked maintainer docs; overlay proves Tier B activation without polluting commit history |
+
+This policy closes the gap where the kit shipped Level 5 IDE surfaces but BaseRepo maintainers operated at Level 4 day-to-day.

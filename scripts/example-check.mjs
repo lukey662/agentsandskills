@@ -55,6 +55,7 @@ function assertTreeSummary() {
     "STYLE_GUIDE.md",
     "SECURITY.md",
     "TESTING.md",
+    "LOOP_CODING.md",
     "DEPLOYMENT.md",
     "UPGRADE.md",
     ".agent-kit",

@@ -57,6 +57,7 @@ run("Typecheck", ["run", "typecheck"]);
 run("Test", ["test"]);
 run("Build", ["run", "build"]);
 run("Package asset validation", ["run", "package:validate"]);
+run("IDE adapter template validation", ["run", "adapter:validate"]);
 run("Example consistency check", ["run", "examples:check"]);
 run("Install smoke", ["run", "smoke:install"]);
 run("Agent Studio smoke", ["run", "smoke:studio"]);

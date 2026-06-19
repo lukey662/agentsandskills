@@ -2,6 +2,25 @@ node_modules/
 dist/
 coverage/
 .cursor/
+
+# Maintainer-local dogfood overlay (npm run dogfood:init — see DOCS.md#maintainer-dogfood)
+/.agent-kit/
+/.codex/
+/.claude/
+/.antigravity/
+/AGENTS.md
+/AGENT_ROSTER.md
+/ASSISTANT_ADAPTERS.md
+/COUNCIL.md
+/DEPLOYMENT.md
+/DESIGN.md
+/MESSAGING.md
+/MODEL_ROUTING.md
+/QUALITY_GATES.md
+/SKILLS.md
+/TESTING.md
+/CLAUDE.md
+/appsforgood-*.tgz
 release-artifacts/
 sbom.cdx.json
 .DS_Store
