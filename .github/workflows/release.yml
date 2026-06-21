@@ -27,6 +27,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment: npm-publish
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
 
     steps:
       - name: Checkout
@@ -95,10 +99,11 @@ jobs:
         run: |
           set -euo pipefail
           tarball="./${{ steps.pack.outputs.tarball }}"
-          publish_npmrc="$(mktemp)"
-          trap 'rm -f "${publish_npmrc}"' EXIT
-          printf '%s\n' 'registry=https://registry.npmjs.org/' > "${publish_npmrc}"
-          env -u NODE_AUTH_TOKEN NPM_CONFIG_USERCONFIG="${publish_npmrc}" npm publish "${tarball}" --access public
+          # setup-node may write an empty auth line when registry-url is set; scrub so npm uses OIDC only.
+          npm config delete //registry.npmjs.org/:_authToken --location=user 2>/dev/null || true
+          npm config delete //registry.npmjs.org/:_authToken --location=project 2>/dev/null || true
+          unset NODE_AUTH_TOKEN NPM_TOKEN NPM_CONFIG_USERCONFIG
+          npm publish "${tarball}" --access public
 
       - name: Verify published package install
         if: github.event_name == 'release' || github.event.inputs.dry_run == 'false'
