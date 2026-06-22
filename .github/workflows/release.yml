@@ -41,7 +41,6 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: "24"
-          registry-url: "https://registry.npmjs.org"
           package-manager-cache: false
 
       - name: Use declared npm version
@@ -98,10 +97,8 @@ jobs:
         run: |
           set -euo pipefail
           tarball="./${{ steps.pack.outputs.tarball }}"
-          # setup-node writes _authToken to the active npmrc (NPM_CONFIG_USERCONFIG); delete it so npm uses OIDC.
-          npm config delete //registry.npmjs.org/:_authToken
           unset NODE_AUTH_TOKEN NPM_TOKEN
-          npm publish "${tarball}" --access public
+          npm publish "${tarball}" --access public --registry=https://registry.npmjs.org
 
       - name: Verify published package install
         if: github.event_name == 'release' || github.event.inputs.dry_run == 'false'
