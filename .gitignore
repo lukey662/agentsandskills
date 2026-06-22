@@ -4,6 +4,7 @@ coverage/
 .cursor/
 
 # Maintainer-local dogfood overlay (npm run dogfood:init — see DOCS.md#maintainer-dogfood)
+/.github/workflows/agent-kit-audit.yml
 /.agent-kit/
 /.codex/
 /.claude/

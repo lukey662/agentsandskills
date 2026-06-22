@@ -461,7 +461,9 @@ describe("public package readiness", () => {
     expect(release).toContain("actions/attest-sbom");
     expect(release).toContain("sbom-path: release-artifacts/sbom.cdx.json");
     expect(release).toContain('registry-url: "https://registry.npmjs.org"');
-    expect(release).toContain("unset NODE_AUTH_TOKEN NPM_TOKEN NPM_CONFIG_USERCONFIG");
+    expect(release).toContain('npm config delete //registry.npmjs.org/:_authToken');
+    expect(release).toContain("unset NODE_AUTH_TOKEN NPM_TOKEN");
+    expect(release).not.toContain("unset NODE_AUTH_TOKEN NPM_TOKEN NPM_CONFIG_USERCONFIG");
     expect(release).toContain('npm publish "${tarball}" --access public');
     expect(release).toContain("node scripts/post-publish-verify.mjs");
     expect(ci).toContain("npm run release:check");

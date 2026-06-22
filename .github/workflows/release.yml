@@ -99,10 +99,9 @@ jobs:
         run: |
           set -euo pipefail
           tarball="./${{ steps.pack.outputs.tarball }}"
-          # setup-node may write an empty auth line when registry-url is set; scrub so npm uses OIDC only.
-          npm config delete //registry.npmjs.org/:_authToken --location=user 2>/dev/null || true
-          npm config delete //registry.npmjs.org/:_authToken --location=project 2>/dev/null || true
-          unset NODE_AUTH_TOKEN NPM_TOKEN NPM_CONFIG_USERCONFIG
+          # setup-node writes _authToken to the active npmrc (NPM_CONFIG_USERCONFIG); delete it so npm uses OIDC.
+          npm config delete //registry.npmjs.org/:_authToken
+          unset NODE_AUTH_TOKEN NPM_TOKEN
           npm publish "${tarball}" --access public
 
       - name: Verify published package install
