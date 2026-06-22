@@ -26,7 +26,6 @@ jobs:
     name: Publish package
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    environment: npm-publish
     permissions:
       contents: read
       id-token: write
