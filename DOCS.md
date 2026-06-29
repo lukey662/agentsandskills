@@ -188,6 +188,8 @@ agent-kit studio export
 agent-kit audit --json
 ```
 
+Correction scopes are limited to `session`, `project`, `agent`, and `upstream-proposal`. Invalid scopes fail before a durable correction file is selected, so bad CLI or adapter input cannot fall through to project-level rules.
+
 Every Agent Studio milestone must include automated tests with the feature. Current coverage includes unit tests, fixture-project tests, CLI smoke tests, example snapshot checks, regression tests for install/update/diff behavior, and security tests for required-output status validation, redaction, path traversal, malformed JSON/JSONL, static export secret safety, and secret-looking values. `npm run smoke:studio` is wired into `npm run release:check` so context/session/correction/export regressions fail before user testing.
 
 Direct AI orchestration can be added later as an opt-in mode, but baseline Agent Studio works through installed IDE agents and local file updates.
@@ -293,6 +295,8 @@ Required gates:
 - `npm run smoke:audit-gate`
 
 `npm run release:check` validates JSON assets, checks package version consistency, typechecks, runs tests, builds, checks committed example output against the current CLI, install-smokes the packed package, runs dependency audit, validates CycloneDX SBOM generation, and performs package dry run. CI and release workflows both use this command so local and remote gates stay aligned.
+
+Normal CI runs on Node 20 to prove the package's published `node >=20` engine contract. Production dependency updates must keep that contract unless a decision explicitly raises the engine requirement and updates release docs.
 
 ## Repository Health
 

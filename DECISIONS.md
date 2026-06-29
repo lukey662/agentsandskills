@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-06-29 - Preserve Node 20 During Production Dependency Updates
+
+### Context
+
+Dependabot proposed production dependency updates that included `commander@15`, which requires Node `>=22.12.0`. The package still advertises `node >=20`, and CI intentionally verifies that contract on Node 20. The same update also moved Zod to v4, which changed validation error wording and exposed a brittle test assertion.
+
+### Decision
+
+Keep the public runtime contract at `node >=20`. Accept compatible production updates for `@octokit/rest` and Zod, cap Commander on the latest Node-20-compatible major, and configure Dependabot to ignore Commander versions `>=15` until the project intentionally raises its engine requirement. Correction-scope validation now uses a stable project-owned error before selecting a durable correction file path.
+
+### Consequences
+
+CI continues to prove the advertised Node 20 support instead of only proving a newer GitHub Actions runtime. Invalid correction scopes fail with stable package behavior rather than third-party validation text, and dependency update noise for incompatible Commander majors is deferred until a deliberate Node engine change.
+
 ## 2026-06-14 - Scrub Ambient NPM Tokens During Trusted Publish
 
 ### Context

@@ -129,7 +129,7 @@ Generated Markdown files are the primary human interface. They must include Merm
 
 The static Studio export is an optional visual interface generated from the same local files. It must embed only redacted export-time JSON, render an SVG handoff graph, provide clickable transcript panels, avoid external assets, and require no server or database.
 
-Human corrections can be scoped to a session, the project, a specific agent, or an upstream proposal. Active project and agent corrections must be loaded by future IDE-agent work through installed assistant-adapter guidance.
+Human corrections can be scoped to a session, the project, a specific agent, or an upstream proposal. Active project and agent corrections must be loaded by future IDE-agent work through installed assistant-adapter guidance. Invalid correction scopes must be rejected with a stable package-owned error before selecting or writing any durable correction file.
 
 The package must not claim to expose private model reasoning. Agent Studio records visible work products, decisions, and evidence only.
 

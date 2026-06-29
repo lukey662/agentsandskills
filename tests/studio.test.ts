@@ -238,13 +238,17 @@ describe("Agent Studio local workflow", () => {
 
   it("rejects invalid correction scopes", () => {
     const root = tempProject();
+    const text = "Invalid scope should not be persisted.";
 
     expect(() =>
       addCorrection(root, {
         scope: "global" as Parameters<typeof addCorrection>[1]["scope"],
-        text: "Invalid scope should not be persisted."
+        text
       })
-    ).toThrow(/Invalid enum value|Expected/);
+    ).toThrow(/Invalid correction scope/);
+
+    const corrections = listCorrections(root);
+    expect(JSON.stringify(corrections)).not.toContain(text);
   });
 
   it("rejects path traversal when recording artifacts", () => {

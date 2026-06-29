@@ -25,6 +25,15 @@ export interface CorrectionListResult {
   upstream: CorrectionRuleContractValue[];
 }
 
+const VALID_CORRECTION_SCOPES = ["session", "project", "agent", "upstream-proposal"] as const;
+
+function parseCorrectionScope(scope: unknown): CorrectionRuleContractValue["scope"] {
+  if (typeof scope === "string" && (VALID_CORRECTION_SCOPES as readonly string[]).includes(scope)) {
+    return scope as CorrectionRuleContractValue["scope"];
+  }
+  throw new Error(`Invalid correction scope: expected one of ${VALID_CORRECTION_SCOPES.join(", ")}`);
+}
+
 function fileForScope(scope: CorrectionRuleContractValue["scope"]): string {
   if (scope === "agent") return AGENT_RULES_JSON;
   if (scope === "upstream-proposal") return UPSTREAM_PROPOSALS_JSON;
@@ -52,14 +61,15 @@ export function ensureCorrectionFiles(cwd: string): void {
 }
 
 export function addCorrection(cwd: string, options: AddCorrectionOptions): CorrectionRuleContractValue {
+  const scope = parseCorrectionScope(options.scope);
   ensureCorrectionFiles(cwd);
-  const targetPath = fileForScope(options.scope);
+  const targetPath = fileForScope(scope);
   const rules = readCorrectionRules(cwd, targetPath);
   const id = options.id ?? safeSlug(options.text).slice(0, 48);
   const rule: CorrectionRuleContractValue = {
     id,
-    scope: options.scope,
-    status: options.scope === "upstream-proposal" ? "proposed" : "active",
+    scope,
+    status: scope === "upstream-proposal" ? "proposed" : "active",
     text: redactSensitive(options.text),
     ...(options.agentId ? { agentId: options.agentId, appliesToAgents: [options.agentId] } : {}),
     ...(options.sourceSessionId ? { sourceSessionId: options.sourceSessionId } : {}),
