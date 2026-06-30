@@ -1,0 +1,16 @@
+name = "accessibility-pass"
+description = "Run a WCAG 2.1 AA-oriented UI pass for semantics, keyboard flow, focus, labels, contrast, and motion."
+
+prompt = """
+Run the accessibility pass workflow.
+
+Canonical sources: DESIGN.md, STYLE_GUIDE.md, TESTING.md, QUALITY_GATES.md, .agent-kit/agent-roster.json, .agent-kit/skills/ui-improvement-harness.md, .agent-kit/skills/accessibility-wcag.md, .agent-kit/checklists/ui-detectors.md, .agent-kit/checklists/ui-acceptance-rubric.md, and .agent-kit/prompts/ui-command-index.md.
+
+Workflow:
+1. Check semantics, headings, landmarks, forms, labels, tables, buttons, and ARIA use.
+2. Check keyboard navigation, visible focus, tab order, escape/close behavior, and skip path when applicable.
+3. Check contrast, reduced motion, error association, touch targets, and status announcements.
+4. Keep accessibility checks separate from visual-only approval.
+
+Required outputs: accessibility findings by severity, fixes made or proposed, skipped checks, test evidence, remaining risks.
+"""

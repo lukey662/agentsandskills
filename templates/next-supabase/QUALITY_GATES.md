@@ -56,7 +56,7 @@ Best-practice means evidence can survive handoff, release, and later audit.
 - Multi-agent work has local Agent Studio evidence: context loaded, corrections considered, decisions and handoffs recorded, required outputs tracked, artifacts linked, verification captured, and rendered Markdown current.
 - Supabase RLS policies are inventory-backed, least-privilege, and tested for cross-user or cross-tenant access.
 - Production readiness covers Next.js routing/rendering, caching, error boundaries, metadata, accessibility, performance, security headers, and Core Web Vitals evidence.
-- Frontend work starts from brand/content intake, reference-set review, anti-references, and creative-direction options, then proves first-screen proof, content fingerprint, asset provenance, product-quality scorecard, distinctiveness, desktop, mobile, key states, keyboard flow, and visual QA evidence.
+- Frontend work starts from brand/content intake, reference-set review, anti-references, and creative-direction options, then proves first-screen proof, content fingerprint, asset provenance, product-quality scorecard, distinctiveness, UI detector findings, desktop, mobile, key states, keyboard flow, and visual QA evidence.
 - Public-facing and conversion-facing copy starts from discovery questions, audience, pain, outcome, differentiator, proof, objections, voice/tone, and CTA hierarchy, with unsupported claims marked as assumptions.
 - Test evidence includes the smallest useful unit/regression checks plus critical-path smoke coverage.
 - Release evidence includes install or production smoke, migration order, dependency audit, package or deployment verification, logs, and rollback notes.
@@ -71,7 +71,7 @@ Best-practice means evidence can survive handoff, release, and later audit.
 | Planning or roadmap | Planner, Documentation Maintainer | Updated roadmap or checklist with owner, status, and acceptance evidence |
 | Core architecture | Planner, Lead Architect, QA, Docs | Affected-layer map, preserved contracts, tests, updated `SPEC.md` or `DECISIONS.md` |
 | Supabase/Auth/RLS | Lead Architect, Supabase/Postgres Engineer, Security Reviewer, QA | Migration notes, RLS inventory, negative authorization test, rollback risk |
-| Frontend/UI | Frontend Design Lead, QA, Docs | Brand/content intake, reference-set evidence, design critique verdict, distinctiveness benchmark, product-quality scorecard, creative direction, component states, accessibility, desktop/mobile visual QA |
+| Frontend/UI | Frontend Design Lead, QA, Docs | Brand/content intake, reference-set evidence, design critique verdict, distinctiveness benchmark, product-quality scorecard, creative direction, UI detector severity findings, component states, accessibility, desktop/mobile visual QA, authenticated screen evidence when applicable |
 | Marketing/copy | Marketing Copy Lead, Frontend Design Lead, QA, Docs | `MESSAGING.md`, audience and pain, value proposition, proof, objections, voice/tone, CTA hierarchy, risky-claim review |
 | Security-sensitive | Security Reviewer, Lead Architect, QA | OWASP review, boundary validation, dependency/secret review, regression or smoke evidence |
 | Release/package | Deployment/Observability Engineer, Security Reviewer, QA, Docs | Release gate output, dependency audit, install/deploy smoke, provenance or publish identity evidence |
@@ -83,6 +83,8 @@ Best-practice means evidence can survive handoff, release, and later audit.
 - A checklist item is not done until the evidence is linked or named.
 - A test is not evidence unless it covers the behavior, risk, or contract being claimed.
 - A screenshot is not visual QA unless it covers the important viewport, state, and content.
+- A UI detector pass is not complete until blockers, majors, minors, accepted exceptions, screenshots, viewport, auth state, and data state are named.
+- A high-risk UI change is not accepted while blocker detector findings remain or authenticated workflow evidence is missing.
 - A research finding is not a best practice until it is promoted into templates, skills, checklists, audit checks, tests, release gates, or documented decisions.
 - A runtime command is not canonical policy; it is accepted only when it wraps `AGENTS.md`, `.agent-kit/agent-roster.json`, `QUALITY_GATES.md`, canonical skills, and Agent Studio evidence.
 - A fresh install can be baseline setup while still warning on `TBD`, example rows, or starter instruction text; those placeholders must be replaced before claiming strong or best-practice maturity.

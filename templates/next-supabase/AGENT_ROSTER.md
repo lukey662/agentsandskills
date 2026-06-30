@@ -4,7 +4,7 @@ This project uses `.agent-kit/agent-roster.json` as the default council contract
 
 ## Default Rule
 
-Planner handles planning by default. Lead Architect reviews core changes before implementation. Frontend Design Lead owns content-first creative direction, reference-led critique, frontend distinctiveness benchmarking, product-quality scoring, and visual QA before significant frontend implementation is accepted. Marketing Copy Lead owns positioning, value proposition, public-facing copy, proof, objections, voice, and CTA hierarchy before conversion-facing copy is accepted. Security Reviewer, QA Engineer, Documentation Maintainer, and Deployment/Observability Engineer join when their trigger areas are touched. Meaningful multi-agent work records council-session evidence in `COUNCIL.md` or a structured record that follows `.agent-kit/schemas/council-session.schema.json`.
+Planner handles planning by default. Lead Architect reviews core changes before implementation. Frontend Design Lead owns content-first creative direction, reference-led critique, frontend distinctiveness benchmarking, product-quality scoring, UI detector severity review, command-based UI polish/audit loops, and visual QA before significant frontend implementation is accepted. Marketing Copy Lead owns positioning, value proposition, public-facing copy, proof, objections, voice, and CTA hierarchy before conversion-facing copy is accepted. Security Reviewer, QA Engineer, Documentation Maintainer, and Deployment/Observability Engineer join when their trigger areas are touched. Meaningful multi-agent work records council-session evidence in `COUNCIL.md` or a structured record that follows `.agent-kit/schemas/council-session.schema.json`.
 
 ## Default Workflows
 
@@ -36,7 +36,7 @@ Handoff order:
 
 ### Frontend Change
 
-Use when the request touches screens, components, layout, visual design, accessibility, responsiveness, or screenshot review.
+Use when the request touches screens, components, layout, visual design, accessibility, responsiveness, screenshot review, UI audit, UI polish, or browser QA.
 
 Handoff order:
 
@@ -57,10 +57,13 @@ Required outputs:
 - Design critique verdict
 - Frontend product-quality scorecard
 - Domain-specific UI rationale
+- UI detector findings and severity
+- UI command workflow applied when polishing or auditing
 - Visual QA evidence
 - State coverage
 - Accessibility checks
 - Desktop/mobile verification
+- Authenticated screen evidence when applicable
 
 ### Marketing Copy
 
@@ -90,7 +93,7 @@ Required outputs:
 - Each agent must state its decision, risk, and required next handoff.
 - Each meaningful council session must record workflow, affected layers, required outputs, handoff decisions, risks, evidence, and verification status.
 - Core changes cannot skip Lead Architect.
-- Frontend changes cannot skip content/brand intake, creative-direction rationale, reference-set evidence, distinctiveness benchmark, design critique verdict, product-quality scorecard, visual QA evidence, or Frontend Design Lead review.
+- Frontend changes cannot skip content/brand intake, creative-direction rationale, reference-set evidence, distinctiveness benchmark, design critique verdict, product-quality scorecard, UI detector severity review, visual QA evidence, or Frontend Design Lead review.
 - Public-facing or conversion-facing copy cannot skip Marketing Copy Lead discovery questions, value proposition, proof, objection, voice/tone, and CTA review.
 - Auth, data mutation, dependency, external-call, secret, and release-risk changes cannot skip Security Reviewer.
 - Behavior changes cannot skip QA evidence.

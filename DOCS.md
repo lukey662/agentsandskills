@@ -60,7 +60,9 @@ Antigravity activation installs `.antigravity/agent-kit/plugin.json`, `.antigrav
 agent-kit adapter validate antigravity
 ```
 
-Native runtime commands are adapters only. They expose `/setup`, `/audit`, `/plan`, `/handoff`, `/frontend`, `/security`, `/copy`, `/ship`, and `/upgrade`, but the canonical behavior still lives in `AGENTS.md`, `.agent-kit/agent-roster.json`, `QUALITY_GATES.md`, `.agent-kit/skills/`, and Agent Studio session evidence.
+Native runtime commands are adapters only. They expose `/setup`, `/audit`, `/plan`, `/handoff`, `/frontend`, focused UI improvement commands, `/security`, `/copy`, `/ship`, and `/upgrade`, but the canonical behavior still lives in `AGENTS.md`, `.agent-kit/agent-roster.json`, `QUALITY_GATES.md`, `.agent-kit/skills/`, and Agent Studio session evidence.
+
+Focused UI improvement commands are `/ui-audit`, `/ui-polish`, `/layout-cleanup`, `/responsive-cleanup`, `/accessibility-pass`, `/distinctiveness-pass`, `/screenshot-critique`, and `/browser-qa`. Their source-of-truth workflow is `.agent-kit/prompts/ui-command-index.md`, backed by `.agent-kit/checklists/ui-detectors.md`, `.agent-kit/checklists/ui-acceptance-rubric.md`, and `.agent-kit/skills/ui-improvement-harness.md`. High-risk UI work must include desktop and mobile screenshots plus authenticated or permission-state evidence when the surface requires login, roles, tenant context, or permissions.
 
 `UPGRADE.md` records the downstream upgrade flow for `agent-kit diff`, `agent-kit update`, framework codemods, Supabase migration review, release notes, audit thresholds, and rollback evidence.
 
@@ -195,6 +197,8 @@ Every Agent Studio milestone must include automated tests with the feature. Curr
 Direct AI orchestration can be added later as an opt-in mode, but baseline Agent Studio works through installed IDE agents and local file updates.
 
 Audit validates frontend maturity beyond tokens and states. `DESIGN.md` must capture brand, content, user needs, creative direction, reference set, anti-references, distinctiveness, critique guidance, frontend distinctiveness benchmark, frontend product-quality scorecard, and design tokens. `STYLE_GUIDE.md` must require content-first creative direction before implementation. `TESTING.md` must document visual QA or visual-regression evidence for important UI changes.
+
+UI improvement work also requires deterministic detector evidence. Agents should use `.agent-kit/prompts/ui-command-index.md` to choose the audit, polish, layout, responsive, accessibility, distinctiveness, screenshot, or browser QA workflow; classify findings with `.agent-kit/checklists/ui-detectors.md`; and accept or reject work with `.agent-kit/checklists/ui-acceptance-rubric.md`.
 
 Audit also validates `QUALITY_GATES.md` as the downstream maturity model. The file must define baseline, strong, and best-practice evidence across council routing, architecture, security, Supabase/RLS, messaging, frontend, accessibility, testing, release, and repo health. This keeps research-backed expectations visible after install instead of leaving best-practice judgment in chat history.
 

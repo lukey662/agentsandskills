@@ -63,7 +63,7 @@ Default routing:
 - Planner handles plans, roadmaps, scope, and ambiguous requests first.
 - Lead Architect reviews core changes before implementation.
 - Security Reviewer joins auth, RLS, data mutation, dependency, secret, external-call, and release-risk work.
-- Frontend Design Lead owns content-first design, reference-led critique, distinctiveness benchmarking, product-quality scoring, and visual QA.
+- Frontend Design Lead owns content-first design, reference-led critique, distinctiveness benchmarking, product-quality scoring, UI detector severity review, command-based polish/audit loops, and visual QA.
 - Marketing Copy Lead owns public-facing and conversion-facing copy, positioning, proof, objections, voice, and CTA hierarchy.
 - QA Engineer verifies behavior changes before completion.
 - Documentation Maintainer keeps the living markdown current.
@@ -160,7 +160,7 @@ Agent Kit separates the mechanisms that make AI coding repeatable:
 - Instructions: `AGENTS.md`, assistant adapters, and IDE-specific rule files.
 - Roster: `.agent-kit/agent-roster.json` chooses agents, workflows, and handoffs.
 - Skills: `.agent-kit/skills/` keeps specialist workflows reusable.
-- Runtime commands: Antigravity `commands/*.toml` expose `/setup`, `/audit`, `/plan`, `/handoff`, `/frontend`, `/security`, `/copy`, `/ship`, and `/upgrade` as native adapter entrypoints.
+- Runtime commands: Antigravity `commands/*.toml` expose `/setup`, `/audit`, `/plan`, `/handoff`, `/frontend`, focused UI improvement commands, `/security`, `/copy`, `/ship`, and `/upgrade` as native adapter entrypoints.
 - Portable skills: `runtime-skills/*/SKILL.md` wraps canonical `skills/*.md` files for runtimes that discover skill directories.
 - Model routing: `MODEL_ROUTING.md` and `.agent-kit/model-routing.json` map agents to model profiles.
 - Messaging: `MESSAGING.md` records audience, pain, outcome, proof, objections, voice, and conversion evidence for public-facing copy.
@@ -188,6 +188,8 @@ Significant UI work should prove:
 - Desktop, mobile, key states, accessibility, and visual QA evidence.
 
 The Frontend Design Lead should reject work that would still look valid for another product after only changing the logo or headline.
+
+Operational UI improvement workflows live in `.agent-kit/prompts/ui-command-index.md` and ship as Antigravity commands: `/ui-audit`, `/ui-polish`, `/layout-cleanup`, `/responsive-cleanup`, `/accessibility-pass`, `/distinctiveness-pass`, `/screenshot-critique`, and `/browser-qa`. Use `.agent-kit/checklists/ui-detectors.md` for deterministic blocker/major/minor findings and `.agent-kit/checklists/ui-acceptance-rubric.md` for pass/fail decisions. High-risk UI work requires desktop and mobile screenshots plus authenticated or permission-state evidence when the surface is not public.
 
 ## Security Bar
 

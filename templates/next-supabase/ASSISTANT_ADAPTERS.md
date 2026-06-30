@@ -108,7 +108,9 @@ Validate the structural package with:
 agent-kit adapter validate antigravity
 ```
 
-If the local machine has the Antigravity CLI, teams may also run native plugin validation and record that evidence here. Runtime command files are adapters only; `AGENTS.md`, `.agent-kit/agent-roster.json`, `QUALITY_GATES.md`, and Agent Studio sessions remain canonical.
+If the local machine has the Antigravity CLI, teams may also run native plugin validation and record that evidence here. Runtime command files are adapters only; `AGENTS.md`, `.agent-kit/agent-roster.json`, `QUALITY_GATES.md`, `.agent-kit/prompts/ui-command-index.md`, `.agent-kit/checklists/ui-detectors.md`, and Agent Studio sessions remain canonical.
+
+The frontend adapter surface includes `/frontend` plus focused UI improvement commands: `/ui-audit`, `/ui-polish`, `/layout-cleanup`, `/responsive-cleanup`, `/accessibility-pass`, `/distinctiveness-pass`, `/screenshot-critique`, and `/browser-qa`. These commands invoke existing Frontend Design Lead, QA, accessibility, screenshot, and documentation gates; they do not replace the council workflow.
 
 ## Acceptance Evidence
 

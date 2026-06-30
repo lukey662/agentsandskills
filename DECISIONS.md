@@ -48,6 +48,20 @@ The package had strong local-first council/session contracts, but runtime ergono
 
 Antigravity users get `/setup`, `/audit`, `/plan`, `/handoff`, `/frontend`, `/security`, `/copy`, `/ship`, and `/upgrade` entrypoints. The adapter is structurally validated without requiring `agy` to be installed. Future runtime adapters must follow the same rule: improve invocation ergonomics without forking role policy, security gates, model routing, or documentation contracts.
 
+## 2026-06-30 - Add Repo-Native UI Improvement Harness
+
+### Context
+
+The kit had strong frontend principles, design roles, visual QA prompts, accessibility checks, and product-quality scorecards, but UI improvement still depended on agents remembering how to operationalize those assets. Public tools such as Impeccable demonstrate the value of command-style UI workflows, live browser iteration, and deterministic detector rules, but this package needs a repo-native layer that does not copy another project's prompts or implementation.
+
+### Decision
+
+Add `ui-improvement-harness` as a canonical skill with a command index, deterministic UI detector checklist, acceptance rubric, runtime skill wrapper, and focused Antigravity commands for UI audit, UI polish, layout cleanup, responsive cleanup, accessibility pass, distinctiveness pass, screenshot critique, and browser QA. Treat Impeccable as Apache-2.0 capability inspiration only; do not copy source text, detector code, prompts, or proprietary wording.
+
+### Consequences
+
+Future frontend work can run repeatable audit/polish/browser loops with blocker, major, and minor findings. High-risk UI work now requires desktop and mobile screenshot evidence plus authenticated or permission-state evidence when the screen is protected. Adapter validation and package validation must keep the new command and runtime skill surface shippable.
+
 ## 2026-06-14 - Package Source Audits Validate Shipped Assets
 
 ### Context

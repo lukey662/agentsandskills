@@ -51,7 +51,9 @@ Use `.agent-kit/prompts/design-critique-gate.md` before accepting significant fr
 
 Use `.agent-kit/prompts/frontend-distinctiveness-benchmark.md` before accepting significant frontend work. `DESIGN.md` should prove first-screen specificity, content fingerprint, reference benchmark, asset provenance, state proof, and visual QA proof so a design cannot pass while remaining interchangeable with another product in the same category.
 
-Use `.agent-kit/prompts/frontend-product-quality-scorecard.md` before accepting significant frontend work. `DESIGN.md` should score user/task fit, content specificity, visual identity, information architecture, component states, accessibility and interaction, and source safety. Reject work with critical zeroes or a total score below `10/14`; reserve best-practice claims for `12/14` or higher with desktop/mobile and visual QA evidence.
+Use `.agent-kit/prompts/frontend-product-quality-scorecard.md` before accepting significant frontend work. `DESIGN.md` should score user/task fit, content specificity, visual identity, information architecture, component states, accessibility and interaction, and source safety. Reject work with critical zeroes or a total score below `10/14`; reserve best-practice claims for `12/14` or higher with desktop/mobile, authenticated screen evidence when applicable, UI detector findings, and visual QA evidence.
+
+Use `.agent-kit/prompts/ui-command-index.md`, `.agent-kit/checklists/ui-detectors.md`, and `.agent-kit/checklists/ui-acceptance-rubric.md` for UI audit, polish, layout cleanup, responsive cleanup, accessibility pass, distinctiveness pass, screenshot critique, and browser QA loops.
 
 ## Messaging And Copy Rules
 

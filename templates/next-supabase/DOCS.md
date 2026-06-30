@@ -42,6 +42,8 @@ Document primary workflows, including:
 - Planning and core-change handoffs from `AGENT_ROSTER.md`
 - Tool-specific assistant activation from `ASSISTANT_ADAPTERS.md`
 - Runtime command validation with `agent-kit adapter validate antigravity` when Antigravity is active
+- UI improvement command workflows from `.agent-kit/prompts/ui-command-index.md`
+- Deterministic UI detector and acceptance review from `.agent-kit/checklists/ui-detectors.md` and `.agent-kit/checklists/ui-acceptance-rubric.md`
 - Model-selection setup, enforcement status, and limitations from `MODEL_ROUTING.md`
 - Council-session evidence capture from `COUNCIL.md`
 - Upgrade review, conflict handling, migration review, and rollback evidence from `UPGRADE.md`
@@ -57,7 +59,9 @@ Document primary workflows, including:
 - Data creation and update workflow
 - Deployment workflow
 
-Runtime command files are adapters only. Native commands such as `/plan`, `/security`, `/frontend`, `/copy`, `/handoff`, `/audit`, `/setup`, `/upgrade`, and `/ship` should point back to `AGENTS.md`, `.agent-kit/agent-roster.json`, `QUALITY_GATES.md`, `.agent-kit/skills/`, and Agent Studio evidence.
+Runtime command files are adapters only. Native commands such as `/plan`, `/security`, `/frontend`, `/ui-audit`, `/ui-polish`, `/layout-cleanup`, `/responsive-cleanup`, `/accessibility-pass`, `/distinctiveness-pass`, `/screenshot-critique`, `/browser-qa`, `/copy`, `/handoff`, `/audit`, `/setup`, `/upgrade`, and `/ship` should point back to `AGENTS.md`, `.agent-kit/agent-roster.json`, `QUALITY_GATES.md`, `.agent-kit/skills/`, and Agent Studio evidence.
+
+High-risk UI work must include desktop and mobile screenshots plus authenticated or permission-state evidence when the surface requires login, roles, tenant context, or permissions.
 
 ## Integration Points
 

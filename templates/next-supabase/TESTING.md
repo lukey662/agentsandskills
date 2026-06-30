@@ -9,6 +9,7 @@ Testing should be proportional to risk. Auth, data mutations, payments, admin ac
 - Integration tests for API, Server Actions, and Supabase interactions where practical.
 - Playwright smoke tests for auth and critical user workflows.
 - Visual QA for important user-facing screens and reusable component states.
+- UI detector review for audit, polish, layout, responsive, accessibility, screenshot, distinctiveness, and browser QA workflows.
 - Runtime adapter validation for plugin manifests, native commands, portable `SKILL.md` wrappers, source-of-truth references, package allowlists, and secret safety.
 
 ## Critical Smoke Paths
@@ -35,6 +36,8 @@ Choose the smallest reliable visual QA tier for the project:
 Required rules:
 
 - Capture default, loading, empty, error, disabled, success, permission-denied, and mobile states where relevant.
+- Run `.agent-kit/checklists/ui-detectors.md` for meaningful UI audit or polish work and classify blocker, major, minor, pass, and not-applicable findings.
+- High-risk UI changes require desktop and mobile screenshots plus authenticated or permission-state evidence when the workflow requires login, tenant context, roles, or permissions.
 - Stabilize dynamic data, animations, dates, avatars, generated media, and third-party widgets before visual comparison.
 - Review baseline updates as product changes; do not auto-accept visual diffs without rationale.
 - Keep accessibility, semantic, keyboard, auth, and data-boundary tests separate from visual checks.
@@ -53,6 +56,7 @@ Recommended baseline:
 - `agent-kit audit --min-readiness baseline-setup`
 - Playwright smoke tests for critical paths
 - Visual QA evidence for high-risk UI changes
+- UI detector findings and accepted exceptions for meaningful UI changes
 - `agent-kit adapter validate antigravity` and `agent-kit package validate` when adapter/package assets change
 
 ### Eval-driven PR loop

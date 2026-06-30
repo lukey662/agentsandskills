@@ -25,6 +25,7 @@ List behavior that must be preserved during changes:
 - Agent council routing in `.agent-kit/agent-roster.json`
 - Model profile routing in `MODEL_ROUTING.md` and `.agent-kit/model-routing.json`
 - Optional runtime adapter commands and portable `SKILL.md` wrappers, when activated
+- UI improvement command workflows, detector severity findings, and acceptance rubric when frontend work is in scope
 - Council-session evidence in `COUNCIL.md`
 - Agent, council-session, model-routing, and audit-report schema contracts in `.agent-kit/schemas/`
 - Planner default ownership for planning and Lead Architect review for core changes
@@ -70,7 +71,7 @@ Record the current maturity target and evidence.
 | Architecture | TBD | TBD | TBD | Affected-layer map, `DECISIONS.md` |
 | Supabase/RLS | TBD | TBD | TBD | RLS inventory, migration tests |
 | Messaging | TBD | TBD | TBD | `MESSAGING.md`, proof map, objection handling, CTA hierarchy |
-| Frontend | TBD | TBD | TBD | `DESIGN.md`, reference-set evidence, design critique verdict, product-quality scorecard, screenshots, visual QA |
+| Frontend | TBD | TBD | TBD | `DESIGN.md`, reference-set evidence, design critique verdict, product-quality scorecard, UI detector findings, screenshots, visual QA |
 | Testing | TBD | TBD | TBD | Unit, regression, smoke, visual evidence |
 | Release | TBD | TBD | TBD | `DEPLOYMENT.md`, logs, rollback notes |
 
@@ -83,6 +84,8 @@ Record the current maturity target and evidence.
 - Audience, pain, desired outcome, differentiator, proof, objections, voice, and CTA hierarchy are documented before public-facing or conversion-facing copy is accepted.
 - Reference set, anti-references, source-safety notes, and design critique verdict are documented before accepting significant frontend work.
 - Frontend product-quality scorecard is documented before accepting significant frontend work.
+- UI detector findings are classified before accepting meaningful audit, polish, layout, responsive, accessibility, screenshot, distinctiveness, or browser QA work.
+- Authenticated or permission-state screenshots are reviewed when the changed surface requires login, roles, tenant context, or permissions.
 - First screens show the real product, task, object, content, or workflow.
 
 ## Brand And Content Inventory
@@ -102,6 +105,7 @@ Track the inputs that make the UI specific to this product.
 | Chosen creative direction | TBD | Creative-direction matrix and screenshots |
 | Design critique verdict | TBD | `DESIGN.md`, critique-gate review |
 | Visual QA tier | TBD | `TESTING.md`, Storybook, Playwright report, visual-regression service, or screenshot artifacts |
+| UI detector evidence | TBD | `.agent-kit/checklists/ui-detectors.md`, `.agent-kit/checklists/ui-acceptance-rubric.md`, browser QA notes |
 
 ## Component And State Inventory
 

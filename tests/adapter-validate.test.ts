@@ -22,6 +22,7 @@ describe("adapter validation", () => {
     expect(report.summary.fail).toBe(0);
     expect(report.findings.some((finding) => finding.message.includes("native command set is complete"))).toBe(true);
     expect(report.findings.some((finding) => finding.message.includes("Runtime SKILL.md wrappers exist"))).toBe(true);
+    expect(report.findings.some((finding) => finding.message.includes("Missing Antigravity command ui-audit.toml"))).toBe(false);
   });
 
   it("validates Antigravity assets in an initialized project", () => {
@@ -29,6 +30,7 @@ describe("adapter validation", () => {
     const report = validateAdapter(root, "antigravity");
     expect(report.summary.fail).toBe(0);
     expect(report.findings.some((finding) => finding.message.includes("plugin.json lists the required native commands"))).toBe(true);
+    expect(report.findings.some((finding) => finding.message.includes("Missing Antigravity command browser-qa.toml"))).toBe(false);
   });
 
   it("validates source package runtime assets and package audit behavior", () => {

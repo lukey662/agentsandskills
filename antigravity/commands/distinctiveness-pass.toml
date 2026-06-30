@@ -1,0 +1,16 @@
+name = "distinctiveness-pass"
+description = "Check that UI is product-specific, source-safe, and not generic SaaS or AI-site styling."
+
+prompt = """
+Run the visual distinctiveness pass workflow.
+
+Canonical sources: DESIGN.md, STYLE_GUIDE.md, MESSAGING.md, QUALITY_GATES.md, .agent-kit/agent-roster.json, .agent-kit/skills/ui-improvement-harness.md, .agent-kit/skills/frontend-distinctiveness-benchmark.md, .agent-kit/checklists/ui-detectors.md, .agent-kit/checklists/ui-acceptance-rubric.md, and .agent-kit/prompts/ui-command-index.md.
+
+Workflow:
+1. Compare the first viewport to product category, audience, workflow, and content fingerprint.
+2. Confirm references were translated into lessons without copying source layouts, copy, assets, or brand marks.
+3. Identify fake metrics, vague claims, abstract filler, interchangeable card stacks, and generic visual tropes.
+4. Re-score distinctiveness and product quality where significant UI work is involved.
+
+Required outputs: product-specific evidence, generic-risk findings, source-safety notes, required changes, final distinctiveness verdict.
+"""

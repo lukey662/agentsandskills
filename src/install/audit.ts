@@ -78,6 +78,7 @@ const REQUIRED_SKILL_IDS = [
   "frontend-distinctiveness-benchmark",
   "frontend-product-quality-rubric",
   "frontend-design-system",
+  "ui-improvement-harness",
   "visual-regression-qa",
   "positioning-messaging",
   "conversion-copywriting",

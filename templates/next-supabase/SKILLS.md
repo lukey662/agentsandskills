@@ -108,6 +108,20 @@ Required checks:
 - Use the matching `.agent-kit/design-briefs/*` brief for SaaS, admin, marketplace, content, tool, ecommerce, portfolio/venue, education, community/social, or AI workflow surfaces.
 - Review final desktop and mobile screenshots with `.agent-kit/prompts/screenshot-review.md`.
 
+## UI Improvement Harness
+
+Use for operational UI audit, polish, layout cleanup, responsive cleanup, accessibility pass, screenshot critique, visual distinctiveness pass, and live browser QA loops.
+
+Required checks:
+- Use `.agent-kit/prompts/ui-command-index.md` to pick the workflow: UI audit, UI polish, layout cleanup, responsive cleanup, accessibility pass, distinctiveness pass, screenshot critique, or browser QA.
+- Run `.agent-kit/checklists/ui-detectors.md` and classify findings as blocker, major, minor, pass, or not applicable.
+- Apply `.agent-kit/checklists/ui-acceptance-rubric.md` before release.
+- Require desktop and mobile screenshot evidence for meaningful UI changes.
+- Require authenticated or permission-state evidence for protected app screens.
+- Block release when blocker detector findings remain.
+- Fix major findings or document accepted exceptions before high-risk UI changes ship.
+- Record route, viewport, auth state, data state, screenshots, detector findings, and residual risks.
+
 ## Content-First Creative Direction
 
 Use before designing or changing a user-facing site, product screen, dashboard, tool, marketplace, content experience, ecommerce flow, portfolio, venue page, education product, community surface, or AI workflow UI.

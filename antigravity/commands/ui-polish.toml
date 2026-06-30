@@ -1,0 +1,17 @@
+name = "ui-polish"
+description = "Improve UI hierarchy, spacing, state feedback, and visual finish through detector-guided polish."
+
+prompt = """
+Run the UI polish workflow.
+
+Canonical sources: DESIGN.md, STYLE_GUIDE.md, TESTING.md, QUALITY_GATES.md, .agent-kit/agent-roster.json, .agent-kit/skills/ui-improvement-harness.md, .agent-kit/checklists/ui-detectors.md, .agent-kit/checklists/ui-acceptance-rubric.md, and .agent-kit/prompts/ui-command-index.md.
+
+Workflow:
+1. Start from detector findings, screenshots, or a named target surface.
+2. Preserve product behavior, auth boundaries, copy claims, data contracts, and existing component patterns.
+3. Improve hierarchy, spacing, density, alignment, component states, and interaction feedback.
+4. Remove decorative clutter and generic SaaS or AI-site defaults.
+5. Re-run detector and screenshot critique after the scoped polish pass.
+
+Required outputs: polish goals, changes made or proposed, detector deltas, screenshot evidence, residual risks.
+"""

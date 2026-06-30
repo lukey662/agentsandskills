@@ -243,7 +243,25 @@ describe("public package readiness", () => {
   });
 
   it("ships Antigravity native commands and portable runtime skills", () => {
-    const requiredCommands = ["setup", "audit", "plan", "handoff", "frontend", "security", "copy", "ship", "upgrade"];
+    const requiredCommands = [
+      "setup",
+      "audit",
+      "plan",
+      "handoff",
+      "frontend",
+      "ui-audit",
+      "ui-polish",
+      "layout-cleanup",
+      "responsive-cleanup",
+      "accessibility-pass",
+      "distinctiveness-pass",
+      "screenshot-critique",
+      "browser-qa",
+      "security",
+      "copy",
+      "ship",
+      "upgrade"
+    ];
     for (const command of requiredCommands) {
       const commandPath = join(root, "antigravity", "commands", `${command}.toml`);
       expect(existsSync(commandPath)).toBe(true);

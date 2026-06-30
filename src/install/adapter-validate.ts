@@ -28,7 +28,25 @@ export interface ValidationReport {
   findings: ValidationFinding[];
 }
 
-const REQUIRED_COMMANDS = ["setup", "audit", "plan", "handoff", "frontend", "security", "copy", "ship", "upgrade"] as const;
+const REQUIRED_COMMANDS = [
+  "setup",
+  "audit",
+  "plan",
+  "handoff",
+  "frontend",
+  "ui-audit",
+  "ui-polish",
+  "layout-cleanup",
+  "responsive-cleanup",
+  "accessibility-pass",
+  "distinctiveness-pass",
+  "screenshot-critique",
+  "browser-qa",
+  "security",
+  "copy",
+  "ship",
+  "upgrade"
+] as const;
 const REQUIRED_SOURCE_REFERENCES = ["AGENTS.md", ".agent-kit/agent-roster.json", "QUALITY_GATES.md"];
 
 interface AntigravityLayout {
@@ -123,7 +141,7 @@ function validateAntigravityCommands(layout: AntigravityLayout, findings: Valida
         level: "fail",
         area: "commands",
         message: `Missing Antigravity command ${relativePath}.`,
-        remediation: "Restore the full native command set: setup, audit, plan, handoff, frontend, security, copy, ship, and upgrade."
+        remediation: "Restore the full native command set, including frontend and UI improvement commands."
       });
       continue;
     }

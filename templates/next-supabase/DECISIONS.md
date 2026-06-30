@@ -44,6 +44,20 @@ Runtime command files are adapters. `AGENTS.md`, `.agent-kit/agent-roster.json`,
 
 Native commands improve invocation ergonomics, but project policy, security gates, handoff rules, model routing, and documentation contracts stay centralized in Agent Kit files.
 
+## UI Improvement Harness Rule
+
+### Context
+
+Frontend work needs repeatable audit, polish, screenshot, responsive, accessibility, distinctiveness, and browser QA loops rather than one-off taste review.
+
+### Decision
+
+Use `.agent-kit/prompts/ui-command-index.md`, `.agent-kit/checklists/ui-detectors.md`, `.agent-kit/checklists/ui-acceptance-rubric.md`, and `.agent-kit/skills/ui-improvement-harness.md` as the source of truth for UI improvement commands and detector severity.
+
+### Consequences
+
+Meaningful UI work must classify blocker, major, and minor findings, require desktop and mobile screenshot evidence, and include authenticated or permission-state evidence for protected screens.
+
 ## Agent Kit Model Routing
 
 ### Context

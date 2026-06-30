@@ -103,6 +103,7 @@ Run `.agent-kit/prompts/frontend-distinctiveness-benchmark.md` before accepting 
 | Asset provenance | Real, generated, licensed, and placeholder assets identified with usage constraints |
 | State proof | Loading, empty, error, disabled, success, permission, and focus states captured where relevant |
 | Visual QA proof | Desktop, mobile, and high-risk state evidence reviewed for the change risk |
+| UI detector proof | `.agent-kit/checklists/ui-detectors.md` completed with blocker, major, minor, pass, and not-applicable findings |
 
 Distinctiveness verdict:
 
@@ -166,6 +167,8 @@ Frontend work is not accepted until the following evidence exists:
 - A frontend distinctiveness benchmark records first-screen proof, content fingerprint, reference benchmark, creative divergence, asset provenance, state proof, visual QA proof, generic-risk, and source-safety risks.
 - A product-quality scorecard records user/task fit, content specificity, visual identity, information architecture, component states, accessibility and interaction, source safety, total score, and verdict.
 - Desktop and mobile screenshots were reviewed.
+- UI detector findings were classified and blockers were resolved.
+- Authenticated or permission-state screenshots were reviewed when the changed surface requires login, roles, tenant context, or permissions.
 - Accessibility risks and component states were reviewed.
 - Visual QA tier is documented in `TESTING.md` for high-risk UI changes.
 - Baseline visual changes are approved intentionally when visual regression tooling exists.

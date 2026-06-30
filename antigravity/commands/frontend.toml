@@ -4,14 +4,15 @@ description = "Route frontend work through content-first design, accessibility, 
 prompt = """
 Run the frontend-change workflow.
 
-Canonical sources: DESIGN.md, STYLE_GUIDE.md, MESSAGING.md, QUALITY_GATES.md, .agent-kit/agent-roster.json, .agent-kit/design-briefs/, .agent-kit/prompts/screenshot-review.md, and .agent-kit/skills/frontend-design-system.md.
+Canonical sources: DESIGN.md, STYLE_GUIDE.md, MESSAGING.md, QUALITY_GATES.md, .agent-kit/agent-roster.json, .agent-kit/design-briefs/, .agent-kit/prompts/screenshot-review.md, .agent-kit/prompts/ui-command-index.md, .agent-kit/checklists/ui-detectors.md, .agent-kit/checklists/ui-acceptance-rubric.md, .agent-kit/skills/frontend-design-system.md, and .agent-kit/skills/ui-improvement-harness.md.
 
 Workflow:
 1. Start with Frontend Design Lead before implementation.
 2. Confirm brand/content intake, user needs, real content, creative direction, references, anti-references, and source-safety notes.
 3. Require distinctiveness benchmark and product-quality scorecard for significant UI.
-4. Preserve WCAG 2.1 AA, keyboard flow, responsive states, and loading/error/empty/success states.
-5. Record visual QA and accessibility evidence with `agent-kit session output`.
+4. Apply the UI improvement command index when auditing, polishing, cleaning layout, reviewing screenshots, or running browser QA.
+5. Preserve WCAG 2.1 AA, keyboard flow, responsive states, and loading/error/empty/success states.
+6. Record UI detector findings, visual QA, and accessibility evidence with `agent-kit session output`.
 
-Required outputs: design direction, reference evidence, product-specific UI rationale, state coverage, accessibility checks, desktop/mobile visual QA.
+Required outputs: design direction, reference evidence, product-specific UI rationale, UI detector findings, state coverage, accessibility checks, desktop/mobile visual QA, authenticated screen evidence when applicable.
 """

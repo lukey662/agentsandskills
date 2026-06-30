@@ -1,0 +1,16 @@
+name = "layout-cleanup"
+description = "Clean crowded layouts, weak hierarchy, card nesting, overflow, and inconsistent spacing."
+
+prompt = """
+Run the layout cleanup workflow.
+
+Canonical sources: DESIGN.md, STYLE_GUIDE.md, TESTING.md, QUALITY_GATES.md, .agent-kit/agent-roster.json, .agent-kit/skills/ui-improvement-harness.md, .agent-kit/checklists/ui-detectors.md, .agent-kit/checklists/ui-acceptance-rubric.md, and .agent-kit/prompts/ui-command-index.md.
+
+Workflow:
+1. Identify primary task, secondary tasks, content hierarchy, and target viewport range.
+2. Remove unnecessary nesting, repeated surfaces, card-within-card patterns, arbitrary dividers, and workflow-obscuring decoration.
+3. Normalize spacing, grouping, alignment, heading scale, and responsive containers.
+4. Verify text fit, truncation, overlap, and horizontal overflow on desktop and mobile.
+
+Required outputs: layout findings, cleanup actions, preserved workflow, desktop/mobile evidence, remaining layout risks.
+"""

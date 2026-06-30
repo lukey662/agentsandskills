@@ -1,0 +1,17 @@
+name = "ui-audit"
+description = "Run a deterministic UI audit with severity-based detector findings and release evidence."
+
+prompt = """
+Run the UI audit workflow.
+
+Canonical sources: DESIGN.md, STYLE_GUIDE.md, TESTING.md, QUALITY_GATES.md, .agent-kit/agent-roster.json, .agent-kit/skills/ui-improvement-harness.md, .agent-kit/checklists/ui-detectors.md, .agent-kit/checklists/ui-acceptance-rubric.md, and .agent-kit/prompts/ui-command-index.md.
+
+Workflow:
+1. Identify target route, component, workflow, auth state, data state, and risk tier.
+2. Load product/design context and relevant design brief.
+3. Review desktop and mobile evidence, or state which evidence must still be captured.
+4. Run the UI detector checklist and classify blockers, majors, minors, passes, and not-applicable items.
+5. Return required fixes, accepted exceptions, preserved capabilities, and pass/fail verdict.
+
+Required outputs: target surface, risk tier, detector findings by severity, missing evidence, release verdict.
+"""

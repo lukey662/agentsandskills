@@ -65,7 +65,7 @@ Downstream projects should record adapter activation evidence in `ASSISTANT_ADAP
 - `.antigravity/runtime-skills/*/SKILL.md`
 - `.antigravity/agent-kit/README.md`
 
-The Antigravity command layer exposes `/setup`, `/audit`, `/plan`, `/handoff`, `/frontend`, `/security`, `/copy`, `/ship`, and `/upgrade`. These command files must wrap the existing council/session contracts and must not fork role definitions, security policy, quality gates, or model-routing policy.
+The Antigravity command layer exposes `/setup`, `/audit`, `/plan`, `/handoff`, `/frontend`, `/security`, `/copy`, `/ship`, and `/upgrade`. It also exposes focused UI improvement commands: `/ui-audit`, `/ui-polish`, `/layout-cleanup`, `/responsive-cleanup`, `/accessibility-pass`, `/distinctiveness-pass`, `/screenshot-critique`, and `/browser-qa`. These command files must wrap the existing council/session contracts and must not fork role definitions, security policy, quality gates, frontend detector policy, or model-routing policy.
 
 `agent-kit adapter validate antigravity` validates the Antigravity manifest, command files, portable `SKILL.md` wrappers, source-of-truth references, package allowlist, and secret-safety. Native Antigravity CLI validation is optional because the package must remain usable where `agy` is not installed.
 
@@ -146,7 +146,7 @@ Required and current coverage:
 - CLI smoke tests for `init --guided`, context scan/render/validate, session start/decision/handoff/correct/artifact/verify/output/render, static studio export, and audit.
 - Golden output tests for generated project context Markdown, session index Markdown, transcript Markdown, and expected audit output.
 - Regression tests proving existing `init`, `update`, `diff`, conflict handling, examples, and public package file allowlist behavior do not regress.
-- Runtime adapter tests proving Antigravity activation, native command structure, plugin manifest references, portable `SKILL.md` wrappers, adapter validation, package validation, and package-root audit mode do not regress.
+- Runtime adapter tests proving Antigravity activation, native command structure, UI improvement command coverage, plugin manifest references, portable `SKILL.md` wrappers, adapter validation, package validation, and package-root audit mode do not regress.
 - Security tests for path traversal, Markdown injection, secret redaction, malformed JSON/JSONL, unsafe static exports, and localhost-only live studio behavior when implemented.
 
 The shared `npm run release:check` gate includes `npm run smoke:studio`. Broken context/session/correction behavior should fail in automation before reaching user testing.
@@ -174,7 +174,7 @@ Required default behavior:
 - Supabase/Postgres Engineer, Next.js Engineer, Frontend Design Lead, Marketing Copy Lead, Security Reviewer, QA Engineer, Documentation Maintainer, and Deployment/Observability Engineer join based on roster triggers.
 - Core changes must use the `core-change` workflow and include Lead Architect in both sequence and council.
 - Agent skill routing must include planning, upgrade maintenance, Next.js, Supabase/RLS, Postgres migrations, OWASP, frontend design, marketing copy, accessibility, testing, docs, and deployment skills.
-- Frontend skill routing must include content-first design, reference-led design critique, frontend distinctiveness benchmark, frontend product-quality rubric, visual regression QA, and accessibility.
+- Frontend skill routing must include content-first design, reference-led design critique, frontend distinctiveness benchmark, frontend product-quality rubric, UI improvement harness, visual regression QA, and accessibility.
 - Marketing copy routing must include positioning, conversion copywriting, landing-page copy, product voice/tone, onboarding, and empty-state copy skills.
 
 `agent-kit audit` must fail when the default roster is missing, invalid, lacks required agents, lacks required skill routing, or does not make Planner the default planning agent.
@@ -211,6 +211,9 @@ Required frontend evidence:
 
 - `DESIGN.md` captures brand, content, user needs, creative direction, design tokens, reference set, anti-references, distinctiveness, design critique guidance, frontend distinctiveness benchmark, and a product-quality scorecard.
 - Frontend-change workflow includes Frontend Design Lead, reference-set evidence, distinctiveness benchmark, design critique verdict, frontend product-quality scorecard, visual QA evidence, state coverage, accessibility checks, and desktop/mobile verification.
+- UI improvement workflows are defined by `.agent-kit/prompts/ui-command-index.md`, `.agent-kit/checklists/ui-detectors.md`, `.agent-kit/checklists/ui-acceptance-rubric.md`, and `.agent-kit/skills/ui-improvement-harness.md`.
+- Meaningful UI audit or polish must classify detector findings by severity and require desktop/mobile screenshots.
+- Authenticated or permission-gated UI changes must include signed-in, role, tenant, or permission-state evidence before acceptance.
 - `agent-kit audit` warns when `DESIGN.md` lacks content-first design direction, reference-led critique guidance, frontend distinctiveness benchmark evidence, or the product-quality scorecard.
 - Provider-neutral design adapters must respect reference sets, anti-references, and source-safety notes.
 

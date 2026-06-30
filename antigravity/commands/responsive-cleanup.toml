@@ -1,0 +1,16 @@
+name = "responsive-cleanup"
+description = "Verify and repair mobile and responsive UI behavior with required desktop and mobile evidence."
+
+prompt = """
+Run the responsive cleanup workflow.
+
+Canonical sources: DESIGN.md, STYLE_GUIDE.md, TESTING.md, QUALITY_GATES.md, .agent-kit/agent-roster.json, .agent-kit/skills/ui-improvement-harness.md, .agent-kit/checklists/ui-detectors.md, .agent-kit/checklists/ui-acceptance-rubric.md, and .agent-kit/prompts/ui-command-index.md.
+
+Workflow:
+1. Review mobile width, desktop width, and project-specific breakpoint assumptions.
+2. Verify tap targets, text fit, navigation, primary action visibility, sticky UI, scroll behavior, and viewport-safe spacing.
+3. Verify relevant loading, empty, error, disabled, success, permission, and focus states on mobile.
+4. Capture or request desktop and mobile screenshots before acceptance.
+
+Required outputs: viewports checked, responsive findings, fixes made or proposed, screenshots, remaining risks.
+"""

@@ -1,0 +1,18 @@
+name = "browser-qa"
+description = "Run a live browser QA loop with desktop, mobile, state, and authenticated screen evidence."
+
+prompt = """
+Run the live browser QA workflow.
+
+Canonical sources: DESIGN.md, STYLE_GUIDE.md, TESTING.md, QUALITY_GATES.md, .agent-kit/agent-roster.json, .agent-kit/skills/ui-improvement-harness.md, .agent-kit/checklists/ui-detectors.md, .agent-kit/checklists/ui-acceptance-rubric.md, .agent-kit/prompts/screenshot-review.md, .agent-kit/prompts/visual-qa-plan.md, and .agent-kit/prompts/ui-command-index.md.
+
+Workflow:
+1. Start or identify the dev/preview server and target routes.
+2. Open the target with required auth, role, tenant, and data state.
+3. Capture desktop and mobile screenshots.
+4. Run detector, screenshot critique, accessibility pass, and responsive cleanup.
+5. Apply scoped fixes and repeat until no blockers remain and major findings are fixed or documented.
+6. Record evidence with agent-kit session output when Agent Studio is in use.
+
+Required outputs: route, auth state, commands run, screenshots, detector results, fixes, final verdict.
+"""
