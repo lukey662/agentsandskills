@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.6
+
+- Added a repo-native UI improvement harness with command-style prompts, deterministic detector checklist, acceptance rubric, portable runtime skill, and focused Antigravity UI commands.
+- Wired UI audit, polish, layout cleanup, responsive cleanup, accessibility, distinctiveness, screenshot critique, and browser QA workflows into roster routing, docs, templates, package validation, and example snapshots.
+
 ## 0.1.5
 
 - Added computed **Agentic Engineering Level** (L3–L6) in Agent Office and setup wizard: iceberg strip, climb checklist, `/api/state` payload, and `POST /api/agentic-level/refresh`.
