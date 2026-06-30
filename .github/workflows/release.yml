@@ -95,14 +95,11 @@ jobs:
 
       - name: Publish to public npm
         if: github.event_name == 'release' || github.event.inputs.dry_run == 'false'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           set -euo pipefail
           tarball="./${{ steps.pack.outputs.tarball }}"
-          if [ -n "${NPM_CONFIG_USERCONFIG:-}" ] && [ -f "${NPM_CONFIG_USERCONFIG}" ]; then
-            sed -i '/:_authToken/d' "${NPM_CONFIG_USERCONFIG}"
-          fi
-          npm config delete //registry.npmjs.org/:_authToken
-          unset NODE_AUTH_TOKEN NPM_TOKEN
           npm publish "${tarball}" --access public --provenance
 
       - name: Verify published package install

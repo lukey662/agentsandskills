@@ -31,9 +31,9 @@ Create environment `npm-publish` with:
 - Required reviewers enabled.
 - Prevent self-review enabled where available.
 - Deployment branches restricted to `main` and release events.
-- No npm publish token secret for the trusted-publishing flow.
-- Any legacy npm token secrets deleted after Trusted Publishing is confirmed.
-- Optional fallback: a maintainer npm publish token secret on the `npm-publish` environment when trusted publishing returns 404 on PUT.
+- Preferred path: no npm publish token secret once Trusted Publishing is confirmed for this package.
+- Current fallback: a maintainer npm publish token secret on the release workflow so manual publish dispatch can complete until npm Trusted Publishing is configured.
+- Any fallback npm token secrets deleted after Trusted Publishing is confirmed.
 
 The npm trusted publisher must match:
 

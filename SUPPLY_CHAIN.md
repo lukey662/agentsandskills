@@ -5,12 +5,12 @@ This package is intended for public npm distribution and downstream project boot
 ## Publish Identity
 
 - Public package: `@appsforgood/next-supabase-kit`.
-- Publish path: GitHub Actions release workflow through npm Trusted Publishing.
-- Authentication: OIDC trusted publisher, not a long-lived npm automation token.
+- Publish path: GitHub Actions release workflow through npm Trusted Publishing when configured, with a token-backed publish fallback for the current npm package setup.
+- Authentication: prefer OIDC trusted publisher; the fallback uses a scoped npm automation token stored as a GitHub Actions secret.
 - Environment: `npm-publish`.
 - Trusted publisher must be scoped to repository `lukey662/agentsandskills`, workflow `release.yml`, and allowed action `npm publish`.
 
-When npm Trusted Publishing is used from a public GitHub repository for a public package, npm generates provenance attestations automatically. The release workflow keeps `id-token: write` for this reason and does not set `NODE_AUTH_TOKEN` for publishing.
+When npm Trusted Publishing is used from a public GitHub repository for a public package, npm generates provenance attestations automatically. Until that package-level publisher is confirmed in npm, the release workflow publishes with the configured secret and `--provenance` so npm still receives GitHub Actions provenance.
 
 The release workflow also creates a deterministic package tarball, generates a CycloneDX SBOM from `package-lock.json`, uploads the tarball, SBOM, and pack metadata as release evidence, and attests the SBOM against the exact tarball path that is published to npm.
 
@@ -47,9 +47,9 @@ The release workflow and `npm run publish:verify` both use `scripts/post-publish
 
 ## Maintainer Rules
 
-- Do not use bypass-2FA npm publish tokens for automation.
+- Do not use bypass-2FA npm publish tokens for automation; any fallback token must be scoped for package publishing and stored only as a GitHub Actions secret.
 - Do not publish from unreviewed branches or untrusted workflow changes.
 - Treat workflow edits as release-risk changes requiring security and maintainer review.
-- Rotate and delete legacy publish secrets after Trusted Publishing is confirmed.
+- Rotate and delete fallback publish secrets after Trusted Publishing is confirmed.
 - Keep package contents free of secrets, private downstream data, and copied third-party source.
 - Keep SBOM generation and attestation in the shared release path; do not publish an unattested tarball when the workflow is available.
