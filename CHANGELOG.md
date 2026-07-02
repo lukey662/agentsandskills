@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.0
+
+### Minor Changes
+
+- 1a0bc6e: Repo hardening release: real `update` command with hash-aware merge (`created`/`updated`/`unchanged`/`kept-local`/`conflict`/`overwritten`) and `--dry-run`, human-readable CLI output with `--json` on every command, ESLint + Prettier + coverage gates wired into `release:check`, cross-platform CI matrix (ubuntu/windows/macos on Node 20/22/24), changesets-based versioning, packaging cleanup (`.npmignore` removed in favor of the `files` allow-list), and the repo now dogfoods its own kit at the root with best-practice-candidate audit readiness.
+
 ## 0.1.6
 
 - Added a repo-native UI improvement harness with command-style prompts, deterministic detector checklist, acceptance rubric, portable runtime skill, and focused Antigravity UI commands.
