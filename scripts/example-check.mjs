@@ -115,11 +115,7 @@ try {
     stableManifest(readJson(join(tempRoot, ".agent-kit", "manifest.json")))
   );
 
-  assertDeepEqual(
-    "Example audit output",
-    stableAudit(readJson(join(exampleRoot, "audit-output.json"))),
-    stableAudit(generatedAudit)
-  );
+  assertDeepEqual("Example audit output", stableAudit(readJson(join(exampleRoot, "audit-output.json"))), stableAudit(generatedAudit));
 
   assertTreeSummary();
 

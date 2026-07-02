@@ -1,5 +1,11 @@
 # Agent Skills Next/Supabase Kit
 
+[![CI](https://github.com/lukey662/agentsandskills/actions/workflows/ci.yml/badge.svg)](https://github.com/lukey662/agentsandskills/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/%40appsforgood%2Fnext-supabase-kit)](https://www.npmjs.com/package/@appsforgood/next-supabase-kit)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/lukey662/agentsandskills/badge)](https://scorecard.dev/viewer/?uri=github.com/lukey662/agentsandskills)
+[![CodeQL](https://github.com/lukey662/agentsandskills/actions/workflows/codeql.yml/badge.svg)](https://github.com/lukey662/agentsandskills/actions/workflows/codeql.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 `@appsforgood/next-supabase-kit` installs an agent operating system for Next.js + Supabase projects.
 
 It gives agentic coders a default council roster, reusable skills, handoff rules, model-routing guidance, markdown docs, frontend design gates, Supabase/RLS security checks, upgrade workflows, and audit commands.
@@ -14,7 +20,7 @@ It also includes a local Agent Studio workflow: project context, durable human c
 
 ## Quick Start
 
-Use this in a Next.js + Supabase project after the public package is available on npm:
+Use this in a Next.js + Supabase project:
 
 ```bash
 npx @appsforgood/next-supabase-kit init --stack next-supabase --setup --open
@@ -32,6 +38,34 @@ npx @appsforgood/next-supabase-kit adapter validate antigravity
 ```
 
 The installer preserves existing docs. If a file already exists and differs from the template, the new version is written to `.agent-kit/conflicts/` for review.
+
+### See It In Action
+
+```text
+$ agent-kit init --stack next-supabase
+agent-kit installed (stack: next-supabase)
+Created (21)
+  AGENTS.md
+  AGENT_ROSTER.md
+  ASSISTANT_ADAPTERS.md
+  ...
+  .cursor/rules/cursor-agent-kit.mdc
+  .agent-kit/agent-roster.json
+  .agent-kit/model-routing.json
+
+Manifest: .agent-kit/manifest.json
+Next: run agent-kit audit to check readiness.
+
+$ agent-kit audit
+READINESS baseline-setup: Agent kit setup is valid, but project-specific
+evidence still needs to replace starter placeholders.
+SUMMARY pass=60 warn=3 fail=0
+NEXT ACTIONS
+- Run agent-kit onboard or agent-kit init --guided so agents can start
+  with project-specific context.
+```
+
+Every command accepts `--json` for machine-readable output, and mutating commands (`init`, `update`, `add skill`) accept `--dry-run`. A `vhs` tape for regenerating the animated demo lives at `docs/demo.tape`.
 
 For local development of this repo:
 
@@ -257,7 +291,7 @@ Release expectations:
 - Dependency Review, CodeQL, OpenSSF Scorecard, Dependabot, SBOM validation, and SBOM attestation.
 - Post-publish verification with `npm run publish:verify`.
 
-Public release remains gated until the npm scope/package exists, Trusted Publishing is configured, and post-publish `npx` verification succeeds.
+The package is published to public npm under `@appsforgood/next-supabase-kit`. Every release must pass `npm run release:check` before publish and `npm run publish:verify` after (registry visibility, clean `npx` doctor/init/audit). Post-publish verification was last run 2026-07-02 against the live registry: doctor, init, and `audit --min-readiness baseline-setup` all passed with zero failures.
 
 ## Repository Health
 

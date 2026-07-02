@@ -59,6 +59,14 @@
 - Mark unknown audience, differentiator, proof, objections, or conversion assumptions as `TBD` instead of hiding gaps behind polished copy.
 - Avoid unsupported superlatives, invented proof, dark patterns, forced urgency, and risky pricing, privacy, security, compliance, performance, medical, financial, or legal claims.
 
+## Design Tokens And States For This Repo
+
+This repo's user-facing surfaces are terminal output, markdown, and the static Agent Studio HTML export. `DESIGN.md` is the design token source of truth; apply content-first creative direction from `DESIGN.md` before changing any output surface, and record the chosen creative direction there.
+
+- Design token decisions: semantic ANSI color (green pass, yellow warn, red fail, cyan headings, dim detail) with monochrome fallback; terminal monospace typography with sentence-case markdown headings; spacing of one blank line between sections and two-space remediation indents; a single 6px radius token in the studio export; no motion.
+- Component state coverage: every command defines its loading (start line, no spinner), empty ("no sessions yet" style guidance with the next command), error (cause plus recovery command), disabled (feature unavailable with reason), and success states; studio export must stay readable at mobile widths (360px).
+- No landing page ships from this repo: the first screen of every surface is the working app itself, meaning task-first audit output that shows readiness, findings, and remediation rather than marketing copy.
+
 ## Front-End Guidance For Installed Projects
 
 Installed project docs should push teams away from generic AI-looking interfaces. Prefer product-specific layouts, explicit component states, accessible interactions, real content structure, reference-led critique, frontend distinctiveness benchmarking, and design briefs tailored to SaaS, admin, marketplace, content, or tool workflows.

@@ -1,5 +1,5 @@
 import { Octokit } from "@octokit/rest";
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { RepoCandidate } from "../config/types.js";
 import { writeText } from "../utils/fs.js";

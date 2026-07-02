@@ -1,10 +1,12 @@
 import { existsSync, mkdtempSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { createAuditReport } from "../src/install/audit.js";
 import { diffProject } from "../src/install/diff.js";
 import { initProject } from "../src/install/install.js";
+import { updateProject } from "../src/install/update.js";
 
 let tempRoots: string[] = [];
 
@@ -72,14 +74,31 @@ describe("update older installs", () => {
 
     const preview = diffProject(root);
     expect(preview.missing).toEqual(
-      expect.arrayContaining(["AGENT_ROSTER.md", "ASSISTANT_ADAPTERS.md", "COUNCIL.md", "DESIGN.md", "MESSAGING.md", "MODEL_ROUTING.md", "QUALITY_GATES.md", "UPGRADE.md"])
+      expect.arrayContaining([
+        "AGENT_ROSTER.md",
+        "ASSISTANT_ADAPTERS.md",
+        "COUNCIL.md",
+        "DESIGN.md",
+        "MESSAGING.md",
+        "MODEL_ROUTING.md",
+        "QUALITY_GATES.md",
+        "UPGRADE.md"
+      ])
     );
     expect(preview.changed).toEqual(expect.arrayContaining(["AGENTS.md", "SKILLS.md", "SPEC.md"]));
     expect(preview.agentRoster).toBe("missing");
     expect(preview.modelRouting).toBe("missing");
     expect(preview.libraryFolders.missing).toEqual(expect.arrayContaining(["assistant-adapters", "runtime-skills", "rosters", "schemas"]));
     expect(preview.preview.wouldCreate).toEqual(
-      expect.arrayContaining(["DESIGN.md", "MESSAGING.md", "MODEL_ROUTING.md", "QUALITY_GATES.md", "UPGRADE.md", ".agent-kit/agent-roster.json", ".agent-kit/model-routing.json"])
+      expect.arrayContaining([
+        "DESIGN.md",
+        "MESSAGING.md",
+        "MODEL_ROUTING.md",
+        "QUALITY_GATES.md",
+        "UPGRADE.md",
+        ".agent-kit/agent-roster.json",
+        ".agent-kit/model-routing.json"
+      ])
     );
     expect(preview.preview.wouldWriteConflicts).toEqual(expect.arrayContaining(["AGENTS.md", "SKILLS.md", "SPEC.md"]));
     expect(preview.preview.wouldRefreshLibraryFolders).toEqual(expect.arrayContaining(["assistant-adapters", "runtime-skills", "schemas"]));
@@ -141,11 +160,127 @@ describe("update older installs", () => {
     expect(report.summary.fail).toBe(0);
     expect(report.readiness.level).toBe("baseline-setup");
     expect(report.findings.some((finding) => finding.message.includes("Agent roster maps default agents to required skills"))).toBe(true);
-    expect(report.findings.some((finding) => finding.message.includes("Frontend-change workflow requires content-first design, reference-led critique"))).toBe(true);
+    expect(report.findings.some((finding) => finding.message.includes("Frontend-change workflow requires content-first design, reference-led critique"))).toBe(
+      true
+    );
 
     const updatedPreview = diffProject(root);
     expect(updatedPreview.agentRoster).toBe("unchanged");
     expect(updatedPreview.modelRouting).toBe("unchanged");
     expect(updatedPreview.libraryFolders.missing).toEqual([]);
+  });
+});
+
+function sha256(content: string): string {
+  return createHash("sha256").update(content).digest("hex");
+}
+
+function freshInstall(): string {
+  const root = mkdtempSync(join(tmpdir(), "agent-kit-update-"));
+  tempRoots.push(root);
+  initProject({ cwd: root });
+  return root;
+}
+
+function readManifestFile(root: string): { templateHashes: Record<string, string> } & Record<string, unknown> {
+  return JSON.parse(readFileSync(join(root, ".agent-kit", "manifest.json"), "utf8")) as { templateHashes: Record<string, string> } & Record<string, unknown>;
+}
+
+function writeManifestFile(root: string, manifest: Record<string, unknown>): void {
+  writeFileSync(join(root, ".agent-kit", "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);
+}
+
+describe("updateProject hash-aware semantics", () => {
+  it("auto-updates pristine docs installed from an older template", () => {
+    const root = freshInstall();
+
+    // Simulate an older template: local file and manifest hash agree, but differ from the current template.
+    const olderContent = "Older template content for AGENTS.\n";
+    writeFileSync(join(root, "AGENTS.md"), olderContent);
+    const manifest = readManifestFile(root);
+    manifest.templateHashes["AGENTS.md"] = sha256(olderContent);
+    writeManifestFile(root, manifest);
+
+    const result = updateProject({ cwd: root });
+    const agentsFile = result.files.find((file) => file.target === "AGENTS.md");
+    expect(agentsFile?.action).toBe("updated");
+    expect(readFileSync(join(root, "AGENTS.md"), "utf8")).not.toBe(olderContent);
+    expect(result.summary.updated).toBeGreaterThanOrEqual(1);
+    expect(result.summary.conflict).toBe(0);
+
+    const refreshed = readManifestFile(root);
+    expect(refreshed.templateHashes["AGENTS.md"]).toBe(sha256(readFileSync(join(root, "AGENTS.md"), "utf8")));
+    expect(typeof refreshed.updatedAt).toBe("string");
+  });
+
+  it("keeps locally customized docs when the template has not changed", () => {
+    const root = freshInstall();
+    writeFileSync(join(root, "AGENTS.md"), "Locally customized agents doc.\n");
+
+    const result = updateProject({ cwd: root });
+    const agentsFile = result.files.find((file) => file.target === "AGENTS.md");
+    expect(agentsFile?.action).toBe("kept-local");
+    expect(readFileSync(join(root, "AGENTS.md"), "utf8")).toBe("Locally customized agents doc.\n");
+    expect(existsSync(join(root, ".agent-kit", "conflicts")) ? readdirSync(join(root, ".agent-kit", "conflicts")).length : 0).toBe(0);
+  });
+
+  it("writes a conflict when a customized doc collides with a changed template", () => {
+    const root = freshInstall();
+
+    const localContent = "Locally customized agents doc.\n";
+    writeFileSync(join(root, "AGENTS.md"), localContent);
+    const manifest = readManifestFile(root);
+    manifest.templateHashes["AGENTS.md"] = sha256("Some older template that no longer matches.\n");
+    writeManifestFile(root, manifest);
+
+    const result = updateProject({ cwd: root });
+    const agentsFile = result.files.find((file) => file.target === "AGENTS.md");
+    expect(agentsFile?.action).toBe("conflict");
+    expect(agentsFile?.conflictPath).toMatch(/^\.agent-kit\/conflicts\//);
+    expect(readFileSync(join(root, "AGENTS.md"), "utf8")).toBe(localContent);
+    expect(existsSync(join(root, agentsFile!.conflictPath!.replace(/\//g, "/")))).toBe(true);
+  });
+
+  it("overwrites customized docs only with --force", () => {
+    const root = freshInstall();
+    writeFileSync(join(root, "AGENTS.md"), "Locally customized agents doc.\n");
+    const manifest = readManifestFile(root);
+    manifest.templateHashes["AGENTS.md"] = sha256("Some older template.\n");
+    writeManifestFile(root, manifest);
+
+    const result = updateProject({ cwd: root, force: true });
+    const agentsFile = result.files.find((file) => file.target === "AGENTS.md");
+    expect(agentsFile?.action).toBe("overwritten");
+    expect(readFileSync(join(root, "AGENTS.md"), "utf8")).not.toBe("Locally customized agents doc.\n");
+  });
+
+  it("reports without writing when --dry-run is used", () => {
+    const root = freshInstall();
+
+    const olderContent = "Older template content for AGENTS.\n";
+    writeFileSync(join(root, "AGENTS.md"), olderContent);
+    const manifestBefore = readManifestFile(root);
+    manifestBefore.templateHashes["AGENTS.md"] = sha256(olderContent);
+    writeManifestFile(root, manifestBefore);
+
+    const result = updateProject({ cwd: root, dryRun: true });
+    expect(result.dryRun).toBe(true);
+    const agentsFile = result.files.find((file) => file.target === "AGENTS.md");
+    expect(agentsFile?.action).toBe("updated");
+    // Nothing was written.
+    expect(readFileSync(join(root, "AGENTS.md"), "utf8")).toBe(olderContent);
+    const manifestAfter = readManifestFile(root);
+    expect(manifestAfter.templateHashes["AGENTS.md"]).toBe(sha256(olderContent));
+  });
+
+  it("throws on --dry-run without a previous install and falls back to init otherwise", () => {
+    const root = mkdtempSync(join(tmpdir(), "agent-kit-update-noinstall-"));
+    tempRoots.push(root);
+
+    expect(() => updateProject({ cwd: root, dryRun: true })).toThrow(/agent-kit init/);
+
+    const result = updateProject({ cwd: root });
+    expect(result.summary.created).toBeGreaterThan(0);
+    expect(existsSync(join(root, ".agent-kit", "manifest.json"))).toBe(true);
   });
 });

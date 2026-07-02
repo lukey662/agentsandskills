@@ -156,11 +156,7 @@ function readOverrides(cwd: string): Record<string, TemplateOverride> {
     return Object.fromEntries(
       Object.entries(templates).map(([file, override]) => [
         file,
-        typeof override === "string"
-          ? { reason: override }
-          : override && typeof override === "object"
-            ? override
-            : { reason: String(override) }
+        typeof override === "string" ? { reason: override } : override && typeof override === "object" ? override : { reason: String(override) }
       ])
     );
   } catch {
@@ -347,7 +343,8 @@ function addAgentRosterFindings(cwd: string, findings: AuditFinding[], rosterRel
     findings.push({
       level: "pass",
       area: "agents",
-      message: "Frontend-change workflow requires content-first design, reference-led critique, distinctiveness benchmarking, product-quality scoring, and creative-direction evidence."
+      message:
+        "Frontend-change workflow requires content-first design, reference-led critique, distinctiveness benchmarking, product-quality scoring, and creative-direction evidence."
     });
   }
 
@@ -650,8 +647,6 @@ function addAgentStudioFindings(cwd: string, findings: AuditFinding[]): void {
     const sessionDir = sessionFile.replace(/[\\/]session\.json$/, "");
     const normalizedSessionDir = sessionDir.replace(/\\/g, "/");
     const eventsRelative = `${COUNCIL_SESSION_DIR}/${normalizedSessionDir}/events.jsonl`;
-    const indexRelative = `${COUNCIL_SESSION_DIR}/${normalizedSessionDir}/index.md`;
-    const transcriptRelative = `${COUNCIL_SESSION_DIR}/${normalizedSessionDir}/transcript.md`;
     const sessionDirPath = join(sessionsRoot, sessionDir);
 
     let sessionResult: ReturnType<typeof StudioSessionContract.safeParse> | null = null;
@@ -1127,7 +1122,8 @@ function addFrontendFindings(cwd: string, findings: AuditFinding[]): void {
       level: "warn",
       area: "frontend",
       message: "DESIGN.md is missing brand, content, user-need, creative-direction, or token guidance.",
-      remediation: "Use the DESIGN.md template to capture product category, audience, content inventory, brand traits, creative directions, and token decisions."
+      remediation:
+        "Use the DESIGN.md template to capture product category, audience, content inventory, brand traits, creative directions, and token decisions."
     });
   }
 
@@ -1141,7 +1137,9 @@ function addFrontendFindings(cwd: string, findings: AuditFinding[]): void {
     });
   }
 
-  if (!includesAll(designDoc, ["distinctiveness benchmark", "first-screen proof", "content fingerprint", "asset provenance", "state proof", "visual QA proof"])) {
+  if (
+    !includesAll(designDoc, ["distinctiveness benchmark", "first-screen proof", "content fingerprint", "asset provenance", "state proof", "visual QA proof"])
+  ) {
     findings.push({
       level: "warn",
       area: "frontend",
@@ -1212,8 +1210,7 @@ function addQualityGateFindings(cwd: string, findings: AuditFinding[]): void {
       level: "warn",
       area: "quality",
       message: "QUALITY_GATES.md is missing one or more best-practice coverage areas.",
-      remediation:
-        "Cover council routing, architecture, security, Supabase/RLS, frontend, accessibility, testing, release, and repo-health evidence."
+      remediation: "Cover council routing, architecture, security, Supabase/RLS, frontend, accessibility, testing, release, and repo-health evidence."
     });
   } else {
     findings.push({
@@ -1241,8 +1238,7 @@ function addUpgradeFindings(cwd: string, findings: AuditFinding[]): void {
       level: "warn",
       area: "upgrade",
       message: "UPGRADE.md does not cover framework codemods, Supabase migrations, or generated type review.",
-      remediation:
-        "Include Next.js upgrade/codemod review and Supabase migration history, RLS impact, rollback, and generated type checks."
+      remediation: "Include Next.js upgrade/codemod review and Supabase migration history, RLS impact, rollback, and generated type checks."
     });
   } else {
     findings.push({
@@ -1253,14 +1249,7 @@ function addUpgradeFindings(cwd: string, findings: AuditFinding[]): void {
   }
 }
 
-const STARTER_EVIDENCE_PATTERNS = [
-  /\bTBD\b/i,
-  /replace with real/i,
-  /example_table/i,
-  /describe the product/i,
-  /document required/i,
-  /pass\/fail\/skipped/i
-];
+const STARTER_EVIDENCE_PATTERNS = [/\bTBD\b/i, /replace with real/i, /example_table/i, /describe the product/i, /document required/i, /pass\/fail\/skipped/i];
 
 const EVIDENCE_DOCS = [
   "COUNCIL.md",

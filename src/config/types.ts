@@ -30,6 +30,7 @@ export interface InstallManifest {
   packageVersion: string;
   stack: StackProfile;
   installedAt: string;
+  updatedAt?: string;
   docs: string[];
   libraryFolders: string[];
   agentRoster?: string;

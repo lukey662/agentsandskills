@@ -2,7 +2,18 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { ProjectContextContract, type ProjectContextContractValue, formatContractIssues } from "../config/contracts.js";
 import { listFilesRecursive, readTextIfExists } from "../utils/fs.js";
-import { CONTEXT_JSON, CONTEXT_MD, ensureStudioDirs, listMarkdown, nowIso, readJsonFile, redactSensitive, unique, writeJsonFile, writeTextFile } from "./shared.js";
+import {
+  CONTEXT_JSON,
+  CONTEXT_MD,
+  ensureStudioDirs,
+  listMarkdown,
+  nowIso,
+  readJsonFile,
+  redactSensitive,
+  unique,
+  writeJsonFile,
+  writeTextFile
+} from "./shared.js";
 
 export interface ContextCommandResult {
   contextPath: string;
@@ -10,7 +21,9 @@ export interface ContextCommandResult {
   openQuestions: string[];
 }
 
-function readPackageJson(cwd: string): { scripts?: Record<string, string>; dependencies?: Record<string, string>; devDependencies?: Record<string, string> } | null {
+function readPackageJson(
+  cwd: string
+): { scripts?: Record<string, string>; dependencies?: Record<string, string>; devDependencies?: Record<string, string> } | null {
   const path = join(cwd, "package.json");
   if (!existsSync(path)) return null;
   return JSON.parse(readFileSync(path, "utf8")) as {

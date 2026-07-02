@@ -34,7 +34,7 @@ interface StaticStudioSession {
 
 interface StaticStudioData {
   generatedAt: string;
-  context: unknown | null;
+  context: unknown;
   contextMarkdown: string | null;
   corrections: ReturnType<typeof listCorrections>;
   activeSessionId: string | null;
@@ -74,7 +74,7 @@ export function exportStaticStudio(cwd: string): StaticStudioExportResult {
   return { studioPath: STUDIO_EXPORT_HTML, sessionCount: sessions.length, exportedAt };
 }
 
-function readProjectContext(cwd: string): unknown | null {
+function readProjectContext(cwd: string): unknown {
   const raw = readJsonFile<unknown>(cwd, CONTEXT_JSON);
   if (!raw) return null;
   return ProjectContextContract.parse(raw);
@@ -177,16 +177,14 @@ function renderStaticStudioHtml(data: StaticStudioData): string {
 }
 
 function renderContextSummary(data: StaticStudioData): string {
-  const context = data.context as
-    | {
-        projectName?: string;
-        productSummary?: string;
-        primaryAudience?: string;
-        qualityTarget?: string;
-        architecture?: { frameworks?: string[]; testTools?: string[]; hasSupabase?: boolean };
-        openQuestions?: string[];
-      }
-    | null;
+  const context = data.context as {
+    projectName?: string;
+    productSummary?: string;
+    primaryAudience?: string;
+    qualityTarget?: string;
+    architecture?: { frameworks?: string[]; testTools?: string[]; hasSupabase?: boolean };
+    openQuestions?: string[];
+  } | null;
   if (!context) return `<p class="muted">No project context found. Run <code>agent-kit onboard</code> or <code>agent-kit init --guided</code>.</p>`;
   return `<div class="stack">
     <p><strong>${escapeHtml(context.projectName || "TBD")}</strong> ${escapeHtml(context.productSummary || "No product summary recorded.")}</p>
@@ -204,7 +202,10 @@ function renderCorrections(data: StaticStudioData): string {
     <thead><tr><th>Scope</th><th>Agent</th><th>Correction</th></tr></thead>
     <tbody>
       ${rules
-        .map((rule) => `<tr><td>${escapeHtml(rule.scope)}</td><td>${escapeHtml(rule.agentId ?? rule.appliesToAgents?.join(", ") ?? "all")}</td><td>${escapeHtml(rule.text)}</td></tr>`)
+        .map(
+          (rule) =>
+            `<tr><td>${escapeHtml(rule.scope)}</td><td>${escapeHtml(rule.agentId ?? rule.appliesToAgents?.join(", ") ?? "all")}</td><td>${escapeHtml(rule.text)}</td></tr>`
+        )
         .join("\n")}
     </tbody>
   </table>`;
@@ -258,7 +259,10 @@ function renderAgentStreams(item: StaticStudioSession): string {
     byAgent.set(agent, [...(byAgent.get(agent) ?? []), event]);
   }
   return [...byAgent.entries()]
-    .map(([agent, events]) => `<details class="agent-stream"><summary>${escapeHtml(agent)} (${events.length})</summary><div class="stream-body">${renderEventList(events)}</div></details>`)
+    .map(
+      ([agent, events]) =>
+        `<details class="agent-stream"><summary>${escapeHtml(agent)} (${events.length})</summary><div class="stream-body">${renderEventList(events)}</div></details>`
+    )
     .join("\n");
 }
 
@@ -267,7 +271,8 @@ function renderEventList(events: SessionEventContractValue[]): string {
 }
 
 function eventDetail(event: SessionEventContractValue): string {
-  if (event.type === "handoff") return `${event.fromAgentId ?? "unknown"} -> ${event.toAgentId ?? "unknown"}: ${event.decision ?? ""} Risk: ${event.risk ?? ""}`;
+  if (event.type === "handoff")
+    return `${event.fromAgentId ?? "unknown"} -> ${event.toAgentId ?? "unknown"}: ${event.decision ?? ""} Risk: ${event.risk ?? ""}`;
   if (event.type === "required_output_updated") return `${event.outputName ?? "output"}: ${event.outputStatus ?? "unknown"}`;
   return event.text ?? event.decision ?? event.command ?? event.artifactPath ?? event.status ?? "";
 }
@@ -305,7 +310,9 @@ function renderSvgGraph(events: SessionEventContractValue[], knownAgents: string
 
 function renderPills(values: string[]): string {
   const cleaned = values.filter(Boolean);
-  return cleaned.length ? cleaned.map((value) => `<span class="pill">${escapeHtml(value)}</span>`).join("") : `<span class="muted">No stack signals recorded.</span>`;
+  return cleaned.length
+    ? cleaned.map((value) => `<span class="pill">${escapeHtml(value)}</span>`).join("")
+    : `<span class="muted">No stack signals recorded.</span>`;
 }
 
 function renderList(values: string[]): string {
@@ -330,8 +337,5 @@ function escapeSvgText(value: string): string {
 }
 
 function safeJsonForHtml(value: unknown): string {
-  return JSON.stringify(value)
-    .replace(/&/g, "\\u0026")
-    .replace(/</g, "\\u003c")
-    .replace(/>/g, "\\u003e");
+  return JSON.stringify(value).replace(/&/g, "\\u0026").replace(/</g, "\\u003c").replace(/>/g, "\\u003e");
 }

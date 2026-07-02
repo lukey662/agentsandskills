@@ -1,0 +1,59 @@
+{
+  "templates": {
+    "ASSISTANT_ADAPTERS.md": {
+      "reason": "Filled tool-surface rows with real verification evidence for this repo (Cursor active and verified; Codex, Copilot, and Claude Code not active).",
+      "reviewedAt": "2026-07-02",
+      "owner": "lukey662"
+    },
+    "COUNCIL.md": {
+      "reason": "Records real council sessions for this repo, starting with the 2026-07-02 world-class hardening session.",
+      "reviewedAt": "2026-07-02",
+      "owner": "lukey662"
+    },
+    "DESIGN.md": {
+      "reason": "Adapted to this repo's real surfaces (terminal output, markdown, studio HTML export) with completed critique gate, benchmark, and scorecard evidence.",
+      "reviewedAt": "2026-07-02",
+      "owner": "lukey662"
+    },
+    "MESSAGING.md": {
+      "reason": "Filled with the kit's real positioning, proof, objections, voice, and copy inventory.",
+      "reviewedAt": "2026-07-02",
+      "owner": "lukey662"
+    },
+    "DEPLOYMENT.md": {
+      "reason": "Rewritten for npm-package release flow (CI, Trusted Publishing, SBOM, rollback) instead of the downstream web-app deployment template.",
+      "reviewedAt": "2026-07-02",
+      "owner": "lukey662"
+    },
+    "SPEC.md": {
+      "reason": "This repo is the kit's own source; SPEC.md documents the package and CLI contract rather than a downstream app spec.",
+      "reviewedAt": "2026-07-02",
+      "owner": "lukey662"
+    },
+    "DECISIONS.md": {
+      "reason": "Package-level ADR history predates the self-install and must be preserved as-is.",
+      "reviewedAt": "2026-07-02",
+      "owner": "lukey662"
+    },
+    "DOCS.md": {
+      "reason": "Package-level developer documentation (architecture, install, studio) replaces the downstream template.",
+      "reviewedAt": "2026-07-02",
+      "owner": "lukey662"
+    },
+    "STYLE_GUIDE.md": {
+      "reason": "Package-level style guide extended with this repo's terminal-surface design tokens and states instead of the downstream web-app template.",
+      "reviewedAt": "2026-07-02",
+      "owner": "lukey662"
+    },
+    "SECURITY.md": {
+      "reason": "Package-level security policy (vulnerability reporting, supply chain) replaces the downstream app security template.",
+      "reviewedAt": "2026-07-02",
+      "owner": "lukey662"
+    },
+    "UPGRADE.md": {
+      "reason": "Package-level upgrade guide covers maintainer releases plus downstream upgrade flow; customized with real upgrade history.",
+      "reviewedAt": "2026-07-02",
+      "owner": "lukey662"
+    }
+  }
+}

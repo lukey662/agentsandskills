@@ -1,7 +1,7 @@
 # Public Release Review
 
-Date: 2026-06-02
-Current outcome: ready for public release after npm scope setup and publish verification.
+Date: 2026-06-02 (updated 2026-07-02)
+Current outcome: published. `@appsforgood/next-supabase-kit` is live on public npm and post-publish verification passes against the registry.
 
 ## License
 
@@ -43,9 +43,9 @@ Current outcome: ready for public release after npm scope setup and publish veri
 
 ## Package Metadata
 
-- Current state: public npm package is configured as `@appsforgood/next-supabase-kit`.
+- Current state: public npm package is configured as `@appsforgood/next-supabase-kit` and published under the `@appsforgood` npm org.
 - Public requirement: publish `@appsforgood/next-supabase-kit` under the `@appsforgood` npm org, configure Trusted Publishing, and verify public `npx` install/init/audit through `scripts/post-publish-verify.mjs`.
-- Status: pending npm setup.
+- Status: complete. Post-publish verification ran 2026-07-02: registry visibility, `npx` doctor, clean init, and baseline audit all passed with zero failures.
 
 ## Release Gate
 
@@ -57,4 +57,4 @@ Current outcome: ready for public release after npm scope setup and publish veri
 
 ## Decision
 
-Proceed with public package setup once CI and release dry run pass. The only remaining public-release blocker is npm scope/package publication and post-publish install verification.
+Public release is complete. Future releases follow `PUBLISH.md`: green `release:check`, GitHub Release from `main`, Trusted Publishing, then `publish:verify`.

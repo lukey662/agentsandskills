@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
-import { resolveNpmCommand } from "./lib/npm-command.mjs";
+import { resolveNpmCommand, resolveNpxCommand } from "./lib/npm-command.mjs";
 
 const repoRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const packageJson = JSON.parse(readFileSync(join(repoRoot, "package.json"), "utf8"));
@@ -19,8 +19,7 @@ const env = {
 };
 
 function run(command, args, options = {}) {
-  const resolvedCommand =
-    command === "npm" ? resolveNpmCommand() : command === "npx" ? resolveNpxCommand() : command;
+  const resolvedCommand = command === "npm" ? resolveNpmCommand() : command === "npx" ? resolveNpxCommand() : command;
   const spawnOptions = {
     cwd: options.cwd ?? repoRoot,
     env,
@@ -34,11 +33,7 @@ function run(command, args, options = {}) {
 }
 
 function runInstalledAgentKit(args, options = {}) {
-  return run(
-    "npm",
-    ["exec", "--yes", "--package", packageSpec, "--", "agent-kit", ...args],
-    options
-  );
+  return run("npm", ["exec", "--yes", "--package", packageSpec, "--", "agent-kit", ...args], options);
 }
 
 function verifyPackageVisible() {
@@ -75,10 +70,7 @@ try {
   runInstalledAgentKit(["init", "--stack", "next-supabase"], { cwd: tempRoot, stdio: "inherit" });
 
   console.log("running published audit");
-  const auditOutput = runInstalledAgentKit(
-    ["audit", "--json", "--min-readiness", "baseline-setup"],
-    { cwd: tempRoot }
-  );
+  const auditOutput = runInstalledAgentKit(["audit", "--json", "--min-readiness", "baseline-setup"], { cwd: tempRoot });
   const auditReport = JSON.parse(auditOutput);
   if (auditReport.summary?.fail !== 0) {
     throw new Error(`Expected published install audit to have 0 failures, got ${auditReport.summary?.fail}.\n${auditOutput}`);

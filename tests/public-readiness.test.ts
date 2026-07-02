@@ -326,13 +326,13 @@ describe("public package readiness", () => {
     const exportModule = readFileSync(join(root, "src", "studio", "export.ts"), "utf8");
     const smokeStudio = readFileSync(join(root, "scripts", "smoke-studio.mjs"), "utf8");
 
-    expect(cli).toContain("program.command(\"studio\")");
+    expect(cli).toContain('program.command("studio")');
     expect(cli).toContain("exportStaticStudio");
     expect(exportModule).toContain("STUDIO_EXPORT_HTML");
     expect(exportModule).toContain("agent-studio-data");
     expect(exportModule).toContain("<svg");
     expect(exportModule).toContain("<details");
-    expect(smokeStudio).toContain("[\"studio\", \"export\"]");
+    expect(smokeStudio).toContain('["studio", "export", "--json"]');
   });
 
   it("ships upgrade lifecycle assets", () => {
@@ -522,19 +522,22 @@ describe("public package readiness", () => {
     expect(releaseCheck).toContain("examples/next-supabase-installed/.agent-kit/agent-roster.json");
     expect(releaseCheck).toContain("examples/next-supabase-installed/.agent-kit/model-routing.json");
     expect(releaseCheck).toContain("examples/next-supabase-installed/audit-output.json");
-    expect(releaseCheck).toContain("[\"run\", \"version:check\"]");
-    expect(releaseCheck).toContain("[\"run\", \"typecheck\"]");
-    expect(releaseCheck).toContain("[\"test\"]");
-    expect(releaseCheck).toContain("[\"run\", \"build\"]");
-    expect(releaseCheck).toContain("[\"run\", \"package:validate\"]");
-    expect(releaseCheck).toContain("[\"run\", \"examples:check\"]");
-    expect(releaseCheck).toContain("[\"run\", \"smoke:install\"]");
-    expect(releaseCheck).toContain("[\"run\", \"smoke:studio\"]");
-    expect(releaseCheck).toContain("[\"run\", \"smoke:setup\"]");
-    expect(releaseCheck).toContain("[\"run\", \"smoke:audit-gate\"]");
-    expect(releaseCheck).toContain("[\"audit\", \"--audit-level=moderate\"]");
-    expect(releaseCheck).toContain("[\"run\", \"sbom:check\"]");
-    expect(releaseCheck).toContain("[\"pack\", \"--dry-run\"]");
+    expect(releaseCheck).toContain('["run", "version:check"]');
+    expect(releaseCheck).toContain('["run", "typecheck"]');
+    expect(releaseCheck).toContain('["run", "lint"]');
+    expect(releaseCheck).toContain('["run", "format:check"]');
+    expect(releaseCheck).toContain('["run", "test:coverage"]');
+    expect(releaseCheck).toContain('["run", "build"]');
+    expect(releaseCheck).toContain('["run", "package:validate"]');
+    expect(releaseCheck).toContain('["run", "adapter:validate"]');
+    expect(releaseCheck).toContain('["run", "examples:check"]');
+    expect(releaseCheck).toContain('["run", "smoke:install"]');
+    expect(releaseCheck).toContain('["run", "smoke:studio"]');
+    expect(releaseCheck).toContain('["run", "smoke:setup"]');
+    expect(releaseCheck).toContain('["run", "smoke:audit-gate"]');
+    expect(releaseCheck).toContain('["audit", "--audit-level=moderate"]');
+    expect(releaseCheck).toContain('["run", "sbom:check"]');
+    expect(releaseCheck).toContain('["pack", "--dry-run"]');
 
     const sbomCheck = readFileSync(join(root, "scripts", "sbom-check.mjs"), "utf8");
     expect(sbomCheck).toContain("CycloneDX");

@@ -51,6 +51,25 @@ Supported commands:
 
 Existing project files must not be overwritten by default. Template conflicts are written to `.agent-kit/conflicts/`, and installed template hashes are tracked in `.agent-kit/manifest.json`.
 
+`update` performs a hash-aware merge using the manifest template hashes. Per file it reports one action:
+
+- `created`: the file was missing locally.
+- `unchanged`: the file already matches the current template.
+- `updated`: the file was pristine (matched the installed template hash) and was auto-refreshed to the newer template.
+- `kept-local`: the file is locally customized and the bundled template did not change; local edits win silently.
+- `conflict`: the file is locally customized and the template changed; the new template is written to `.agent-kit/conflicts/` for review.
+- `overwritten`: local customizations were replaced because `--force` was passed.
+
+`update --dry-run` reports the same per-file plan without writing anything (it errors if no manifest exists). Running `update` without a previous install falls back to a conflict-safe `init`. After a real update, the manifest records `updatedAt` and refreshed `templateHashes`.
+
+### Output And Exit-Code Contract
+
+- Commands print human-readable output by default and accept `--json` for machine-readable output. Machine consumers (CI gates, scripts) must pass `--json`; the human output format is not a stable contract.
+- Color output uses ANSI semantic colors only when stdout is a TTY and `NO_COLOR` is unset; output degrades to monochrome otherwise.
+- Mutating commands support `--dry-run` where preview is meaningful: `init --dry-run`, `update --dry-run`, and `add skill --dry-run`.
+- `init --guided` asks interactive project-context questions only when running on a TTY; in CI and scripts it falls back to the non-interactive context scan.
+- Exit codes: `0` success; `1` for invalid input, failed audit gates (`--min-readiness` not met or any `fail` finding), and runtime errors. Errors print a single `error: <message>` line to stderr instead of a stack trace.
+
 `init` also installs assistant adapter rules when absent:
 
 - `.cursor/rules/cursor-agent-kit.mdc`

@@ -78,4 +78,5 @@ Keep rollback evidence next to the upgrade:
 | Date | From | To | Scope | Evidence | Owner |
 | --- | --- | --- | --- | --- | --- |
 | 2026-06-14 | TypeScript 5 / Node 22 types | TypeScript 6 / Node 25 types | Dev dependency update for package validation and CI parity | `npm run typecheck`, `npm test`, `npm audit --audit-level=moderate` | Maintainers |
-| TBD | TBD | TBD | TBD | TBD | TBD |
+| 2026-06 | 0.1.0 | 0.1.1 | Package rename to `@appsforgood/next-supabase-kit`, harness readiness gates, adapter install on init, publish prep | `CHANGELOG.md` 0.1.1 entry, `npm run release:check` green, commit `37e1a0f` | lukey662 |
+| 2026-07-02 | none | 0.1.1 (self-install) | Dogfooded the kit into this repo's own root: `agent-kit init` installed root docs, `.agent-kit/`, and confirmed the Cursor rules' referenced files exist | `.agent-kit/manifest.json`, `agent-kit audit` zero failures, `COUNCIL.md` 2026-07-02 session | lukey662 |

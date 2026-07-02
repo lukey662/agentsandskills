@@ -260,6 +260,8 @@ The package remains optimized for `next-supabase`, but `profiles/stack-next-fire
 npm install
 npm run dev -- doctor
 npm test
+npm run lint
+npm run format
 npm run build
 ```
 
@@ -270,12 +272,12 @@ BaseRepo is the Agent Kit **source repository**, not a downstream install. Maint
 Policy:
 
 - Run `npm run dogfood:init` to execute `agent-kit init --stack next-supabase --activate cursor --activate codex` against the repo root.
-- Generated `.agent-kit/`, `.codex/`, council docs from init (`AGENTS.md`, `COUNCIL.md`, etc.), and npm pack tarballs at repo root are listed in `.gitignore`.
-- `.cursor/` was already gitignored; Cursor activation from dogfood init writes there locally.
+- Generated `.codex/`, council docs from init (`AGENTS.md`, `COUNCIL.md`, etc.), and npm pack tarballs at repo root are listed in `.gitignore`.
+- `.cursor/rules/` is tracked; other `.cursor/` content remains local.
 - Validate locally with `node dist/index.js adapter validate cursor|codex` after activation.
 - Record release evidence with [MAINTAINER_RELEASE.md](MAINTAINER_RELEASE.md) and loop patterns in [LOOP_CODING.md](LOOP_CODING.md).
 
-Do not commit the maintainer overlay unless the project explicitly changes policy in `DECISIONS.md`.
+This repository also commits a **living dogfood example** at the repo root (`.agent-kit/` evidence files, filled root docs, council sessions) so Cursor rules and audit gates can be exercised in CI.
 
 ### Agentic levels in Agent Office
 
@@ -287,18 +289,25 @@ Do not commit the maintainer overlay unless the project explicitly changes polic
 
 Refresh after local audit or activation: `POST /api/agentic-level/refresh` while the setup server is running, or re-open `agent-kit setup`.
 
+### Code quality tooling
+
+- ESLint flat config (`eslint.config.js`, typescript-eslint recommended-type-checked) via `npm run lint` / `npm run lint:fix`.
+- Prettier (`.prettierrc.json`, markdown and template assets excluded via `.prettierignore`) via `npm run format` / `npm run format:check`.
+- Vitest coverage gate (`vitest.config.ts`, v8 provider, thresholds 70/70/70/65) via `npm run test:coverage`.
+- Versioning uses changesets: run `npx changeset` with each user-visible change; the `Version` workflow opens a "Version Packages" PR. See `.changeset/README.md`.
+
 ## CI
 
-GitHub Actions runs on pushes and pull requests to `main`.
+GitHub Actions runs on pushes and pull requests to `main` across a matrix of {ubuntu, windows, macos} x Node {20, 22, 24}.
 
-Required gates:
+Required gates per matrix cell:
 
 - `npm install --global npm@11.6.2`
 - `npm ci`
-- `npm run release:check` (includes `npm run adapter:validate` for all shipped IDE adapter templates)
+- `npm run release:check` (includes lint, format, coverage, `npm run adapter:validate`, and `npm run smoke:setup`)
 - `npm run smoke:audit-gate`
 
-`npm run release:check` validates JSON assets, checks package version consistency, typechecks, runs tests, builds, checks committed example output against the current CLI, install-smokes the packed package, runs dependency audit, validates CycloneDX SBOM generation, and performs package dry run. CI and release workflows both use this command so local and remote gates stay aligned.
+`npm run release:check` validates JSON assets, checks package version consistency, typechecks, lints, checks formatting, runs tests with the coverage gate, builds, checks committed example output against the current CLI, install-smokes the packed package, runs the Agent Studio smoke, runs dependency audit, validates CycloneDX SBOM generation, and performs package dry run. CI and release workflows both use this command so local and remote gates stay aligned.
 
 Normal CI runs on Node 20 to prove the package's published `node >=20` engine contract. Production dependency updates must keep that contract unless a decision explicitly raises the engine requirement and updates release docs.
 
@@ -370,8 +379,8 @@ Public install verification is separate from publish authentication and does not
 npm run publish:verify
 ```
 
-Pre-public release evidence:
+Public release evidence:
 
 - CI and release dry-run gates are configured.
 - Public package metadata is configured for `@appsforgood/next-supabase-kit`.
-- Public release remains blocked until `@appsforgood/next-supabase-kit` is published, Trusted Publishing is configured, and post-publish `npx` verification succeeds.
+- The package is published to public npm; post-publish `npx` verification (doctor, clean init, baseline audit) last passed 2026-07-02 against the live registry.

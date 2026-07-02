@@ -69,10 +69,7 @@ describe("auditProject", () => {
       join(root, "ASSISTANT_ADAPTERS.md"),
       "AGENTS.md\nagent-roster.json\nMODEL_ROUTING.md\nmodel-routing.json\nmodel selection\nenforcement\ncopilot-instructions\n.cursor/rules\n.claude/agents\nsource of truth\n"
     );
-    writeFileSync(
-      join(root, "MODEL_ROUTING.md"),
-      "Model Routing\nAgent\nProfile\nCodex\nClaude Code\nCursor\nGitHub Copilot\nEnforcement\n"
-    );
+    writeFileSync(join(root, "MODEL_ROUTING.md"), "Model Routing\nAgent\nProfile\nCodex\nClaude Code\nCursor\nGitHub Copilot\nEnforcement\n");
     writeFileSync(join(root, "COUNCIL.md"), "Council session\nhandoff\ndecision\nrisk\nevidence\n");
     writeFileSync(
       join(root, "QUALITY_GATES.md"),
@@ -103,9 +100,7 @@ describe("auditProject", () => {
     const manifest = JSON.parse(readFileSync(join(root, ".agent-kit", "manifest.json"), "utf8")) as {
       templateHashes: Record<string, string>;
     };
-    manifest.templateHashes = Object.fromEntries(
-      ROOT_DOCS.map((doc) => [doc, sha256(readFileSync(join(root, doc), "utf8"))])
-    );
+    manifest.templateHashes = Object.fromEntries(ROOT_DOCS.map((doc) => [doc, sha256(readFileSync(join(root, doc), "utf8"))]));
     writeFileSync(join(root, ".agent-kit", "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);
   });
 
@@ -213,9 +208,15 @@ describe("auditProject", () => {
     rmSync(join(root, ".agent-kit", "schemas"), { recursive: true, force: true });
 
     const findings = auditProject(root);
-    expect(findings.some((finding) => finding.level === "warn" && finding.message.includes(".agent-kit/schemas/agent-roster.schema.json is missing"))).toBe(true);
-    expect(findings.some((finding) => finding.level === "warn" && finding.message.includes(".agent-kit/schemas/council-session.schema.json is missing"))).toBe(true);
-    expect(findings.some((finding) => finding.level === "warn" && finding.message.includes(".agent-kit/schemas/model-routing.schema.json is missing"))).toBe(true);
+    expect(findings.some((finding) => finding.level === "warn" && finding.message.includes(".agent-kit/schemas/agent-roster.schema.json is missing"))).toBe(
+      true
+    );
+    expect(findings.some((finding) => finding.level === "warn" && finding.message.includes(".agent-kit/schemas/council-session.schema.json is missing"))).toBe(
+      true
+    );
+    expect(findings.some((finding) => finding.level === "warn" && finding.message.includes(".agent-kit/schemas/model-routing.schema.json is missing"))).toBe(
+      true
+    );
   });
 
   it("warns when assistant adapter templates are missing", () => {

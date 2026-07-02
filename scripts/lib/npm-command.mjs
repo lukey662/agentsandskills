@@ -21,31 +21,47 @@ export function resolveTarCommand() {
 }
 
 export function runNpm(args, options = {}) {
-  return execFileSync(resolveNpmCommand(), args, npmSpawnOptions({
-    stdio: "inherit",
-    ...options
-  }));
+  return execFileSync(
+    resolveNpmCommand(),
+    args,
+    npmSpawnOptions({
+      stdio: "inherit",
+      ...options
+    })
+  );
 }
 
 export function runNpmCapture(args, options = {}) {
-  return execFileSync(resolveNpmCommand(), args, npmSpawnOptions({
-    encoding: "utf8",
-    stdio: "pipe",
-    ...options
-  }));
+  return execFileSync(
+    resolveNpmCommand(),
+    args,
+    npmSpawnOptions({
+      encoding: "utf8",
+      stdio: "pipe",
+      ...options
+    })
+  );
 }
 
 export function runNpx(args, options = {}) {
-  return execFileSync(resolveNpxCommand(), args, npmSpawnOptions({
-    stdio: "inherit",
-    ...options
-  }));
+  return execFileSync(
+    resolveNpxCommand(),
+    args,
+    npmSpawnOptions({
+      stdio: "inherit",
+      ...options
+    })
+  );
 }
 
 export function runNpxCapture(args, options = {}) {
-  return execFileSync(resolveNpxCommand(), args, npmSpawnOptions({
-    encoding: "utf8",
-    stdio: "pipe",
-    ...options
-  }));
+  return execFileSync(
+    resolveNpxCommand(),
+    args,
+    npmSpawnOptions({
+      encoding: "utf8",
+      stdio: "pipe",
+      ...options
+    })
+  );
 }

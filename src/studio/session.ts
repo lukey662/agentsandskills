@@ -376,7 +376,7 @@ function renderDecisionRow(event: SessionEventContractValue): string {
 }
 
 function renderMermaidGraph(handoffs: SessionEventContractValue[]): string {
-  if (handoffs.length === 0) return "flowchart LR\n  session[\"Session\"]";
+  if (handoffs.length === 0) return 'flowchart LR\n  session["Session"]';
   const lines = ["flowchart LR"];
   for (const handoff of handoffs) {
     const from = safeNodeId(handoff.fromAgentId ?? "unknown");

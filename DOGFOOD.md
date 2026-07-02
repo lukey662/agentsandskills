@@ -34,6 +34,15 @@ Mode: read-only audit; no downstream files were modified.
 - Assistant adapters and upgrade lifecycle still need real activation/dogfood evidence after publication.
 - Reference-led design critique still needs a real UI change dogfood pass with screenshots or equivalent visual evidence.
 
+## 2026-07-02 Publish Verification And Self-Install Snapshot
+
+Date: 2026-07-02
+CLI source: public npm registry (`@appsforgood/next-supabase-kit`, published) plus local `src/` for the self-install.
+Mode: post-publish verification against the live registry, and dogfooding the kit into this repo's own root.
+
+- `node scripts/post-publish-verify.mjs` against the published package passed: registry visibility confirmed, `npx` doctor ok, clean temp `init` installed 23 files, and `audit --json --min-readiness baseline-setup` returned 0 failures (readiness `baseline-setup`).
+- This repo now dogfoods its own kit at the root: `agent-kit init` installed the root docs, `.agent-kit/`, and Cursor rules; project context, council session, and overrides were filled with real evidence; `agent-kit audit --min-readiness best-practice-candidate` passes with 0 warnings and 0 failures.
+
 ## 2026-06-07 Agent Studio Dogfood Snapshot
 
 Date: 2026-06-07

@@ -23,7 +23,7 @@ const version = packageJson.version;
 if (!semverPattern.test(version)) fail(`package.json version is not valid SemVer: ${version}`);
 
 assertEqual("package-lock root version", packageLock.version, version);
-assertEqual("package-lock packages[\"\"] version", packageLock.packages?.[""]?.version, version);
+assertEqual('package-lock packages[""] version', packageLock.packages?.[""]?.version, version);
 
 const changelogHeadingPattern = new RegExp(`^## \\[?${version.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\]?\\b`, "m");
 const headingMatch = changelog.match(changelogHeadingPattern);
@@ -33,8 +33,7 @@ if (!headingMatch || headingMatch.index === undefined) {
 
 const sectionStart = headingMatch.index + headingMatch[0].length;
 const nextHeadingIndex = changelog.slice(sectionStart).search(/^##\s+/m);
-const section =
-  nextHeadingIndex === -1 ? changelog.slice(sectionStart).trim() : changelog.slice(sectionStart, sectionStart + nextHeadingIndex).trim();
+const section = nextHeadingIndex === -1 ? changelog.slice(sectionStart).trim() : changelog.slice(sectionStart, sectionStart + nextHeadingIndex).trim();
 if (!section || !section.startsWith("- ")) {
   fail(`CHANGELOG.md release section ${version} must contain bullet entries.`);
 }

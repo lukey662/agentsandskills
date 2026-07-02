@@ -105,7 +105,11 @@ try {
   if (auditReport.summary?.fail !== 0) {
     throw new Error(`Expected install smoke audit to have 0 failures, got ${auditReport.summary?.fail}.\n${auditOutput}`);
   }
-  if (auditReport.readiness?.level !== "baseline-setup" && auditReport.readiness?.level !== "strong-delivery" && auditReport.readiness?.level !== "best-practice-candidate") {
+  if (
+    auditReport.readiness?.level !== "baseline-setup" &&
+    auditReport.readiness?.level !== "strong-delivery" &&
+    auditReport.readiness?.level !== "best-practice-candidate"
+  ) {
     throw new Error(`Expected install smoke readiness baseline-setup or better, got ${auditReport.readiness?.level ?? "unknown"}.\n${auditOutput}`);
   }
   if (!existsSync(join(projectRoot, ".cursor", "rules", "cursor-agent-kit.mdc"))) {

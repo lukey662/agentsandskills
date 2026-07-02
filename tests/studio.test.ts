@@ -164,7 +164,9 @@ describe("Agent Studio local workflow", () => {
     closeSession(root, "complete");
     renderActiveSession(root);
 
-    const sessionJson = JSON.parse(readFileSync(join(root, ".agent-kit", "council-sessions", session.sessionId, "session.json"), "utf8")) as StudioSessionContractValue;
+    const sessionJson = JSON.parse(
+      readFileSync(join(root, ".agent-kit", "council-sessions", session.sessionId, "session.json"), "utf8")
+    ) as StudioSessionContractValue;
     const index = readFileSync(join(root, ".agent-kit", "council-sessions", session.sessionId, "index.md"), "utf8");
     const transcript = readFileSync(join(root, ".agent-kit", "council-sessions", session.sessionId, "transcript.md"), "utf8");
     const audit = createAuditReport(root);

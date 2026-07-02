@@ -641,3 +641,59 @@ Add [RUNTIME_ORCHESTRATION_SCOPE.md](RUNTIME_ORCHESTRATION_SCOPE.md) as the sour
 ### Consequences
 
 The project can discuss runtime execution without confusing it with current v0.1 deliverables. Implementation can start from schema and validate-only commands before any provider adapter ships.
+
+## 2026-07-02 - Dogfood The Kit Into Its Own Repository Root
+
+### Context
+
+The always-apply Cursor rules told agents to treat root `AGENTS.md`, `.agent-kit/*`, `COUNCIL.md`, and related files as the source of truth, but those files only existed under `templates/next-supabase/`. The rules were broken on the kit's own repo.
+
+### Decision
+
+Run `agent-kit init` on the repo itself. Keep the resulting root docs and `.agent-kit/` evidence files in git, but gitignore the `.agent-kit/` copies of library folders (agents, skills, prompts, and so on) that duplicate the top-level source directories, matching the committed-example pattern. Fill project context, council session, adapter verification, and overrides with real repo evidence, and hold the repo to `audit --min-readiness best-practice-candidate`.
+
+### Consequences
+
+The Cursor rules now reference files that exist. The repo permanently exercises its own install, update, audit, and studio paths, and the root install doubles as a living best-practice example. Template updates will surface here first as conflicts to review.
+
+## 2026-07-02 - Hash-Aware Update Semantics
+
+### Context
+
+`agent-kit update` previously re-ran `initProject`, which could not distinguish pristine installed docs from user-customized ones, so every template change produced conflict noise even for unmodified files.
+
+### Decision
+
+Add `updateProject` (`src/install/update.ts`): compare each doc's local hash against the manifest's installed template hash and the current bundled template hash. Pristine docs auto-refresh, unmodified templates keep local edits silently, and only genuine divergence writes a conflict. Add `--dry-run` and per-file action reporting (`created`, `updated`, `unchanged`, `kept-local`, `conflict`, `overwritten`), and record `updatedAt` in the manifest.
+
+### Consequences
+
+Upgrades stop generating false conflicts, downstream review focuses on real divergence, and the update contract is documented in `SPEC.md` with unit and CLI-contract tests.
+
+## 2026-07-02 - Engineering Hygiene Baseline: Lint, Format, Coverage, CI Matrix, Changesets
+
+### Context
+
+`npm run lint` was aliased to `tsc --noEmit`, CI ran only ubuntu/Node 20 while the CLI is developed on Windows, coverage was unmeasured, and versioning was manual.
+
+### Decision
+
+Adopt ESLint (flat config, typescript-eslint recommended-type-checked) plus Prettier and `.editorconfig`, wired into `release:check`. Gate vitest coverage at 70/70/70/65 via `vitest.config.ts`. Expand CI to a {ubuntu, windows, macos} x {20, 22, 24} matrix, covering the release workflow's Node 24. Adopt changesets for versioning and changelog automation with a `version.yml` workflow; publishing stays in the hardened Trusted Publishing release workflow. Delete `.npmignore` in favor of the `files` allow-list (verified byte-identical pack output).
+
+### Consequences
+
+Type-aware linting immediately caught a real bug (`resolveNpxCommand` used without import in `post-publish-verify.mjs`). Cross-platform path behavior is now regression-tested on every push. Release versioning is PR-driven instead of hand-edited.
+
+## 2026-07-02 - Human-First CLI Output With A Stable JSON Contract
+
+### Context
+
+Every command printed raw `JSON.stringify` output, which reads as unfinished tooling and buries the audit's readiness verdict; only `audit` had `--json`.
+
+### Decision
+
+Default all commands to concise human-readable output (semantic ANSI color only on a TTY without `NO_COLOR`), add `--json` to every command as the stable machine contract, add `--dry-run` to `init` and `add skill` (in addition to `update`), make `init --guided` interactive via `@clack/prompts` on a TTY with a non-interactive fallback, and route all errors through a single `error: <message>` boundary with exit code 1. Documented in `SPEC.md` as the output and exit-code contract.
+
+### Consequences
+
+Machine consumers must pass `--json` (smoke scripts and tests were updated accordingly); human output is explicitly not a stable contract. The CLI gains two small runtime dependencies (`picocolors`, `@clack/prompts`).

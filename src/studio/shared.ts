@@ -1,4 +1,4 @@
-import { appendFileSync, existsSync, readFileSync, writeFileSync } from "node:fs";
+import { appendFileSync, existsSync, readFileSync } from "node:fs";
 import { basename, dirname, join } from "node:path";
 import { ensureDir, readTextIfExists, resolveInside, writeText } from "../utils/fs.js";
 
@@ -109,8 +109,7 @@ export function escapeMarkdownText(value: string | undefined): string {
 }
 
 export function escapeMarkdownTableCell(value: string | undefined): string {
-  return escapeMarkdownText(value)
-    .replace(/\|/g, "\\|")
+  return escapeMarkdownText(value).replace(/\|/g, "\\|");
 }
 
 export function listMarkdown(items: string[]): string {

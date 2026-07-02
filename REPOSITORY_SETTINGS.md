@@ -66,6 +66,10 @@ Create labels from `.github/labels.yml`. Required label families:
 - Status: `needs-triage`, `blocked`, `good first issue`, `help wanted`
 - Risk: `risk: security`, `risk: breaking-change`
 
+## GitHub Pages
+
+Enable GitHub Pages with source "Deploy from a branch", branch `main`, folder `/docs`. The minimal docs site lives at `docs/index.md` with the `jekyll-theme-minimal` theme configured in `docs/_config.yml`. Update `docs/index.md` when the CLI surface, readiness levels, or quick-start commands change.
+
 ## Review Cadence
 
 Review these settings before every public release and after any workflow, release, permission, package, or security-policy change.

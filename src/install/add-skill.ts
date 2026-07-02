@@ -1,6 +1,6 @@
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { copyTextWithConflict, listFilesRecursive } from "../utils/fs.js";
+import { copyTextWithConflict, listFilesRecursive, readTextIfExists, sha256, type CopyResult } from "../utils/fs.js";
 import { findPackageRoot } from "../utils/package-root.js";
 
 export function listSkills(): string[] {
@@ -8,7 +8,11 @@ export function listSkills(): string[] {
   return listFilesRecursive(join(packageRoot, "skills")).filter((file) => file.endsWith(".md"));
 }
 
-export function addSkill(cwd: string, skillName: string, options: { force?: boolean } = {}): string {
+export interface AddSkillResult extends CopyResult {
+  dryRun: boolean;
+}
+
+export function addSkill(cwd: string, skillName: string, options: { force?: boolean; dryRun?: boolean } = {}): AddSkillResult {
   const packageRoot = findPackageRoot();
   const normalized = skillName.endsWith(".md") ? skillName : `${skillName}.md`;
 
@@ -23,10 +27,22 @@ export function addSkill(cwd: string, skillName: string, options: { force?: bool
     throw new Error(`Unknown skill "${skillName}". Available skills: ${available}`);
   }
 
-  const result = copyTextWithConflict(sourcePath, cwd, join(".agent-kit", "skills", normalized), {
+  const targetRelativePath = join(".agent-kit", "skills", normalized);
+
+  if (options.dryRun) {
+    const existing = readTextIfExists(join(cwd, targetRelativePath));
+    const sourceContent = readFileSync(sourcePath, "utf8");
+    let action: CopyResult["action"];
+    if (existing === null) action = "created";
+    else if (sha256(existing) === sha256(sourceContent)) action = "unchanged";
+    else action = options.force ? "overwritten" : "conflict";
+    return { action, target: targetRelativePath, dryRun: true };
+  }
+
+  const result = copyTextWithConflict(sourcePath, cwd, targetRelativePath, {
     force: Boolean(options.force),
     conflictRoot: join(cwd, ".agent-kit", "conflicts")
   });
 
-  return `${result.action}: ${result.target}`;
+  return { ...result, dryRun: false };
 }

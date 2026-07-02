@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "sessionId": "2026-07-02-world-class-repo-hardening",
+  "title": "World-class repo hardening",
+  "createdAt": "2026-07-02T12:33:27.264Z",
+  "updatedAt": "2026-07-02T13:27:54.429Z",
+  "status": "complete",
+  "workflowId": "core-change",
+  "request": "Implement world-class repo improvement plan: dogfood kit into root, real update semantics, packaging cleanup, lint and format, CI matrix, coverage, changesets, CLI UX, publish prep, docs site.",
+  "affectedLayers": [],
+  "activeAgentId": "lead-architect",
+  "qualityTarget": "baseline-setup",
+  "requiredOutputs": [
+    {
+      "name": "architecture decision",
+      "status": "complete",
+      "evidence": "DECISIONS.md ADRs 2026-07-02: dogfood root install, hash-aware update semantics, hygiene baseline, human-first CLI output."
+    },
+    {
+      "name": "maturity evidence",
+      "status": "complete",
+      "evidence": "Repo audit passes with 63 checks; QUALITY_GATES.md and DOGFOOD.md updated with 2026-07-02 evidence."
+    },
+    {
+      "name": "security review",
+      "status": "complete",
+      "evidence": "npm audit clean; SBOM validated; no new deps with CVEs; update command constrained by resolveInside path guards."
+    },
+    {
+      "name": "test evidence",
+      "status": "complete",
+      "evidence": "npm run release:check passed: typecheck, lint, format, coverage-gated tests, install smoke, studio smoke, pack dry run."
+    },
+    {
+      "name": "doc updates",
+      "status": "complete",
+      "evidence": "DECISIONS.md, DOCS.md, SPEC.md, README.md, DOGFOOD.md, UPGRADE.md, DEPLOYMENT.md, MESSAGING.md, DESIGN.md, docs/ site updated."
+    },
+    {
+      "name": "upgrade evidence when applicable",
+      "status": "complete",
+      "evidence": "UPGRADE.md records hash-aware update flow; tests/update.test.ts covers pristine auto-update, conflict, force, dry-run."
+    },
+    {
+      "name": "release or rollback notes",
+      "status": "complete",
+      "evidence": "Changeset .changeset/world-class-hardening.md staged; DEPLOYMENT.md documents npm Trusted Publishing release and rollback."
+    },
+    {
+      "name": "visual QA evidence",
+      "status": "not-applicable",
+      "evidence": "CLI-only change; output verified via CLI contract tests."
+    },
+    {
+      "name": "security review evidence",
+      "status": "complete",
+      "evidence": "npm audit clean; SBOM validated; no new dependencies with CVEs; update command uses resolveInside path guards."
+    }
+  ],
+  "renderedAt": "2026-07-02T13:27:54.429Z"
+}

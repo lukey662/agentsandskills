@@ -1,0 +1,45 @@
+name: Version
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: version-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  version:
+    name: Open or update version PR
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.repository == 'lukey662/agentsandskills'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create or update Version Packages PR
+        uses: changesets/action@v1
+        with:
+          version: npx changeset version
+          title: "Version Packages"
+          commit: "Version Packages"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

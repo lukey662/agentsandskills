@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import { basename, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
@@ -124,10 +124,7 @@ function resolveDependencyPath(fromPath, dependencyName) {
 const unresolved = [];
 const skippedOptional = [];
 const rootRef = bomRef(packageJson.name, packageJson.version, "");
-const rootDependencyNames = [
-  ...Object.keys(packageJson.dependencies ?? {}),
-  ...Object.keys(packageJson.devDependencies ?? {})
-].sort();
+const rootDependencyNames = [...Object.keys(packageJson.dependencies ?? {}), ...Object.keys(packageJson.devDependencies ?? {})].sort();
 
 const dependencies = [
   {
@@ -143,10 +140,7 @@ const dependencies = [
 ];
 
 for (const [packagePath, entry] of packageEntries) {
-  const names = [
-    ...Object.keys(entry.dependencies ?? {}),
-    ...Object.keys(entry.optionalDependencies ?? {})
-  ].sort();
+  const names = [...Object.keys(entry.dependencies ?? {}), ...Object.keys(entry.optionalDependencies ?? {})].sort();
   dependencies.push({
     ref: pathToRef.get(packagePath),
     dependsOn: names
@@ -164,7 +158,7 @@ for (const [packagePath, entry] of packageEntries) {
 }
 
 const sbom = {
-  "$schema": "http://cyclonedx.org/schema/bom-1.5.schema.json",
+  $schema: "http://cyclonedx.org/schema/bom-1.5.schema.json",
   bomFormat: "CycloneDX",
   specVersion: "1.5",
   serialNumber: `urn:uuid:${deterministicUuid(`${packageJson.name}@${packageJson.version}`)}`,

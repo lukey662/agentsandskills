@@ -96,7 +96,7 @@ function parseFinding(file: string, text: string): ParsedFinding | null {
 
   const parsedScore = JSON.parse(scoreJson) as Partial<RepoScore>;
   const score = Object.fromEntries(SCORE_KEYS.map((key) => [key, parsedScore[key] ?? 0])) as unknown as RepoScore;
-  const totalScore = Object.values(score).reduce((sum, value) => sum + value, 0);
+  const totalScore = Object.values(score as unknown as Record<string, number>).reduce((sum, value) => sum + value, 0);
 
   return {
     file,

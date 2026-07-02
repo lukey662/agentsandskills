@@ -1,0 +1,27 @@
+{
+  "stack": "next-supabase",
+  "projectType": "saas",
+  "docsMode": "advisory",
+  "agentCouncil": {
+    "required": true,
+    "rosterPath": ".agent-kit/agent-roster.json",
+    "defaultWorkflow": "planning",
+    "coreChangeWorkflow": "core-change"
+  },
+  "modelRouting": {
+    "required": true,
+    "routingPath": ".agent-kit/model-routing.json",
+    "reviewCadence": "quarterly-or-when-model-docs-change"
+  },
+  "designProviders": [
+    "stitch",
+    "claude",
+    "figma",
+    "human"
+  ],
+  "research": {
+    "maxRepos": 100,
+    "githubTokenEnv": "GITHUB_TOKEN",
+    "workdir": "research/workdir"
+  }
+}

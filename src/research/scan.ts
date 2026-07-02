@@ -13,7 +13,7 @@ export interface ScanOptions {
 }
 
 function findingToMarkdown(finding: RepoFinding): string {
-  const total = Object.values(finding.score).reduce((sum, value) => sum + value, 0);
+  const total = Object.values(finding.score as unknown as Record<string, number>).reduce((sum, value) => sum + value, 0);
   const maxScore = Object.keys(finding.score).length * 5;
 
   return `# Repo Finding: ${finding.candidate.fullName}

@@ -54,7 +54,9 @@ function run(name, args) {
 validateJson();
 run("Version consistency check", ["run", "version:check"]);
 run("Typecheck", ["run", "typecheck"]);
-run("Test", ["test"]);
+run("Lint", ["run", "lint"]);
+run("Format check", ["run", "format:check"]);
+run("Test with coverage gate", ["run", "test:coverage"]);
 run("Build", ["run", "build"]);
 run("Package asset validation", ["run", "package:validate"]);
 run("IDE adapter template validation", ["run", "adapter:validate"]);

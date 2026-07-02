@@ -57,7 +57,7 @@ try {
   if (!context.architecture.frameworks.includes("next")) throw new Error("Context scan did not detect Next.js.");
   if (!context.architecture.hasSupabase) throw new Error("Context scan did not detect Supabase.");
 
-  const startOutput = JSON.parse(run(["session", "start", "Build", "checkout", "flow", "--workflow", "frontend-change"]));
+  const startOutput = JSON.parse(run(["session", "start", "Build", "checkout", "flow", "--workflow", "frontend-change", "--json"]));
   const sessionId = startOutput.sessionId;
   run(["session", "decision", "--agent", "planner", "--risk", "Generic UI risk", "Use", "frontend-change", "workflow"]);
   run([
@@ -74,21 +74,7 @@ try {
     "--evidence",
     "DESIGN.md"
   ]);
-  run([
-    "session",
-    "correct",
-    "--agent",
-    "frontend-design-lead",
-    "--scope",
-    "project",
-    "Keep",
-    "the",
-    "UI",
-    "operational",
-    "and",
-    "dense.",
-    fakeSecret
-  ]);
+  run(["session", "correct", "--agent", "frontend-design-lead", "--scope", "project", "Keep", "the", "UI", "operational", "and", "dense.", fakeSecret]);
   run(["session", "artifact", "--file", "DESIGN.md", "--note", "Design direction reviewed."]);
   run(["session", "verify", "--command", `npm test ${fakeSecret}`, "--result", "pass", "--notes", "Smoke verification passed."]);
   run(["session", "output", "visual", "QA", "evidence", "--status", "not-applicable", "--evidence", "Smoke flow does not change UI."]);
@@ -118,7 +104,7 @@ try {
     if (text.includes(fakeSecret)) throw new Error("Studio smoke found an unredacted fake secret.");
   }
 
-  const exportResult = JSON.parse(run(["studio", "export"]));
+  const exportResult = JSON.parse(run(["studio", "export", "--json"]));
   const exportText = readFileSync(join(tempRoot, ".agent-kit", "studio", "index.html"), "utf8");
   if (exportResult.studioPath !== ".agent-kit/studio/index.html") throw new Error("Static studio export returned an unexpected path.");
   if (!exportText.includes("Agent Studio")) throw new Error("Static studio export is missing the page title.");
