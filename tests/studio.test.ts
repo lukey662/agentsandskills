@@ -8,7 +8,7 @@ import { initProject } from "../src/install/install.js";
 import { initProjectContext, validateProjectContext } from "../src/studio/context.js";
 import { addCorrection, applyCorrection, listCorrections, retireCorrection } from "../src/studio/corrections.js";
 import { exportStaticStudio } from "../src/studio/export.js";
-import { applySetupFormAnswers, getSetupFormViewModel } from "../src/studio/setup-form.js";
+import { getSetupFormViewModel } from "../src/studio/setup-form.js";
 import { renderSetupWizardHtml } from "../src/studio/wizard/render.js";
 import { startSetupServer } from "../src/studio/setup-server.js";
 import {
@@ -341,9 +341,7 @@ describe("Agent Studio local workflow", () => {
       expect(getSetupFormViewModel(root).form.productSummary).toContain("Test product summary");
 
       const audit = createAuditReport(root);
-      expect(
-        audit.findings.some((finding) => finding.message.includes("Project context is valid and contains high-value onboarding context"))
-      ).toBe(true);
+      expect(audit.findings.some((finding) => finding.message.includes("Project context is valid and contains high-value onboarding context"))).toBe(true);
     } finally {
       await server.close();
     }

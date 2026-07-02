@@ -31,7 +31,8 @@ function runCli(args: string[], cwd: string): CliResult {
     const stdout = execFileSync(process.execPath, [tsxCli, cliEntry, ...args], {
       cwd,
       encoding: "utf8",
-      stdio: ["ignore", "pipe", "pipe"]
+      stdio: ["ignore", "pipe", "pipe"],
+      timeout: 120_000
     });
     return { stdout, exitCode: 0 };
   } catch (error) {
@@ -56,7 +57,7 @@ describe("agent-kit CLI contract", () => {
     expect(initResult.exitCode).toBe(0);
 
     const initJson = JSON.parse(initResult.stdout) as Record<string, unknown>;
-    expect(Object.keys(initJson).sort()).toEqual(["conflicts", "copied", "manifestPath", "overwritten", "unchanged"]);
+    expect(Object.keys(initJson).sort()).toEqual(["conflicts", "contextPath", "copied", "manifestPath", "overwritten", "unchanged"]);
 
     const auditResult = runCli(["audit", "--json"], root);
     expect(auditResult.exitCode).toBe(0);
@@ -80,21 +81,21 @@ describe("agent-kit CLI contract", () => {
 
   it("audit exits non-zero for an invalid --min-readiness value", () => {
     const root = makeTempProject();
-    runCli(["init"], root);
+    runCli(["init", "--no-setup"], root);
     const result = runCli(["audit", "--min-readiness", "not-a-level"], root);
     expect(result.exitCode).toBe(1);
   });
 
   it("audit exits non-zero when readiness is below the requested minimum", () => {
     const root = makeTempProject();
-    runCli(["init"], root);
+    runCli(["init", "--no-setup"], root);
     const result = runCli(["audit", "--min-readiness", "best-practice-candidate"], root);
     expect(result.exitCode).toBe(1);
   });
 
   it("update --dry-run reports per-file actions without writing", () => {
     const root = makeTempProject();
-    runCli(["init"], root);
+    runCli(["init", "--no-setup"], root);
     writeFileSync(join(root, "AGENTS.md"), "Locally customized.\n");
 
     const result = runCli(["update", "--dry-run", "--json"], root);
@@ -114,7 +115,7 @@ describe("agent-kit CLI contract", () => {
 
   it("diff returns the documented preview shape", () => {
     const root = makeTempProject();
-    runCli(["init"], root);
+    runCli(["init", "--no-setup"], root);
     const result = runCli(["diff", "--json"], root);
     expect(result.exitCode).toBe(0);
 

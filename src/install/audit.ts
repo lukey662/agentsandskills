@@ -526,7 +526,8 @@ function addAgentStudioFindings(cwd: string, findings: AuditFinding[]): void {
             level: "warn",
             area: "studio",
             message: `${CONTEXT_JSON} is valid but still missing high-value project context.`,
-            remediation: "Answer product summary, audience, workflows, auth/tenant model, UI direction, value proposition, and quality target with agent-kit setup or by editing .agent-kit/project-context.json."
+            remediation:
+              "Answer product summary, audience, workflows, auth/tenant model, UI direction, value proposition, and quality target with agent-kit setup or by editing .agent-kit/project-context.json."
           });
         } else {
           findings.push({
@@ -790,12 +791,7 @@ function addCouncilDocFindings(cwd: string, findings: AuditFinding[]): void {
   }
 }
 
-function addAssistantAdapterFindings(
-  cwd: string,
-  findings: AuditFinding[],
-  adapterRootRelativePath = ".agent-kit/assistant-adapters",
-  docsCwd = cwd
-): void {
+function addAssistantAdapterFindings(cwd: string, findings: AuditFinding[], adapterRootRelativePath = ".agent-kit/assistant-adapters", docsCwd = cwd): void {
   const adaptersDoc = readDoc(docsCwd, "ASSISTANT_ADAPTERS.md");
   const adapterRoot = join(cwd, adapterRootRelativePath);
 
@@ -841,10 +837,7 @@ function addAssistantAdapterFindings(
     });
   }
 
-  if (
-    assistantAdapterRowIsActive(adaptersDoc, "Codex / AGENTS.md-compatible tools") &&
-    !existsSync(join(cwd, ".codex/agents/planner.toml"))
-  ) {
+  if (assistantAdapterRowIsActive(adaptersDoc, "Codex / AGENTS.md-compatible tools") && !existsSync(join(cwd, ".codex/agents/planner.toml"))) {
     findings.push({
       level: "warn",
       area: "agents",
@@ -1429,7 +1422,8 @@ export function auditProject(cwd: string): AuditFinding[] {
       level: "warn",
       area: "docs-hygiene",
       message: "TESTING.md does not define visual QA or visual-regression evidence (docs hygiene check).",
-      remediation: "Document the visual QA tier: screenshot review, Playwright screenshots, Storybook visual tests, or a visual-regression service for important UI changes."
+      remediation:
+        "Document the visual QA tier: screenshot review, Playwright screenshots, Storybook visual tests, or a visual-regression service for important UI changes."
     });
   }
 
@@ -1449,11 +1443,7 @@ function readPackageJson(cwd: string): { scripts?: Record<string, string> } | nu
 function containsLikelySecretForAudit(relativeFile: string, content: string): boolean {
   const normalized = relativeFile.replace(/\\/g, "/");
   const testSecretFixture = ["sk", "test", "fake", "secret", "value"].join("_");
-  if (
-    normalized.startsWith("tests/") &&
-    content.includes(`const fakeSecret = "${testSecretFixture}"`) &&
-    content.includes("not.toContain(fakeSecret)")
-  ) {
+  if (normalized.startsWith("tests/") && content.includes(`const fakeSecret = "${testSecretFixture}"`) && content.includes("not.toContain(fakeSecret)")) {
     return containsLikelySecret(content.split(testSecretFixture).join("[TEST_SECRET_FIXTURE]"));
   }
   return containsLikelySecret(content);

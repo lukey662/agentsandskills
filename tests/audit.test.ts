@@ -145,7 +145,9 @@ describe("auditProject", () => {
 
       const report = createAuditReport(packageRoot);
       expect(report.summary.fail).toBe(0);
-      expect(report.findings.some((finding) => finding.message === "Package source repository mode detected; installed-project manifest is not required.")).toBe(true);
+      expect(
+        report.findings.some((finding) => finding.message === "Package source repository mode detected; installed-project manifest is not required.")
+      ).toBe(true);
       expect(report.findings.some((finding) => finding.level === "fail" && finding.message === "AGENTS.md is missing.")).toBe(false);
       expect(report.findings.some((finding) => finding.message === "templates/next-supabase/AGENTS.md exists.")).toBe(true);
     } finally {
@@ -505,16 +507,11 @@ describe("auditProject", () => {
 
   it("passes project-reality RLS when migrations enable RLS", () => {
     mkdirSync(join(root, "supabase", "migrations"), { recursive: true });
-    writeFileSync(
-      join(root, "supabase", "migrations", "001_profiles.sql"),
-      "alter table profiles enable row level security;\n"
-    );
+    writeFileSync(join(root, "supabase", "migrations", "001_profiles.sql"), "alter table profiles enable row level security;\n");
     writeFileSync(join(root, "package.json"), JSON.stringify({ scripts: { test: "vitest run" } }, null, 2));
 
     const findings = auditProject(root);
-    expect(findings.some((finding) => finding.area === "project-reality" && finding.level === "pass" && finding.message.includes("enable RLS"))).toBe(
-      true
-    );
+    expect(findings.some((finding) => finding.area === "project-reality" && finding.level === "pass" && finding.message.includes("enable RLS"))).toBe(true);
   });
 
   it("labels SECURITY.md keyword checks as docs-hygiene", () => {

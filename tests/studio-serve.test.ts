@@ -7,11 +7,7 @@ import { buildOfficeStations } from "../src/studio/office/map.js";
 import { wizardSectionForStation } from "../src/studio/office/section-map.js";
 import { renderLiveStudioHtmlWithContext } from "../src/studio/office/render.js";
 import { markSectionComplete } from "../src/studio/onboarding-state.js";
-import {
-  recordHandoff,
-  recordNote,
-  startSession
-} from "../src/studio/session.js";
+import { recordHandoff, recordNote, startSession } from "../src/studio/session.js";
 import { startStudioServer } from "../src/studio/studio-server.js";
 
 let roots: string[] = [];
@@ -110,7 +106,7 @@ describe("agent-kit studio serve", () => {
     }
   });
 
-  it("marks sections complete through setup PATCH completeSection", async () => {
+  it("marks sections complete through setup PATCH completeSection", () => {
     const root = tempProject();
     markSectionComplete(root, "ide");
     const onboarding = markSectionComplete(root, "product");

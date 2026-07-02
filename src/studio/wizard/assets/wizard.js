@@ -92,8 +92,7 @@
     els.ringPct.textContent = pct + "%";
     els.ring.style.setProperty("--pct", String(pct));
     if (els.levelPill && state.agenticLevel) {
-      els.levelPill.textContent =
-        "L" + state.agenticLevel.currentLevel + " → L" + state.agenticLevel.targetLevel;
+      els.levelPill.textContent = "L" + state.agenticLevel.currentLevel + " → L" + state.agenticLevel.targetLevel;
       els.levelPill.hidden = false;
     }
     render();
@@ -137,10 +136,8 @@
     const sections = state.progress?.sections || [];
     els.sectionNav.innerHTML = sections
       .map((s) => {
-        const chipClass =
-          s.status === "done" ? "done" : s.status === "in_progress" ? "progress" : s.status === "optional" ? "optional" : "";
-        const chipLabel =
-          s.status === "done" ? "Done" : s.status === "in_progress" ? "Now" : s.status === "optional" ? "Optional" : "—";
+        const chipClass = s.status === "done" ? "done" : s.status === "in_progress" ? "progress" : s.status === "optional" ? "optional" : "";
+        const chipLabel = s.status === "done" ? "Done" : s.status === "in_progress" ? "Now" : s.status === "optional" ? "Optional" : "—";
         return (
           '<li><button type="button" data-section="' +
           s.id +
@@ -171,14 +168,7 @@
 
   function renderTeamIntro() {
     const cards = state.agents
-      .map(
-        (a) =>
-          '<li class="agent-card"><strong>' +
-          escapeHtml(a.name) +
-          "</strong><p>" +
-          escapeHtml(a.roleSummary) +
-          "</p></li>"
-      )
+      .map((a) => '<li class="agent-card"><strong>' + escapeHtml(a.name) + "</strong><p>" + escapeHtml(a.roleSummary) + "</p></li>")
       .join("");
     return (
       '<p class="why">Next you will brief each specialist — one step per agent. Skip any you are not ready to answer; you can return later.</p>' +
@@ -211,9 +201,7 @@
   }
 
   function renderHome() {
-    const pills = (boot.stackSignals || [])
-      .map((s) => '<span class="pill">' + escapeHtml(s) + "</span>")
-      .join("");
+    const pills = (boot.stackSignals || []).map((s) => '<span class="pill">' + escapeHtml(s) + "</span>").join("");
     const agentCount = state.agents.length || boot.agents?.length || 0;
     const officePromo =
       '<div class="office-promo">' +
@@ -243,9 +231,7 @@
       depthCard("complete", "Complete (~25 min)", "Standard plus DESIGN and MESSAGING intake drafts.") +
       "</div>" +
       (state.progress?.recommendedNext
-        ? '<p class="why" style="margin-top:18px">Continue: <strong>' +
-          escapeHtml(state.progress.recommendedNext) +
-          "</strong></p>"
+        ? '<p class="why" style="margin-top:18px">Continue: <strong>' + escapeHtml(state.progress.recommendedNext) + "</strong></p>"
         : "")
     );
   }
@@ -259,8 +245,8 @@
       level.currentLevel +
       " → target L" +
       level.targetLevel +
-      " <span class=\"hint-inline\">(setup progress is separate from audit readiness and visual QA tiers)</span></p>" +
-      (level.maintainerNote ? "<p class=\"hint\">" + escapeHtml(level.maintainerNote) + "</p>" : "") +
+      ' <span class="hint-inline">(setup progress is separate from audit readiness and visual QA tiers)</span></p>' +
+      (level.maintainerNote ? '<p class="hint">' + escapeHtml(level.maintainerNote) + "</p>" : "") +
       "</div>"
     );
   }
@@ -284,9 +270,9 @@
     const val = escapeHtml(state.form[name] || "");
     if (type === "textarea") {
       return (
-        "<label for=\"" +
+        '<label for="' +
         name +
-        "\">" +
+        '">' +
         escapeHtml(label) +
         (hint ? "<span>" + escapeHtml(hint) + "</span>" : "") +
         '</label><textarea id="' +
@@ -303,9 +289,9 @@
       );
     }
     return (
-      "<label for=\"" +
+      '<label for="' +
       name +
-      "\">" +
+      '">' +
       escapeHtml(label) +
       (hint ? "<span>" + escapeHtml(hint) + "</span>" : "") +
       '</label><input id="' +
@@ -334,25 +320,11 @@
         ),
       productCategory: () => {
         const opts = (boot.categories || [])
-          .map(
-            (c) =>
-              '<option value="' +
-              c +
-              '"' +
-              (state.form.productCategory === c ? " selected" : "") +
-              ">" +
-              c +
-              "</option>"
-          )
+          .map((c) => '<option value="' + c + '"' + (state.form.productCategory === c ? " selected" : "") + ">" + c + "</option>")
           .join("");
-        return (
-          '<label for="productCategory">Category</label><select id="productCategory" name="productCategory">' +
-          opts +
-          "</select>"
-        );
+        return '<label for="productCategory">Category</label><select id="productCategory" name="productCategory">' + opts + "</select>";
       },
-      primaryAudience: () =>
-        inputField("primaryAudience", "Primary user or buyer", "", "text", "Who uses or pays for this product?"),
+      primaryAudience: () => inputField("primaryAudience", "Primary user or buyer", "", "text", "Who uses or pays for this product?"),
       primaryWorkflows: () =>
         inputField(
           "primaryWorkflows",
@@ -363,16 +335,7 @@
         ),
       tenantModel: () => {
         const opts = (boot.tenantModels || [])
-          .map(
-            (c) =>
-              '<option value="' +
-              c +
-              '"' +
-              (state.form.tenantModel === c ? " selected" : "") +
-              ">" +
-              c +
-              "</option>"
-          )
+          .map((c) => '<option value="' + c + '"' + (state.form.tenantModel === c ? " selected" : "") + ">" + c + "</option>")
           .join("");
         return '<label for="tenantModel">Who uses the system?</label><select id="tenantModel" name="tenantModel">' + opts + "</select>";
       },
@@ -388,12 +351,9 @@
           "textarea",
           "Describe auth boundaries agents must not break."
         ),
-      uiPreferred: () =>
-        inputField("uiPreferred", "UI should feel like…", "", "textarea", "Task-first, clear hierarchy, readable typography."),
-      uiAvoid: () =>
-        inputField("uiAvoid", "UI should avoid…", "Optional.", "textarea", "Generic SaaS heroes, card soup, fake metrics."),
-      valueProposition: () =>
-        inputField("valueProposition", "Value proposition", "", "textarea", "What outcome do users get?"),
+      uiPreferred: () => inputField("uiPreferred", "UI should feel like…", "", "textarea", "Task-first, clear hierarchy, readable typography."),
+      uiAvoid: () => inputField("uiAvoid", "UI should avoid…", "Optional.", "textarea", "Generic SaaS heroes, card soup, fake metrics."),
+      valueProposition: () => inputField("valueProposition", "Value proposition", "", "textarea", "What outcome do users get?"),
       proof: () => inputField("proof", "Proof points", "One per line. Real evidence only.", "textarea", ""),
       objections: () => inputField("objections", "Objections", "One per line. Optional.", "textarea", ""),
       qualityTarget: () => {
@@ -410,16 +370,7 @@
       },
       ideSurface: () => {
         const opts = state.ideSurfaces
-          .map(
-            (s) =>
-              '<option value="' +
-              s.id +
-              '"' +
-              (state.form.ideSurface === s.id ? " selected" : "") +
-              ">" +
-              escapeHtml(s.label) +
-              "</option>"
-          )
+          .map((s) => '<option value="' + s.id + '"' + (state.form.ideSurface === s.id ? " selected" : "") + ">" + escapeHtml(s.label) + "</option>")
           .join("");
         const chip = renderAdapterChip(state.lastAdapterValidation);
         return (
@@ -494,15 +445,7 @@
         : validation.warn > 0
           ? "Adapter validate: pass with warnings"
           : "Adapter validate: pass";
-    return (
-      '<p class="adapter-chip ' +
-      kind +
-      '" role="status">' +
-      escapeHtml(label) +
-      " (" +
-      escapeHtml(validation.target) +
-      ")</p>"
-    );
+    return '<p class="adapter-chip ' + kind + '" role="status">' + escapeHtml(label) + " (" + escapeHtml(validation.target) + ")</p>";
   }
 
   function renderComplete() {
@@ -513,13 +456,7 @@
       .join("");
     return (
       '<div class="complete-icon" aria-hidden="true">✓</div><h2>Setup saved</h2>' +
-      (level
-        ? '<p class="why">Agentic level <strong>L' +
-          level.currentLevel +
-          "</strong> (target L" +
-          level.targetLevel +
-          ").</p>"
-        : "") +
+      (level ? '<p class="why">Agentic level <strong>L' + level.currentLevel + "</strong> (target L" + level.targetLevel + ").</p>" : "") +
       '<p class="why">Agents read <code>.agent-kit/project-context.md</code> and <code>.agent-kit/agent-briefs.md</code> before meaningful work.</p>' +
       '<ol class="next-steps">' +
       "<li>Run eval loop from <code>LOOP_CODING.md</code>: <code>npm test</code>, <code>agent-kit audit --min-readiness baseline-setup</code></li>" +

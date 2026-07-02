@@ -8,19 +8,7 @@ import { buildAgentWizardSteps, loadProjectRosterAgents } from "./roster.js";
 import { WIZARD_STEPS, type WizardStepDef } from "./steps.js";
 import { PACKAGE_VERSION } from "../../config/defaults.js";
 
-const PRODUCT_CATEGORIES = [
-  "content-app",
-  "saas",
-  "admin",
-  "marketplace",
-  "tool",
-  "ecommerce",
-  "portfolio",
-  "education",
-  "community",
-  "ai-workflow",
-  "other"
-];
+const PRODUCT_CATEGORIES = ["content-app", "saas", "admin", "marketplace", "tool", "ecommerce", "portfolio", "education", "community", "ai-workflow", "other"];
 
 const TENANT_MODELS = ["single-user", "team", "tenant", "marketplace", "admin", "public-content"];
 
@@ -69,8 +57,7 @@ export function buildWizardBootConfig(cwd: string, viewModel: ReturnType<typeof 
 export function renderSetupWizardHtml(boot?: WizardBootConfig): string {
   const css = readWizardAsset("wizard.css");
   const js = readWizardAsset("wizard.js");
-  const bootJson = JSON.stringify(boot ?? { steps: WIZARD_STEPS, categories: PRODUCT_CATEGORIES, tenantModels: TENANT_MODELS })
-    .replace(/</g, "\\u003c");
+  const bootJson = JSON.stringify(boot ?? { steps: WIZARD_STEPS, categories: PRODUCT_CATEGORIES, tenantModels: TENANT_MODELS }).replace(/</g, "\\u003c");
 
   return `<!doctype html>
 <html lang="en">

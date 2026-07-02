@@ -70,6 +70,7 @@
         "frontend-distinctiveness-benchmark",
         "frontend-product-quality-rubric",
         "frontend-design-system",
+        "ui-improvement-harness",
         "visual-regression-qa",
         "accessibility-wcag"
       ],
@@ -95,13 +96,7 @@
         "voice-tone",
         "pricing-copy"
       ],
-      "skills": [
-        "positioning-messaging",
-        "conversion-copywriting",
-        "landing-page-copy",
-        "product-voice-tone",
-        "onboarding-empty-state-copy"
-      ],
+      "skills": ["positioning-messaging", "conversion-copywriting", "landing-page-copy", "product-voice-tone", "onboarding-empty-state-copy"],
       "handsOffTo": ["frontend-design-lead", "nextjs-engineer", "qa-engineer", "docs-maintainer"]
     },
     {
@@ -147,7 +142,19 @@
     },
     {
       "id": "core-change",
-      "triggers": ["schema", "auth", "rls", "api", "route handler", "server action", "dependency", "upgrade", "release workflow", "package behavior", "cross-layer"],
+      "triggers": [
+        "schema",
+        "auth",
+        "rls",
+        "api",
+        "route handler",
+        "server action",
+        "dependency",
+        "upgrade",
+        "release workflow",
+        "package behavior",
+        "cross-layer"
+      ],
       "sequence": [
         "planner",
         "lead-architect",
@@ -171,7 +178,7 @@
     },
     {
       "id": "frontend-change",
-      "triggers": ["screen", "component", "layout", "design", "responsive", "accessibility", "screenshot"],
+      "triggers": ["screen", "component", "layout", "design", "responsive", "accessibility", "screenshot", "ui audit", "ui polish", "browser qa"],
       "sequence": ["planner", "frontend-design-lead", "marketing-copy-lead", "nextjs-engineer", "qa-engineer", "docs-maintainer"],
       "council": ["frontend-design-lead", "marketing-copy-lead", "qa-engineer"],
       "requiredOutputs": [
@@ -183,15 +190,33 @@
         "design critique verdict",
         "frontend product-quality scorecard",
         "domain-specific UI rationale",
+        "UI detector findings and severity",
+        "UI command workflow applied when polishing or auditing",
         "visual QA evidence",
         "state coverage",
         "accessibility checks",
-        "desktop/mobile verification"
+        "desktop/mobile verification",
+        "authenticated screen evidence when applicable"
       ]
     },
     {
       "id": "marketing-copy",
-      "triggers": ["copy", "copywriting", "marketing", "positioning", "messaging", "value prop", "value proposition", "landing page", "headline", "cta", "conversion", "onboarding", "empty state", "pricing"],
+      "triggers": [
+        "copy",
+        "copywriting",
+        "marketing",
+        "positioning",
+        "messaging",
+        "value prop",
+        "value proposition",
+        "landing page",
+        "headline",
+        "cta",
+        "conversion",
+        "onboarding",
+        "empty state",
+        "pricing"
+      ],
       "sequence": ["planner", "marketing-copy-lead", "frontend-design-lead", "qa-engineer", "docs-maintainer"],
       "council": ["marketing-copy-lead", "frontend-design-lead"],
       "requiredOutputs": [
@@ -219,7 +244,7 @@
     "Meaningful multi-agent work must record council-session evidence in COUNCIL.md or a structured record that follows .agent-kit/schemas/council-session.schema.json.",
     "Planner starts planning and ambiguous requests by default.",
     "Lead Architect must review core changes before implementation.",
-    "Frontend Design Lead must record reference-set evidence, anti-references, a design critique verdict, a distinctiveness benchmark, and a frontend product-quality scorecard before accepting significant frontend work.",
+    "Frontend Design Lead must record reference-set evidence, anti-references, a design critique verdict, a distinctiveness benchmark, a frontend product-quality scorecard, UI detector severity findings, and desktop/mobile screenshot evidence before accepting significant frontend work.",
     "Marketing Copy Lead must ask discovery questions and record audience, pain, outcome, value proposition, proof, objections, voice/tone, and conversion goal before accepting public-facing or conversion-facing copy.",
     "Security Reviewer must review auth, data mutation, external-call, dependency, secret, and release-risk changes.",
     "QA Engineer must verify behavior changes before completion.",

@@ -14,12 +14,7 @@ import {
 } from "../config/defaults.js";
 import { copyTextWithConflict, ensureDir, listFilesRecursive, writeText } from "../utils/fs.js";
 import { findPackageRoot } from "../utils/package-root.js";
-import {
-  generateCodexCustomAgents,
-  generateCursorSkillsFromKit,
-  generateCursorSubagents,
-  generateMarkdownSubagents
-} from "./roster-adapters.js";
+import { generateCodexCustomAgents, generateCursorSkillsFromKit, generateCursorSubagents, generateMarkdownSubagents } from "./roster-adapters.js";
 
 export type IdeTarget = "cursor" | "claude" | "codex" | "copilot" | "antigravity";
 
@@ -51,14 +46,7 @@ function normalizeTargets(targets: string[]): IdeTarget[] {
   return [...normalized];
 }
 
-function copyAdapterFile(
-  cwd: string,
-  packageRoot: string,
-  source: string,
-  target: string,
-  force: boolean,
-  result: ActivateIdeResult
-): void {
+function copyAdapterFile(cwd: string, packageRoot: string, source: string, target: string, force: boolean, result: ActivateIdeResult): void {
   const copyResult = copyTextWithConflict(join(packageRoot, source), cwd, target, {
     force,
     conflictRoot: join(cwd, ".agent-kit", "conflicts")
@@ -76,14 +64,7 @@ function generateClaudeSubagents(cwd: string, packageRoot: string, force: boolea
   copyAdapterFile(cwd, packageRoot, CLAUDE_TEMPLATE, "CLAUDE.md", force, result);
 }
 
-function copyDirectoryAsConflicts(
-  cwd: string,
-  packageRoot: string,
-  sourceDir: string,
-  targetDir: string,
-  force: boolean,
-  result: ActivateIdeResult
-): void {
+function copyDirectoryAsConflicts(cwd: string, packageRoot: string, sourceDir: string, targetDir: string, force: boolean, result: ActivateIdeResult): void {
   for (const file of listFilesRecursive(join(packageRoot, sourceDir))) {
     copyAdapterFile(cwd, packageRoot, join(sourceDir, file), join(targetDir, file).replace(/\\/g, "/"), force, result);
   }
@@ -97,22 +78,8 @@ function installAntigravityAdapter(cwd: string, packageRoot: string, force: bool
     copyAdapterFile(cwd, packageRoot, file.source, file.target, force, result);
   }
 
-  copyDirectoryAsConflicts(
-    cwd,
-    packageRoot,
-    ANTIGRAVITY_COMMANDS_SOURCE_DIR,
-    ANTIGRAVITY_COMMANDS_TARGET_DIR,
-    force,
-    result
-  );
-  copyDirectoryAsConflicts(
-    cwd,
-    packageRoot,
-    RUNTIME_SKILLS_SOURCE_DIR,
-    ANTIGRAVITY_RUNTIME_SKILLS_TARGET_DIR,
-    force,
-    result
-  );
+  copyDirectoryAsConflicts(cwd, packageRoot, ANTIGRAVITY_COMMANDS_SOURCE_DIR, ANTIGRAVITY_COMMANDS_TARGET_DIR, force, result);
+  copyDirectoryAsConflicts(cwd, packageRoot, RUNTIME_SKILLS_SOURCE_DIR, ANTIGRAVITY_RUNTIME_SKILLS_TARGET_DIR, force, result);
 }
 
 function updateAssistantAdaptersTable(cwd: string, activated: Set<IdeTarget>): void {

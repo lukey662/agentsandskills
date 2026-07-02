@@ -268,7 +268,7 @@
         (ev) =>
           '<li><span class="tx-time">' +
           escapeHtml((ev.createdAt || "").slice(11, 19)) +
-          '</span> <strong>' +
+          "</span> <strong>" +
           escapeHtml(ev.agentId || ev.fromAgentId || "session") +
           "</strong> " +
           escapeHtml(eventLabel(ev)) +
@@ -324,15 +324,7 @@
       .map((b) => {
         const left = offsetLeft + b.x * scaleX;
         const top = offsetTop + b.y * scaleY - 28;
-        return (
-          '<span class="speech-bubble" style="left:' +
-          left +
-          "px;top:" +
-          top +
-          'px">' +
-          escapeHtml(b.text) +
-          "</span>"
-        );
+        return '<span class="speech-bubble" style="left:' + left + "px;top:" + top + 'px">' + escapeHtml(b.text) + "</span>";
       })
       .join("");
   }
@@ -349,10 +341,7 @@
     const target = level.targetLevel ?? 5;
     if (els.levelPill) {
       els.levelPill.textContent = "L" + current + " → L" + target;
-      els.levelPill.setAttribute(
-        "aria-label",
-        "Agentic engineering level " + current + ", target level " + target
-      );
+      els.levelPill.setAttribute("aria-label", "Agentic engineering level " + current + ", target level " + target);
     }
     if (els.icebergStrip) {
       els.icebergStrip.innerHTML = [3, 4, 5, 6, 7, 8]
@@ -373,16 +362,7 @@
         els.climbPanel.hidden = false;
         els.climbList.innerHTML = steps
           .slice(0, 3)
-          .map(
-            (step) =>
-              "<li><strong>L" +
-              step.level +
-              "</strong> " +
-              escapeHtml(step.label) +
-              " — " +
-              escapeHtml(step.remediation) +
-              "</li>"
-          )
+          .map((step) => "<li><strong>L" + step.level + "</strong> " + escapeHtml(step.label) + " — " + escapeHtml(step.remediation) + "</li>")
           .join("");
       }
     }
@@ -466,17 +446,7 @@
         const cx = offsetLeft + (station.x + station.w / 2) * TILE * scaleX;
         const cy = offsetTop + station.y * TILE * scaleY - 4;
         const st = stationStatus(station);
-        return (
-          '<span class="nameplate ' +
-          st +
-          '" style="left:' +
-          cx +
-          "px;top:" +
-          cy +
-          'px">' +
-          escapeHtml(station.label) +
-          "</span>"
-        );
+        return '<span class="nameplate ' + st + '" style="left:' + cx + "px;top:" + cy + 'px">' + escapeHtml(station.label) + "</span>";
       })
       .join("");
   }
@@ -491,13 +461,7 @@
     ]
       .map(
         ([id, title, desc]) =>
-          '<button type="button" class="depth-card" data-depth="' +
-          id +
-          '"><strong>' +
-          escapeHtml(title) +
-          "</strong><p>" +
-          escapeHtml(desc) +
-          "</p></button>"
+          '<button type="button" class="depth-card" data-depth="' + id + '"><strong>' + escapeHtml(title) + "</strong><p>" + escapeHtml(desc) + "</p></button>"
       )
       .join("");
     els.depthGrid.querySelectorAll("[data-depth]").forEach((btn) => {
@@ -828,9 +792,9 @@
     const req = optional ? "" : " required";
     if (type === "textarea") {
       return (
-        "<label for=\"p-" +
+        '<label for="p-' +
         name +
-        "\">" +
+        '">' +
         escapeHtml(label) +
         (hint ? "<span>" + escapeHtml(hint) + "</span>" : "") +
         '</label><textarea id="p-' +
@@ -847,9 +811,9 @@
       );
     }
     return (
-      "<label for=\"p-" +
+      '<label for="p-' +
       name +
-      "\">" +
+      '">' +
       escapeHtml(label) +
       (hint ? "<span>" + escapeHtml(hint) + "</span>" : "") +
       '</label><input id="p-' +
@@ -877,7 +841,7 @@
         field +
         '">Project briefing<span>Optional — what is unique about this project for ' +
         escapeHtml(station.label) +
-        "?</span></label><textarea id=\"p-" +
+        '?</span></label><textarea id="p-' +
         field +
         '" name="' +
         field +
@@ -890,16 +854,7 @@
     const maps = {
       ide: () => {
         const opts = (boot.ideSurfaces || [])
-          .map(
-            (s) =>
-              '<option value="' +
-              s.id +
-              '"' +
-              (state.form.ideSurface === s.id ? " selected" : "") +
-              ">" +
-              escapeHtml(s.label) +
-              "</option>"
-          )
+          .map((s) => '<option value="' + s.id + '"' + (state.form.ideSurface === s.id ? " selected" : "") + ">" + escapeHtml(s.label) + "</option>")
           .join("");
         return (
           '<label for="p-ideSurface">Primary AI coding tool</label><select id="p-ideSurface" name="ideSurface" required><option value="">Choose…</option>' +
@@ -918,14 +873,10 @@
         inputField("primaryWorkflows", "Top workflows", "One per line.", "textarea", "Workflow one", false),
       access: () =>
         '<label for="p-tenantModel">Who uses the system?</label><select id="p-tenantModel" name="tenantModel">' +
-        (boot.tenantModels || [])
-          .map((c) => '<option value="' + c + '"' + (state.form.tenantModel === c ? " selected" : "") + ">" + c + "</option>")
-          .join("") +
+        (boot.tenantModels || []).map((c) => '<option value="' + c + '"' + (state.form.tenantModel === c ? " selected" : "") + ">" + c + "</option>").join("") +
         "</select>" +
         inputField("owner", "Project owner", "Optional.", "text", "", true) +
-        (boot.hasSupabase
-          ? '<div class="hint-box">Supabase detected.<button type="button" id="apply-supabase-auth">Insert auth baseline</button></div>'
-          : "") +
+        (boot.hasSupabase ? '<div class="hint-box">Supabase detected.<button type="button" id="apply-supabase-auth">Insert auth baseline</button></div>' : "") +
         inputField("authModel", "Authentication model", "Rules agents must preserve.", "textarea", "Describe auth boundaries.", false),
       ui: () =>
         inputField("uiPreferred", "UI should feel like…", "", "textarea", "Clear, readable, task-first.", false) +

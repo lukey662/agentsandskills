@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -9,10 +8,6 @@ import { fileURLToPath } from "node:url";
 const repoRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const cliPath = join(repoRoot, "dist", "index.js");
 const exampleRoot = join(repoRoot, "examples", "next-supabase-installed");
-
-function sha256(content) {
-  return createHash("sha256").update(content).digest("hex");
-}
 
 if (!existsSync(cliPath)) {
   execFileSync("npm", ["run", "build"], { cwd: repoRoot, stdio: "inherit" });
@@ -34,9 +29,7 @@ try {
   );
 
   const manifest = JSON.parse(readFileSync(join(tempRoot, ".agent-kit", "manifest.json"), "utf8"));
-  manifest.installedAt = JSON.parse(
-    readFileSync(join(exampleRoot, ".agent-kit", "manifest.json"), "utf8")
-  ).installedAt;
+  manifest.installedAt = JSON.parse(readFileSync(join(exampleRoot, ".agent-kit", "manifest.json"), "utf8")).installedAt;
 
   writeFileSync(join(exampleRoot, ".agent-kit", "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);
   writeFileSync(join(exampleRoot, "audit-output.json"), `${JSON.stringify(generatedAudit, null, 2)}\n`);

@@ -1,27 +1,10 @@
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
-import {
-  applySetupFormAnswers,
-  ensureProjectContextForSetup,
-  getSetupFormViewModel,
-  parseSetupFormPayload
-} from "./setup-form.js";
-import {
-  getSetupProgress,
-  loadOnboardingState,
-  markQuickPathComplete,
-  markSectionComplete,
-  saveOnboardingState
-} from "./onboarding-state.js";
+import { applySetupFormAnswers, ensureProjectContextForSetup, getSetupFormViewModel, parseSetupFormPayload } from "./setup-form.js";
+import { getSetupProgress, loadOnboardingState, markQuickPathComplete, markSectionComplete, saveOnboardingState } from "./onboarding-state.js";
 import { activateIdeTargets, ideSurfaceToActivateTarget } from "../install/ide-activate.js";
 import { saveIdeChecklist, writeVisualQaTier, type IdeSurface } from "./wizard/checklist.js";
 import { saveAgentBriefs } from "./wizard/agent-briefs.js";
-import {
-  buildWizardFormState,
-  extractAgentBriefsFromForm,
-  extractSetupFormFromWizardForm,
-  loadWizardDraft,
-  saveWizardDraft
-} from "./wizard/wizard-draft.js";
+import { buildWizardFormState, extractAgentBriefsFromForm, extractSetupFormFromWizardForm, loadWizardDraft, saveWizardDraft } from "./wizard/wizard-draft.js";
 import { loadProjectRosterAgents } from "./wizard/roster.js";
 import {
   applyDrafts,
@@ -38,11 +21,7 @@ import { allAgentBriefsComplete, wizardSectionForStation } from "./office/sectio
 import type { OfficeStation } from "./office/types.js";
 import { renderSetupWizardHtmlWithContext } from "./wizard/render.js";
 import type { WizardDepth, WizardSectionId } from "./wizard/steps.js";
-import {
-  computeAgenticLevel,
-  invalidateAgenticLevelCache,
-  summarizeAdapterValidation
-} from "./agentic-level.js";
+import { computeAgenticLevel, invalidateAgenticLevelCache, summarizeAdapterValidation } from "./agentic-level.js";
 
 export interface SetupServerOptions {
   cwd: string;
@@ -114,18 +93,11 @@ function buildStatePayload(cwd: string, options: { forceAgenticRefresh?: boolean
   const designDraft = loadDesignDraft(cwd);
   const messagingDraft = loadMessagingDraft(cwd);
   const draft = loadWizardDraft(cwd);
-  const agenticLevel = computeAgenticLevel(
-    cwd,
-    options.forceAgenticRefresh ? { forceRefresh: true } : {}
-  );
+  const agenticLevel = computeAgenticLevel(cwd, options.forceAgenticRefresh ? { forceRefresh: true } : {});
   return {
     projectName: viewModel.projectName,
     form: buildWizardFormState(cwd),
-    hasExistingContext: Boolean(
-      viewModel.form.productSummary.trim() ||
-        viewModel.form.primaryAudience.trim() ||
-        viewModel.form.valueProposition.trim()
-    ),
+    hasExistingContext: Boolean(viewModel.form.productSummary.trim() || viewModel.form.primaryAudience.trim() || viewModel.form.valueProposition.trim()),
     openQuestions: viewModel.openQuestions,
     hasSupabase: viewModel.hasSupabase,
     onboarding,
@@ -268,9 +240,7 @@ async function handleRequest(cwd: string, request: IncomingMessage, response: Se
       const body = (await readJsonBody(request)) as { ideSurface?: IdeSurface };
       if (!body.ideSurface) throw new Error("ideSurface is required.");
       const activateTarget = ideSurfaceToActivateTarget(body.ideSurface);
-      let activation:
-        | { activated: string[]; copied: string[]; unchanged: string[]; conflicts: string[] }
-        | undefined;
+      let activation: { activated: string[]; copied: string[]; unchanged: string[]; conflicts: string[] } | undefined;
       if (activateTarget) {
         const activateResult = activateIdeTargets({ cwd, targets: [activateTarget] });
         activation = {

@@ -104,18 +104,16 @@ async function runSetupServer(options: { port: number; host: string; open?: bool
     host: options.host
   });
   if (handle.portFallback) {
-    console.warn(
-      `Port ${handle.requestedPort} is in use — an old setup server may still be running. Kill it and restart to load the latest Agent Office.`
-    );
+    console.warn(`Port ${handle.requestedPort} is in use — an old setup server may still be running. Kill it and restart to load the latest Agent Office.`);
     console.warn(`Using fallback port ${handle.port} instead.`);
   }
   console.log(`Agent Kit v${PACKAGE_VERSION} — ${handle.defaultView} view at ${handle.url}/`);
   console.log(`Pixel office (default): ${handle.url}/  |  Form fallback: ${handle.url}/wizard`);
   console.log("Pick Quick, Standard, or Complete on first visit. Press Ctrl+C to stop.");
-  if (options.open) openBrowser(`${handle.url}/`);
+  if (options.open) void openBrowser(`${handle.url}/`);
   await new Promise<void>((resolve) => {
     const shutdown = () => {
-      handle.close().finally(resolve);
+      void handle.close().finally(resolve);
     };
     process.once("SIGINT", shutdown);
     process.once("SIGTERM", shutdown);
@@ -775,16 +773,14 @@ async function runStudioServer(options: { port: number; host: string; open?: boo
     host: options.host
   });
   if (handle.portFallback) {
-    console.warn(
-      `Port ${handle.requestedPort} is in use — using fallback port ${handle.port}. Kill the old process to avoid confusion.`
-    );
+    console.warn(`Port ${handle.requestedPort} is in use — using fallback port ${handle.port}. Kill the old process to avoid confusion.`);
   }
   console.log(`Agent Kit v${PACKAGE_VERSION} — live studio at ${handle.url}/`);
   console.log("SSE: GET /api/events/stream  |  Press Ctrl+C to stop.");
-  if (options.open) openBrowser(`${handle.url}/`);
+  if (options.open) void openBrowser(`${handle.url}/`);
   await new Promise<void>((resolve) => {
     const shutdown = () => {
-      handle.close().finally(resolve);
+      void handle.close().finally(resolve);
     };
     process.once("SIGINT", shutdown);
     process.once("SIGTERM", shutdown);

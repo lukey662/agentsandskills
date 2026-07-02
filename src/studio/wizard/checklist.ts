@@ -27,10 +27,7 @@ export function saveIdeChecklist(cwd: string, ideSurface: IdeSurface): { idePath
 export function detectIdeRulePresent(cwd: string, ideSurface: IdeSurface): boolean {
   const rel = IDE_PATHS[ideSurface];
   if (ideSurface === "cursor") {
-    return (
-      existsSync(join(cwd, rel)) ||
-      existsSync(join(cwd, ".cursor/rules/cursor-agent-kit.mdc"))
-    );
+    return existsSync(join(cwd, rel)) || existsSync(join(cwd, ".cursor/rules/cursor-agent-kit.mdc"));
   }
   if (rel.endsWith("/")) {
     return existsSync(join(cwd, rel));

@@ -28,18 +28,15 @@ const AGENT_ROSTER_JSON = ".agent-kit/agent-roster.json";
 const FALLBACK_SUMMARIES: Record<string, string> = {
   planner: "Owns planning, scope breakdown, sequencing, and council routing before implementation starts.",
   "lead-architect": "Owns architecture, affected-layer mapping, tradeoffs, and final delivery direction.",
-  "supabase-postgres-engineer":
-    "Owns Supabase Auth, SSR clients, schema, migrations, RLS, Storage policies, SQL functions, and indexes.",
+  "supabase-postgres-engineer": "Owns Supabase Auth, SSR clients, schema, migrations, RLS, Storage policies, SQL functions, and indexes.",
   "nextjs-engineer": "Owns App Router implementation, rendering boundaries, data loading, forms, and UI state.",
   "frontend-design-lead":
     "Prevents generic AI-looking UI by owning content-first creative direction, design-system quality, visual QA, accessibility, and screenshot acceptance.",
-  "marketing-copy-lead":
-    "Owns positioning, value proposition, conversion copy, product voice, and UX copy for public-facing surfaces.",
+  "marketing-copy-lead": "Owns positioning, value proposition, conversion copy, product voice, and UX copy for public-facing surfaces.",
   "security-reviewer": "Reviews implementation against OWASP Top 10 and project-specific auth/data boundaries.",
   "qa-engineer": "Owns tests, regression coverage, smoke checks, and acceptance evidence.",
   "docs-maintainer": "Keeps living docs accurate enough for another engineer or agent to continue safely.",
-  "deployment-observability-engineer":
-    "Owns release safety, environment configuration, migrations, logs, monitoring, and rollback.",
+  "deployment-observability-engineer": "Owns release safety, environment configuration, migrations, logs, monitoring, and rollback.",
   "research-analyst": "Owns open-source repo research and conversion of evidence into reusable kit improvements."
 };
 
@@ -92,20 +89,18 @@ export function buildAgentWizardSteps(cwd: string): AgentWizardStep[] {
       depth: depths,
       optional: true as const
     },
-    ...agents.map(
-      (agent): AgentWizardStep => ({
-        id: `brief-${agent.id}`,
-        section: "team",
-        title: `Brief ${agent.name}`,
-        why: `${agent.roleSummary} What should they know about this project that is not obvious from the repo?`,
-        fields: [`agentBrief_${agent.id}`],
-        agentId: agent.id,
-        agentName: agent.name,
-        roleSummary: agent.roleSummary,
-        depth: depths,
-        optional: true
-      })
-    )
+    ...agents.map((agent): AgentWizardStep => ({
+      id: `brief-${agent.id}`,
+      section: "team",
+      title: `Brief ${agent.name}`,
+      why: `${agent.roleSummary} What should they know about this project that is not obvious from the repo?`,
+      fields: [`agentBrief_${agent.id}`],
+      agentId: agent.id,
+      agentName: agent.name,
+      roleSummary: agent.roleSummary,
+      depth: depths,
+      optional: true
+    }))
   ];
 }
 

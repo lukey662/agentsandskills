@@ -30,32 +30,26 @@ function buildProactiveSuffix(agentId: string): string {
   const suffixes: Record<string, string> = {
     planner: "Use proactively for planning, scope breakdown, ambiguous requests, and workflow routing.",
     "lead-architect": "Use proactively for core changes, architecture, and cross-layer decisions.",
-    "security-reviewer":
-      "Use proactively for auth, RLS, API, Server Action, data mutation, dependency, secret, and release-risk changes.",
+    "security-reviewer": "Use proactively for auth, RLS, API, Server Action, data mutation, dependency, secret, and release-risk changes.",
     "frontend-design-lead": "Use proactively for UI, design system, accessibility, and visual QA work.",
     "qa-engineer": "Use proactively after behavior changes to add or verify tests and acceptance evidence.",
     "supabase-postgres-engineer": "Use proactively for schema, migrations, RLS, auth, and SQL changes.",
     "nextjs-engineer": "Use proactively for App Router, Server Components, route handlers, and UI state work.",
     "marketing-copy-lead": "Use proactively for public-facing copy, positioning, and conversion surfaces.",
     "docs-maintainer": "Use proactively after significant changes to update living documentation.",
-    "deployment-observability-engineer":
-      "Use proactively for release, env var, migration order, monitoring, and rollback work."
+    "deployment-observability-engineer": "Use proactively for release, env var, migration order, monitoring, and rollback work."
   };
   return suffixes[agentId] ?? "";
 }
 
 export function buildSubagentDescription(agent: RosterAgent, proactive: boolean): string {
-  const base =
-    agent.roleSummary.length > 140 ? `${agent.roleSummary.slice(0, 137)}...` : agent.roleSummary;
+  const base = agent.roleSummary.length > 140 ? `${agent.roleSummary.slice(0, 137)}...` : agent.roleSummary;
   if (!proactive) return base;
   const suffix = buildProactiveSuffix(agent.id);
   return suffix ? `${base} ${suffix}` : base;
 }
 
-export function buildSubagentMarkdown(
-  agent: RosterAgent,
-  options: { proactive?: boolean } = {}
-): string {
+export function buildSubagentMarkdown(agent: RosterAgent, options: { proactive?: boolean } = {}): string {
   const description = buildSubagentDescription(agent, Boolean(options.proactive));
   const agentFile = agent.file ?? `.agent-kit/agents/${agent.id}.md`;
   const hint = buildAgentHint(agent.id, agent.name);
@@ -77,13 +71,7 @@ Record meaningful decisions, risks, handoffs, human corrections, artifacts, evid
 `;
 }
 
-function writeGeneratedAgentFile(
-  cwd: string,
-  relativePath: string,
-  content: string,
-  force: boolean,
-  result: ActivateIdeResult
-): void {
+function writeGeneratedAgentFile(cwd: string, relativePath: string, content: string, force: boolean, result: ActivateIdeResult): void {
   const targetPath = join(cwd, relativePath);
   if (!force && existsSync(targetPath)) {
     const existing = readFileSync(targetPath, "utf8");
@@ -102,11 +90,7 @@ function writeGeneratedAgentFile(
   result.copied.push(relativePath);
 }
 
-export function generateMarkdownSubagents(
-  cwd: string,
-  agentsDir: string,
-  options: { proactive?: boolean; force: boolean; result: ActivateIdeResult }
-): void {
+export function generateMarkdownSubagents(cwd: string, agentsDir: string, options: { proactive?: boolean; force: boolean; result: ActivateIdeResult }): void {
   ensureDir(join(cwd, agentsDir));
   for (const agent of loadProjectRosterAgents(cwd)) {
     const relativePath = `${agentsDir}/${agent.id}.md`;

@@ -29,10 +29,7 @@ export function loadWizardDraft(cwd: string): WizardDraftFile {
   };
 }
 
-export function saveWizardDraft(
-  cwd: string,
-  patch: { form?: Partial<SetupFormPayload>; agentBriefs?: Record<string, string> }
-): WizardDraftFile {
+export function saveWizardDraft(cwd: string, patch: { form?: Partial<SetupFormPayload>; agentBriefs?: Record<string, string> }): WizardDraftFile {
   const current = loadWizardDraft(cwd);
   const next: WizardDraftFile = {
     schemaVersion: 1,

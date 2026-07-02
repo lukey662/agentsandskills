@@ -351,14 +351,7 @@ export type StudioSessionContractValue = z.infer<typeof StudioSessionContract>;
 export type SessionEventContractValue = z.infer<typeof SessionEventContract>;
 
 const AgenticLevelCore = z.union([z.literal(3), z.literal(4), z.literal(5), z.literal(6)]);
-const AgenticLevelTarget = z.union([
-  z.literal(3),
-  z.literal(4),
-  z.literal(5),
-  z.literal(6),
-  z.literal(7),
-  z.literal(8)
-]);
+const AgenticLevelTarget = z.union([z.literal(3), z.literal(4), z.literal(5), z.literal(6), z.literal(7), z.literal(8)]);
 
 export const OnboardingStateContract = z
   .object({

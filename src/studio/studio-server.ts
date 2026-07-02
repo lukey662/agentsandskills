@@ -1,12 +1,7 @@
 import { watch, type FSWatcher } from "node:fs";
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import { join } from "node:path";
-import {
-  getActiveSessionId,
-  listSessions,
-  readSession,
-  readSessionEvents
-} from "./session.js";
+import { getActiveSessionId, listSessions, readSession, readSessionEvents } from "./session.js";
 import { renderLiveStudioHtmlWithContext } from "./office/render.js";
 import { COUNCIL_SESSIONS_DIR, ensureStudioDirs } from "./shared.js";
 
@@ -96,7 +91,7 @@ function safeSessionId(raw: string): string | null {
   return raw;
 }
 
-async function handleRequest(cwd: string, request: IncomingMessage, response: ServerResponse): Promise<void> {
+function handleRequest(cwd: string, request: IncomingMessage, response: ServerResponse): void {
   const url = new URL(request.url ?? "/", "http://127.0.0.1");
 
   if (request.method === "GET" && (url.pathname === "/" || url.pathname === "/office")) {
@@ -196,9 +191,11 @@ export async function startStudioServer(options: StudioServerOptions): Promise<S
   ensureStudioDirs(options.cwd);
 
   const server = createServer((request, response) => {
-    handleRequest(options.cwd, request, response).catch((error) => {
+    try {
+      handleRequest(options.cwd, request, response);
+    } catch (error) {
       sendJson(response, 500, { error: error instanceof Error ? error.message : String(error) });
-    });
+    }
   });
 
   let port = requestedPort;

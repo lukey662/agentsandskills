@@ -5,11 +5,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { initProject } from "../src/install/install.js";
 import { activateIdeTargets } from "../src/install/ide-activate.js";
 import { applySetupFormAnswers } from "../src/studio/setup-form.js";
-import {
-  computeAgenticLevel,
-  invalidateAgenticLevelCache,
-  isMaintainerSourceRepo
-} from "../src/studio/agentic-level.js";
+import { computeAgenticLevel, invalidateAgenticLevelCache, isMaintainerSourceRepo } from "../src/studio/agentic-level.js";
 
 let root: string;
 

@@ -1,5 +1,5 @@
 import { existsSync, readFileSync } from "node:fs";
-import { dirname, join, normalize } from "node:path";
+import { join, normalize } from "node:path";
 import {
   ANTIGRAVITY_COMMANDS_SOURCE_DIR,
   ANTIGRAVITY_COMMANDS_TARGET_DIR,
@@ -69,7 +69,7 @@ function report(target: string, findings: ValidationFinding[]): ValidationReport
   return { target, summary: summary(findings), findings };
 }
 
-function readJson(path: string): unknown | null {
+function readJson(path: string): unknown {
   try {
     return JSON.parse(readFileSync(path, "utf8")) as unknown;
   } catch {
@@ -190,9 +190,7 @@ function validateAntigravityCommands(layout: AntigravityLayout, findings: Valida
     }
   }
 
-  const extras = files
-    .map((file) => file.replace(/\.toml$/, ""))
-    .filter((name) => !(REQUIRED_COMMANDS as readonly string[]).includes(name));
+  const extras = files.map((file) => file.replace(/\.toml$/, "")).filter((name) => !(REQUIRED_COMMANDS as readonly string[]).includes(name));
   if (extras.length > 0) {
     findings.push({
       level: "warn",
@@ -247,10 +245,11 @@ function validateAntigravityPlugin(layout: AntigravityLayout, findings: Validati
   for (const entry of [...commands, ...skills]) {
     const path = typeof entry.path === "string" ? entry.path : "";
     if (!path || !isSafeRelativePath(path)) {
+      const entryName = typeof entry.name === "string" ? entry.name : "unknown";
       findings.push({
         level: "fail",
         area: "manifest",
-        message: `plugin.json has an unsafe or missing relative path for ${String(entry.name ?? "unknown")}.`,
+        message: `plugin.json has an unsafe or missing relative path for ${entryName}.`,
         remediation: "Use relative paths that stay inside the plugin/runtime skill bundle."
       });
       continue;
@@ -418,10 +417,7 @@ function validateAntigravity(cwd: string): ValidationReport {
 
 function validateBasicAdapter(cwd: string, target: Exclude<IdeTarget, "antigravity">): ValidationReport {
   const findings: ValidationFinding[] = [];
-  const isPackageSource =
-    existsSync(join(cwd, "package.json")) &&
-    existsSync(join(cwd, "src")) &&
-    existsSync(join(cwd, "templates"));
+  const isPackageSource = existsSync(join(cwd, "package.json")) && existsSync(join(cwd, "src")) && existsSync(join(cwd, "templates"));
 
   if (isPackageSource) {
     const sourcePaths: Record<Exclude<IdeTarget, "antigravity">, string[]> = {

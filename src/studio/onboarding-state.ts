@@ -58,10 +58,7 @@ export function loadOnboardingState(cwd: string): OnboardingStateContractValue {
   return parsed.data;
 }
 
-export function saveOnboardingState(
-  cwd: string,
-  patch: Partial<OnboardingStateContractValue>
-): OnboardingStateContractValue {
+export function saveOnboardingState(cwd: string, patch: Partial<OnboardingStateContractValue>): OnboardingStateContractValue {
   const current = loadOnboardingState(cwd);
   const next: OnboardingStateContractValue = OnboardingStateContract.parse({
     ...current,
@@ -92,8 +89,7 @@ export function getSetupProgress(cwd: string): SetupProgress {
   const state = loadOnboardingState(cwd);
   const context = scanProjectContext(cwd);
   const openContextQuestions = context.openQuestions.length;
-  const activeSections =
-    state.depth === "undecided" ? QUICK_SECTIONS : sectionsForDepth(state.depth);
+  const activeSections = state.depth === "undecided" ? QUICK_SECTIONS : sectionsForDepth(state.depth);
   const sections: SetupProgressSection[] = activeSections.map((id) => ({
     id,
     label: SECTION_LABELS[id],

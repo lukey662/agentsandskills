@@ -10,19 +10,7 @@ import { CANVAS_SCALE, MAP_HEIGHT, MAP_WIDTH, TILE_SIZE, buildOfficeStations } f
 import type { OfficeBootConfig } from "./types.js";
 import { PACKAGE_VERSION } from "../../config/defaults.js";
 
-const PRODUCT_CATEGORIES = [
-  "content-app",
-  "saas",
-  "admin",
-  "marketplace",
-  "tool",
-  "ecommerce",
-  "portfolio",
-  "education",
-  "community",
-  "ai-workflow",
-  "other"
-];
+const PRODUCT_CATEGORIES = ["content-app", "saas", "admin", "marketplace", "tool", "ecommerce", "portfolio", "education", "community", "ai-workflow", "other"];
 
 const TENANT_MODELS = ["single-user", "team", "tenant", "marketplace", "admin", "public-content"];
 
@@ -62,24 +50,22 @@ export function renderSetupOfficeHtml(boot?: OfficeBootConfig): string {
 function renderOfficeHtml(boot: OfficeBootConfig | undefined, mode: "setup" | "studio"): string {
   const css = readOfficeAsset("office.css");
   const js = readOfficeAsset("office.js");
-  const bootJson = JSON.stringify(
-    {
-      ...(boot ?? {
-        mapWidth: MAP_WIDTH,
-        mapHeight: MAP_HEIGHT,
-        tileSize: TILE_SIZE,
-        scale: CANVAS_SCALE,
-        stations: [],
-        agents: [],
-        categories: PRODUCT_CATEGORIES,
-        tenantModels: TENANT_MODELS,
-        ideSurfaces: [],
-        hasSupabase: false,
-        stackSignals: []
-      }),
-      mode
-    }
-  ).replace(/</g, "\\u003c");
+  const bootJson = JSON.stringify({
+    ...(boot ?? {
+      mapWidth: MAP_WIDTH,
+      mapHeight: MAP_HEIGHT,
+      tileSize: TILE_SIZE,
+      scale: CANVAS_SCALE,
+      stations: [],
+      agents: [],
+      categories: PRODUCT_CATEGORIES,
+      tenantModels: TENANT_MODELS,
+      ideSurfaces: [],
+      hasSupabase: false,
+      stackSignals: []
+    }),
+    mode
+  }).replace(/</g, "\\u003c");
 
   const isStudio = mode === "studio";
   const title = isStudio ? "Agent Kit — Live Studio" : "Agent Kit — Setup Office";

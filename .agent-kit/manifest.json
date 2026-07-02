@@ -1,6 +1,6 @@
 {
   "packageName": "@appsforgood/next-supabase-kit",
-  "packageVersion": "0.1.1",
+  "packageVersion": "0.1.6",
   "stack": "next-supabase",
   "installedAt": "2026-07-02T12:28:10.581Z",
   "docs": [

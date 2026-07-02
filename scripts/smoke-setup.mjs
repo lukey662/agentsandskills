@@ -113,8 +113,15 @@ try {
     }
     console.log(`setup smoke passed: quickComplete=${status.quickComplete} readiness=${audit.readiness?.level ?? "unknown"}`);
   } finally {
-    child.kill("SIGTERM");
+    if (!child.killed) {
+      child.kill("SIGTERM");
+      await new Promise((resolve) => {
+        child.once("exit", resolve);
+        setTimeout(resolve, 2000);
+      });
+    }
+    await sleep(300);
   }
 } finally {
-  rmSync(tempRoot, { recursive: true, force: true });
+  rmSync(tempRoot, { recursive: true, force: true, maxRetries: 8, retryDelay: 250 });
 }

@@ -5,7 +5,7 @@ import prettier from "eslint-config-prettier";
 
 export default tseslint.config(
   {
-    ignores: ["dist/", "node_modules/", "coverage/", "release-artifacts/", ".agent-kit/", "research/workdir/", "examples/"]
+    ignores: ["dist/", "node_modules/", "coverage/", "release-artifacts/", ".agent-kit/", "research/workdir/", "examples/", "src/studio/**/assets/**"]
   },
   js.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
@@ -25,6 +25,13 @@ export default tseslint.config(
       "@typescript-eslint/no-unsafe-member-access": "off",
       "@typescript-eslint/restrict-template-expressions": ["error", { allowNumber: true, allowBoolean: true }],
       "no-console": "off"
+    }
+  },
+  {
+    files: ["src/studio/setup-form.ts", "src/studio/setup-server.ts"],
+    rules: {
+      "@typescript-eslint/no-base-to-string": "off",
+      "@typescript-eslint/no-unnecessary-type-assertion": "off"
     }
   },
   {

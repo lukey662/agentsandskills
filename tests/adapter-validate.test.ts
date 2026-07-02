@@ -44,9 +44,7 @@ describe("adapter validation", () => {
     activateIdeTargets({ cwd: root, targets: ["cursor"] });
     const report = validateAdapter(root, "cursor");
     expect(report.summary.fail).toBe(0);
-    expect(
-      report.findings.some((finding) => finding.message.includes(".cursor/agents/planner.md is installed"))
-    ).toBe(true);
+    expect(report.findings.some((finding) => finding.message.includes(".cursor/agents/planner.md is installed"))).toBe(true);
     expect(report.findings.some((finding) => finding.message.includes("Cursor is marked Active but"))).toBe(false);
   });
 

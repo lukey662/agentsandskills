@@ -3,12 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { initProject } from "../src/install/install.js";
-import {
-  getSetupProgress,
-  loadOnboardingState,
-  markSectionComplete,
-  saveOnboardingState
-} from "../src/studio/onboarding-state.js";
+import { getSetupProgress, loadOnboardingState, markSectionComplete, saveOnboardingState } from "../src/studio/onboarding-state.js";
 import { applySetupFormAnswers } from "../src/studio/setup-form.js";
 import { startSetupServer } from "../src/studio/setup-server.js";
 import { saveIdeChecklist, writeVisualQaTier } from "../src/studio/wizard/checklist.js";

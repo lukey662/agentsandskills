@@ -16,21 +16,10 @@ const CACHE_TTL_MS = 30_000;
 const cache = new Map<string, { at: number; report: AgenticLevelReport }>();
 
 export function isMaintainerSourceRepo(cwd: string): boolean {
-  return (
-    existsSync(join(cwd, "package.json")) &&
-    existsSync(join(cwd, "src")) &&
-    existsSync(join(cwd, "templates"))
-  );
+  return existsSync(join(cwd, "package.json")) && existsSync(join(cwd, "src")) && existsSync(join(cwd, "templates"));
 }
 
-function signal(
-  id: string,
-  level: 3 | 4 | 5 | 6,
-  label: string,
-  pass: boolean,
-  evidence: string,
-  remediation: string
-): AgenticLevelSignal {
+function signal(id: string, level: 3 | 4 | 5 | 6, label: string, pass: boolean, evidence: string, remediation: string): AgenticLevelSignal {
   return { id, level, label, pass, evidence, remediation };
 }
 
@@ -52,12 +41,7 @@ function detectIdePresent(cwd: string): { pass: boolean; evidence: string } {
 }
 
 function detectTierBSubagents(cwd: string): { pass: boolean; evidence: string } {
-  const paths = [
-    ".cursor/agents/planner.md",
-    ".codex/agents/planner.toml",
-    ".claude/agents/planner.md",
-    ".github/copilot-instructions.md"
-  ];
+  const paths = [".cursor/agents/planner.md", ".codex/agents/planner.toml", ".claude/agents/planner.md", ".github/copilot-instructions.md"];
   const found = paths.filter((rel) => existsSync(join(cwd, rel)));
   if (found.length > 0) {
     return { pass: true, evidence: `Specialist surface: ${found[0]}` };
@@ -126,9 +110,7 @@ function buildSignals(cwd: string, maintainerProfile: boolean): AgenticLevelSign
       4,
       "Machine-readable council roster",
       existsSync(join(cwd, ".agent-kit/agent-roster.json")),
-      existsSync(join(cwd, ".agent-kit/agent-roster.json"))
-        ? ".agent-kit/agent-roster.json present"
-        : "Roster missing",
+      existsSync(join(cwd, ".agent-kit/agent-roster.json")) ? ".agent-kit/agent-roster.json present" : "Roster missing",
       "Run agent-kit init or agent-kit update"
     )
   );
@@ -149,14 +131,7 @@ function buildSignals(cwd: string, maintainerProfile: boolean): AgenticLevelSign
 
   const tierB = detectTierBSubagents(cwd);
   signals.push(
-    signal(
-      "l5-subagents",
-      5,
-      "Tier-B specialist activation",
-      tierB.pass,
-      tierB.evidence,
-      "Run agent-kit init --activate cursor|codex|claude|copilot"
-    )
+    signal("l5-subagents", 5, "Tier-B specialist activation", tierB.pass, tierB.evidence, "Run agent-kit init --activate cursor|codex|claude|copilot")
   );
 
   const loopCoding = existsSync(join(cwd, "LOOP_CODING.md"));
@@ -212,9 +187,7 @@ function buildSignals(cwd: string, maintainerProfile: boolean): AgenticLevelSign
         "Use npm run release:check before merge; see MAINTAINER_RELEASE.md"
       )
     );
-    const maintainerDocs =
-      existsSync(join(cwd, "MAINTAINER_RELEASE.md")) ||
-      readDocSnippet(cwd, "DOCS.md", ["maintainer dogfood", "dogfood:init"]);
+    const maintainerDocs = existsSync(join(cwd, "MAINTAINER_RELEASE.md")) || readDocSnippet(cwd, "DOCS.md", ["maintainer dogfood", "dogfood:init"]);
     signals.push(
       signal(
         "l6-maintainer-docs",
@@ -240,20 +213,11 @@ function buildSignals(cwd: string, maintainerProfile: boolean): AgenticLevelSign
       adapterEvidence = `cursor (detected): ${report.summary.pass} pass / ${report.summary.fail} fail`;
     }
     signals.push(
-      signal(
-        "l6-adapter-validate",
-        6,
-        "Adapter validate for active IDE",
-        adapterPass,
-        adapterEvidence,
-        "Run agent-kit adapter validate cursor|codex|all"
-      )
+      signal("l6-adapter-validate", 6, "Adapter validate for active IDE", adapterPass, adapterEvidence, "Run agent-kit adapter validate cursor|codex|all")
     );
 
     const ciWorkflow = existsSync(join(cwd, ".github/workflows/agent-kit-audit.yml"));
-    const testingEval =
-      existsSync(join(cwd, "TESTING.md")) &&
-      readDocSnippet(cwd, "TESTING.md", ["agent-kit audit", "eval"]);
+    const testingEval = existsSync(join(cwd, "TESTING.md")) && readDocSnippet(cwd, "TESTING.md", ["agent-kit audit", "eval"]);
     const evalLoop = ciWorkflow || testingEval;
     signals.push(
       signal(
@@ -295,14 +259,11 @@ function defaultTargetLevel(maintainerProfile: boolean): AgenticLevelNumber {
 export function resolveTargetLevel(cwd: string, maintainerProfile: boolean): AgenticLevelNumber {
   const onboarding = loadOnboardingState(cwd);
   const raw = onboarding.targetAgenticLevel;
-  if (raw && raw >= 3 && raw <= 8) return raw as AgenticLevelNumber;
+  if (raw && raw >= 3 && raw <= 8) return raw;
   return defaultTargetLevel(maintainerProfile);
 }
 
-export function computeAgenticLevel(
-  cwd: string,
-  options: { forceRefresh?: boolean } = {}
-): AgenticLevelReport {
+export function computeAgenticLevel(cwd: string, options: { forceRefresh?: boolean } = {}): AgenticLevelReport {
   const cacheKey = cwd;
   const cached = cache.get(cacheKey);
   if (!options.forceRefresh && cached && Date.now() - cached.at < CACHE_TTL_MS) {
@@ -320,9 +281,7 @@ export function computeAgenticLevel(
     targetLevel,
     maintainerProfile,
     computedAt: nowIso(),
-    maintainerNote: maintainerProfile
-      ? "Kit source repo — run npm run dogfood:init locally; overlay is gitignored."
-      : undefined,
+    maintainerNote: maintainerProfile ? "Kit source repo — run npm run dogfood:init locally; overlay is gitignored." : undefined,
     signals,
     climbSteps
   });

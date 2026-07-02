@@ -12,11 +12,7 @@ if (!existsSync(cli)) {
   execFileSync("npm", ["run", "build"], { cwd: repoRoot, stdio: "inherit" });
 }
 
-execFileSync(
-  "node",
-  [cli, "init", "--stack", "next-supabase", "--activate", "cursor", "--activate", "codex"],
-  { cwd: repoRoot, stdio: "inherit" }
-);
+execFileSync("node", [cli, "init", "--stack", "next-supabase", "--activate", "cursor", "--activate", "codex"], { cwd: repoRoot, stdio: "inherit" });
 
 console.log("\nMaintainer dogfood overlay installed locally (gitignored).");
 console.log("Validate with:");

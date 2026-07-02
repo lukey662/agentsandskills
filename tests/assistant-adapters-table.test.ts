@@ -1,8 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  assistantAdapterRowIsActive,
-  extractAssistantAdapterRow
-} from "../src/install/assistant-adapters-table.js";
+import { assistantAdapterRowIsActive, extractAssistantAdapterRow } from "../src/install/assistant-adapters-table.js";
 
 const SAMPLE_TABLE = `
 | Tool | Surface | Instruction status | Model status | Enforcement | Notes | Delegation |

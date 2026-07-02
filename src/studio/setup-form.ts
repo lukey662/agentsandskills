@@ -99,10 +99,7 @@ export function applySetupFormAnswers(cwd: string, payload: SetupFormPayload): C
     qualityTarget: payload.qualityTarget,
     owners,
     lastReviewedAt: nowIso(),
-    evidence: uniqueEvidence([
-      ...base.evidence,
-      { source: "agent-kit setup wizard", note: "Project context updated through the local web setup wizard." }
-    ])
+    evidence: uniqueEvidence([...base.evidence, { source: "agent-kit setup wizard", note: "Project context updated through the local web setup wizard." }])
   };
   return writeProjectContext(cwd, updated);
 }
@@ -127,11 +124,7 @@ export function parseSetupFormPayload(raw: unknown): SetupFormPayload {
   }
   const body = raw as Record<string, unknown>;
   const qualityTarget = body.qualityTarget;
-  if (
-    qualityTarget !== "baseline-setup" &&
-    qualityTarget !== "needs-improvement" &&
-    qualityTarget !== "best-practice-candidate"
-  ) {
+  if (qualityTarget !== "baseline-setup" && qualityTarget !== "needs-improvement" && qualityTarget !== "best-practice-candidate") {
     throw new Error("qualityTarget must be baseline-setup, needs-improvement, or best-practice-candidate.");
   }
   return {
@@ -158,4 +151,3 @@ export function parseSetupFormPayload(raw: unknown): SetupFormPayload {
     ...(body.msgOutcome ? { msgOutcome: String(body.msgOutcome) } : {})
   };
 }
-

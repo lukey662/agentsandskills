@@ -1,6 +1,6 @@
 {
   "summary": {
-    "pass": 65,
+    "pass": 66,
     "warn": 5,
     "fail": 0
   },
@@ -365,6 +365,11 @@
       "area": "project-reality",
       "message": "No package.json found to verify test scripts.",
       "remediation": "Add package.json with test, lint, and build scripts appropriate to the stack."
+    },
+    {
+      "level": "pass",
+      "area": "project-reality",
+      "message": "No obvious committed secret patterns detected in tracked source files."
     },
     {
       "level": "pass",

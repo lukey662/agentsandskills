@@ -1,19 +1,7 @@
 export type WizardDepth = "quick" | "standard" | "complete" | "undecided";
 
 export type WizardSectionId =
-  | "home"
-  | "team"
-  | "product"
-  | "access"
-  | "ui"
-  | "messaging"
-  | "review"
-  | "complete"
-  | "ide"
-  | "visualQa"
-  | "designDoc"
-  | "messagingDoc"
-  | "applyDrafts";
+  "home" | "team" | "product" | "access" | "ui" | "messaging" | "review" | "complete" | "ide" | "visualQa" | "designDoc" | "messagingDoc" | "applyDrafts";
 
 export interface WizardStepDef {
   id: string;
