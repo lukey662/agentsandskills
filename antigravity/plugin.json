@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "name": "agent-kit-next-supabase",
   "displayName": "Agent Kit Next/Supabase",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Runtime commands and portable skills for the Agent Kit Next/Supabase council workflow.",
   "homepage": "https://github.com/lukey662/agentsandskills",
   "sourceOfTruth": [

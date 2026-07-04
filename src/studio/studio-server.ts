@@ -1,9 +1,9 @@
 import { watch, type FSWatcher } from "node:fs";
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import { join } from "node:path";
-import { getActiveSessionId, listSessions, readSession, readSessionEvents } from "./session.js";
+import { getActiveSessionId, listSessions, readSession, readSessionEvents, recordSessionNote, renderSession } from "./session.js";
 import { renderLiveStudioHtmlWithContext } from "./office/render.js";
-import { COUNCIL_SESSIONS_DIR, ensureStudioDirs } from "./shared.js";
+import { COUNCIL_SESSIONS_DIR, ensureStudioDirs, readJsonBody } from "./shared.js";
 
 export interface StudioServerOptions {
   cwd: string;
@@ -92,6 +92,12 @@ function safeSessionId(raw: string): string | null {
 }
 
 function handleRequest(cwd: string, request: IncomingMessage, response: ServerResponse): void {
+  handleRequestAsync(cwd, request, response).catch((error) => {
+    sendJson(response, 500, { error: error instanceof Error ? error.message : String(error) });
+  });
+}
+
+async function handleRequestAsync(cwd: string, request: IncomingMessage, response: ServerResponse): Promise<void> {
   const url = new URL(request.url ?? "/", "http://127.0.0.1");
 
   if (request.method === "GET" && (url.pathname === "/" || url.pathname === "/office")) {
@@ -165,6 +171,62 @@ function handleRequest(cwd: string, request: IncomingMessage, response: ServerRe
       sseClients.delete(response);
       if (sseClients.size === 0) stopWatcher();
     });
+    return;
+  }
+
+  const noteMatch = url.pathname.match(/^\/api\/sessions\/([^/]+)\/note$/);
+  if (request.method === "POST" && noteMatch) {
+    const sessionId = safeSessionId(noteMatch[1] ?? "");
+    if (!sessionId) {
+      sendJson(response, 400, { error: "Invalid session id." });
+      return;
+    }
+    try {
+      const body = (await readJsonBody(request)) as { agent?: string; text?: string };
+      const agent = typeof body.agent === "string" ? body.agent.trim() : "";
+      const text = typeof body.text === "string" ? body.text.trim() : "";
+      if (!agent) {
+        sendJson(response, 400, { error: "agent is required." });
+        return;
+      }
+      if (!text) {
+        sendJson(response, 400, { error: "text is required." });
+        return;
+      }
+      if (text.length >= 4000) {
+        sendJson(response, 400, { error: "text must be under 4000 characters." });
+        return;
+      }
+      const event = recordSessionNote(cwd, sessionId, agent, text);
+      broadcastSse("event", { sessionId, event, total: readSessionEvents(cwd, sessionId).length });
+      sendJson(response, 200, { event });
+    } catch (error) {
+      sendJson(response, 404, { error: error instanceof Error ? error.message : String(error) });
+    }
+    return;
+  }
+
+  const renderMatch = url.pathname.match(/^\/api\/sessions\/([^/]+)\/render$/);
+  if (request.method === "POST" && renderMatch) {
+    const sessionId = safeSessionId(renderMatch[1] ?? "");
+    if (!sessionId) {
+      sendJson(response, 400, { error: "Invalid session id." });
+      return;
+    }
+    try {
+      const result = renderSession(cwd, sessionId);
+      sendJson(response, 200, {
+        rendered: true,
+        sessionId: result.sessionId,
+        sessionPath: result.sessionPath,
+        files: [
+          `${result.sessionPath}/index.md`,
+          `${result.sessionPath}/transcript.md`
+        ]
+      });
+    } catch (error) {
+      sendJson(response, 404, { error: error instanceof Error ? error.message : String(error) });
+    }
     return;
   }
 

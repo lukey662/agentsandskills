@@ -181,7 +181,11 @@ function redactEvent(event: SessionEventContractValue): SessionEventContractValu
 }
 
 export function recordNote(cwd: string, agentId: string, text: string): SessionEventContractValue {
-  return appendSessionEvent(cwd, getActiveSessionId(cwd), { type: "agent_message", createdAt: nowIso(), agentId, text });
+  return recordSessionNote(cwd, getActiveSessionId(cwd), agentId, text);
+}
+
+export function recordSessionNote(cwd: string, sessionId: string, agentId: string, text: string): SessionEventContractValue {
+  return appendSessionEvent(cwd, sessionId, { type: "agent_message", createdAt: nowIso(), agentId, text });
 }
 
 export function recordDecision(cwd: string, agentId: string, decision: string, risk?: string): SessionEventContractValue {

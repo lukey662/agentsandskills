@@ -4,12 +4,12 @@
 
 [Package on npm](https://www.npmjs.com/package/@appsforgood/next-supabase-kit) · [Source on GitHub](https://github.com/lukey662/agentsandskills)
 
-**Latest release:** v0.1.7
+**Latest release:** v0.1.8
 
 ## Quick Start
 
 ```bash
-npx @appsforgood/next-supabase-kit@0.1.7 init --stack next-supabase --setup --open
+npx @appsforgood/next-supabase-kit@0.1.8 init --stack next-supabase --setup --open
 npx @appsforgood/next-supabase-kit audit
 npx @appsforgood/next-supabase-kit audit --min-readiness baseline-setup
 ```

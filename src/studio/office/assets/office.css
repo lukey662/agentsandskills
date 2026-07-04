@@ -600,6 +600,36 @@ code {
   max-height: calc(100vh - 64px);
 }
 
+.studio-controls {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.studio-label {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.studio-note-form {
+  display: grid;
+  gap: 8px;
+}
+
+.studio-note-form input,
+.studio-note-form select,
+#session-picker {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #0f172a;
+  color: #e2e8f0;
+  font-size: 13px;
+}
+
 .transcript-panel h2 {
   margin: 0 0 8px;
   font-size: 14px;

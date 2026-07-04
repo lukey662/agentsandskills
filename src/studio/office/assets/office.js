@@ -35,6 +35,7 @@
     handoffPulse: null,
     studioSessionId: boot.activeSessionId || "",
     studioEvents: [],
+    studioEventSource: null,
     speechBubbles: [],
     agenticLevel: null
   };
@@ -71,7 +72,12 @@
     bubbleLayer: document.getElementById("bubble-layer"),
     officeHint: document.getElementById("office-hint"),
     canvasWrap: document.querySelector(".canvas-wrap"),
-    transcriptList: document.getElementById("transcript-list")
+    transcriptList: document.getElementById("transcript-list"),
+    sessionPicker: document.getElementById("session-picker"),
+    studioNoteForm: document.getElementById("studio-note-form"),
+    studioNoteAgent: document.getElementById("studio-note-agent"),
+    studioNoteText: document.getElementById("studio-note-text"),
+    studioRenderBtn: document.getElementById("studio-render-btn")
   };
 
   const ctx = els.canvas?.getContext("2d");
@@ -210,11 +216,15 @@
 
   async function loadStudioState() {
     const sessionsRes = await api("/api/sessions");
-    state.studioSessionId = sessionsRes.activeSessionId || boot.activeSessionId || "";
+    const sessions = sessionsRes.sessions || [];
+    state.studioSessionId = sessionsRes.activeSessionId || boot.activeSessionId || sessions[0]?.sessionId || "";
+    populateSessionPicker(sessions, state.studioSessionId);
+    populateStudioAgents();
     if (els.sessionPill) {
       els.sessionPill.textContent = state.studioSessionId ? state.studioSessionId.slice(0, 24) : "No session";
     }
-    if (els.projectName) els.projectName.textContent = sessionsRes.sessions?.[0]?.title || "Council session";
+    const activeSession = sessions.find((s) => s.sessionId === state.studioSessionId);
+    if (els.projectName) els.projectName.textContent = activeSession?.title || "Council session";
     if (els.officeHint) {
       els.officeHint.classList.remove("hidden");
       window.setTimeout(() => els.officeHint?.classList.add("hidden"), 6000);
@@ -222,10 +232,94 @@
     connectStudioStream();
   }
 
+  function populateSessionPicker(sessions, selectedId) {
+    if (!els.sessionPicker) return;
+    els.sessionPicker.innerHTML = sessions.length
+      ? sessions
+          .map(
+            (s) =>
+              '<option value="' +
+              escapeHtml(s.sessionId) +
+              '"' +
+              (s.sessionId === selectedId ? " selected" : "") +
+              ">" +
+              escapeHtml((s.title || s.sessionId).slice(0, 48)) +
+              "</option>"
+          )
+          .join("")
+      : '<option value="">No sessions</option>';
+  }
+
+  function populateStudioAgents() {
+    if (!els.studioNoteAgent) return;
+    els.studioNoteAgent.innerHTML = state.agents.length
+      ? state.agents.map((a) => '<option value="' + escapeHtml(a.id) + '">' + escapeHtml(a.name || a.id) + "</option>").join("")
+      : '<option value="planner">Planner</option>';
+  }
+
+  function bindStudioControls() {
+    if (els.sessionPicker) {
+      els.sessionPicker.addEventListener("change", () => {
+        state.studioSessionId = els.sessionPicker.value;
+        if (els.sessionPill) {
+          els.sessionPill.textContent = state.studioSessionId ? state.studioSessionId.slice(0, 24) : "No session";
+        }
+        connectStudioStream();
+      });
+    }
+    if (els.studioNoteForm) {
+      els.studioNoteForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        if (!state.studioSessionId) {
+          setStatus("error", "Select a session first.");
+          return;
+        }
+        const agent = els.studioNoteAgent?.value || "planner";
+        const text = (els.studioNoteText?.value || "").trim();
+        if (!text) {
+          setStatus("error", "Enter note text.");
+          return;
+        }
+        try {
+          await api("/api/sessions/" + encodeURIComponent(state.studioSessionId) + "/note", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ agent, text })
+          });
+          if (els.studioNoteText) els.studioNoteText.value = "";
+          setStatus("ok", "Note recorded.");
+        } catch (error) {
+          setStatus("error", error.message);
+        }
+      });
+    }
+    if (els.studioRenderBtn) {
+      els.studioRenderBtn.addEventListener("click", async () => {
+        if (!state.studioSessionId) {
+          setStatus("error", "Select a session first.");
+          return;
+        }
+        try {
+          const result = await api("/api/sessions/" + encodeURIComponent(state.studioSessionId) + "/render", {
+            method: "POST"
+          });
+          setStatus("ok", "Rendered " + (result.files?.length || 0) + " markdown files.");
+        } catch (error) {
+          setStatus("error", error.message);
+        }
+      });
+    }
+  }
+
   function connectStudioStream() {
     if (!state.studioSessionId) return;
+    if (state.studioEventSource) {
+      state.studioEventSource.close();
+      state.studioEventSource = null;
+    }
     const url = "/api/events/stream?sessionId=" + encodeURIComponent(state.studioSessionId);
     const source = new EventSource(url);
+    state.studioEventSource = source;
     source.addEventListener("snapshot", (ev) => {
       try {
         const payload = JSON.parse(ev.data);
@@ -249,6 +343,7 @@
     });
     source.onerror = () => {
       source.close();
+      if (state.studioEventSource === source) state.studioEventSource = null;
     };
   }
 
@@ -1119,6 +1214,7 @@
   }
 
   loop();
+  if (isStudio) bindStudioControls();
   loadState().catch((error) => setStatus("error", error.message));
   window.addEventListener("resize", () => {
     renderNameplates();

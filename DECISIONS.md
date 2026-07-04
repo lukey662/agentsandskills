@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-07-04 - Complete Live Studio Milestone 8
+
+### Context
+
+Since 0.1.2, `agent-kit studio serve` provided a localhost live Agent Office with SSE session events and a transcript panel, but Milestone 8 in `AGENT_STUDIO_PLAN.md` also required buttons/forms that call CLI-safe operations and explicit session selection. Setup-server API routes also lacked full automated route coverage, and the office/wizard UI had no browser screenshot smoke evidence.
+
+### Decision
+
+Complete Milestone 8 with two CLI-safe POST endpoints on the studio server (`/api/sessions/:id/note`, `/api/sessions/:id/render`) reusing `recordSessionNote` and `renderSession` from `session.ts`, plus a session picker, note form, and render button in the live office UI. Move `readJsonBody` to `shared.ts` for reuse. Add `tests/setup-server-api.test.ts` for setup-server route coverage, `scripts/smoke-ui-screens.mjs` with Playwright (dedicated CI job, not in `release:check`), and validate invalid setup `completeSection` ids with 400 responses. Direct AI orchestration remains deferred to Milestone 9.
+
+### Consequences
+
+The live office is interactive but still file-contract-only — disabling `studio serve` leaves CLI session workflows intact. UI screenshots are smoke evidence only (no visual-regression baselines in this release). Setup-server coverage rises enough for release confidence without chasing browser-open or interactive CLI prompt wrappers.
+
 ## 2026-07-04 - Lifecycle README And Targeted Slash-Command Parity
 
 ### Context

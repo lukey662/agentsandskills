@@ -326,7 +326,7 @@ Acceptance:
 - `[x]` Add automated test coverage for schema validation, JSONL parsing, Markdown rendering, correction promotion, secret redaction, path traversal rejection, old-install update behavior, fixture projects, golden outputs, and smoke onboarding.
 - `[x]` Add `npm run smoke:studio` and wire it into `npm run release:check` before any Agent Studio feature is marked complete.
 - `[x]` Add optional `agent-kit studio export` static HTML view after the Markdown-first workflow is useful.
-- `[x]` Add `agent-kit studio serve` — localhost live office with SSE session events (Milestone 8 partial).
+- `[x]` Add `agent-kit studio serve` — localhost live office with SSE session events, session picker, note/render POST endpoints, and interactive studio controls (Milestone 8 complete).
 - `[ ]` Defer direct AI API orchestration until the file protocol is proven across more projects.
 
 Acceptance:

@@ -1,4 +1,5 @@
 import { appendFileSync, existsSync, readFileSync } from "node:fs";
+import type { IncomingMessage } from "node:http";
 import { basename, dirname, join } from "node:path";
 import { ensureDir, readTextIfExists, resolveInside, writeText } from "../utils/fs.js";
 
@@ -119,4 +120,30 @@ export function listMarkdown(items: string[]): string {
 
 export function unique(values: string[]): string[] {
   return [...new Set(values.filter(Boolean))].sort();
+}
+
+export function readJsonBody(request: IncomingMessage): Promise<unknown> {
+  return new Promise((resolve, reject) => {
+    const chunks: Buffer[] = [];
+    request.on("data", (chunk: Buffer) => {
+      chunks.push(chunk);
+      if (chunks.reduce((total, item) => total + item.length, 0) > 256_000) {
+        reject(new Error("Request body too large."));
+        request.destroy();
+      }
+    });
+    request.on("end", () => {
+      const raw = Buffer.concat(chunks).toString("utf8").trim();
+      if (!raw) {
+        resolve({});
+        return;
+      }
+      try {
+        resolve(JSON.parse(raw) as unknown);
+      } catch {
+        reject(new Error("Request body must be valid JSON."));
+      }
+    });
+    request.on("error", reject);
+  });
 }

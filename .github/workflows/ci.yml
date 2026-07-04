@@ -51,3 +51,42 @@ jobs:
 
       - name: Baseline audit gate
         run: npm run smoke:audit-gate
+
+  ui-screens:
+    name: UI screenshot smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Use declared npm version
+        run: npm install --global npm@11.6.2
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Build
+        run: npm run build
+
+      - name: UI screenshot smoke
+        run: npm run smoke:ui-screens
+
+      - name: Upload UI screenshots
+        uses: actions/upload-artifact@v7
+        with:
+          name: ui-screens
+          path: artifacts/ui-screens/
+          if-no-files-found: error

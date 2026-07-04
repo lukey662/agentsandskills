@@ -1,6 +1,6 @@
 {
   "name": "@appsforgood/next-supabase-kit",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Open agent council, skills, prompts, checklists, and markdown templates for Next.js and Supabase projects.",
   "type": "module",
   "repository": {
@@ -84,6 +84,7 @@
     "smoke:install": "node scripts/smoke-install.mjs",
     "smoke:studio": "node scripts/smoke-studio.mjs",
     "smoke:setup": "node scripts/smoke-setup.mjs",
+    "smoke:ui-screens": "node scripts/smoke-ui-screens.mjs",
     "smoke:audit-gate": "node scripts/smoke-audit-gate.mjs",
     "package:validate": "node dist/index.js package validate",
     "examples:check": "node scripts/example-check.mjs",
@@ -114,6 +115,7 @@
     "eslint": "^9.39.4",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.7.0",
+    "playwright": "^1.52.0",
     "prettier": "^3.9.4",
     "tsup": "^8.3.5",
     "tsx": "^4.19.2",

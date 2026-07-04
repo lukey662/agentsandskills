@@ -112,7 +112,7 @@ function renderOfficeHtml(boot: OfficeBootConfig | undefined, mode: "setup" | "s
       <div id="nameplate-layer" class="nameplate-layer" aria-hidden="true"></div>
       <div id="office-hint" class="office-hint hidden" role="status">${isStudio ? "Watching council session events…" : "Click a desk or zone to brief your agent team."}</div>
     </div>
-    ${isStudio ? '<aside class="transcript-panel" id="transcript-panel" aria-label="Session transcript"><h2>Transcript</h2><ol id="transcript-list"></ol></aside>' : ""}
+    ${isStudio ? '<aside class="transcript-panel" id="transcript-panel" aria-label="Session transcript"><div class="studio-controls" id="studio-controls"><label class="studio-label" for="session-picker">Session</label><select id="session-picker" aria-label="Council session"></select><form id="studio-note-form" class="studio-note-form"><select id="studio-note-agent" aria-label="Agent for note"></select><input id="studio-note-text" type="text" maxlength="3999" placeholder="Add council note…" /><button type="submit" class="btn secondary">Add note</button></form><button type="button" class="btn primary" id="studio-render-btn">Render markdown</button></div><h2>Transcript</h2><ol id="transcript-list"></ol></aside>' : ""}
   </main>
   <div id="status" class="status" role="status" aria-live="polite"></div>
   <div id="depth-modal" class="modal modal-blur" hidden>

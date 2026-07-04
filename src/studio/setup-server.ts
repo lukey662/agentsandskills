@@ -20,8 +20,9 @@ import { buildOfficeStations } from "./office/map.js";
 import { allAgentBriefsComplete, wizardSectionForStation } from "./office/section-map.js";
 import type { OfficeStation } from "./office/types.js";
 import { renderSetupWizardHtmlWithContext } from "./wizard/render.js";
-import type { WizardDepth, WizardSectionId } from "./wizard/steps.js";
+import { SECTION_LABELS, type WizardDepth, type WizardSectionId } from "./wizard/steps.js";
 import { computeAgenticLevel, invalidateAgenticLevelCache, summarizeAdapterValidation } from "./agentic-level.js";
+import { readJsonBody } from "./shared.js";
 
 export interface SetupServerOptions {
   cwd: string;
@@ -40,32 +41,6 @@ export interface SetupServerHandle {
 
 const DEFAULT_PORT = 9321;
 const DEFAULT_HOST = "127.0.0.1";
-
-function readJsonBody(request: IncomingMessage): Promise<unknown> {
-  return new Promise((resolve, reject) => {
-    const chunks: Buffer[] = [];
-    request.on("data", (chunk: Buffer) => {
-      chunks.push(chunk);
-      if (chunks.reduce((total, item) => total + item.length, 0) > 256_000) {
-        reject(new Error("Request body too large."));
-        request.destroy();
-      }
-    });
-    request.on("end", () => {
-      const raw = Buffer.concat(chunks).toString("utf8").trim();
-      if (!raw) {
-        resolve({});
-        return;
-      }
-      try {
-        resolve(JSON.parse(raw) as unknown);
-      } catch {
-        reject(new Error("Request body must be valid JSON."));
-      }
-    });
-    request.on("error", reject);
-  });
-}
 
 function sendJson(response: ServerResponse, statusCode: number, payload: unknown): void {
   response.writeHead(statusCode, {
@@ -167,6 +142,9 @@ async function handleRequest(cwd: string, request: IncomingMessage, response: Se
     try {
       const body = (await readJsonBody(request)) as Record<string, unknown>;
       if (typeof body.completeSection === "string") {
+        if (!(body.completeSection in SECTION_LABELS)) {
+          throw new Error("Invalid section id.");
+        }
         markSectionComplete(cwd, body.completeSection as WizardSectionId);
       }
       const patch: Record<string, unknown> = {};

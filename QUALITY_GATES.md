@@ -26,6 +26,7 @@ Baseline means the project is usable and the agent kit can audit it.
 - Security Reviewer reviews auth, RLS, dependency, secret, external-call, and release-risk changes.
 - Marketing Copy Lead reviews public-facing or conversion-facing copy, positioning, proof, objections, voice, and CTA hierarchy.
 - QA evidence is recorded before behavior changes are accepted.
+- Antigravity runtime slash commands and `.agent-kit/prompts/lifecycle-command-index.md` are treated as adapter entrypoints; council docs, roster JSON, and Agent Studio session evidence remain canonical.
 
 ### Strong
 

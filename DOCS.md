@@ -105,7 +105,7 @@ The office is a top-down canvas: click agents at desks to brief them, visit zone
 
 Writes: `.agent-kit/project-context.json`, `project-context.md`, `agent-briefs.md`, `onboarding/state.json`, `wizard-draft.json`.
 
-**Note:** Requires `@appsforgood/next-supabase-kit@0.1.7` or later.
+**Note:** Requires `@appsforgood/next-supabase-kit@0.1.8` or later.
 
 ## Live Studio (session mirror)
 
@@ -121,6 +121,10 @@ agent-kit studio serve --open
 | `GET /api/sessions` | List sessions + active id |
 | `GET /api/sessions/:id/events` | Read redacted `events.jsonl` |
 | `GET /api/events/stream` | SSE stream when events append |
+| `POST /api/sessions/:id/note` | Record a council note (`{ agent, text }`) into `events.jsonl` |
+| `POST /api/sessions/:id/render` | Render `index.md` and `transcript.md` for the session |
+
+The live office UI includes a **session picker** (reconnect SSE to any session), an **Add note** form, and a **Render markdown** button that call the POST endpoints above. All mutations stay localhost-only and reuse the same file contracts as the CLI.
 
 Record work with existing CLI commands (`session start`, `session note`, `session handoff`, etc.) or batch them:
 
@@ -306,6 +310,7 @@ Required gates per matrix cell:
 - `npm ci`
 - `npm run release:check` (includes lint, format, coverage, `npm run adapter:validate`, and `npm run smoke:setup`)
 - `npm run smoke:audit-gate`
+- `npm run smoke:ui-screens` (Playwright office/wizard screenshots; CI Ubuntu job only)
 
 `npm run release:check` validates JSON assets, checks package version consistency, typechecks, lints, checks formatting, runs tests with the coverage gate, builds, checks committed example output against the current CLI, install-smokes the packed package, runs the Agent Studio smoke, runs dependency audit, validates CycloneDX SBOM generation, and performs package dry run. CI and release workflows both use this command so local and remote gates stay aligned.
 

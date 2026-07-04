@@ -44,6 +44,8 @@ describe("agent-kit studio serve", () => {
     expect(html).toContain('data-view="studio-v1"');
     expect(html).toContain('"mode":"studio"');
     expect(html).toContain("transcript-panel");
+    expect(html).toContain('id="session-picker"');
+    expect(html).toContain('id="studio-render-btn"');
   });
 
   it("maps office stations to wizard section ids", () => {
@@ -101,6 +103,86 @@ describe("agent-kit studio serve", () => {
       controller.abort();
       await reader?.cancel().catch(() => undefined);
       expect(chunk).toContain("event: snapshot");
+    } finally {
+      await server.close();
+    }
+  });
+
+  it("POST note appends to events and POST render writes markdown files", async () => {
+    const root = tempProject();
+    const session = startSession(root, { title: "Note render test", workflowId: "planning" });
+    const server = await startStudioServer({ cwd: root, port: 0 });
+    try {
+      const noteRes = await fetch(`${server.url}/api/sessions/${session.sessionId}/note`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ agent: "planner", text: "Studio note from API test." })
+      });
+      expect(noteRes.ok).toBe(true);
+      const noteBody = (await noteRes.json()) as { event: { text: string; type: string } };
+      expect(noteBody.event.type).toBe("agent_message");
+      expect(noteBody.event.text).toContain("Studio note");
+
+      const renderRes = await fetch(`${server.url}/api/sessions/${session.sessionId}/render`, { method: "POST" });
+      expect(renderRes.ok).toBe(true);
+      const renderBody = (await renderRes.json()) as { rendered: boolean; files: string[] };
+      expect(renderBody.rendered).toBe(true);
+      expect(renderBody.files.some((f) => f.endsWith("index.md"))).toBe(true);
+    } finally {
+      await server.close();
+    }
+  });
+
+  it("POST note rejects invalid session id and oversized text", async () => {
+    const root = tempProject();
+    const session = startSession(root, { title: "Validation test", workflowId: "planning" });
+    const server = await startStudioServer({ cwd: root, port: 0 });
+    try {
+      const badId = await fetch(`${server.url}/api/sessions/bad%2Fid/note`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ agent: "planner", text: "x" })
+      });
+      expect(badId.status).toBe(400);
+
+      const longText = "x".repeat(4000);
+      const tooLong = await fetch(`${server.url}/api/sessions/${session.sessionId}/note`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ agent: "planner", text: longText })
+      });
+      expect(tooLong.status).toBe(400);
+    } finally {
+      await server.close();
+    }
+  });
+
+  it("SSE stream works for explicit non-active sessionId", async () => {
+    const root = tempProject();
+    const first = startSession(root, { title: "First", workflowId: "planning" });
+    recordNote(root, "planner", "First session note.");
+    const second = startSession(root, { title: "Second", workflowId: "planning" });
+    recordNote(root, "planner", "Second session note.");
+
+    const server = await startStudioServer({ cwd: root, port: 0 });
+    try {
+      const controller = new AbortController();
+      const streamRes = await fetch(`${server.url}/api/events/stream?sessionId=${first.sessionId}`, {
+        signal: controller.signal
+      });
+      expect(streamRes.ok).toBe(true);
+      const reader = streamRes.body?.getReader();
+      let chunk = "";
+      const deadline = Date.now() + 2000;
+      while (!chunk.includes("First session note") && Date.now() < deadline) {
+        const { value, done } = await reader!.read();
+        if (done) break;
+        chunk += new TextDecoder().decode(value ?? new Uint8Array());
+      }
+      controller.abort();
+      await reader?.cancel().catch(() => undefined);
+      expect(chunk).toContain("First session note");
+      expect(second.sessionId).not.toBe(first.sessionId);
     } finally {
       await server.close();
     }

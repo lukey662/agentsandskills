@@ -4,6 +4,7 @@ coverage/
 .cursor/*
 !.cursor/rules/
 release-artifacts/
+artifacts/
 sbom.cdx.json
 .DS_Store
 .env

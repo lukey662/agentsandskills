@@ -34,6 +34,15 @@ Mode: read-only audit; no downstream files were modified.
 - Assistant adapters and upgrade lifecycle still need real activation/dogfood evidence after publication.
 - Reference-led design critique still needs a real UI change dogfood pass with screenshots or equivalent visual evidence.
 
+## 2026-07-04 Publish @0.1.8 Snapshot
+
+Date: 2026-07-04
+CLI source: local `dist/index.js` after `npm run release:check`
+
+- Setup-server API route coverage (`tests/setup-server-api.test.ts`), Playwright UI screenshot smoke (`smoke:ui-screens`), and Agent Studio Milestone 8 completion (note/render POST endpoints, session picker, live office controls).
+- `readJsonBody` shared between setup and studio servers; studio SSE broadcasts notes.
+- Dedicated Ubuntu CI job for UI screenshots; not part of `release:check` matrix.
+
 ## 2026-07-04 Publish @0.1.7 Snapshot
 
 Date: 2026-07-04
