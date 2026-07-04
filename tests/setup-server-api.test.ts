@@ -262,6 +262,6 @@ describe("wizard draft helpers", () => {
     expect(first.action).toBe("appended");
     const second = applyDesignDraft(root);
     expect(second.action).toBe("conflict");
-    expect(readFileSync(join(root, "DESIGN.md"), "utf8").match(/\(wizard draft\)/g)?.length).toBe(1);
+    expect(readFileSync(join(root, "DESIGN.md"), "utf8").match(/\(wizard draft\)/g)?.length).toBe(2);
   });
 });

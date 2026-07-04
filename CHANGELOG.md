@@ -4,7 +4,7 @@
 
 - Added `tests/setup-server-api.test.ts` for full setup-server API route coverage (PATCH state, context import, checklists, design/messaging drafts, apply, agentic-level refresh, oversized body, 404) plus wizard draft edge cases.
 - Moved `readJsonBody` to `src/studio/shared.ts` for reuse; setup-server validates invalid `completeSection` ids with 400.
-- Added Playwright UI screenshot smoke (`scripts/smoke-ui-screens.mjs`, `npm run smoke:ui-screens`) with dedicated Ubuntu CI job uploading `artifacts/ui-screens/` (not in `release:check`).
+- Added Playwright UI screenshot smoke (`scripts/smoke-ui-screens.mjs`, `npm run smoke:ui-screens`, Playwright 1.55.1) with dedicated Ubuntu CI job uploading `artifacts/ui-screens/` (not in `release:check`).
 - Completed Agent Studio Milestone 8: `POST /api/sessions/:id/note` and `/render` on studio serve, session picker, note form, and render button in live office UI; SSE broadcast for notes.
 - Updated `TESTING.md`, `QUALITY_GATES.md`, `DOCS.md`, `ROADMAP.md`, and `DECISIONS.md` for studio serve endpoints, UI smoke, and runtime adapter references.
 

@@ -219,10 +219,7 @@ async function handleRequestAsync(cwd: string, request: IncomingMessage, respons
         rendered: true,
         sessionId: result.sessionId,
         sessionPath: result.sessionPath,
-        files: [
-          `${result.sessionPath}/index.md`,
-          `${result.sessionPath}/transcript.md`
-        ]
+        files: [`${result.sessionPath}/index.md`, `${result.sessionPath}/transcript.md`]
       });
     } catch (error) {
       sendJson(response, 404, { error: error instanceof Error ? error.message : String(error) });

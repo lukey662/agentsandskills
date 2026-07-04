@@ -36,9 +36,9 @@ async function captureScreenshots() {
   try {
     const shots = [
       { path: "/office", name: "office-desktop", viewport: { width: 1280, height: 800 }, selector: "canvas", view: "office-v1" },
-      { path: "/wizard", name: "wizard-desktop", viewport: { width: 1280, height: 800 }, selector: ".wizard-card", view: "wizard-v1" },
+      { path: "/wizard", name: "wizard-desktop", viewport: { width: 1280, height: 800 }, selector: "#wizard-card", view: "wizard-v1" },
       { path: "/office", name: "office-mobile", viewport: { width: 390, height: 844 }, selector: "canvas", view: "office-v1" },
-      { path: "/wizard", name: "wizard-mobile", viewport: { width: 390, height: 844 }, selector: ".wizard-card", view: "wizard-v1" }
+      { path: "/wizard", name: "wizard-mobile", viewport: { width: 390, height: 844 }, selector: "#wizard-card", view: "wizard-v1" }
     ];
 
     for (const shot of shots) {

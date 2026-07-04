@@ -125,14 +125,17 @@ export function unique(values: string[]): string[] {
 export function readJsonBody(request: IncomingMessage): Promise<unknown> {
   return new Promise((resolve, reject) => {
     const chunks: Buffer[] = [];
+    let bodyTooLarge = false;
     request.on("data", (chunk: Buffer) => {
+      if (bodyTooLarge) return;
       chunks.push(chunk);
       if (chunks.reduce((total, item) => total + item.length, 0) > 256_000) {
+        bodyTooLarge = true;
         reject(new Error("Request body too large."));
-        request.destroy();
       }
     });
     request.on("end", () => {
+      if (bodyTooLarge) return;
       const raw = Buffer.concat(chunks).toString("utf8").trim();
       if (!raw) {
         resolve({});
