@@ -2,6 +2,24 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-07-04 - Lifecycle README And Targeted Slash-Command Parity
+
+### Context
+
+The public README foregrounded `agent-kit` CLI tables but not the delivery lifecycle slash commands that Antigravity users invoke (`/plan`, `/ship`, UI harness commands, and related adapters). [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) demonstrates that a lifecycle command table, skill activation narrative, and grouped skill catalog improve discoverability without replacing the underlying council contract.
+
+The kit already had seventeen Antigravity commands and roster-based skill routing, but no canonical lifecycle command index and no dedicated `/spec`, `/test`, or `/review` entrypoints.
+
+### Decision
+
+Add a **Workflow Commands** section to `README.md` and `docs/index.md` with lifecycle diagram, core and UI command tables, council summary, skills-by-phase grouping, and explicit separation from package CLI commands. Create `prompts/lifecycle-command-index.md` as the canonical delivery workflow index (parallel to `prompts/ui-command-index.md`). Add thin Antigravity adapters for `/spec`, `/test`, and `/review` that route through existing Planner, QA Engineer, and Security Reviewer skills. Extend roster workflows with `testing` and `code-review` triggers plus planning triggers for spec work.
+
+Do not clone addyosmani's full eight-command pack, `/build auto` orchestration, or generic single-agent personas. Document those gaps as future scope in `RUNTIME_ORCHESTRATION_SCOPE.md`.
+
+### Consequences
+
+Users can discover lifecycle commands from the README without reading Antigravity plugin manifests. Adapter validation expects twenty native commands. Installed projects receive the lifecycle index via the bundled `prompts/` package assets. `/ship` remains the release GO/NO-GO command; `/review` covers pre-merge code health only.
+
 ## 2026-06-29 - Preserve Node 20 During Production Dependency Updates
 
 ### Context

@@ -20,10 +20,10 @@ It also includes a local Agent Studio workflow: project context, durable human c
 
 ## Quick Start
 
-Use this in a Next.js + Supabase project (latest: **v0.1.6** on npm):
+Use this in a Next.js + Supabase project (latest: **v0.1.7** on npm):
 
 ```bash
-npx @appsforgood/next-supabase-kit@0.1.6 init --stack next-supabase --setup --open
+npx @appsforgood/next-supabase-kit@0.1.7 init --stack next-supabase --setup --open
 npx @appsforgood/next-supabase-kit audit
 npx @appsforgood/next-supabase-kit audit --min-readiness baseline-setup
 ```
@@ -82,6 +82,83 @@ npm run release:check
 ```
 
 `npm run release:check` is the main pre-release proof command. It typechecks, tests, builds, install-smokes the package, checks examples, runs dependency audit, validates SBOM generation, and dry-runs packaging.
+
+## Workflow Commands
+
+Twenty slash commands map to the delivery lifecycle. Each one activates the right council agents and skills automatically. Use them in Antigravity after `init --activate antigravity`, or as prompt prefixes in any IDE. Canonical workflow steps live in `.agent-kit/prompts/lifecycle-command-index.md` (delivery) and `.agent-kit/prompts/ui-command-index.md` (UI polish).
+
+```text
+SETUP → SPEC/PLAN → BUILD → VERIFY → REVIEW → SHIP
+```
+
+**Workflow commands** (`/setup`, `/spec`, …) are runtime adapters. **Package CLI** commands (`agent-kit init`, `audit`, `session`, …) are documented under [CLI Reference](#cli-reference) below. Cursor loads rules and skills from `init`; Antigravity gets native slash commands from `init --activate antigravity`. See `ASSISTANT_ADAPTERS.md` for per-IDE setup.
+
+### Core lifecycle commands
+
+| What you're doing | Command | Key principle | Skills / council |
+| --- | --- | --- | --- |
+| Onboard project context | `/setup` | Context before code | Agent Office, project-context |
+| Define what to build | `/spec` | Spec before code | Planner, docs-maintainer |
+| Plan how to build it | `/plan` | Council before implementation | planning-council, lead-architect |
+| Route between agents | `/handoff` | Explicit handoffs | agent-handoff-tracing |
+| Build frontend/UI | `/frontend` | Content-first design | frontend-design-lead skills |
+| Check kit readiness | `/audit` | Evidence before claims | best-practice-maturity-review |
+| Prove behavior | `/test` | Tests are proof | testing-qa, qa-engineer |
+| Review before merge | `/review` | Improve code health | qa-engineer + security-reviewer |
+| Security signoff | `/security` | RLS at the boundary | owasp-security-review, supabase-auth-rls |
+| Public copy | `/copy` | Proof before publish | marketing-copy-lead |
+| Ship release | `/ship` | Faster is safer | deployment-observability, release gates |
+| Upgrade kit/deps | `/upgrade` | Diff before overwrite | upgrade-maintenance |
+
+### UI harness commands
+
+Focused UI improvement commands. Full steps: `.agent-kit/prompts/ui-command-index.md`.
+
+| What you're doing | Command | Key principle |
+| --- | --- | --- |
+| Audit UI before release | `/ui-audit` | Detect before ship |
+| Improve visual quality | `/ui-polish` | Scope-safe polish |
+| Repair layout structure | `/layout-cleanup` | Hierarchy over decoration |
+| Fix responsive behavior | `/responsive-cleanup` | Mobile is not an afterthought |
+| WCAG 2.1 AA pass | `/accessibility-pass` | Keyboard and contrast matter |
+| Prove product distinctiveness | `/distinctiveness-pass` | Not interchangeable SaaS |
+| Critique screenshots | `/screenshot-critique` | Evidence over opinion |
+| Live browser QA loop | `/browser-qa` | Measure in the real UI |
+
+Skills activate from task keywords and roster `defaultFor` tags—for example, schema/RLS work routes to **Supabase/Postgres Engineer** with `supabase-auth-rls` and `postgres-migrations`; App Router work routes to **Next.js Engineer** with `nextjs-app-router`. See `SKILLS.md` and `.agent-kit/agent-roster.json`.
+
+### Council
+
+| Agent | Owns | Key skills |
+| --- | --- | --- |
+| Planner | Scope, roadmap, ambiguous requests | planning-council, agent-handoff-tracing |
+| Lead Architect | Core and cross-layer changes | nextjs-app-router, supabase-auth-rls, owasp-security-review |
+| Supabase/Postgres Engineer | Schema, migrations, RLS, auth | supabase-auth-rls, postgres-migrations |
+| Next.js Engineer | App Router, Server Actions, UI state | nextjs-app-router, frontend-design-system |
+| Frontend Design Lead | Design gates, visual QA, anti-generic UI | content-first-design, ui-improvement-harness |
+| Marketing Copy Lead | Positioning, conversion copy, CTAs | positioning-messaging, conversion-copywriting |
+| Security Reviewer | OWASP, auth boundaries, secrets | owasp-security-review, supabase-auth-rls |
+| QA Engineer | Tests, regression, acceptance evidence | testing-qa, visual-regression-qa |
+| Documentation Maintainer | Living docs, spec, decisions | docs-maintainer, planning-council |
+| Deployment/Observability Engineer | Release, rollback, monitoring | deployment-observability |
+
+### Skills by lifecycle phase
+
+Full skill list: `SKILLS.md`.
+
+**Define:** planning-council, agent-handoff-tracing, best-practice-maturity-review, docs-maintainer
+
+**Build:** nextjs-app-router, supabase-auth-rls, postgres-migrations, content-first-design, frontend-design-system, ui-improvement-harness, positioning-messaging
+
+**Verify:** testing-qa, visual-regression-qa, owasp-security-review, accessibility-wcag, reference-led-design-critique, frontend-product-quality-rubric
+
+**Ship:** deployment-observability, upgrade-maintenance
+
+### How skills work
+
+- **Canonical skills** live in `.agent-kit/skills/` as markdown checklists agents load for a task type.
+- **Runtime wrappers** in `runtime-skills/*/SKILL.md` expose the same content to Antigravity and other skill-directory runtimes.
+- **Roster routing** in `.agent-kit/agent-roster.json` maps `defaultFor` keywords and workflows to agents and their default skill sets—slash commands and natural-language requests both use the same contract.
 
 ## How Agentic Coders Should Use It
 
@@ -283,7 +360,7 @@ Agent Kit separates the mechanisms that make AI coding repeatable:
 - Instructions: `AGENTS.md`, assistant adapters, and IDE-specific rule files.
 - Roster: `.agent-kit/agent-roster.json` chooses agents, workflows, and handoffs.
 - Skills: `.agent-kit/skills/` keeps specialist workflows reusable.
-- Runtime commands: Antigravity `commands/*.toml` expose `/setup`, `/audit`, `/plan`, `/handoff`, `/frontend`, focused UI improvement commands, `/security`, `/copy`, `/ship`, and `/upgrade` as native adapter entrypoints.
+- Runtime commands: Antigravity `commands/*.toml` expose `/setup`, `/spec`, `/audit`, `/plan`, `/handoff`, `/frontend`, `/test`, `/review`, focused UI improvement commands, `/security`, `/copy`, `/ship`, and `/upgrade` as native adapter entrypoints.
 - Portable skills: `runtime-skills/*/SKILL.md` wraps canonical `skills/*.md` files for runtimes that discover skill directories.
 - Model routing: `MODEL_ROUTING.md` and `.agent-kit/model-routing.json` map agents to model profiles.
 - Messaging: `MESSAGING.md` records audience, pain, outcome, proof, objections, voice, and conversion evidence for public-facing copy.
@@ -381,7 +458,7 @@ Release expectations:
 - Dependency Review, CodeQL, OpenSSF Scorecard, Dependabot, SBOM validation, and SBOM attestation.
 - Post-publish verification with `npm run publish:verify`.
 
-The package is published to public npm under `@appsforgood/next-supabase-kit@0.1.6`. Every release must pass `npm run release:check` before publish and `npm run publish:verify` after (registry visibility, clean `npx` doctor/init/audit). Post-publish verification last passed **2026-07-04** against the live registry: `@0.1.6` doctor, clean init, and `audit --min-readiness baseline-setup` with zero failures (67 pass / 4 warn).
+The package is published to public npm under `@appsforgood/next-supabase-kit@0.1.7`. Every release must pass `npm run release:check` before publish and `npm run publish:verify` after (registry visibility, clean `npx` doctor/init/audit). Post-publish verification last passed **2026-07-04** against the live registry: `@0.1.7` doctor, clean init, and `audit --min-readiness baseline-setup` with zero failures.
 
 ## Repository Health
 

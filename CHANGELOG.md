@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.7
+
+- Added **Workflow Commands** section to README and docs site: lifecycle diagram, 12 core + 8 UI slash commands, council table, skills-by-phase grouping, and explicit separation from package CLI commands.
+- Added `prompts/lifecycle-command-index.md` as the canonical delivery lifecycle command index (parallel to `prompts/ui-command-index.md`).
+- Added Antigravity native commands `/spec`, `/test`, and `/review` (20 total runtime commands) with roster `testing` and `code-review` workflows.
+- Added "How skills work" guidance to `SKILLS.md` and updated assistant adapter docs for lifecycle command discoverability.
+
 ## 0.1.6
 
 - Added a repo-native UI improvement harness with command-style prompts, deterministic detector checklist, acceptance rubric, portable runtime skill, and focused Antigravity UI commands.

@@ -40,14 +40,21 @@ If the `agy` CLI is available, teams may additionally run its native plugin vali
 Commands expose short runtime entrypoints:
 
 - `/setup`
+- `/spec`
 - `/audit`
 - `/plan`
 - `/handoff`
 - `/frontend`
+- `/test`
+- `/review`
 - `/security`
 - `/copy`
 - `/ship`
 - `/upgrade`
+
+UI harness commands (`/ui-audit`, `/ui-polish`, `/layout-cleanup`, `/responsive-cleanup`, `/accessibility-pass`, `/distinctiveness-pass`, `/screenshot-critique`, `/browser-qa`) are documented in `.agent-kit/prompts/ui-command-index.md`.
+
+Delivery lifecycle commands are documented in `.agent-kit/prompts/lifecycle-command-index.md`.
 
 Each command must load project context and correction rules when present, select the appropriate roster workflow, record required outputs with `agent-kit session output`, and render sessions when evidence changes.
 

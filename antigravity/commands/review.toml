@@ -1,0 +1,16 @@
+name = "review"
+description = "Run pre-merge code health review with QA and conditional Security Reviewer routing."
+
+prompt = """
+Run the code-review workflow.
+
+Canonical sources: TESTING.md, SECURITY.md, QUALITY_GATES.md, AGENTS.md, .agent-kit/agent-roster.json, .agent-kit/skills/testing-qa.md, .agent-kit/skills/owasp-security-review.md, and .agent-kit/prompts/lifecycle-command-index.md.
+
+Workflow:
+1. Route through QA Engineer for behavior, regression, and test evidence.
+2. Include Security Reviewer when auth, RLS, data mutation, dependency, secret, or external-call boundaries changed.
+3. Return findings by severity with concrete remediation.
+4. Distinguish this from release GO/NO-GO, which belongs to `/ship`.
+
+Required outputs: reviewed scope, findings by severity, required fixes, security notes when applicable, merge recommendation.
+"""

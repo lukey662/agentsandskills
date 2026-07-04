@@ -1,0 +1,17 @@
+name = "spec"
+description = "Define or update SPEC.md with acceptance criteria before implementation."
+
+prompt = """
+Run the spec workflow.
+
+Canonical sources: SPEC.md, AGENTS.md, AGENT_ROSTER.md, .agent-kit/agent-roster.json, .agent-kit/project-context.md, .agent-kit/corrections/project-rules.json, QUALITY_GATES.md, and .agent-kit/prompts/lifecycle-command-index.md.
+
+Workflow:
+1. Route through Planner and Documentation Maintainer.
+2. Read project context and active correction rules before drafting or updating the spec.
+3. Capture goal, user/workflow, acceptance criteria, preserved behavior, non-goals, and docs impact.
+4. Map affected layers: data, business logic, presentation, auth, deployment, and tests.
+5. Record decision, risk, and next handoff with `agent-kit session ...` when a session is active.
+
+Required outputs: spec delta or draft, acceptance criteria, preserved capabilities, non-goals, verification plan, next handoff.
+"""

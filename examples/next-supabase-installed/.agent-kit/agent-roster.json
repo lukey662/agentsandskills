@@ -96,13 +96,7 @@
         "voice-tone",
         "pricing-copy"
       ],
-      "skills": [
-        "positioning-messaging",
-        "conversion-copywriting",
-        "landing-page-copy",
-        "product-voice-tone",
-        "onboarding-empty-state-copy"
-      ],
+      "skills": ["positioning-messaging", "conversion-copywriting", "landing-page-copy", "product-voice-tone", "onboarding-empty-state-copy"],
       "handsOffTo": ["frontend-design-lead", "nextjs-engineer", "qa-engineer", "docs-maintainer"]
     },
     {
@@ -117,7 +111,7 @@
       "id": "qa-engineer",
       "name": "QA Engineer",
       "file": ".agent-kit/agents/qa-engineer.md",
-      "defaultFor": ["testing", "regression", "smoke", "acceptance-evidence"],
+      "defaultFor": ["testing", "regression", "smoke", "acceptance-evidence", "test", "review", "code-review"],
       "skills": ["testing-qa", "best-practice-maturity-review", "visual-regression-qa", "accessibility-wcag"],
       "handsOffTo": ["docs-maintainer", "deployment-observability-engineer"]
     },
@@ -141,14 +135,26 @@
   "workflows": [
     {
       "id": "planning",
-      "triggers": ["plan", "roadmap", "phase", "scope", "what should we do", "break this down"],
+      "triggers": ["plan", "roadmap", "phase", "scope", "spec", "specification", "acceptance criteria", "what should we do", "break this down"],
       "sequence": ["planner", "lead-architect", "qa-engineer", "docs-maintainer"],
       "council": ["planner", "lead-architect"],
       "requiredOutputs": ["phased checklist", "maturity target", "affected layers", "preserved capabilities", "verification plan", "docs impact"]
     },
     {
       "id": "core-change",
-      "triggers": ["schema", "auth", "rls", "api", "route handler", "server action", "dependency", "upgrade", "release workflow", "package behavior", "cross-layer"],
+      "triggers": [
+        "schema",
+        "auth",
+        "rls",
+        "api",
+        "route handler",
+        "server action",
+        "dependency",
+        "upgrade",
+        "release workflow",
+        "package behavior",
+        "cross-layer"
+      ],
       "sequence": [
         "planner",
         "lead-architect",
@@ -195,7 +201,22 @@
     },
     {
       "id": "marketing-copy",
-      "triggers": ["copy", "copywriting", "marketing", "positioning", "messaging", "value prop", "value proposition", "landing page", "headline", "cta", "conversion", "onboarding", "empty state", "pricing"],
+      "triggers": [
+        "copy",
+        "copywriting",
+        "marketing",
+        "positioning",
+        "messaging",
+        "value prop",
+        "value proposition",
+        "landing page",
+        "headline",
+        "cta",
+        "conversion",
+        "onboarding",
+        "empty state",
+        "pricing"
+      ],
       "sequence": ["planner", "marketing-copy-lead", "frontend-design-lead", "qa-engineer", "docs-maintainer"],
       "council": ["marketing-copy-lead", "frontend-design-lead"],
       "requiredOutputs": [
@@ -208,6 +229,20 @@
         "CTA and conversion hypothesis",
         "handoff notes for design and implementation"
       ]
+    },
+    {
+      "id": "testing",
+      "triggers": ["test", "tests", "unit test", "regression test", "smoke test", "playwright", "acceptance test"],
+      "sequence": ["qa-engineer", "docs-maintainer"],
+      "council": ["qa-engineer"],
+      "requiredOutputs": ["test plan", "commands run", "pass/fail summary", "coverage gaps", "skipped-test rationale"]
+    },
+    {
+      "id": "code-review",
+      "triggers": ["review", "code review", "pre-merge", "pr review", "merge review"],
+      "sequence": ["qa-engineer", "security-reviewer", "docs-maintainer"],
+      "council": ["qa-engineer", "security-reviewer"],
+      "requiredOutputs": ["reviewed scope", "findings by severity", "required fixes", "security notes when applicable", "merge recommendation"]
     },
     {
       "id": "security-review",

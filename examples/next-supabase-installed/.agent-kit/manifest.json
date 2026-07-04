@@ -1,8 +1,8 @@
 {
   "packageName": "@appsforgood/next-supabase-kit",
-  "packageVersion": "0.1.6",
+  "packageVersion": "0.1.7",
   "stack": "next-supabase",
-  "installedAt": "2026-06-17T11:49:38.732Z",
+  "installedAt": "2026-07-04T01:32:06.844Z",
   "docs": [
     "AGENTS.md",
     "AGENT_ROSTER.md",

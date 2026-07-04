@@ -2,6 +2,12 @@
 
 Use these reusable skills when building or reviewing this project.
 
+## How Skills Work
+
+- **Canonical skills** live in `.agent-kit/skills/` as markdown checklists with required checks for a task type.
+- **Runtime wrappers** in `runtime-skills/*/SKILL.md` expose the same content to Antigravity and other skill-directory runtimes.
+- **Roster routing** in `.agent-kit/agent-roster.json` maps `defaultFor` keywords and workflows to agents and their default skill sets. Slash commands from `.agent-kit/prompts/lifecycle-command-index.md` and natural-language requests use the same contract.
+
 ## Planning And Agent Council
 
 Use for planning requests, roadmap work, ambiguous feature requests, core architecture changes, auth/data changes, release changes, and any task that needs multiple agent roles.

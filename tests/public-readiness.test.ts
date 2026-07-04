@@ -245,6 +245,7 @@ describe("public package readiness", () => {
   it("ships Antigravity native commands and portable runtime skills", () => {
     const requiredCommands = [
       "setup",
+      "spec",
       "audit",
       "plan",
       "handoff",
@@ -257,6 +258,8 @@ describe("public package readiness", () => {
       "distinctiveness-pass",
       "screenshot-critique",
       "browser-qa",
+      "test",
+      "review",
       "security",
       "copy",
       "ship",

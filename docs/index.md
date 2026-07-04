@@ -4,19 +4,52 @@
 
 [Package on npm](https://www.npmjs.com/package/@appsforgood/next-supabase-kit) · [Source on GitHub](https://github.com/lukey662/agentsandskills)
 
-**Latest release:** v0.1.6
+**Latest release:** v0.1.7
 
 ## Quick Start
 
 ```bash
-npx @appsforgood/next-supabase-kit@0.1.6 init --stack next-supabase --setup --open
+npx @appsforgood/next-supabase-kit@0.1.7 init --stack next-supabase --setup --open
 npx @appsforgood/next-supabase-kit audit
 npx @appsforgood/next-supabase-kit audit --min-readiness baseline-setup
+```
+
+Promote native slash commands in Antigravity:
+
+```bash
+npx @appsforgood/next-supabase-kit init --activate antigravity
 ```
 
 The installer never silently overwrites your docs: files that differ from the templates are preserved, and the new template is written to `.agent-kit/conflicts/` for review.
 
 Every command accepts `--json`. Mutating commands (`init`, `update`, `add skill`, `correction apply`) also accept `--dry-run`.
+
+## Workflow Commands
+
+Twenty slash commands map to the delivery lifecycle. Canonical steps: `.agent-kit/prompts/lifecycle-command-index.md` (delivery) and `.agent-kit/prompts/ui-command-index.md` (UI).
+
+```text
+SETUP → SPEC/PLAN → BUILD → VERIFY → REVIEW → SHIP
+```
+
+| What you're doing | Command | Key principle |
+| --- | --- | --- |
+| Onboard project context | `/setup` | Context before code |
+| Define what to build | `/spec` | Spec before code |
+| Plan how to build it | `/plan` | Council before implementation |
+| Route between agents | `/handoff` | Explicit handoffs |
+| Build frontend/UI | `/frontend` | Content-first design |
+| Check kit readiness | `/audit` | Evidence before claims |
+| Prove behavior | `/test` | Tests are proof |
+| Review before merge | `/review` | Improve code health |
+| Security signoff | `/security` | RLS at the boundary |
+| Public copy | `/copy` | Proof before publish |
+| Ship release | `/ship` | Faster is safer |
+| Upgrade kit/deps | `/upgrade` | Diff before overwrite |
+
+UI harness: `/ui-audit`, `/ui-polish`, `/layout-cleanup`, `/responsive-cleanup`, `/accessibility-pass`, `/distinctiveness-pass`, `/screenshot-critique`, `/browser-qa`.
+
+Skills activate from roster `defaultFor` tags—for example, schema/RLS work routes to Supabase skills; App Router work routes to Next.js skills. See [SKILLS.md](https://github.com/lukey662/agentsandskills/blob/main/SKILLS.md) and [full README workflow section](https://github.com/lukey662/agentsandskills/blob/main/README.md#workflow-commands).
 
 ## CLI Reference
 
@@ -69,7 +102,8 @@ Every command accepts `--json`. Mutating commands (`init`, `update`, `add skill`
 
 ## Learn More
 
-- [Full README and examples](https://github.com/lukey662/agentsandskills/blob/main/README.md#cli-reference)
+- [Full README and examples](https://github.com/lukey662/agentsandskills/blob/main/README.md#workflow-commands)
+- [Lifecycle command index](https://github.com/lukey662/agentsandskills/blob/main/prompts/lifecycle-command-index.md)
 - [Developer documentation](https://github.com/lukey662/agentsandskills/blob/main/DOCS.md)
 - [Technical specification](https://github.com/lukey662/agentsandskills/blob/main/SPEC.md)
 - [Quality gates and maturity model](https://github.com/lukey662/agentsandskills/blob/main/QUALITY_GATES.md)

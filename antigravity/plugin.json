@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "name": "agent-kit-next-supabase",
   "displayName": "Agent Kit Next/Supabase",
-  "version": "0.1.3",
+  "version": "0.1.7",
   "description": "Runtime commands and portable skills for the Agent Kit Next/Supabase council workflow.",
   "homepage": "https://github.com/lukey662/agentsandskills",
   "sourceOfTruth": [
@@ -17,6 +17,7 @@
   ],
   "commands": [
     { "name": "setup", "path": "commands/setup.toml" },
+    { "name": "spec", "path": "commands/spec.toml" },
     { "name": "audit", "path": "commands/audit.toml" },
     { "name": "plan", "path": "commands/plan.toml" },
     { "name": "handoff", "path": "commands/handoff.toml" },
@@ -29,6 +30,8 @@
     { "name": "distinctiveness-pass", "path": "commands/distinctiveness-pass.toml" },
     { "name": "screenshot-critique", "path": "commands/screenshot-critique.toml" },
     { "name": "browser-qa", "path": "commands/browser-qa.toml" },
+    { "name": "test", "path": "commands/test.toml" },
+    { "name": "review", "path": "commands/review.toml" },
     { "name": "security", "path": "commands/security.toml" },
     { "name": "copy", "path": "commands/copy.toml" },
     { "name": "ship", "path": "commands/ship.toml" },

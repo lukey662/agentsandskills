@@ -30,6 +30,7 @@ export interface ValidationReport {
 
 const REQUIRED_COMMANDS = [
   "setup",
+  "spec",
   "audit",
   "plan",
   "handoff",
@@ -42,6 +43,8 @@ const REQUIRED_COMMANDS = [
   "distinctiveness-pass",
   "screenshot-critique",
   "browser-qa",
+  "test",
+  "review",
   "security",
   "copy",
   "ship",

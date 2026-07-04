@@ -60,9 +60,9 @@ Antigravity activation installs `.antigravity/agent-kit/plugin.json`, `.antigrav
 agent-kit adapter validate antigravity
 ```
 
-Native runtime commands are adapters only. They expose `/setup`, `/audit`, `/plan`, `/handoff`, `/frontend`, focused UI improvement commands, `/security`, `/copy`, `/ship`, and `/upgrade`, but the canonical behavior still lives in `AGENTS.md`, `.agent-kit/agent-roster.json`, `QUALITY_GATES.md`, `.agent-kit/skills/`, and Agent Studio session evidence.
+Native runtime commands are adapters only. They expose `/setup`, `/spec`, `/audit`, `/plan`, `/handoff`, `/frontend`, `/test`, `/review`, focused UI improvement commands, `/security`, `/copy`, `/ship`, and `/upgrade`, but the canonical behavior still lives in `AGENTS.md`, `.agent-kit/agent-roster.json`, `QUALITY_GATES.md`, `.agent-kit/skills/`, `.agent-kit/prompts/lifecycle-command-index.md`, and Agent Studio session evidence.
 
-Focused UI improvement commands are `/ui-audit`, `/ui-polish`, `/layout-cleanup`, `/responsive-cleanup`, `/accessibility-pass`, `/distinctiveness-pass`, `/screenshot-critique`, and `/browser-qa`. Their source-of-truth workflow is `.agent-kit/prompts/ui-command-index.md`, backed by `.agent-kit/checklists/ui-detectors.md`, `.agent-kit/checklists/ui-acceptance-rubric.md`, and `.agent-kit/skills/ui-improvement-harness.md`. High-risk UI work must include desktop and mobile screenshots plus authenticated or permission-state evidence when the surface requires login, roles, tenant context, or permissions.
+Focused UI improvement commands are `/ui-audit`, `/ui-polish`, `/layout-cleanup`, `/responsive-cleanup`, `/accessibility-pass`, `/distinctiveness-pass`, `/screenshot-critique`, and `/browser-qa`. Their source-of-truth workflow is `.agent-kit/prompts/ui-command-index.md`, backed by `.agent-kit/checklists/ui-detectors.md`, `.agent-kit/checklists/ui-acceptance-rubric.md`, and `.agent-kit/skills/ui-improvement-harness.md`. Delivery lifecycle commands (`/setup` through `/upgrade`) use `.agent-kit/prompts/lifecycle-command-index.md` as the workflow index. High-risk UI work must include desktop and mobile screenshots plus authenticated or permission-state evidence when the surface requires login, roles, tenant context, or permissions.
 
 `UPGRADE.md` records the downstream upgrade flow for `agent-kit diff`, `agent-kit update`, framework codemods, Supabase migration review, release notes, audit thresholds, and rollback evidence.
 
@@ -105,7 +105,7 @@ The office is a top-down canvas: click agents at desks to brief them, visit zone
 
 Writes: `.agent-kit/project-context.json`, `project-context.md`, `agent-briefs.md`, `onboarding/state.json`, `wizard-draft.json`.
 
-**Note:** Requires `@appsforgood/next-supabase-kit@0.1.2` or later (local build from `main` until published).
+**Note:** Requires `@appsforgood/next-supabase-kit@0.1.7` or later.
 
 ## Live Studio (session mirror)
 

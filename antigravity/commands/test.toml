@@ -1,0 +1,17 @@
+name = "test"
+description = "Add or run tests and produce acceptance evidence per TESTING.md and QUALITY_GATES.md."
+
+prompt = """
+Run the test workflow.
+
+Canonical sources: TESTING.md, QUALITY_GATES.md, AGENTS.md, .agent-kit/agent-roster.json, .agent-kit/skills/testing-qa.md, and .agent-kit/prompts/lifecycle-command-index.md.
+
+Workflow:
+1. Route through QA Engineer.
+2. Name unit, regression, smoke, and visual QA gaps for the change scope.
+3. Prioritize auth and data mutation paths.
+4. Run project test commands and capture results.
+5. Record verification with `agent-kit session verify` when a session is active.
+
+Required outputs: test plan, commands run, pass/fail summary, coverage gaps, skipped-test rationale.
+"""

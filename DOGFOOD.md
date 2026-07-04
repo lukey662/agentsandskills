@@ -34,6 +34,14 @@ Mode: read-only audit; no downstream files were modified.
 - Assistant adapters and upgrade lifecycle still need real activation/dogfood evidence after publication.
 - Reference-led design critique still needs a real UI change dogfood pass with screenshots or equivalent visual evidence.
 
+## 2026-07-04 Publish @0.1.7 Snapshot
+
+Date: 2026-07-04
+CLI source: public npm registry `@appsforgood/next-supabase-kit@0.1.7`
+
+- Published `@appsforgood/next-supabase-kit@0.1.7` with lifecycle README commands, `/spec`/`/test`/`/review` Antigravity adapters, and `prompts/lifecycle-command-index.md`.
+- Post-publish: `npm run publish:verify` against live registry.
+
 ## 2026-07-04 Publish @0.1.6 Snapshot
 
 Date: 2026-07-04
@@ -152,3 +160,17 @@ Policy: **gitignored local overlay + bootstrap script** (not committed to kit so
 | Rationale | Kit source stays in `templates/` and tracked maintainer docs; overlay proves Tier B activation without polluting commit history |
 
 This policy closes the gap where the kit shipped Level 5 IDE surfaces but BaseRepo maintainers operated at Level 4 day-to-day.
+
+## 2026-07-04 - Lifecycle Commands README Parity
+
+Date: 2026-07-04
+Scope: README/docs discoverability + three new Antigravity adapters
+
+| Item | Detail |
+| --- | --- |
+| README | Added **Workflow Commands** section: lifecycle diagram, 12 core + 8 UI slash commands, council table, skills-by-phase, skill activation narrative |
+| Canonical index | `prompts/lifecycle-command-index.md` for delivery commands (parallel to `prompts/ui-command-index.md`) |
+| New adapters | `/spec`, `/test`, `/review` in `antigravity/commands/` (20 total native commands) |
+| Roster | `testing` and `code-review` workflows; planning triggers for spec keywords |
+| Out of scope | `/build`, `/webperf`, `/code-simplify`, `/build auto` — documented as future orchestration |
+| Verification | `npm test`, `agent-kit adapter validate antigravity` after build |
