@@ -458,7 +458,7 @@ Release expectations:
 - Dependency Review, CodeQL, OpenSSF Scorecard, Dependabot, SBOM validation, and SBOM attestation.
 - Post-publish verification with `npm run publish:verify`.
 
-The package is published to public npm under `@appsforgood/next-supabase-kit@0.1.8`. Every release must pass `npm run release:check` before publish and `npm run publish:verify` after (registry visibility, clean `npx` doctor/init/audit). Post-publish verification last passed **2026-07-04** against the live registry: `@0.1.7` doctor, clean init, and `audit --min-readiness baseline-setup` with zero failures.
+The package is published to public npm under `@appsforgood/next-supabase-kit@0.1.8`. Every release must pass `npm run release:check` before publish and `npm run publish:verify` after (registry visibility, clean `npx` doctor/init/audit). Post-publish verification last passed **2026-07-04** against the live registry: `@0.1.8` doctor, clean init, and `audit --min-readiness baseline-setup` with zero failures.
 
 ## Repository Health
 

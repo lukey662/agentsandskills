@@ -43,6 +43,7 @@ CLI source: local `dist/index.js` after `npm run release:check`
 - `readJsonBody` shared between setup and studio servers; oversized bodies return 400 without dropping the connection; studio SSE broadcasts notes.
 - Dedicated Ubuntu CI job for UI screenshots; not part of `release:check` matrix.
 - Local verification: `release:check` green (150 tests, setup-server.ts 86% statements), `smoke:ui-screens` produced 4 PNGs.
+- Published `@appsforgood/next-supabase-kit@0.1.8`; `publish:verify` passed against live registry.
 
 ## 2026-07-04 Publish @0.1.7 Snapshot
 
