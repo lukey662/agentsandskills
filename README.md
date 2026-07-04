@@ -20,10 +20,10 @@ It also includes a local Agent Studio workflow: project context, durable human c
 
 ## Quick Start
 
-Use this in a Next.js + Supabase project:
+Use this in a Next.js + Supabase project (latest: **v0.1.6** on npm):
 
 ```bash
-npx @appsforgood/next-supabase-kit init --stack next-supabase --setup --open
+npx @appsforgood/next-supabase-kit@0.1.6 init --stack next-supabase --setup --open
 npx @appsforgood/next-supabase-kit audit
 npx @appsforgood/next-supabase-kit audit --min-readiness baseline-setup
 ```
@@ -33,8 +33,13 @@ After install, the **Agent Office** setup view teaches agents about your project
 ```bash
 npx @appsforgood/next-supabase-kit setup --open
 npx @appsforgood/next-supabase-kit setup --status
-npx @appsforgood/next-supabase-kit init --activate antigravity
-npx @appsforgood/next-supabase-kit adapter validate antigravity
+```
+
+Promote IDE/runtime adapters after install:
+
+```bash
+npx @appsforgood/next-supabase-kit init --activate cursor --activate antigravity
+npx @appsforgood/next-supabase-kit adapter validate all
 ```
 
 The installer preserves existing docs. If a file already exists and differs from the template, the new version is written to `.agent-kit/conflicts/` for review.
@@ -104,22 +109,135 @@ Default routing:
 
 For meaningful multi-agent work, record the decision, risk, next handoff, required outputs, and verification evidence in `COUNCIL.md` or `.agent-kit/council-sessions/*.json`.
 
-For local Agent Studio sessions, use:
+## CLI Reference
+
+Every command accepts `--json` for machine-readable output. Mutating commands (`init`, `update`, `add skill`, `correction apply`) also accept `--dry-run`.
+
+### Install and upgrade
+
+| Command | Purpose |
+| --- | --- |
+| `init` | Install docs, roster, skills, schemas, Cursor rules, and project context |
+| `diff` | Compare local docs against bundled templates |
+| `update` | Hash-aware upgrade: pristine docs refresh, local edits kept, conflicts for review |
+| `add skill <name>` | Copy one skill into `.agent-kit/skills/` |
+| `onboard` | Print the recommended first-run checklist |
 
 ```bash
-agent-kit setup
-agent-kit init --guided
+agent-kit init --stack next-supabase --guided --dry-run
+agent-kit init --activate cursor --activate codex --no-setup
+agent-kit diff
+agent-kit update --dry-run
+agent-kit add skill ui-improvement-harness
+```
+
+`init` flags: `--stack`, `--guided`, `--dry-run`, `--activate <targets...>`, `--setup`, `--no-setup`, `--open`, `--force`, `--json`.  
+`update` flags: `--dry-run`, `--force`, `--json`.
+
+### Setup and Agent Office
+
+| Command | Purpose |
+| --- | --- |
+| `setup` | Serve local Agent Office (default) and form wizard at `http://127.0.0.1:9321` |
+| `setup --status` | Print onboarding progress as JSON |
+
+Routes: `/` or `/office` (pixel office, default), `/wizard` (form fallback).
+
+```bash
+agent-kit setup --open
+agent-kit setup --status
+```
+
+### Audit and validation
+
+| Command | Purpose |
+| --- | --- |
+| `audit` | Readiness report with pass/warn/fail findings |
+| `doctor` | Validate CLI runtime prerequisites |
+| `adapter validate [target]` | Validate IDE/runtime adapter assets (`cursor`, `claude`, `codex`, `copilot`, `antigravity`, `all`) |
+| `package validate` | Source-repo release asset validation (maintainers) |
+
+```bash
+agent-kit audit --json --min-readiness baseline-setup
+agent-kit adapter validate cursor
+agent-kit doctor --json
+```
+
+Readiness levels: `needs-setup`, `baseline-setup`, `needs-improvement`, `best-practice-candidate`. Use `--min-readiness <level>` in CI.
+
+### Project context
+
+| Command | Purpose |
+| --- | --- |
+| `context init` | Create or refresh `.agent-kit/project-context.json` |
+| `context scan` | Print inferred context without writing |
+| `context ask` | List unanswered high-value context questions |
+| `context render` | Render `.agent-kit/project-context.md` |
+| `context validate` | Validate context against schema |
+| `context show` | Print current context JSON |
+
+```bash
+agent-kit context init
 agent-kit context validate
+```
+
+### Council sessions
+
+| Command | Purpose |
+| --- | --- |
+| `session start` | Open a council session with workflow routing |
+| `session list` / `session active` | Inspect sessions |
+| `session note` / `decision` / `handoff` | Record collaboration events |
+| `session correct` / `artifact` / `verify` / `output` | Record corrections, files, checks, required outputs |
+| `session checkpoint` | Batch-apply events from a JSON file |
+| `session render` / `session close` | Render Markdown and close the session |
+
+```bash
 agent-kit session start "Build checkout flow" --workflow frontend-change
-agent-kit session decision --agent planner --risk "Generic UI risk" "Use frontend-change workflow."
 agent-kit session handoff --from planner --to frontend-design-lead --decision "Start design intake." --risk "Generic UI risk."
-agent-kit session correct --agent frontend-design-lead --scope project "Keep UI dense and operational."
 agent-kit session verify --command "npm test" --result pass --notes "Tests passed."
 agent-kit session output "visual QA evidence" --status not-applicable --evidence "No UI change."
+agent-kit session checkpoint --file .agent-kit/checkpoint.json
 agent-kit session render
-agent-kit correction list
+agent-kit session close --status complete
+```
+
+### Corrections
+
+| Command | Purpose |
+| --- | --- |
+| `correction list` | List durable project and agent correction rules |
+| `correction add` | Add a correction (`--scope project\|agent\|session`) |
+| `correction apply` | Promote a correction into active rules |
+| `correction retire` | Retire a correction with reason |
+| `correction propose-upstream` | Flag a correction for kit promotion |
+
+```bash
+agent-kit correction add --scope project "Prefer operational density over hero-style marketing layout."
+agent-kit correction apply --id project-ui-density
+```
+
+### Studio views
+
+| Command | Purpose |
+| --- | --- |
+| `studio export` | Generate self-contained static HTML at `.agent-kit/studio/index.html` |
+| `studio serve` | Live localhost Agent Office with SSE session events (default port `9331`) |
+
+```bash
 agent-kit studio export
-agent-kit audit --json
+agent-kit studio serve --open
+```
+
+### Research (maintainers)
+
+Requires `GITHUB_TOKEN` in the environment.
+
+```bash
+agent-kit research discover --limit 100
+agent-kit research scan
+agent-kit research summarize
+agent-kit research propose-updates
 ```
 
 ## What Gets Installed
@@ -157,35 +275,6 @@ The `.agent-kit/` folder includes:
 - `antigravity/` for native command and plugin assets.
 - `design-briefs/` for SaaS, admin, marketplace, content, tool, ecommerce, portfolio/venue, education, community/social, and AI workflow surfaces.
 - `profiles/` for product-type and adjacent-stack adaptation.
-
-## Everyday Commands
-
-```bash
-agent-kit audit
-agent-kit audit --json
-agent-kit audit --min-readiness baseline-setup
-agent-kit adapter validate antigravity
-agent-kit package validate
-agent-kit context init
-agent-kit session start "Short task name"
-agent-kit session output "verification evidence" --status complete --evidence "npm test"
-agent-kit session render
-agent-kit correction list
-agent-kit studio export
-agent-kit diff
-agent-kit update
-agent-kit add skill frontend-design-system
-agent-kit doctor
-```
-
-Readiness levels from `agent-kit audit --json`:
-
-- `needs-setup`: required install or council contracts are failing.
-- `baseline-setup`: setup is valid, but starter evidence placeholders remain.
-- `needs-improvement`: no failures, but warnings remain.
-- `best-practice-candidate`: static audit found no failures or warnings.
-
-Use `agent-kit audit --min-readiness <level>` in CI when a project wants a merge or release threshold.
 
 ## AI Mechanisms
 
@@ -242,6 +331,7 @@ Use the upgrade flow instead of overwriting project-owned docs:
 
 ```bash
 agent-kit diff
+agent-kit update --dry-run
 agent-kit update
 agent-kit audit --min-readiness baseline-setup
 ```
@@ -291,7 +381,7 @@ Release expectations:
 - Dependency Review, CodeQL, OpenSSF Scorecard, Dependabot, SBOM validation, and SBOM attestation.
 - Post-publish verification with `npm run publish:verify`.
 
-The package is published to public npm under `@appsforgood/next-supabase-kit`. Every release must pass `npm run release:check` before publish and `npm run publish:verify` after (registry visibility, clean `npx` doctor/init/audit). Post-publish verification was last run 2026-07-02 against the live registry: doctor, init, and `audit --min-readiness baseline-setup` all passed with zero failures.
+The package is published to public npm under `@appsforgood/next-supabase-kit@0.1.6`. Every release must pass `npm run release:check` before publish and `npm run publish:verify` after (registry visibility, clean `npx` doctor/init/audit). Post-publish verification last passed **2026-07-04** against the live registry: `@0.1.6` doctor, clean init, and `audit --min-readiness baseline-setup` with zero failures (67 pass / 4 warn).
 
 ## Repository Health
 

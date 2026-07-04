@@ -34,6 +34,15 @@ Mode: read-only audit; no downstream files were modified.
 - Assistant adapters and upgrade lifecycle still need real activation/dogfood evidence after publication.
 - Reference-led design critique still needs a real UI change dogfood pass with screenshots or equivalent visual evidence.
 
+## 2026-07-04 Publish @0.1.6 Snapshot
+
+Date: 2026-07-04
+CLI source: public npm registry `@appsforgood/next-supabase-kit@0.1.6`
+Mode: local maintainer publish (token) after `npm run release:check`, then `npm run publish:verify`.
+
+- Published `@appsforgood/next-supabase-kit@0.1.6` to public npm (local token publish with `--provenance=false`; CI releases continue to use OIDC + provenance).
+- `npm run publish:verify` passed: registry visibility confirmed, `npx` doctor ok, clean temp `init` installed current baseline assets, and `audit --json --min-readiness baseline-setup` returned 0 failures (67 pass / 4 warn / readiness `baseline-setup`).
+
 ## 2026-07-02 Publish Verification And Self-Install Snapshot
 
 Date: 2026-07-02

@@ -4,26 +4,61 @@
 
 [Package on npm](https://www.npmjs.com/package/@appsforgood/next-supabase-kit) · [Source on GitHub](https://github.com/lukey662/agentsandskills)
 
+**Latest release:** v0.1.6
+
 ## Quick Start
 
 ```bash
-npx @appsforgood/next-supabase-kit init --stack next-supabase
+npx @appsforgood/next-supabase-kit@0.1.6 init --stack next-supabase --setup --open
 npx @appsforgood/next-supabase-kit audit
 npx @appsforgood/next-supabase-kit audit --min-readiness baseline-setup
 ```
 
 The installer never silently overwrites your docs: files that differ from the templates are preserved, and the new template is written to `.agent-kit/conflicts/` for review.
 
-## Core Commands
+Every command accepts `--json`. Mutating commands (`init`, `update`, `add skill`, `correction apply`) also accept `--dry-run`.
+
+## CLI Reference
+
+### Install and upgrade
 
 | Command | Purpose |
 | --- | --- |
-| `init` | Install docs, roster, skills, schemas, and IDE rules (`--guided`, `--dry-run`, `--json`) |
-| `audit` | Readiness report with pass/warn/fail findings and a CI gate via `--min-readiness` |
-| `diff` | Compare local docs against the bundled templates |
-| `update` | Hash-aware upgrade: pristine docs refresh, local edits are kept, conflicts go to review (`--dry-run`) |
-| `session` / `correction` / `context` | Local-first Agent Studio evidence: sessions, corrections, project context |
-| `studio export` | Self-contained static HTML view of local sessions |
+| `init` | Install docs, roster, skills, schemas, Cursor rules, project context (`--guided`, `--dry-run`, `--activate`, `--setup`, `--json`) |
+| `diff` | Compare local docs against bundled templates |
+| `update` | Hash-aware upgrade with conflict review (`--dry-run`, `--force`) |
+| `add skill <name>` | Copy one skill into `.agent-kit/skills/` |
+| `onboard` | Print the recommended first-run checklist |
+
+### Setup and Agent Office
+
+| Command | Purpose |
+| --- | --- |
+| `setup` | Local Agent Office + wizard at `http://127.0.0.1:9321` (`--open`, `--status`, `--port`) |
+| Routes | `/` or `/office` (default), `/wizard` (form fallback) |
+
+### Audit and validation
+
+| Command | Purpose |
+| --- | --- |
+| `audit` | Readiness report (`--json`, `--min-readiness`) |
+| `doctor` | CLI runtime check |
+| `adapter validate [target]` | IDE/runtime adapter validation |
+| `package validate` | Source-repo release validation (maintainers) |
+
+### Agent Studio
+
+| Command | Purpose |
+| --- | --- |
+| `context` | `init`, `scan`, `ask`, `render`, `validate`, `show` |
+| `session` | `start`, `list`, `note`, `decision`, `handoff`, `correct`, `artifact`, `verify`, `output`, `checkpoint`, `render`, `close` |
+| `correction` | `list`, `add`, `apply`, `retire`, `propose-upstream` |
+| `studio export` | Static HTML export |
+| `studio serve` | Live localhost office with SSE (`--open`) |
+
+### Research (maintainers)
+
+`research discover`, `scan`, `summarize`, `propose-updates` (requires `GITHUB_TOKEN`).
 
 ## Readiness Levels
 
@@ -34,6 +69,7 @@ The installer never silently overwrites your docs: files that differ from the te
 
 ## Learn More
 
+- [Full README and examples](https://github.com/lukey662/agentsandskills/blob/main/README.md#cli-reference)
 - [Developer documentation](https://github.com/lukey662/agentsandskills/blob/main/DOCS.md)
 - [Technical specification](https://github.com/lukey662/agentsandskills/blob/main/SPEC.md)
 - [Quality gates and maturity model](https://github.com/lukey662/agentsandskills/blob/main/QUALITY_GATES.md)
