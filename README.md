@@ -20,10 +20,10 @@ It also includes a local Agent Studio workflow: project context, durable human c
 
 ## Quick Start
 
-Use this in a Next.js + Supabase project (latest: **v0.1.9** on npm):
+Use this in a Next.js + Supabase project (latest published: **v0.1.8** on npm; `main` is preparing **v0.1.9**):
 
 ```bash
-npx @appsforgood/next-supabase-kit@0.1.9 init --stack next-supabase --setup --open
+npx @appsforgood/next-supabase-kit@0.1.8 init --stack next-supabase --setup --open
 npx @appsforgood/next-supabase-kit audit
 npx @appsforgood/next-supabase-kit audit --min-readiness baseline-setup
 ```
@@ -458,7 +458,7 @@ Release expectations:
 - Dependency Review, CodeQL, OpenSSF Scorecard, Dependabot, SBOM validation, and SBOM attestation.
 - Post-publish verification with `npm run publish:verify`.
 
-The package is published to public npm under `@appsforgood/next-supabase-kit@0.1.9`. Every release must pass `npm run release:check` before publish and `npm run publish:verify` after (registry visibility, clean `npx` doctor/init/audit). Post-publish verification last passed **2026-07-08** against the live registry: `@0.1.9` doctor, clean init, and `audit --min-readiness baseline-setup` with zero failures.
+The package is published to public npm under `@appsforgood/next-supabase-kit@0.1.8`. Every release must pass `npm run release:check` before publish and `npm run publish:verify` after (registry visibility, clean `npx` doctor/init/audit). Post-publish verification last passed **2026-07-04** against the live registry: `@0.1.8` doctor, clean init, and `audit --min-readiness baseline-setup` with zero failures. Version `0.1.9` is prepared on `main` but is not published until npm MFA or Trusted Publishing configuration allows the release workflow to complete.
 
 ## Repository Health
 
