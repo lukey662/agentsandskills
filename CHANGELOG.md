@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.9
+
+- Added explicit anti-slop UI rules for frontend work, including accent-border cards, gradient-as-design, card soup, fake dashboard proof, vague SaaS sayings, decorative credibility, oversized glass panels, ornamental icon walls, filler sections, and inaccessible decorative state styling.
+- Extended installed template design guidance, UI detectors, frontend quality checklist, and review prompts with concrete best-practice replacements for generic AI-looking UI patterns.
+
 ## 0.1.8
 
 - Added `tests/setup-server-api.test.ts` for full setup-server API route coverage (PATCH state, context import, checklists, design/messaging drafts, apply, agentic-level refresh, oversized body, 404) plus wizard draft edge cases.

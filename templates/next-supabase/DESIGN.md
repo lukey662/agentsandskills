@@ -34,6 +34,12 @@ Anti-references:
 - TBD: pattern, palette, layout, copy, or interaction style to avoid.
 - TBD: another explicit non-goal.
 
+Common visual tropes to reject unless a mature brand system explicitly requires them:
+
+- Accent-border cards, glow rails, neon strokes, gradient borders, and one-sided colored panel borders.
+- Generic gradient heroes, gradient text, abstract blobs, card soup, oversized rounded glass panels, and ornamental icon walls.
+- Fake dashboard metrics, decorative credibility badges, vague SaaS sayings, filler "features / benefits / how it works" sections, and color-only status styling.
+
 ## Creative Direction
 
 Before implementation, produce at least two distinct visual directions and choose one.

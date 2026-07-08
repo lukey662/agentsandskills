@@ -60,10 +60,16 @@ Use this deterministic checklist for UI audit, polish, layout cleanup, responsiv
 | Detector | Blocker Signal | Major Signal |
 | --- | --- | --- |
 | Generic SaaS styling | First screen could fit another product by changing logo and headline | Visual direction relies on common cards, gradients, fake dashboards, or vague claims |
+| Accent-border card styling | Cards, callouts, alerts, panels, or status messages rely on thick, high-contrast, one-sided colored borders, glow rails, neon strokes, or gradient borders as the main state cue | Accent borders add decoration where restrained 1px full-border surfaces, subtle background tint, clear labels, icons, and semantic state text would communicate better |
+| Gradient-as-design | Gradient hero, gradient text, abstract blobs, or glow backgrounds substitute for a product-specific first screen | Gradients are present without a tokenized role, brand rationale, or product-specific content support |
+| Card soup | The screen is mostly decorative cards and the primary workflow is unclear | Repeated cards could become a table, list, timeline, form, split pane, or workflow-specific grouped section |
 | Missing content fingerprint | UI hides missing product decisions behind placeholders | Real nouns, records, actions, or edge cases are too sparse |
 | Weak visual identity | No product-specific density, typography, imagery, or interaction point of view | Direction is coherent but category-generic |
 | Unsafe reference use | Copy, assets, layout signature, or brand identity appear copied | References are cited without lessons and anti-copy notes |
 | Fake or unsupported proof | Fake metrics or claims imply unavailable capability | Proof exists but is not tied to actual product behavior |
+| Vague SaaS sayings | Copy could apply to any product and hides what the user can actually do | Phrases like "supercharge your workflow", "unlock insights", "seamless collaboration", or "AI-powered productivity" are not grounded in concrete actions, nouns, constraints, or outcomes |
+| Decorative credibility | Badges, pills, stars, awards, or "trusted by" placeholders imply proof that does not exist | Credibility elements are decorative and should be replaced with real proof, integration names, security posture, support details, or removed |
+| Filler sections | Marketing sections replace the requested app or tool workflow on the first screen | "Features", "benefits", or "how it works" sections are generic and should be replaced with the actual usable workflow or domain-specific hierarchy |
 
 ## Evidence Requirements
 

@@ -1,6 +1,6 @@
 {
   "packageName": "@appsforgood/next-supabase-kit",
-  "packageVersion": "0.1.8",
+  "packageVersion": "0.1.9",
   "stack": "next-supabase",
   "installedAt": "2026-07-04T01:32:06.844Z",
   "docs": [
@@ -47,11 +47,11 @@
     "SPEC.md": "30dca40819d3d204cfcb33f016e67d0d9008d0fad0907db9c93f6d32e50e057a",
     "DECISIONS.md": "1374d33cc40a9f3086f57c1af885c3e4defaa67df5116168cf4872d2ae8a3628",
     "DOCS.md": "c9501b68bfa97788579ddaaa4b072ca7a7c80a5890e6ec10c05901694fcdae48",
-    "DESIGN.md": "e464ff8d9a8e542d00a04143a51417752dc98e1afcfa7e2a5549ecfbb47a479b",
+    "DESIGN.md": "a89eaed5d40e3cbe07a2c216bd56009275d973c30508aaf5bc31aa334a6ebe97",
     "MESSAGING.md": "f1f7c0f11796820b60bb44e42a65749763f7167944ba6acf092a1cf7b59e50de",
     "MODEL_ROUTING.md": "f0ca3bd12872cd5f61ff4c6bef670249c0a0188f20c049cb0d09d84219b1839c",
     "QUALITY_GATES.md": "15f260c75d6180d1e583917e367ab522030e878f1a6e93ba5f18eba17fef4bb2",
-    "STYLE_GUIDE.md": "0fcb8e04ed3d31fa560a0165588ad56efd262463ca0f3aa26633fba955daf0db",
+    "STYLE_GUIDE.md": "70b984b69829f23b87af3f85535bed1bce81a0452e451aed876219fb416d7671",
     "SECURITY.md": "f046e4dc794f49700ddee4cb866e2ba1983a1b71268f2e244892d615b41714f8",
     "TESTING.md": "59a82645445c3af0c9ccc26a9ed5154c1f710b202d3d13ffa9558a0b1d8a96de",
     "LOOP_CODING.md": "3d4719c7fc7c2e8465ee15aec27574adbbc5207d58123ecf4f88f3942c522812",

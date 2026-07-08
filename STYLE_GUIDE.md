@@ -72,3 +72,18 @@ This repo's user-facing surfaces are terminal output, markdown, and the static A
 Installed project docs should push teams away from generic AI-looking interfaces. Prefer product-specific layouts, explicit component states, accessible interactions, real content structure, reference-led critique, frontend distinctiveness benchmarking, and design briefs tailored to SaaS, admin, marketplace, content, or tool workflows.
 
 Significant frontend work should record references, anti-references, source-safety notes, a distinctiveness verdict, first-screen proof, content fingerprint, asset provenance, state proof, UI detector findings, visual QA proof, and a frontend product-quality scorecard in `DESIGN.md` before it is accepted as best-practice ready. The scorecard should reject work with critical zeroes or a total below `10/14`; reserve best-practice claims for `12/14` or higher plus a passing distinctiveness benchmark, desktop/mobile review, authenticated screen evidence when applicable, and visual QA evidence.
+
+### Anti-Slop UI Rules
+
+Do not use generic AI-slop treatments as a substitute for product design. If a mature brand system intentionally uses one of these patterns, record the exception and rationale in `DESIGN.md` or `.agent-kit/overrides.json`.
+
+- No accent-border cards. Replace thick, high-contrast, one-sided colored borders, glow rails, neon strokes, and gradient borders on cards, callouts, alerts, panels, or status messages with restrained 1px full-border surfaces, subtle background tint when needed, clear labels, icons, and semantic state text.
+- No gradient-as-design. Replace generic purple-blue gradient heroes, gradient text, and gradient blobs with product-specific imagery, workflow screenshots, object-focused media, real content, or a quiet tokenized background.
+- No card soup. Replace large grids of decorative cards with task-first layouts: tables, lists, timelines, forms, split panes, dashboards with real hierarchy, or workflow-specific grouped sections.
+- No fake dashboard proof. Replace invented metrics, placeholder charts, and claims like "98% faster" with real product data, honest sample labels, empty states, or "connect data to view this" states.
+- No vague SaaS sayings. Replace phrases like "supercharge your workflow", "unlock insights", "seamless collaboration", or "AI-powered productivity" with concrete user actions, product nouns, constraints, and outcomes the product actually supports.
+- No badge or confetti credibility. Replace decorative badges, pills, stars, awards, or "trusted by" placeholders with real proof, integration names, security posture, support details, or omit the section.
+- No oversized rounded glass panels. Replace translucent blur cards, frosted panels, and soft-glow shells with normal surfaces, clear section boundaries, practical density, and brand-appropriate depth.
+- No ornamental icon walls. Replace generic floating icons with functional icons attached to commands, states, navigation, feature rows, or concrete workflow steps.
+- No layout filler sections. Replace generic "features", "benefits", or "how it works" sections when the user asked for an app or tool with the actual usable workflow as the first screen.
+- No inaccessible decorative state styling. Replace color-only alerts, low-contrast tints, and vague status panels with semantic text, icons, ARIA-compatible state, WCAG AA contrast, and recovery actions.

@@ -1,6 +1,6 @@
 {
   "summary": {
-    "pass": 66,
+    "pass": 65,
     "warn": 5,
     "fail": 0
   },
@@ -19,7 +19,7 @@
     {
       "level": "pass",
       "area": "install",
-      "message": "Agent kit installed at version 0.1.8."
+      "message": "Agent kit installed at version 0.1.9."
     },
     {
       "level": "pass",
@@ -365,11 +365,6 @@
       "area": "project-reality",
       "message": "No package.json found to verify test scripts.",
       "remediation": "Add package.json with test, lint, and build scripts appropriate to the stack."
-    },
-    {
-      "level": "pass",
-      "area": "project-reality",
-      "message": "No obvious committed secret patterns detected in tracked source files."
     },
     {
       "level": "pass",

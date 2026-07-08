@@ -105,7 +105,7 @@ The office is a top-down canvas: click agents at desks to brief them, visit zone
 
 Writes: `.agent-kit/project-context.json`, `project-context.md`, `agent-briefs.md`, `onboarding/state.json`, `wizard-draft.json`.
 
-**Note:** Requires `@appsforgood/next-supabase-kit@0.1.8` or later.
+**Note:** Requires `@appsforgood/next-supabase-kit@0.1.9` or later.
 
 ## Live Studio (session mirror)
 

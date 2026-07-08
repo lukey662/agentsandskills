@@ -9,6 +9,7 @@
 - Frontend product-quality scorecard is at least adequate before release.
 - Visual direction fits the domain.
 - No generic AI-site gradient/card defaults.
+- No accent-border cards, glow rails, neon strokes, gradient borders, oversized glass panels, ornamental icon walls, fake dashboard proof, decorative credibility badges, vague SaaS sayings, or layout filler sections unless documented as a brand-system exception.
 - Navigation is clear and predictable.
 - Loading, empty, error, disabled, and success states exist.
 - Mobile layout is designed, not incidental.

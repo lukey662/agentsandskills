@@ -9,7 +9,8 @@ Check:
 - First screen shows the real product, task, object, or workflow.
 - The selected creative direction is visible in tokens, layout, copy, imagery, density, and interaction tone.
 - Layout is usable on desktop and mobile without overlapping text or controls.
-- Visual direction fits the domain and does not rely on generic AI-site gradients, card soup, vague SaaS copy, or fake metrics.
+- Visual direction fits the domain and does not rely on generic AI-site gradients, accent-border cards, glow rails, neon strokes, gradient borders, card soup, oversized glass panels, ornamental icon walls, vague SaaS copy, decorative credibility badges, filler sections, or fake metrics.
+- Cards, callouts, alerts, panels, and status messages use restrained 1px full-border surfaces, subtle background tint when needed, clear labels, icons, semantic state text, and WCAG AA contrast instead of decorative borders or color-only state.
 - Design tokens are visible in color, typography, spacing, radius, state color, and focus treatment.
 - Loading, empty, error, disabled, success, and mobile states are represented or explicitly accounted for.
 - Visual QA tier is appropriate for the risk: screenshot review, Playwright screenshots, Storybook visual tests, or visual-regression service.

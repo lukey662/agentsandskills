@@ -45,6 +45,21 @@ Prefer:
 - Mobile-first responsive layouts.
 - Creative direction that is visibly tied to product content and user need.
 
+### Anti-Slop UI Rules
+
+Do not use generic AI-slop treatments as a substitute for product design. If a mature brand system intentionally uses one of these patterns, record the exception and rationale in `DESIGN.md` or `.agent-kit/overrides.json`.
+
+- No accent-border cards. Replace thick, high-contrast, one-sided colored borders, glow rails, neon strokes, and gradient borders on cards, callouts, alerts, panels, or status messages with restrained 1px full-border surfaces, subtle background tint when needed, clear labels, icons, and semantic state text.
+- No gradient-as-design. Replace generic purple-blue gradient heroes, gradient text, and gradient blobs with product-specific imagery, workflow screenshots, object-focused media, real content, or a quiet tokenized background.
+- No card soup. Replace large grids of decorative cards with task-first layouts: tables, lists, timelines, forms, split panes, dashboards with real hierarchy, or workflow-specific grouped sections.
+- No fake dashboard proof. Replace invented metrics, placeholder charts, and claims like "98% faster" with real product data, honest sample labels, empty states, or "connect data to view this" states.
+- No vague SaaS sayings. Replace phrases like "supercharge your workflow", "unlock insights", "seamless collaboration", or "AI-powered productivity" with concrete user actions, product nouns, constraints, and outcomes the product actually supports.
+- No badge or confetti credibility. Replace decorative badges, pills, stars, awards, or "trusted by" placeholders with real proof, integration names, security posture, support details, or omit the section.
+- No oversized rounded glass panels. Replace translucent blur cards, frosted panels, and soft-glow shells with normal surfaces, clear section boundaries, practical density, and brand-appropriate depth.
+- No ornamental icon walls. Replace generic floating icons with functional icons attached to commands, states, navigation, feature rows, or concrete workflow steps.
+- No layout filler sections. Replace generic "features", "benefits", or "how it works" sections when the user asked for an app or tool with the actual usable workflow as the first screen.
+- No inaccessible decorative state styling. Replace color-only alerts, low-contrast tints, and vague status panels with semantic text, icons, ARIA-compatible state, WCAG AA contrast, and recovery actions.
+
 Use `.agent-kit/prompts/brand-content-intake.md` and `.agent-kit/prompts/creative-direction-matrix.md` when inputs are under-specified. Use `.agent-kit/design-briefs/*` before designing SaaS, admin dashboard, marketplace, content app, tool, ecommerce, portfolio/venue, education, community/social, or AI workflow surfaces. Use `.agent-kit/prompts/screenshot-review.md` after implementation to review desktop and mobile screenshots. Use `.agent-kit/prompts/visual-qa-plan.md` when a change needs repeatable visual regression or component-state evidence.
 
 Use `.agent-kit/prompts/design-critique-gate.md` before accepting significant frontend work. `DESIGN.md` should name a reference set, anti-references, source-safety notes, and a distinctiveness verdict so a design cannot pass only because it has tokens, states, and screenshots.
