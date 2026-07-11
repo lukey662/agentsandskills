@@ -28,6 +28,7 @@ describe("public package readiness", () => {
     expect(packageJson.publishConfig?.access).toBe("public");
     expect(packageJson.bin?.["agent-kit"]).toBe("dist/index.js");
     expect(packageJson.scripts?.["release:check"]).toBe("node scripts/release-check.mjs");
+    expect(packageJson.scripts?.pretypecheck).toBe("npm run build --workspace @appsforgood/agent-kit-runtime");
     expect(packageJson.scripts?.["examples:check"]).toBe("node scripts/example-check.mjs");
     expect(packageJson.scripts?.["version:check"]).toBe("node scripts/version-check.mjs");
     expect(packageJson.scripts?.["sbom:check"]).toBe("node scripts/sbom-check.mjs");

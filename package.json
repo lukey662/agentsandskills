@@ -76,6 +76,7 @@
     "build": "npm run build --workspace @appsforgood/agent-kit-runtime && tsup && node scripts/copy-studio-assets.mjs",
     "predev": "npm run build --workspace @appsforgood/agent-kit-runtime",
     "dev": "tsx src/cli/index.ts",
+    "pretypecheck": "npm run build --workspace @appsforgood/agent-kit-runtime",
     "typecheck": "tsc --noEmit && npm run typecheck --workspace @appsforgood/agent-kit-runtime",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
