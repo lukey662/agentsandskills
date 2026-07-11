@@ -23,6 +23,11 @@ function packagedPublicFiles(): string[] {
 }
 
 describe("public package readiness", () => {
+  it("normalizes repository text files for cross-platform checks", () => {
+    const attributes = readFileSync(join(root, ".gitattributes"), "utf8");
+    expect(attributes).toContain("* text=auto eol=lf");
+  });
+
   it("uses neutral public package metadata", () => {
     expect(packageJson.name).toBe("@appsforgood/next-supabase-kit");
     expect(packageJson.publishConfig?.access).toBe("public");
