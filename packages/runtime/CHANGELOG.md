@@ -1,5 +1,11 @@
 # @appsforgood/agent-kit-runtime
 
+## 0.1.2
+
+### Patch Changes
+
+- Verify Git top-level roots through repository context so Windows long and short temp-path forms do not reject valid runtime worktrees.
+
 ## 0.1.1
 
 ### Patch Changes

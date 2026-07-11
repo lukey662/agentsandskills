@@ -74,6 +74,7 @@ Changes under `packages/runtime`, orchestrator config/schema, CLI bridges, or St
 - Sensitive path denial, recursive evidence redaction, partial JSONL recovery, and ordered event IDs.
 - Real SQLite interrupt/resume through plan, mutation, and final-commit gates without replaying a mutating node.
 - Dirty-base acknowledgement, sensitive tracked-file rejection, isolated worktree branch, and one scoped commit.
+- Git-root enforcement through repository context, including Windows temp paths that may have distinct long and 8.3 filesystem spellings.
 - Docker immutable image ID plus read-only, capability, privilege, network, and resource flags.
 - Root CLI optional-import behavior and secured Studio start/detail/decision/cancel APIs.
 - Separate runtime/root pack dry runs, package metadata, SBOMs, OIDC publish order, and post-publish import/integration verification.

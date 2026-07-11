@@ -53,6 +53,14 @@ function project(): string {
 }
 
 describe("runtime workflow graph", () => {
+  it("rejects a source directory below the Git repository root", async () => {
+    const root = project();
+    const nested = join(root, "nested");
+    mkdirSync(nested);
+
+    await expect(new WorktreeManager(nested).inspect()).rejects.toThrow(/must be the Git repository root/);
+  });
+
   it("resumes approval gates without replaying a mutating agent", async () => {
     const root = project();
     const config = RuntimeConfigContract.parse({
