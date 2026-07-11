@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1
+
+- Rewrite the public README with verified setup commands and task-oriented examples for audits, council sessions, UI review, upgrades, and optional runtime orchestration.
+
 ## 0.2.0
 
 - Ship the leading-harness release: hash-aware manifest v2 updates, audit v2 with SARIF and suppressions, hardened localhost Agent Studio APIs, and optional executable council workflows through `@appsforgood/agent-kit-runtime`. Runtime workflows use validated roster routing, SQLite checkpoints, explicit approval gates, provider and allowlisted MCP adapters, Docker-first tools, isolated Git worktrees, bounded retries/timeouts, cancellation, redacted evidence, and scoped commits. Release automation now publishes and verifies the runtime and root packages with separate SBOM attestations before creating a GitHub release.

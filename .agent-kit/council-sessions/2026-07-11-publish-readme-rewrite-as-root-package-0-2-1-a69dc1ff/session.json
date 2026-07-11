@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "sessionId": "2026-07-11-publish-readme-rewrite-as-root-package-0-2-1-a69dc1ff",
+  "title": "Publish README rewrite as root package 0.2.1",
+  "createdAt": "2026-07-11T05:13:29.433Z",
+  "updatedAt": "2026-07-11T05:18:03.575Z",
+  "status": "in-progress",
+  "workflowId": "release",
+  "request": "Publish README rewrite as root package 0.2.1",
+  "affectedLayers": [],
+  "activeAgentId": "deployment-observability-engineer",
+  "nextAgentId": "deployment-observability-engineer",
+  "qualityTarget": "baseline-setup",
+  "requiredOutputs": [
+    {
+      "name": "decision",
+      "status": "complete",
+      "evidence": "Release only @appsforgood/next-supabase-kit as patch 0.2.1; @appsforgood/agent-kit-runtime remains 0.1.3 because its package contents did not change."
+    },
+    {
+      "name": "risk",
+      "status": "complete",
+      "evidence": "Mitigated stale fixture and tarball risks by refreshing installed examples and passing the full release gate and npm pack dry runs."
+    },
+    {
+      "name": "verification evidence",
+      "status": "complete",
+      "evidence": "npm run release:check passed before commit; registry and GitHub Release verification remain post-push acceptance evidence."
+    }
+  ],
+  "renderedAt": "2026-07-11T05:18:03.575Z"
+}
