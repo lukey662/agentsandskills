@@ -1,4 +1,4 @@
-# Agent Skills Next/Supabase Kit
+# Agent Kit for Next.js + Supabase
 
 [![CI](https://github.com/lukey662/agentsandskills/actions/workflows/ci.yml/badge.svg)](https://github.com/lukey662/agentsandskills/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/%40appsforgood%2Fnext-supabase-kit)](https://www.npmjs.com/package/@appsforgood/next-supabase-kit)
@@ -6,85 +6,532 @@
 [![CodeQL](https://github.com/lukey662/agentsandskills/actions/workflows/codeql.yml/badge.svg)](https://github.com/lukey662/agentsandskills/actions/workflows/codeql.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-`@appsforgood/next-supabase-kit` installs an agent operating system for Next.js + Supabase projects.
+`@appsforgood/next-supabase-kit` installs versioned agent instructions, specialist roles, reusable skills, project documentation, security checks, UI review gates, and audit tooling into an existing repository.
 
-It gives agentic coders a default council roster, reusable skills, handoff rules, model-routing guidance, markdown docs, frontend design gates, Supabase/RLS security checks, upgrade workflows, and audit commands.
+It is designed for teams using AI coding tools on Next.js and Supabase projects that need the work to remain reviewable, secure, and maintainable.
 
-The package answers one practical question:
+## Start Here
 
-> Does this project have the setup needed for secure, maintainable, non-generic Next.js + Supabase delivery?
+- [Quick start](#quick-start)
+- [First-run examples](#first-run-examples)
+- [Audit examples](#audit-examples)
+- [Common delivery workflows](#common-delivery-workflows)
+- [Updating an existing install](#updating-an-existing-install)
+- [Optional executable runtime](#optional-executable-runtime)
+- [Installed project contract](#installed-project-contract)
+- [Maintainer verification](#maintainer-verification)
 
-This is not just a prompt bundle. A project gets machine-readable agent routing, model profile routing, schema-backed council evidence, living documentation templates, research-backed quality gates, and CLI checks for drift.
+## What You Get
 
-It also includes a local Agent Studio workflow: project context, durable human corrections, append-only session events, and rendered Markdown transcripts that work without a database, web server, background daemon, or separate model API key.
+- A machine-readable council roster with explicit ownership and handoffs.
+- Instructions and adapters for Codex, Cursor, Claude Code, GitHub Copilot, and Antigravity.
+- Living `SPEC.md`, `DECISIONS.md`, `DESIGN.md`, `MESSAGING.md`, `SECURITY.md`, `TESTING.md`, and deployment documentation.
+- Supabase Auth, RLS, migration, service-role, and OWASP review rules.
+- Frontend design gates that reject generic gradients, card soup, fake metrics, vague SaaS copy, inaccessible state styling, and other common AI-generated UI patterns.
+- Local project context, durable human corrections, council-session evidence, and static or live Agent Studio views.
+- A CLI that detects missing setup, stale templates, unsupported claims, weak evidence, and release-readiness gaps.
+- An optional runtime for checkpointed LangGraph execution with provider adapters, MCP policy, approvals, Docker isolation, and Git worktrees.
 
-Projects that need executable council workflows can add the optional `@appsforgood/agent-kit-runtime` package. It compiles the same roster into checkpointed LangGraph runs with provider/MCP adapters, risk approvals, Docker-first mutation isolation, Git worktrees, and redacted evidence.
+## Choose A Mode
+
+| Mode | Package | What runs |
+| --- | --- | --- |
+| Instructions and audits | `@appsforgood/next-supabase-kit` | Your coding assistant follows installed files; the CLI installs, validates, records, and audits evidence |
+| Executable council | Add `@appsforgood/agent-kit-runtime` | The CLI compiles the roster into checkpointed workflows with approval gates and isolated worktrees |
+
+The base kit does not call a model provider. Installing instructions does not prove that an executable council ran. Only `agent-kit orchestrate ...` produces runtime checkpoints and run evidence.
+
+## Requirements
+
+- Node.js 20 or newer.
+- Git for update, session, and worktree-aware workflows.
+- A Next.js + Supabase project is the primary profile, but the documentation and audit model can be adapted to adjacent stacks.
+- Docker is required only for mutation commands in the optional executable runtime.
 
 ## Quick Start
 
-Use the current stable package in a Next.js + Supabase project:
+### Zero-install trial
+
+Run the current package directly in the repository you want to prepare:
 
 ```bash
-npx @appsforgood/next-supabase-kit@latest init --stack next-supabase --setup --open
-npx @appsforgood/next-supabase-kit audit
-npx @appsforgood/next-supabase-kit audit --min-readiness baseline-setup
+npx --yes @appsforgood/next-supabase-kit@latest init --stack next-supabase --setup --open
+npx --yes @appsforgood/next-supabase-kit@latest audit
+npx --yes @appsforgood/next-supabase-kit@latest audit --min-readiness baseline-setup
 ```
 
-After install, the **Agent Office** setup view teaches agents about your project (~10 min). Resume anytime:
+The first command installs project-owned documentation and `.agent-kit/` assets, then opens the local Agent Office setup flow. Existing customized files are preserved; changed templates are written to `.agent-kit/conflicts/` for review.
+
+### Local development dependency
+
+Install the CLI when the project will use it repeatedly or in CI:
 
 ```bash
-npx @appsforgood/next-supabase-kit setup --open
-npx @appsforgood/next-supabase-kit setup --status
+npm install --save-dev @appsforgood/next-supabase-kit
+npx agent-kit init --stack next-supabase --setup --open
+npx agent-kit audit --min-readiness baseline-setup
 ```
 
-Promote IDE/runtime adapters after install:
+Add convenient package scripts:
+
+```json
+{
+  "scripts": {
+    "agent:audit": "agent-kit audit --min-readiness baseline-setup",
+    "agent:setup": "agent-kit setup --open",
+    "agent:studio": "agent-kit studio serve --open"
+  }
+}
+```
+
+Then run:
 
 ```bash
-npx @appsforgood/next-supabase-kit init --activate cursor --activate antigravity
-npx @appsforgood/next-supabase-kit adapter validate all
+npm run agent:audit
 ```
 
-Optional executable orchestration:
+## First-Run Examples
+
+### Preview before writing
 
 ```bash
-npm install --save-dev @appsforgood/agent-kit-runtime
-agent-kit orchestrate validate
-agent-kit orchestrate plan "Describe the goal"
+npx agent-kit init --stack next-supabase --guided --dry-run --json
 ```
 
-`.agent-kit/orchestrator.json` is installed disabled. Configure verified provider model IDs and `env:` or `keychain:` credential references before enabling it.
+### Install without opening a browser
 
-The installer preserves existing docs. If a file already exists and differs from the template, the new version is written to `.agent-kit/conflicts/` for review.
+```bash
+npx agent-kit init --stack next-supabase --no-setup
+npx agent-kit context init
+npx agent-kit context ask
+```
 
-### See It In Action
+### Resume project onboarding
+
+```bash
+npx agent-kit setup --open
+npx agent-kit setup --status
+```
+
+The setup server binds to `127.0.0.1:9321` by default:
+
+- `/` or `/office`: Agent Office.
+- `/wizard`: form-based fallback.
+
+Use a different port when needed:
+
+```bash
+npx agent-kit setup --port 9400 --open
+```
+
+### Activate IDE adapters
+
+```bash
+npx agent-kit init --activate cursor
+npx agent-kit init --activate codex
+npx agent-kit init --activate antigravity
+npx agent-kit adapter validate all
+```
+
+Activation promotes the relevant adapter files. The IDE or coding agent still decides when and how to load them; review `ASSISTANT_ADAPTERS.md` for the exact behavior of each tool.
+
+## Audit Examples
+
+### Human-readable readiness report
+
+```bash
+npx agent-kit audit
+```
+
+### Stable JSON output
+
+```bash
+npx agent-kit audit --json
+npx agent-kit audit --schema-version 2 --format json
+```
+
+### SARIF for code-scanning systems
+
+```bash
+npx agent-kit audit --schema-version 2 --format sarif > agent-kit.sarif
+```
+
+### Fail CI below the required evidence level
+
+```bash
+npx agent-kit audit --min-readiness baseline-setup
+```
+
+Readiness levels are:
+
+1. `needs-setup`
+2. `baseline-setup`
+3. `needs-improvement`
+4. `best-practice-candidate`
+
+Example GitHub Actions job:
+
+```yaml
+name: Agent Kit Audit
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx agent-kit audit --min-readiness baseline-setup
+```
+
+The installed template at `.github/workflows/agent-kit-audit.yml` is the maintained starting point.
+
+## Common Delivery Workflows
+
+### Plan and record a feature
+
+```bash
+npx agent-kit session start "Add organization invitations" --workflow core-change
+npx agent-kit session decision "Keep authorization in Supabase RLS and server-side mutation boundaries."
+npx agent-kit session handoff \
+  --from planner \
+  --to lead-architect \
+  --decision "Review the invitation data and auth boundaries." \
+  --risk "Invitation tokens and tenant isolation require explicit review."
+npx agent-kit session artifact --file SPEC.md
+npx agent-kit session verify \
+  --command "npm test" \
+  --result pass \
+  --notes "Invitation unit and regression tests passed."
+npx agent-kit session render
+npx agent-kit session close --status complete
+```
+
+### Record several events at once
+
+```json
+{
+  "events": [
+    {
+      "type": "decision",
+      "agent": "lead-architect",
+      "text": "Use a server action for the mutation and RLS for authorization."
+    },
+    {
+      "type": "artifact",
+      "agent": "nextjs-engineer",
+      "path": "app/invitations/actions.ts"
+    },
+    {
+      "type": "verification",
+      "agent": "qa-engineer",
+      "command": "npm test",
+      "result": "pass",
+      "notes": "Regression suite passed."
+    }
+  ]
+}
+```
+
+```bash
+npx agent-kit session checkpoint --file .agent-kit/checkpoint.json
+npx agent-kit session render
+```
+
+### Review a frontend change
+
+Use the installed command instructions as prompt prefixes in compatible coding tools, or as native commands after activating Antigravity:
 
 ```text
-$ agent-kit init --stack next-supabase
-agent-kit installed (stack: next-supabase)
-Created (21)
-  AGENTS.md
-  AGENT_ROSTER.md
-  ASSISTANT_ADAPTERS.md
-  ...
-  .cursor/rules/cursor-agent-kit.mdc
-  .agent-kit/agent-roster.json
-  .agent-kit/model-routing.json
-
-Manifest: .agent-kit/manifest.json
-Next: run agent-kit audit to check readiness.
-
-$ agent-kit audit
-READINESS baseline-setup: Agent kit setup is valid, but project-specific
-evidence still needs to replace starter placeholders.
-SUMMARY pass=60 warn=3 fail=0
-NEXT ACTIONS
-- Run agent-kit onboard or agent-kit init --guided so agents can start
-  with project-specific context.
+/frontend Build the account settings workflow.
+/ui-audit Review the implementation against the product-quality gates.
+/responsive-cleanup Verify 390px, tablet, and desktop layouts.
+/accessibility-pass Check keyboard, focus, labels, contrast, and error recovery.
+/screenshot-critique Compare desktop and mobile screenshots against DESIGN.md.
 ```
 
-Every command accepts `--json` for machine-readable output, and mutating commands (`init`, `update`, `add skill`) accept `--dry-run`. A `vhs` tape for regenerating the animated demo lives at `docs/demo.tape`.
+The UI detector checks include concrete replacements:
 
-For local development of this repo:
+| Avoid | Prefer |
+| --- | --- |
+| Thick colored side rails and gradient borders on cards | Quiet 1px full borders, semantic icons, labels, and subtle state tint |
+| Purple/blue gradient heroes and glowing blobs | Product imagery, real workflow screenshots, concrete content, or tokenized neutral surfaces |
+| Decorative card grids | Tables, lists, forms, timelines, split panes, and task-specific grouping |
+| Invented metrics and placeholder charts | Real data, clearly labelled samples, empty states, or connection prompts |
+| "Supercharge your workflow" and similar copy | Specific actions, product nouns, constraints, and supported outcomes |
+| Decorative badge or icon walls | Real integrations, security posture, support details, commands, states, and navigation |
+| Frosted oversized panels | Normal surfaces, practical density, and clear section boundaries |
+| Color-only status | Semantic text, icons, accessible contrast, ARIA state, and recovery actions |
+
+Exceptions for an established brand system should be recorded in `DESIGN.md` or `.agent-kit/overrides.json`.
+
+### Review Supabase auth or RLS work
+
+```text
+/plan Add team-scoped document sharing.
+/security Review tenant isolation, IDOR risk, service-role use, and RLS coverage.
+/test Add cross-tenant read/write denial tests and an authorized happy path.
+```
+
+Required evidence should include:
+
+- Migration and rollback implications.
+- RLS policies at the data boundary.
+- Cross-tenant denial tests.
+- Service-role isolation.
+- Server-side input validation.
+- Explicit failure and empty states.
+
+### Preserve a durable correction
+
+```bash
+npx agent-kit correction add --scope project \
+  "Use task-first operational layouts; do not add marketing heroes to authenticated tools."
+npx agent-kit correction list
+npx agent-kit correction apply <correction-id>
+```
+
+Applied project and agent corrections are loaded before meaningful work. Use `correction retire <id> --reason "..." ` when a rule no longer applies.
+
+### Inspect sessions in Agent Studio
+
+```bash
+npx agent-kit studio export
+npx agent-kit studio serve --open
+```
+
+- Static export: `.agent-kit/studio/index.html`.
+- Live Studio: `http://127.0.0.1:9331` by default.
+- Live sessions use local append-only events and Server-Sent Events.
+
+## Updating An Existing Install
+
+Preview template drift before applying an update:
+
+```bash
+npx agent-kit diff --json
+npx agent-kit update --dry-run --json
+npx agent-kit update
+npx agent-kit audit --min-readiness baseline-setup
+```
+
+Update behavior:
+
+- Pristine installed files are refreshed.
+- Project-owned edits are preserved.
+- Template changes that collide with local edits are written to `.agent-kit/conflicts/`.
+- `--force` is explicit and should be used only after reviewing the diff.
+- Accepted deviations belong in `.agent-kit/overrides.json`.
+
+Example conflict review:
+
+```bash
+npx agent-kit update --dry-run
+git diff -- .agent-kit/manifest.json
+git status --short .agent-kit/conflicts
+```
+
+## Optional Executable Runtime
+
+Install both packages locally. The runtime package does not provide the `agent-kit` binary by itself.
+
+```bash
+npm install --save-dev \
+  @appsforgood/next-supabase-kit \
+  @appsforgood/agent-kit-runtime
+npx agent-kit orchestrate validate
+```
+
+Fresh installs include a disabled `.agent-kit/orchestrator.json`. Configure provider model IDs that you have verified for the current provider account. Credentials must be references, not inline secret values.
+
+Minimal configuration example:
+
+```json
+{
+  "schemaVersion": 1,
+  "enabled": true,
+  "defaultWorkflow": "planning",
+  "defaultAlias": "balanced",
+  "providers": {
+    "primary": {
+      "kind": "openai",
+      "credentialRef": "env:OPENAI_API_KEY"
+    }
+  },
+  "modelAliases": {
+    "balanced": {
+      "requiredCapabilities": ["text", "tools"],
+      "maxAttempts": 1,
+      "candidates": [
+        {
+          "provider": "primary",
+          "model": "replace-with-a-verified-provider-model-id"
+        }
+      ]
+    }
+  }
+}
+```
+
+Validate and inspect the plan without calling a provider:
+
+```bash
+npx agent-kit orchestrate validate
+npx agent-kit orchestrate plan "Review the authorization boundary" --workflow planning
+```
+
+Start and manage a run:
+
+```bash
+npx agent-kit orchestrate run "Implement the approved authorization fix" --workflow core-change
+npx agent-kit orchestrate status
+npx agent-kit orchestrate approve <run-id>
+npx agent-kit orchestrate resume <run-id> --decision approve
+npx agent-kit orchestrate export <run-id> --output .agent-kit/runtime-export.md
+```
+
+Reject or cancel:
+
+```bash
+npx agent-kit orchestrate resume <run-id> --decision reject
+npx agent-kit orchestrate cancel <run-id>
+```
+
+Probe external adapters explicitly:
+
+```bash
+npx agent-kit provider probe
+npx agent-kit provider probe primary
+npx agent-kit mcp probe project-tools
+```
+
+Store a keychain-backed credential through a masked prompt:
+
+```bash
+npx agent-kit credential set keychain:team-openai
+npx agent-kit credential delete keychain:team-openai
+```
+
+### Runtime boundaries
+
+- Mutations occur in an isolated Git worktree.
+- Docker mutation containers use a read-only root, dropped capabilities, `no-new-privileges`, resource limits, and no network by default.
+- File tools reject traversal, symlink escapes, Git internals, environment files, private keys, package-manager credentials, and runtime evidence paths.
+- Network, host execution, worktree writes, and final commits require applicable approval gates.
+- One approved scoped commit may be created on `agent-kit/<run-id>`.
+- The runtime never merges, pushes, opens a pull request, deploys, or applies a migration automatically.
+
+See [Runtime orchestration scope](RUNTIME_ORCHESTRATION_SCOPE.md) and the [runtime package README](packages/runtime/README.md) for provider, MCP, sandbox, checkpoint, and recovery details.
+
+## Installed Project Contract
+
+Important root documents:
+
+| File | Purpose |
+| --- | --- |
+| `AGENTS.md` | High-level operating instructions and required handoffs |
+| `AGENT_ROSTER.md` | Human-readable specialist ownership |
+| `SPEC.md` | Current functional and technical contract |
+| `DECISIONS.md` | Architectural decisions and consequences |
+| `DESIGN.md` | Brand, content, UI rules, anti-references, and approved exceptions |
+| `MESSAGING.md` | Audience, positioning, proof, objections, voice, and CTA rules |
+| `QUALITY_GATES.md` | Evidence required for each readiness level |
+| `SECURITY.md` | Auth, data, dependency, secret, and threat boundaries |
+| `TESTING.md` | Unit, regression, smoke, visual, and release evidence |
+| `DEPLOYMENT.md` | Environment, release, rollback, and observability guidance |
+| `UPGRADE.md` | Template and dependency upgrade history |
+
+Important `.agent-kit/` assets:
+
+- `agent-roster.json`: workflow, agent, and handoff contract.
+- `model-routing.json`: provider-neutral model profiles.
+- `project-context.json` and `project-context.md`: current product and architecture context.
+- `corrections/`: durable project and agent rules.
+- `council-sessions/`: structured decisions, handoffs, outputs, and verification.
+- `skills/`, `prompts/`, and `checklists/`: reusable execution and review procedures.
+- `assistant-adapters/`: IDE-specific installation guidance.
+- `schemas/`: validation contracts for installed evidence.
+
+Inspect an example installation:
+
+- [Example project README](examples/next-supabase-installed/README.md)
+- [Example installed tree](examples/next-supabase-installed/tree.txt)
+- [Example audit report](examples/next-supabase-installed/audit-output.json)
+
+## Workflow Instruction Index
+
+The kit includes 20 lifecycle and UI instruction adapters.
+
+| Goal | Instruction |
+| --- | --- |
+| Capture project context | `/setup` |
+| Define behavior and constraints | `/spec` |
+| Plan implementation and handoffs | `/plan` |
+| Record agent ownership changes | `/handoff` |
+| Build or review frontend work | `/frontend` |
+| Audit kit readiness | `/audit` |
+| Add verification evidence | `/test` |
+| Review code before merge | `/review` |
+| Review auth, data, secrets, and dependencies | `/security` |
+| Review public or conversion copy | `/copy` |
+| Verify release and rollback evidence | `/ship` |
+| Review template or dependency upgrades | `/upgrade` |
+| Detect UI quality failures | `/ui-audit` |
+| Improve an implemented UI | `/ui-polish` |
+| Repair hierarchy and layout | `/layout-cleanup` |
+| Verify responsive states | `/responsive-cleanup` |
+| Verify WCAG 2.1 AA behavior | `/accessibility-pass` |
+| Check product-specific visual identity | `/distinctiveness-pass` |
+| Critique screenshot evidence | `/screenshot-critique` |
+| Run a browser QA loop | `/browser-qa` |
+
+These are instruction adapters, not proof of execution. Canonical steps live in `.agent-kit/prompts/lifecycle-command-index.md` and `.agent-kit/prompts/ui-command-index.md`.
+
+## Output And Flag Notes
+
+Use command help as the source of truth:
+
+```bash
+npx agent-kit --help
+npx agent-kit audit --help
+npx agent-kit session --help
+npx agent-kit orchestrate --help
+```
+
+Commands that expose `--json` include `init`, `audit`, `diff`, `update`, `doctor`, adapter/package validation, most session mutations, corrections, orchestrator commands, provider/MCP probes, and Studio export.
+
+Long-running server commands such as `setup` and `studio serve`, interactive credential entry, and maintainer research commands use their documented human output instead.
+
+Commands that support `--dry-run` include `init`, `update`, and `add skill`. Review each command's `--help` output rather than assuming a global flag.
+
+## Security Defaults
+
+The installed contract requires:
+
+- Supabase RLS at the data boundary, not only UI authorization.
+- Service-role credentials in trusted server code only.
+- Input validation and safe output rendering at every boundary.
+- IDOR, SSRF, injection, broken-auth, upload, and misconfiguration review.
+- Explicit loading, empty, error, retry, and success states.
+- Cross-tenant denial tests for tenant-scoped data.
+- Dependency audit and release evidence for dependency changes.
+- No secrets, customer data, or private repository evidence in committed session files.
+
+## Maintainer Verification
+
+For development of this repository:
 
 ```bash
 npm install
@@ -93,407 +540,27 @@ npm test
 npm run release:check
 ```
 
-`npm run release:check` is the main pre-release proof command. It typechecks, tests, builds, install-smokes the package, checks examples, runs dependency audit, validates SBOM generation, and dry-runs packaging.
-
-## Workflow Commands
-
-Twenty slash commands map to the delivery lifecycle. Each one activates the right council agents and skills automatically. Use them in Antigravity after `init --activate antigravity`, or as prompt prefixes in any IDE. Canonical workflow steps live in `.agent-kit/prompts/lifecycle-command-index.md` (delivery) and `.agent-kit/prompts/ui-command-index.md` (UI polish).
-
-```text
-SETUP → SPEC/PLAN → BUILD → VERIFY → REVIEW → SHIP
-```
-
-**Workflow commands** (`/setup`, `/spec`, …) are instruction adapters. **Package CLI** commands (`agent-kit init`, `audit`, `session`, `orchestrate`, …) are documented under [CLI Reference](#cli-reference) below. Cursor loads rules and skills from `init`; Antigravity gets native slash commands from `init --activate antigravity`. Only `agent-kit orchestrate` is evidence that the executable checkpointed council ran. See `ASSISTANT_ADAPTERS.md` for per-IDE setup.
-
-### Core lifecycle commands
-
-| What you're doing | Command | Key principle | Skills / council |
-| --- | --- | --- | --- |
-| Onboard project context | `/setup` | Context before code | Agent Office, project-context |
-| Define what to build | `/spec` | Spec before code | Planner, docs-maintainer |
-| Plan how to build it | `/plan` | Council before implementation | planning-council, lead-architect |
-| Route between agents | `/handoff` | Explicit handoffs | agent-handoff-tracing |
-| Build frontend/UI | `/frontend` | Content-first design | frontend-design-lead skills |
-| Check kit readiness | `/audit` | Evidence before claims | best-practice-maturity-review |
-| Prove behavior | `/test` | Tests are proof | testing-qa, qa-engineer |
-| Review before merge | `/review` | Improve code health | qa-engineer + security-reviewer |
-| Security signoff | `/security` | RLS at the boundary | owasp-security-review, supabase-auth-rls |
-| Public copy | `/copy` | Proof before publish | marketing-copy-lead |
-| Ship release | `/ship` | Faster is safer | deployment-observability, release gates |
-| Upgrade kit/deps | `/upgrade` | Diff before overwrite | upgrade-maintenance |
-
-### UI harness commands
-
-Focused UI improvement commands. Full steps: `.agent-kit/prompts/ui-command-index.md`.
-
-| What you're doing | Command | Key principle |
-| --- | --- | --- |
-| Audit UI before release | `/ui-audit` | Detect before ship |
-| Improve visual quality | `/ui-polish` | Scope-safe polish |
-| Repair layout structure | `/layout-cleanup` | Hierarchy over decoration |
-| Fix responsive behavior | `/responsive-cleanup` | Mobile is not an afterthought |
-| WCAG 2.1 AA pass | `/accessibility-pass` | Keyboard and contrast matter |
-| Prove product distinctiveness | `/distinctiveness-pass` | Not interchangeable SaaS |
-| Critique screenshots | `/screenshot-critique` | Evidence over opinion |
-| Live browser QA loop | `/browser-qa` | Measure in the real UI |
-
-Skills activate from task keywords and roster `defaultFor` tags—for example, schema/RLS work routes to **Supabase/Postgres Engineer** with `supabase-auth-rls` and `postgres-migrations`; App Router work routes to **Next.js Engineer** with `nextjs-app-router`. See `SKILLS.md` and `.agent-kit/agent-roster.json`.
-
-### Council
-
-| Agent | Owns | Key skills |
-| --- | --- | --- |
-| Planner | Scope, roadmap, ambiguous requests | planning-council, agent-handoff-tracing |
-| Lead Architect | Core and cross-layer changes | nextjs-app-router, supabase-auth-rls, owasp-security-review |
-| Supabase/Postgres Engineer | Schema, migrations, RLS, auth | supabase-auth-rls, postgres-migrations |
-| Next.js Engineer | App Router, Server Actions, UI state | nextjs-app-router, frontend-design-system |
-| Frontend Design Lead | Design gates, visual QA, anti-generic UI | content-first-design, ui-improvement-harness |
-| Marketing Copy Lead | Positioning, conversion copy, CTAs | positioning-messaging, conversion-copywriting |
-| Security Reviewer | OWASP, auth boundaries, secrets | owasp-security-review, supabase-auth-rls |
-| QA Engineer | Tests, regression, acceptance evidence | testing-qa, visual-regression-qa |
-| Documentation Maintainer | Living docs, spec, decisions | docs-maintainer, planning-council |
-| Deployment/Observability Engineer | Release, rollback, monitoring | deployment-observability |
-
-### Skills by lifecycle phase
-
-Full skill list: `SKILLS.md`.
-
-**Define:** planning-council, agent-handoff-tracing, best-practice-maturity-review, docs-maintainer
-
-**Build:** nextjs-app-router, supabase-auth-rls, postgres-migrations, content-first-design, frontend-design-system, ui-improvement-harness, positioning-messaging
-
-**Verify:** testing-qa, visual-regression-qa, owasp-security-review, accessibility-wcag, reference-led-design-critique, frontend-product-quality-rubric
-
-**Ship:** deployment-observability, upgrade-maintenance
-
-### How skills work
-
-- **Canonical skills** live in `.agent-kit/skills/` as markdown checklists agents load for a task type.
-- **Runtime wrappers** in `runtime-skills/*/SKILL.md` expose the same content to Antigravity and other skill-directory runtimes.
-- **Roster routing** in `.agent-kit/agent-roster.json` maps `defaultFor` keywords and workflows to agents and their default skill sets—slash commands and natural-language requests both use the same contract.
-
-## How Agentic Coders Should Use It
-
-Start with the installed files:
-
-- `AGENTS.md`: the high-level operating instructions.
-- `.agent-kit/agent-roster.json`: the machine-readable source of truth for agent routing.
-- `AGENT_ROSTER.md`: the human-readable roster summary.
-- `SKILLS.md`: when each reusable skill should be used.
-- `MODEL_ROUTING.md`: model-profile guidance for each agent and IDE.
-- `QUALITY_GATES.md`: what separates baseline setup, strong delivery, and best-practice evidence.
-- `DESIGN.md`: the frontend design and content contract.
-- `MESSAGING.md`: the positioning, value proposition, proof, objections, voice, and CTA contract.
-- `COUNCIL.md`: where meaningful handoffs and decisions are recorded.
-
-Default routing:
-
-- Planner handles plans, roadmaps, scope, and ambiguous requests first.
-- Lead Architect reviews core changes before implementation.
-- Security Reviewer joins auth, RLS, data mutation, dependency, secret, external-call, and release-risk work.
-- Frontend Design Lead owns content-first design, reference-led critique, distinctiveness benchmarking, product-quality scoring, UI detector severity review, command-based polish/audit loops, and visual QA.
-- Marketing Copy Lead owns public-facing and conversion-facing copy, positioning, proof, objections, voice, and CTA hierarchy.
-- QA Engineer verifies behavior changes before completion.
-- Documentation Maintainer keeps the living markdown current.
-
-For meaningful multi-agent work, record the decision, risk, next handoff, required outputs, and verification evidence in `COUNCIL.md` or `.agent-kit/council-sessions/*.json`.
-
-## CLI Reference
-
-Every command accepts `--json` for machine-readable output. Mutating commands (`init`, `update`, `add skill`, `correction apply`) also accept `--dry-run`.
-
-### Install and upgrade
-
-| Command | Purpose |
-| --- | --- |
-| `init` | Install docs, roster, skills, schemas, Cursor rules, and project context |
-| `diff` | Compare local docs against bundled templates |
-| `update` | Hash-aware upgrade: pristine docs refresh, local edits kept, conflicts for review |
-| `add skill <name>` | Copy one skill into `.agent-kit/skills/` |
-| `onboard` | Print the recommended first-run checklist |
-
-```bash
-agent-kit init --stack next-supabase --guided --dry-run
-agent-kit init --activate cursor --activate codex --no-setup
-agent-kit diff
-agent-kit update --dry-run
-agent-kit add skill ui-improvement-harness
-```
-
-`init` flags: `--stack`, `--guided`, `--dry-run`, `--activate <targets...>`, `--setup`, `--no-setup`, `--open`, `--force`, `--json`.  
-`update` flags: `--dry-run`, `--force`, `--json`.
-
-### Setup and Agent Office
-
-| Command | Purpose |
-| --- | --- |
-| `setup` | Serve local Agent Office (default) and form wizard at `http://127.0.0.1:9321` |
-| `setup --status` | Print onboarding progress as JSON |
-
-Routes: `/` or `/office` (pixel office, default), `/wizard` (form fallback).
-
-```bash
-agent-kit setup --open
-agent-kit setup --status
-```
-
-### Audit and validation
-
-| Command | Purpose |
-| --- | --- |
-| `audit` | Readiness report with pass/warn/fail findings |
-| `doctor` | Validate CLI runtime prerequisites |
-| `adapter validate [target]` | Validate IDE/runtime adapter assets (`cursor`, `claude`, `codex`, `copilot`, `antigravity`, `all`) |
-| `package validate` | Source-repo release asset validation (maintainers) |
-
-```bash
-agent-kit audit --json --min-readiness baseline-setup
-agent-kit adapter validate cursor
-agent-kit doctor --json
-```
-
-Readiness levels: `needs-setup`, `baseline-setup`, `needs-improvement`, `best-practice-candidate`. Use `--min-readiness <level>` in CI.
-
-### Project context
-
-| Command | Purpose |
-| --- | --- |
-| `context init` | Create or refresh `.agent-kit/project-context.json` |
-| `context scan` | Print inferred context without writing |
-| `context ask` | List unanswered high-value context questions |
-| `context render` | Render `.agent-kit/project-context.md` |
-| `context validate` | Validate context against schema |
-| `context show` | Print current context JSON |
-
-```bash
-agent-kit context init
-agent-kit context validate
-```
-
-### Council sessions
-
-| Command | Purpose |
-| --- | --- |
-| `session start` | Open a council session with workflow routing |
-| `session list` / `session active` | Inspect sessions |
-| `session note` / `decision` / `handoff` | Record collaboration events |
-| `session correct` / `artifact` / `verify` / `output` | Record corrections, files, checks, required outputs |
-| `session checkpoint` | Batch-apply events from a JSON file |
-| `session render` / `session close` | Render Markdown and close the session |
-
-```bash
-agent-kit session start "Build checkout flow" --workflow frontend-change
-agent-kit session handoff --from planner --to frontend-design-lead --decision "Start design intake." --risk "Generic UI risk."
-agent-kit session verify --command "npm test" --result pass --notes "Tests passed."
-agent-kit session output "visual QA evidence" --status not-applicable --evidence "No UI change."
-agent-kit session checkpoint --file .agent-kit/checkpoint.json
-agent-kit session render
-agent-kit session close --status complete
-```
-
-### Optional orchestrator
-
-| Command | Purpose |
-| --- | --- |
-| `orchestrate validate` | Validate runtime config, roster references, and bounds without provider calls |
-| `orchestrate plan <goal...>` | Compile the offline workflow sequence and approval envelope |
-| `orchestrate run <goal...>` | Start a checkpointed run in an isolated worktree |
-| `orchestrate approve <run-id>` | Approve the current gate and resume |
-| `orchestrate resume <run-id> --decision ...` | Explicitly approve or reject a gate |
-| `orchestrate status [run-id]` | Read persisted run state |
-| `orchestrate cancel <run-id>` | Cancel a paused or local in-process run |
-| `orchestrate export <run-id>` | Render redacted run evidence as Markdown |
-| `provider probe`, `mcp probe` | Explicitly test configured external adapters |
-| `credential set`, `credential delete` | Manage OS-keychain references without CLI value flags |
-
-The runtime may create one approved scoped commit on `agent-kit/<run-id>`. It never merges, pushes, opens a pull request, deploys, or applies migrations. See [RUNTIME_ORCHESTRATION_SCOPE.md](RUNTIME_ORCHESTRATION_SCOPE.md) and [packages/runtime/README.md](packages/runtime/README.md).
-
-### Corrections
-
-| Command | Purpose |
-| --- | --- |
-| `correction list` | List durable project and agent correction rules |
-| `correction add` | Add a correction (`--scope project\|agent\|session`) |
-| `correction apply` | Promote a correction into active rules |
-| `correction retire` | Retire a correction with reason |
-| `correction propose-upstream` | Flag a correction for kit promotion |
-
-```bash
-agent-kit correction add --scope project "Prefer operational density over hero-style marketing layout."
-agent-kit correction apply --id project-ui-density
-```
-
-### Studio views
-
-| Command | Purpose |
-| --- | --- |
-| `studio export` | Generate self-contained static HTML at `.agent-kit/studio/index.html` |
-| `studio serve` | Live localhost Agent Office with SSE session events (default port `9331`) |
-
-```bash
-agent-kit studio export
-agent-kit studio serve --open
-```
-
-### Research (maintainers)
-
-Requires `GITHUB_TOKEN` in the environment.
-
-```bash
-agent-kit research discover --limit 100
-agent-kit research scan
-agent-kit research summarize
-agent-kit research propose-updates
-```
-
-## What Gets Installed
-
-Root markdown docs:
-
-```text
-AGENTS.md
-AGENT_ROSTER.md
-ASSISTANT_ADAPTERS.md
-COUNCIL.md
-SKILLS.md
-SPEC.md
-DECISIONS.md
-DOCS.md
-DESIGN.md
-MESSAGING.md
-MODEL_ROUTING.md
-QUALITY_GATES.md
-STYLE_GUIDE.md
-SECURITY.md
-TESTING.md
-DEPLOYMENT.md
-UPGRADE.md
-```
-
-The `.agent-kit/` folder includes:
-
-- `agent-roster.json` for default workflow routing.
-- `model-routing.json` for provider-neutral model profile routing.
-- `project-context.json`, `project-context.md`, `corrections/`, and `council-sessions/` for local Agent Studio context, correction rules, session events, and rendered transcripts.
-- `schemas/` for agent roster, council-session, model-routing, project context, correction rules, session events, studio sessions, and audit-report contracts.
-- `agents/`, `skills/`, `runtime-skills/`, `prompts/`, and `checklists/`.
-- `assistant-adapters/` for Codex/AGENTS.md-compatible tools, GitHub Copilot/VS Code, Cursor, Claude Code, and Antigravity.
-- `antigravity/` for native command and plugin assets.
-- `design-briefs/` for SaaS, admin, marketplace, content, tool, ecommerce, portfolio/venue, education, community/social, and AI workflow surfaces.
-- `profiles/` for product-type and adjacent-stack adaptation.
-
-## AI Mechanisms
-
-Agent Kit separates the mechanisms that make AI coding repeatable:
-
-- Instructions: `AGENTS.md`, assistant adapters, and IDE-specific rule files.
-- Roster: `.agent-kit/agent-roster.json` chooses agents, workflows, and handoffs.
-- Skills: `.agent-kit/skills/` keeps specialist workflows reusable.
-- Runtime commands: Antigravity `commands/*.toml` expose `/setup`, `/spec`, `/audit`, `/plan`, `/handoff`, `/frontend`, `/test`, `/review`, focused UI improvement commands, `/security`, `/copy`, `/ship`, and `/upgrade` as native adapter entrypoints.
-- Portable skills: `runtime-skills/*/SKILL.md` wraps canonical `skills/*.md` files for runtimes that discover skill directories.
-- Model routing: `MODEL_ROUTING.md` and `.agent-kit/model-routing.json` map agents to model profiles.
-- Messaging: `MESSAGING.md` records audience, pain, outcome, proof, objections, voice, and conversion evidence for public-facing copy.
-- Local Agent Studio: `.agent-kit/project-context.*`, `.agent-kit/corrections/*.json`, and `.agent-kit/council-sessions/*` keep context, corrections, decisions, handoffs, required-output status, artifacts, verification, and rendered Markdown transcripts local.
-- Tools and MCP: `ASSISTANT_ADAPTERS.md` records browser, GitHub, Figma, Supabase, docs, or other connector setup.
-- Hooks and CI: optional local enforcement plus `agent-kit audit`, tests, install smoke, SBOM, and release gates.
-
-Some IDEs can partially enforce model settings; others only let project files advise the user. The kit records that difference instead of pretending every tool can force per-agent model selection.
-
-Runtime command files are adapters only. `AGENTS.md`, `.agent-kit/agent-roster.json`, `QUALITY_GATES.md`, and Agent Studio session evidence remain the canonical operating model.
-
-## Frontend Quality Bar
-
-The kit is intentionally strict about frontend work because normal AI output often looks generic.
-
-Significant UI work should prove:
-
-- Brand/content intake and real user needs.
-- A selected creative direction, with rejected alternatives.
-- Reference lessons and anti-references without copied source designs.
-- First-screen proof that the real product task, object, workflow, or content is visible.
-- A content fingerprint: real product nouns, labels, data shapes, actions, and edge cases.
-- Asset provenance for real, generated, licensed, and placeholder visuals.
-- Product-quality scorecard evidence.
-- Desktop, mobile, key states, accessibility, and visual QA evidence.
-
-The Frontend Design Lead should reject work that would still look valid for another product after only changing the logo or headline.
-
-Operational UI improvement workflows live in `.agent-kit/prompts/ui-command-index.md` and ship as Antigravity commands: `/ui-audit`, `/ui-polish`, `/layout-cleanup`, `/responsive-cleanup`, `/accessibility-pass`, `/distinctiveness-pass`, `/screenshot-critique`, and `/browser-qa`. Use `.agent-kit/checklists/ui-detectors.md` for deterministic blocker/major/minor findings and `.agent-kit/checklists/ui-acceptance-rubric.md` for pass/fail decisions. High-risk UI work requires desktop and mobile screenshots plus authenticated or permission-state evidence when the surface is not public.
-
-## Security Bar
-
-The kit treats these as defaults, not optional polish:
-
-- OWASP Top 10 review for auth, API, Server Action, external-call, upload, and dependency changes.
-- Supabase RLS at the data boundary.
-- Service-role keys isolated to trusted server code.
-- Input validation and safe output rendering.
-- IDOR, SSRF, injection, broken auth, and misconfiguration review.
-- Dependency audit before release.
-
-## Updating An Existing Install
-
-Use the upgrade flow instead of overwriting project-owned docs:
-
-```bash
-agent-kit diff
-agent-kit update --dry-run
-agent-kit update
-agent-kit audit --min-readiness baseline-setup
-```
-
-Document accepted local deviations in `.agent-kit/overrides.json`. Record version changes, conflicts, migration impact, rollback notes, and verification evidence in `UPGRADE.md`.
-
-## Research Evidence
-
-The repo includes a 100-repo research workflow plus focused follow-up summaries.
-
-Research volume does not count as proof by itself. A repeated pattern only becomes part of the kit when it is promoted into installed assets, audit checks, tests, release gates, schemas, workflows, or documented decisions.
-
-Useful evidence files:
-
-- `BEST_PRACTICE_EVIDENCE.md`: maps research signals to enforceable assets and validation paths.
-- `research/summaries/`: public-safe research summaries.
-- `research/proposed-updates.md`: promoted and future updates.
-- `DOGFOOD.md`: public-safe downstream adoption evidence.
-- `ROADMAP.md`: the phased done/left tracker.
-
-Research commands:
-
-```bash
-export GITHUB_TOKEN=ghp_replace_me
-agent-kit research discover --limit 100
-agent-kit research scan
-agent-kit research summarize
-agent-kit research propose-updates
-```
-
-Detailed per-repo findings are committed for repository development, but the public npm package ships generalized summaries and promoted decisions only. See `RESEARCH_CITATION_POLICY.md`.
-
-## Public Release And Supply Chain
-
-Public package name:
-
-```text
-@appsforgood/next-supabase-kit
-```
-
-Release expectations:
-
-- MIT license.
-- Public npm access.
-- npm Trusted Publishing through GitHub Actions OIDC.
-- No long-lived npm publish token for automation.
-- Dependency Review, CodeQL, OpenSSF Scorecard, Dependabot, SBOM validation, and SBOM attestation.
-- Post-publish verification with `npm run publish:verify`.
-
-The public package identities are `@appsforgood/next-supabase-kit` and `@appsforgood/agent-kit-runtime`. Every release must pass `npm run release:check`. The OIDC workflow publishes runtime before root when needed, attests separate package-rooted SBOMs, verifies both packages from the public registry, and only then creates the matching GitHub release. Registry metadata is the source of truth for the latest published versions.
-
-## Repository Health
-
-The repo includes issue forms, PR template, labels, CODEOWNERS, Dependabot, CodeQL, Dependency Review, OpenSSF Scorecard, `CODE_OF_CONDUCT.md`, `SUPPORT.md`, `GOVERNANCE.md`, `REPOSITORY_SETTINGS.md`, and `SUPPLY_CHAIN.md`.
-
-These files are tested as public-readiness assets so the package can be maintained as public OSS, not just published as a tarball.
+`npm run release:check` runs:
+
+- JSON and version consistency checks.
+- TypeScript, ESLint, and Prettier checks.
+- Unit and regression tests with coverage gates.
+- Package build and asset validation.
+- IDE adapter and example-install validation.
+- Install, Studio, setup, and audit-gate smoke tests.
+- Dependency audit.
+- CycloneDX SBOM validation.
+- Root and runtime package dry runs.
+
+The release workflow uses npm Trusted Publishing through GitHub Actions OIDC, creates package-rooted SBOM attestations, publishes the runtime before the root package when needed, verifies both packages from the public registry, and creates a GitHub release only after registry verification.
+
+Additional evidence:
+
+- [Best-practice evidence map](BEST_PRACTICE_EVIDENCE.md)
+- [Supply-chain policy](SUPPLY_CHAIN.md)
+- [Maintainer release procedure](MAINTAINER_RELEASE.md)
+- [Research citation policy](RESEARCH_CITATION_POLICY.md)
+- [Public support policy](SUPPORT.md)
 
 ## License
 

@@ -23,6 +23,18 @@ function packagedPublicFiles(): string[] {
 }
 
 describe("public package readiness", () => {
+  it("keeps README setup examples aligned with the shipped CLI", () => {
+    const readme = readFileSync(join(root, "README.md"), "utf8");
+    const runtimeSection = readme.slice(readme.indexOf("## Optional Executable Runtime"));
+    expect(runtimeSection).toContain("@appsforgood/next-supabase-kit");
+    expect(runtimeSection).toContain("@appsforgood/agent-kit-runtime");
+    expect(runtimeSection).toContain("The runtime package does not provide the `agent-kit` binary by itself.");
+    expect(readme).toContain("npx agent-kit session artifact --file SPEC.md");
+    expect(readme).not.toContain("npx agent-kit session artifact --path");
+    expect(readme).not.toContain("Every command accepts `--json`");
+    expect(readme).toContain("Commands that support `--dry-run` include `init`, `update`, and `add skill`");
+  });
+
   it("normalizes repository text files for cross-platform checks", () => {
     const attributes = readFileSync(join(root, ".gitattributes"), "utf8");
     expect(attributes).toContain("* text=auto eol=lf");
