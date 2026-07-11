@@ -1,3 +1,6 @@
+import { realpathSync } from "node:fs";
+import { resolve } from "node:path";
+
 export function isSensitiveRelativePath(value: string): boolean {
   const normalized = value.replace(/\\/g, "/").replace(/^\.\//, "");
   const segments = normalized.split("/").filter(Boolean);
@@ -17,6 +20,10 @@ export function isSensitiveRelativePath(value: string): boolean {
 export function pathIdentity(value: string, caseInsensitive = process.platform === "win32"): string {
   const normalized = value.replace(/\\/g, "/").replace(/\/+$/, "") || "/";
   return caseInsensitive ? normalized.toLowerCase() : normalized;
+}
+
+export function canonicalPath(value: string): string {
+  return realpathSync.native(resolve(value));
 }
 
 export function pathsEqual(left: string, right: string, caseInsensitive = process.platform === "win32"): boolean {

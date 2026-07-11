@@ -1,5 +1,11 @@
 # @appsforgood/agent-kit-runtime
 
+## 0.1.3
+
+### Patch Changes
+
+- Canonicalize Windows paths with the native filesystem resolver before enforcing instruction, tool, and worktree containment.
+
 ## 0.1.2
 
 ### Patch Changes

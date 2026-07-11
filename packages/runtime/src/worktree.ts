@@ -1,9 +1,9 @@
 import { execFile } from "node:child_process";
-import { existsSync, mkdirSync, realpathSync, rmSync } from "node:fs";
+import { existsSync, mkdirSync, rmSync } from "node:fs";
 import { homedir, platform } from "node:os";
-import { basename, join, resolve } from "node:path";
+import { basename, join } from "node:path";
 import { promisify } from "node:util";
-import { isSensitiveRelativePath } from "./security/paths.js";
+import { canonicalPath, isSensitiveRelativePath } from "./security/paths.js";
 
 const execFileAsync = promisify(execFile);
 
@@ -36,7 +36,7 @@ export class WorktreeManager {
   readonly sourceRoot: string;
 
   constructor(sourceRoot: string) {
-    this.sourceRoot = realpathSync(resolve(sourceRoot));
+    this.sourceRoot = canonicalPath(sourceRoot);
   }
 
   async inspect(): Promise<{ baseCommit: string; dirty: boolean; status: string; sensitivePaths: string[] }> {

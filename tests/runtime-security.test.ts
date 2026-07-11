@@ -6,6 +6,7 @@ import { RuntimeConfigContract, loadRuntimeConfig, requiredCapabilities } from "
 import { FileRunEventStore } from "../packages/runtime/src/events.js";
 import { assertSafeMcpUrl, McpClientBroker } from "../packages/runtime/src/mcp.js";
 import { ModelRouter, ProviderRegistry } from "../packages/runtime/src/providers/registry.js";
+import { readAgentInstructions } from "../packages/runtime/src/roster.js";
 import type { CredentialStore } from "../packages/runtime/src/credentials.js";
 import type { ModelProviderAdapter } from "../packages/runtime/src/types.js";
 import { DockerSandbox, runSandboxProcess, type SandboxProcessRunner } from "../packages/runtime/src/sandbox/docker.js";
@@ -25,6 +26,17 @@ afterEach(() => {
 });
 
 describe("runtime security contracts", () => {
+  it("reads project-contained agent instructions and rejects traversal", () => {
+    const root = mkdtempSync(join(tmpdir(), "agent-kit-runtime-instructions-"));
+    roots.push(root);
+    mkdirSync(join(root, ".agent-kit", "agents"), { recursive: true });
+    writeFileSync(join(root, ".agent-kit", "agents", "docs.md"), "Maintain documentation.\n");
+    const agent = { id: "docs", file: ".agent-kit/agents/docs.md", skills: ["docs"] };
+
+    expect(readAgentInstructions(root, agent)).toBe("Maintain documentation.\n");
+    expect(() => readAgentInstructions(root, { ...agent, file: "../outside.md" })).toThrow(/escapes the project/);
+  });
+
   it("compares Windows paths by canonical identity without prefix confusion", () => {
     expect(pathIdentity("C:\\Users\\Runner\\repo\\", true)).toBe("c:/users/runner/repo");
     expect(pathsEqual("C:\\Users\\Runner\\repo", "c:/users/runner/repo", true)).toBe(true);

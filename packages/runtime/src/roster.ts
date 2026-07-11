@@ -1,7 +1,8 @@
-import { readFileSync, realpathSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { z } from "zod";
 import type { RuntimeConfig } from "./config.js";
+import { canonicalPath, isPathWithin } from "./security/paths.js";
 
 const AgentContract = z
   .object({
@@ -113,9 +114,10 @@ export function validateWorkflowBounds(workflow: RosterWorkflow, config: Runtime
 export function readAgentInstructions(cwd: string, agent: RosterAgent): string {
   if (!agent.file) return `${agent.name ?? agent.id}. Skills: ${agent.skills.join(", ")}.`;
   if (resolve(agent.file) === agent.file) throw new Error(`Agent instruction paths must be relative: ${agent.file}`);
-  const root = realpathSync(resolve(cwd));
+  const root = canonicalPath(cwd);
   const candidate = resolve(root, agent.file);
-  const parent = realpathSync(dirname(candidate));
-  if (parent !== root && !parent.startsWith(`${root}/`)) throw new Error(`Agent instruction path escapes the project: ${agent.file}`);
+  if (!isPathWithin(root, candidate)) throw new Error(`Agent instruction path escapes the project: ${agent.file}`);
+  const parent = canonicalPath(dirname(candidate));
+  if (!isPathWithin(root, parent)) throw new Error(`Agent instruction path escapes the project: ${agent.file}`);
   return readFileSync(candidate, "utf8").slice(0, 200_000);
 }

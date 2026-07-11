@@ -1,9 +1,9 @@
 import { randomUUID } from "node:crypto";
-import { existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, realpathSync, renameSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, isAbsolute, join, relative, resolve } from "node:path";
 import type { ApprovalRequest, ApprovalRisk, ModelToolDefinition } from "./types.js";
 import { DockerSandbox } from "./sandbox/docker.js";
-import { assertSafeToolPath, isPathWithin, isSensitiveRelativePath, pathsEqual } from "./security/paths.js";
+import { assertSafeToolPath, canonicalPath, isPathWithin, isSensitiveRelativePath, pathsEqual } from "./security/paths.js";
 
 export interface ToolApprovalHandler {
   (request: Omit<ApprovalRequest, "approvalId" | "requestedAt">): Promise<boolean>;
@@ -190,14 +190,14 @@ export class ToolBroker {
 }
 
 function safeRoot(root: string): string {
-  return realpathSync(resolve(root));
+  return canonicalPath(root);
 }
 
 function safeExistingPath(root: string, requested: string): string {
   if (!requested || isAbsolute(requested)) throw new Error("Tool paths must be non-empty and relative.");
   assertSafeToolPath(requested);
   const rootPath = safeRoot(root);
-  const candidate = realpathSync(resolve(rootPath, requested));
+  const candidate = canonicalPath(resolve(rootPath, requested));
   if (!isPathWithin(rootPath, candidate)) throw new Error(`Path escapes the worktree: ${requested}`);
   return candidate;
 }
@@ -210,7 +210,7 @@ function safeNewPath(root: string, requested: string): string {
   if (!isPathWithin(rootPath, candidate)) throw new Error(`Path escapes the worktree: ${requested}`);
   let parent = dirname(candidate);
   while (!existsSync(parent) && !pathsEqual(parent, rootPath)) parent = dirname(parent);
-  const realParent = realpathSync(parent);
+  const realParent = canonicalPath(parent);
   if (!isPathWithin(rootPath, realParent)) throw new Error(`Path parent escapes the worktree: ${requested}`);
   return candidate;
 }
