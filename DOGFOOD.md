@@ -185,3 +185,17 @@ Scope: README/docs discoverability + three new Antigravity adapters
 | Roster | `testing` and `code-review` workflows; planning triggers for spec keywords |
 | Historical scope | `/build`, `/webperf`, `/code-simplify`, and `/build auto` were deferred in this 0.1.7 review; the later runtime ships bounded roster workflows rather than cloning those command semantics |
 | Verification | `npm test`, `agent-kit adapter validate antigravity` after build |
+
+## 2026-07-11 - README Examples Release 0.2.1
+
+Date: 2026-07-11
+Scope: publish the verified README rewrite through npm Trusted Publishing and confirm the public artifacts.
+
+| Evidence | Result |
+| --- | --- |
+| Local release gate | `npm run release:check` passed with 200 tests, coverage gates, package/adapters/examples/install/Studio/setup/audit checks, zero dependency vulnerabilities, SBOM validation, and package dry runs. |
+| Root package | `@appsforgood/next-supabase-kit@0.2.1` is public and the `latest` dist-tag resolves to `0.2.1`. |
+| Published README | npm returns the rewritten quick start, audit, council-session, frontend-review, update, and optional-runtime examples for `0.2.1`. |
+| Runtime package | `@appsforgood/agent-kit-runtime` remains at `0.1.3`; the release workflow correctly skipped its unchanged package. |
+| GitHub release | [`v0.2.1`](https://github.com/lukey662/agentsandskills/releases/tag/v0.2.1) was created only after public-registry verification. |
+| Supply chain | Trusted Publishing used GitHub Actions OIDC and generated the root-package SBOM attestation before publication. |

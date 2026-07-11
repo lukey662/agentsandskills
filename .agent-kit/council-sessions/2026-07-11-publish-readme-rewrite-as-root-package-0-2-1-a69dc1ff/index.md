@@ -1,12 +1,12 @@
 # Council Session: Publish README rewrite as root package 0.2.1
 
-Generated from `.agent-kit/council-sessions/2026-07-11-publish-readme-rewrite-as-root-package-0-2-1-a69dc1ff/events.jsonl` at 2026-07-11T05:18:03.575Z.
+Generated from `.agent-kit/council-sessions/2026-07-11-publish-readme-rewrite-as-root-package-0-2-1-a69dc1ff/events.jsonl` at 2026-07-11T05:22:37.693Z.
 
 ## Current State
 
 - Session: 2026-07-11-publish-readme-rewrite-as-root-package-0-2-1-a69dc1ff
 - Workflow: release
-- Status: in-progress
+- Status: complete
 - Active agent: deployment-observability-engineer
 - Next agent: deployment-observability-engineer
 - Quality target: baseline-setup
@@ -42,11 +42,11 @@ flowchart LR
 | --- | --- | --- |
 | decision | complete | Release only @appsforgood/next-supabase-kit as patch 0.2.1; @appsforgood/agent-kit-runtime remains 0.1.3 because its package contents did not change. |
 | risk | complete | Mitigated stale fixture and tarball risks by refreshing installed examples and passing the full release gate and npm pack dry runs. |
-| verification evidence | complete | npm run release:check passed before commit; registry and GitHub Release verification remain post-push acceptance evidence. |
+| verification evidence | complete | Local release gate passed; Trusted Publishing run 29141026302 succeeded; npm latest is root 0.2.1 and runtime 0.1.3; published README and GitHub release v0.2.1 were independently verified. |
 
 ## Artifacts
 
-- None recorded.
+- DOGFOOD.md
 
 
 ## Verification
@@ -54,6 +54,9 @@ flowchart LR
 | Command | Result | Notes |
 | --- | --- | --- |
 | npm run release:check | pass | Full gate passed: 200 tests, coverage thresholds, build, package/adapters/examples/install/studio/setup/audit checks, zero vulnerabilities, SBOM validation, and root/runtime pack dry runs. |
+| npm view @appsforgood/next-supabase-kit@0.2.1 version dist-tags.latest --json | pass | Public npm registry reports version 0.2.1 and latest 0.2.1; the published README contains the verified task-oriented examples. |
+| npm view @appsforgood/agent-kit-runtime version dist-tags.latest --json | pass | Runtime remains at unchanged version 0.1.3 and was correctly skipped by the release workflow. |
+| gh release view v0.2.1 | pass | Public GitHub release v0.2.1 targets commit 12e0ea58c8fec4e0b0e676469e894044e7763ee6 after registry verification. |
 
 ## Next Actions
 

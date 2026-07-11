@@ -3,8 +3,8 @@
   "sessionId": "2026-07-11-publish-readme-rewrite-as-root-package-0-2-1-a69dc1ff",
   "title": "Publish README rewrite as root package 0.2.1",
   "createdAt": "2026-07-11T05:13:29.433Z",
-  "updatedAt": "2026-07-11T05:18:03.575Z",
-  "status": "in-progress",
+  "updatedAt": "2026-07-11T05:22:37.693Z",
+  "status": "complete",
   "workflowId": "release",
   "request": "Publish README rewrite as root package 0.2.1",
   "affectedLayers": [],
@@ -25,8 +25,8 @@
     {
       "name": "verification evidence",
       "status": "complete",
-      "evidence": "npm run release:check passed before commit; registry and GitHub Release verification remain post-push acceptance evidence."
+      "evidence": "Local release gate passed; Trusted Publishing run 29141026302 succeeded; npm latest is root 0.2.1 and runtime 0.1.3; published README and GitHub release v0.2.1 were independently verified."
     }
   ],
-  "renderedAt": "2026-07-11T05:18:03.575Z"
+  "renderedAt": "2026-07-11T05:22:37.693Z"
 }

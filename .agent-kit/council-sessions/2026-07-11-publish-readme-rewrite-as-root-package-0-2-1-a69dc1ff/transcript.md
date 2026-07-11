@@ -14,6 +14,12 @@ Generated from `.agent-kit/council-sessions/2026-07-11-publish-readme-rewrite-as
 - 2026-07-11T05:18:02.982Z `required_output_updated`: decision: complete
 - 2026-07-11T05:18:03.178Z `required_output_updated`: risk: complete
 - 2026-07-11T05:18:03.370Z `required_output_updated`: verification evidence: complete
+- 2026-07-11T05:22:36.643Z `verification_recorded`: npm view @appsforgood/next-supabase-kit@0.2.1 version dist-tags.latest --json
+- 2026-07-11T05:22:36.800Z `verification_recorded`: npm view @appsforgood/agent-kit-runtime version dist-tags.latest --json
+- 2026-07-11T05:22:36.979Z `verification_recorded`: gh release view v0.2.1
+- 2026-07-11T05:22:37.156Z `artifact_recorded`: DOGFOOD.md
+- 2026-07-11T05:22:37.341Z `required_output_updated`: verification evidence: complete
+- 2026-07-11T05:22:37.523Z `session_status_changed`: Session marked complete.
 
 ## qa-engineer
 
