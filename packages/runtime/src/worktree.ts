@@ -3,7 +3,7 @@ import { existsSync, mkdirSync, realpathSync, rmSync } from "node:fs";
 import { homedir, platform } from "node:os";
 import { basename, join, resolve } from "node:path";
 import { promisify } from "node:util";
-import { isSensitiveRelativePath } from "./security/paths.js";
+import { isSensitiveRelativePath, pathsEqual } from "./security/paths.js";
 
 const execFileAsync = promisify(execFile);
 
@@ -41,7 +41,7 @@ export class WorktreeManager {
 
   async inspect(): Promise<{ baseCommit: string; dirty: boolean; status: string; sensitivePaths: string[] }> {
     const root = await git(this.sourceRoot, ["rev-parse", "--show-toplevel"]);
-    if (realpathSync(root) !== this.sourceRoot) throw new Error(`Runtime source root must be the Git repository root: ${root}`);
+    if (!pathsEqual(realpathSync(root), this.sourceRoot)) throw new Error(`Runtime source root must be the Git repository root: ${root}`);
     const baseCommit = await git(this.sourceRoot, ["rev-parse", "HEAD"]);
     const status = await git(this.sourceRoot, ["status", "--porcelain=v1", "--untracked-files=all"]);
     const tracked = await git(this.sourceRoot, ["ls-files"]);

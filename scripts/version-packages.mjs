@@ -133,6 +133,33 @@ function runWorkspaceVersion(rootChangesets) {
   }
 }
 
+export function synchronizeWorkspaceLock(lock, workspacePackages) {
+  if (!lock.packages || typeof lock.packages !== "object") throw new Error("package-lock.json is missing package records.");
+  for (const [workspacePath, workspacePackage] of Object.entries(workspacePackages)) {
+    const record = lock.packages[workspacePath];
+    if (!record) throw new Error(`package-lock.json is missing workspace record ${workspacePath}.`);
+    if (record.name && record.name !== workspacePackage.name) {
+      throw new Error(`Workspace ${workspacePath} name mismatch: package-lock has ${record.name}, package.json has ${workspacePackage.name}.`);
+    }
+    record.version = workspacePackage.version;
+  }
+  return lock;
+}
+
+function syncWorkspaceLockfile() {
+  const lockPath = join(root, "package-lock.json");
+  const lock = readJson(lockPath);
+  const workspacePackages = Object.fromEntries(
+    Object.keys(lock.packages ?? {}).flatMap((workspacePath) => {
+      if (!workspacePath || workspacePath.startsWith("node_modules/")) return [];
+      const packagePath = join(root, workspacePath, "package.json");
+      return existsSync(packagePath) ? [[workspacePath, readJson(packagePath)]] : [];
+    })
+  );
+  synchronizeWorkspaceLock(lock, workspacePackages);
+  writeAtomic(lockPath, `${JSON.stringify(lock, null, 2)}\n`);
+}
+
 function main() {
   const rootPackage = readJson(join(root, "package.json"));
   const changesets = listChangesets();
@@ -148,6 +175,7 @@ function main() {
   }
   if (workspaceChangesets.length > 0) runWorkspaceVersion(rootChangesets);
   const rootVersion = rootChangesets.length > 0 ? versionRootPackage(rootChangesets, rootPackage) : undefined;
+  if (workspaceChangesets.length > 0) syncWorkspaceLockfile();
   console.log(`Versioned packages${rootVersion ? `; root=${rootVersion}` : ""}.`);
 }
 

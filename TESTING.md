@@ -59,6 +59,7 @@ The kit ships optional smoke scripts for Agent Office and wizard UI rendering:
 
 - `npm run smoke:setup` — setup server API + office/wizard flow (wired into `npm run release:check`).
 - `npm run smoke:ui-screens` — Playwright captures desktop/mobile screenshots of the office canvas and wizard form (`artifacts/ui-screens/`). Runs in CI as a dedicated Ubuntu job; not part of the full OS matrix.
+- The CI matrix runs Node 22/24 on `windows-latest` and Node 20 on `windows-2022`, where the native SQLite fallback has a supported Visual Studio toolchain.
 
 Antigravity runtime slash commands (`/setup`, `/spec`, `/plan`, `/test`, `/review`, `/ship`, UI harness commands, and others) are adapter entrypoints only. Canonical workflow steps live in `.agent-kit/prompts/lifecycle-command-index.md`, `.agent-kit/prompts/ui-command-index.md`, and the council contract in `.agent-kit/agent-roster.json`.
 

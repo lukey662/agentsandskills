@@ -3,7 +3,7 @@ import { existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, realpathSy
 import { dirname, isAbsolute, join, relative, resolve } from "node:path";
 import type { ApprovalRequest, ApprovalRisk, ModelToolDefinition } from "./types.js";
 import { DockerSandbox } from "./sandbox/docker.js";
-import { assertSafeToolPath, isSensitiveRelativePath } from "./security/paths.js";
+import { assertSafeToolPath, isPathWithin, isSensitiveRelativePath, pathsEqual } from "./security/paths.js";
 
 export interface ToolApprovalHandler {
   (request: Omit<ApprovalRequest, "approvalId" | "requestedAt">): Promise<boolean>;
@@ -198,7 +198,7 @@ function safeExistingPath(root: string, requested: string): string {
   assertSafeToolPath(requested);
   const rootPath = safeRoot(root);
   const candidate = realpathSync(resolve(rootPath, requested));
-  if (candidate !== rootPath && !candidate.startsWith(`${rootPath}/`)) throw new Error(`Path escapes the worktree: ${requested}`);
+  if (!isPathWithin(rootPath, candidate)) throw new Error(`Path escapes the worktree: ${requested}`);
   return candidate;
 }
 
@@ -207,11 +207,11 @@ function safeNewPath(root: string, requested: string): string {
   assertSafeToolPath(requested);
   const rootPath = safeRoot(root);
   const candidate = resolve(rootPath, requested);
-  if (candidate !== rootPath && !candidate.startsWith(`${rootPath}/`)) throw new Error(`Path escapes the worktree: ${requested}`);
+  if (!isPathWithin(rootPath, candidate)) throw new Error(`Path escapes the worktree: ${requested}`);
   let parent = dirname(candidate);
-  while (!existsSync(parent) && parent !== rootPath) parent = dirname(parent);
+  while (!existsSync(parent) && !pathsEqual(parent, rootPath)) parent = dirname(parent);
   const realParent = realpathSync(parent);
-  if (realParent !== rootPath && !realParent.startsWith(`${rootPath}/`)) throw new Error(`Path parent escapes the worktree: ${requested}`);
+  if (!isPathWithin(rootPath, realParent)) throw new Error(`Path parent escapes the worktree: ${requested}`);
   return candidate;
 }
 

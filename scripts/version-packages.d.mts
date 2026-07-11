@@ -8,3 +8,7 @@ export interface ParsedChangeset {
 
 export function parseChangeset(path: string): ParsedChangeset;
 export function incrementVersion(version: string, type: VersionBump): string;
+export function synchronizeWorkspaceLock<T extends { packages?: Record<string, Record<string, unknown>> }>(
+  lock: T,
+  workspacePackages: Record<string, { name: string; version: string }>
+): T;

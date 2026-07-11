@@ -2,7 +2,7 @@ import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { incrementVersion, parseChangeset } from "../scripts/version-packages.mjs";
+import { incrementVersion, parseChangeset, synchronizeWorkspaceLock } from "../scripts/version-packages.mjs";
 
 const roots: string[] = [];
 
@@ -37,5 +37,27 @@ describe("root and workspace version driver", () => {
     expect(incrementVersion("0.1.9", "minor")).toBe("0.2.0");
     expect(incrementVersion("0.1.9", "major")).toBe("1.0.0");
     expect(() => incrementVersion("0.2.0-beta.1", "patch")).toThrow(/Unsupported package version/);
+  });
+
+  it("synchronizes workspace versions into package-lock records", () => {
+    const lock = {
+      packages: {
+        "": { name: "@appsforgood/next-supabase-kit", version: "0.2.0" },
+        "node_modules/@appsforgood/agent-kit-runtime": { resolved: "packages/runtime", link: true },
+        "packages/runtime": { name: "@appsforgood/agent-kit-runtime", version: "0.1.0" }
+      }
+    };
+
+    synchronizeWorkspaceLock(lock, {
+      "packages/runtime": { name: "@appsforgood/agent-kit-runtime", version: "0.1.1" }
+    });
+
+    expect(lock.packages["packages/runtime"].version).toBe("0.1.1");
+    expect(lock.packages[""].version).toBe("0.2.0");
+    expect(() =>
+      synchronizeWorkspaceLock(lock, {
+        "packages/missing": { name: "@appsforgood/missing", version: "1.0.0" }
+      })
+    ).toThrow(/missing workspace record/);
   });
 });

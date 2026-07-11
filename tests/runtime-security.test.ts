@@ -10,6 +10,7 @@ import type { CredentialStore } from "../packages/runtime/src/credentials.js";
 import type { ModelProviderAdapter } from "../packages/runtime/src/types.js";
 import { DockerSandbox, runSandboxProcess, type SandboxProcessRunner } from "../packages/runtime/src/sandbox/docker.js";
 import { assertSafeOutboundUrl } from "../packages/runtime/src/security/network.js";
+import { isPathWithin, pathIdentity, pathsEqual } from "../packages/runtime/src/security/paths.js";
 import { ToolBroker } from "../packages/runtime/src/tools.js";
 
 const roots: string[] = [];
@@ -24,6 +25,13 @@ afterEach(() => {
 });
 
 describe("runtime security contracts", () => {
+  it("compares Windows paths by canonical identity without prefix confusion", () => {
+    expect(pathIdentity("C:\\Users\\Runner\\repo\\", true)).toBe("c:/users/runner/repo");
+    expect(pathsEqual("C:\\Users\\Runner\\repo", "c:/users/runner/repo", true)).toBe(true);
+    expect(isPathWithin("C:\\Users\\Runner\\repo", "c:/users/runner/repo/src/a.ts", true)).toBe(true);
+    expect(isPathWithin("C:\\Users\\Runner\\repo", "c:/users/runner/repository/a.ts", true)).toBe(false);
+  });
+
   it("loads runtime config with defaults and reports missing or invalid files", () => {
     const root = mkdtempSync(join(tmpdir(), "agent-kit-runtime-config-"));
     roots.push(root);

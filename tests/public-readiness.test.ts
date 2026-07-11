@@ -545,6 +545,9 @@ describe("public package readiness", () => {
 
     expect(packageJson.scripts?.["release:check"]).toBe("node scripts/release-check.mjs");
     expect(ci).toContain("npm run release:check");
+    expect(ci).toContain("- os: windows-latest");
+    expect(ci).toContain("- os: windows-2022");
+    expect(ci).toContain('node: "20"');
     expect(release).toContain("npm run release:check");
     expect(release).toContain("- .github/workflows/release.yml");
     expect(release).toContain("- scripts/post-publish-verify.mjs");

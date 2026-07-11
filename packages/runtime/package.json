@@ -1,6 +1,6 @@
 {
   "name": "@appsforgood/agent-kit-runtime",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Optional local LangGraph runtime for Agent Kit council workflows.",
   "license": "MIT",
   "repository": {

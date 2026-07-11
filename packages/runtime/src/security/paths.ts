@@ -14,6 +14,22 @@ export function isSensitiveRelativePath(value: string): boolean {
   return false;
 }
 
+export function pathIdentity(value: string, caseInsensitive = process.platform === "win32"): string {
+  const normalized = value.replace(/\\/g, "/").replace(/\/+$/, "") || "/";
+  return caseInsensitive ? normalized.toLowerCase() : normalized;
+}
+
+export function pathsEqual(left: string, right: string, caseInsensitive = process.platform === "win32"): boolean {
+  return pathIdentity(left, caseInsensitive) === pathIdentity(right, caseInsensitive);
+}
+
+export function isPathWithin(root: string, candidate: string, caseInsensitive = process.platform === "win32"): boolean {
+  const rootIdentity = pathIdentity(root, caseInsensitive);
+  const candidateIdentity = pathIdentity(candidate, caseInsensitive);
+  const prefix = rootIdentity.endsWith("/") ? rootIdentity : `${rootIdentity}/`;
+  return candidateIdentity === rootIdentity || candidateIdentity.startsWith(prefix);
+}
+
 export function assertSafeToolPath(value: string): void {
   const segments = value.replace(/\\/g, "/").split("/");
   if (segments.includes("..")) throw new Error(`Path traversal is not available to runtime tools: ${value}`);

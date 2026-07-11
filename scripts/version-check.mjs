@@ -33,7 +33,7 @@ function validatePackage(label, manifest, lockPath, changelogText) {
   const nextHeadingIndex = changelogText.slice(sectionStart).search(/^##\s+/m);
   const section =
     nextHeadingIndex === -1 ? changelogText.slice(sectionStart).trim() : changelogText.slice(sectionStart, sectionStart + nextHeadingIndex).trim();
-  if (!section || !section.startsWith("- ")) fail(`${label} changelog release section ${version} must contain bullet entries.`);
+  if (!section || !/^- .+/m.test(section)) fail(`${label} changelog release section ${version} must contain bullet entries.`);
 }
 
 validatePackage("root package", packageJson, "", changelog);
