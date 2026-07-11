@@ -5,10 +5,12 @@ on:
     branches:
       - main
     paths:
+      - .github/workflows/release.yml
       - package.json
       - package-lock.json
       - packages/*/package.json
       - packages/*/CHANGELOG.md
+      - scripts/post-publish-verify.mjs
       - CHANGELOG.md
   workflow_dispatch:
     inputs:

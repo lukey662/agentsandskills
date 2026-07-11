@@ -541,6 +541,12 @@ describe("public package readiness", () => {
     expect(packageJson.scripts?.["release:check"]).toBe("node scripts/release-check.mjs");
     expect(ci).toContain("npm run release:check");
     expect(release).toContain("npm run release:check");
+    expect(release).toContain("- .github/workflows/release.yml");
+    expect(release).toContain("- scripts/post-publish-verify.mjs");
+    expect(postPublishVerify).toContain('test: "node --test"');
+    expect(postPublishVerify).toContain('join(tempRoot, "test", "smoke.test.js")');
+    expect(postPublishVerify).toContain('mkdtempSync(join(tmpdir(), "agent-kit-published-verify-cache-")');
+    expect(postPublishVerify).not.toContain('join(tempRoot, "npm-cache")');
 
     expect(releaseCheck).toContain("research/scan-config.json");
     expect(releaseCheck).toContain("antigravity/plugin.json");

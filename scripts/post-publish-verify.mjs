@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -15,9 +15,10 @@ const packageSpec = process.argv[2] ?? `${packageName}@${packageVersion}`;
 const runtimeSpec = process.env.AGENT_KIT_VERIFY_RUNTIME_SPEC ?? `${runtimePackageJson.name}@${runtimePackageJson.version}`;
 const registry = process.env.npm_config_registry ?? "https://registry.npmjs.org";
 const tempRoot = mkdtempSync(join(tmpdir(), "agent-kit-published-verify-"));
+const tempCacheRoot = process.env.npm_config_cache ? null : mkdtempSync(join(tmpdir(), "agent-kit-published-verify-cache-"));
 const env = {
   ...process.env,
-  npm_config_cache: process.env.npm_config_cache ?? join(tempRoot, "npm-cache")
+  npm_config_cache: process.env.npm_config_cache ?? tempCacheRoot
 };
 
 function run(command, args, options = {}) {
@@ -64,6 +65,16 @@ try {
 
   console.log("preparing clean temp project");
   run("npm", ["init", "--yes"], { cwd: tempRoot, stdio: "ignore" });
+
+  const tempPackagePath = join(tempRoot, "package.json");
+  const tempPackage = JSON.parse(readFileSync(tempPackagePath, "utf8"));
+  tempPackage.scripts = { ...tempPackage.scripts, test: "node --test" };
+  writeFileSync(tempPackagePath, `${JSON.stringify(tempPackage, null, 2)}\n`);
+  mkdirSync(join(tempRoot, "test"));
+  writeFileSync(
+    join(tempRoot, "test", "smoke.test.js"),
+    'import assert from "node:assert/strict";\nimport test from "node:test";\n\ntest("verification fixture", () => assert.equal(1, 1));\n'
+  );
 
   if (packageName === "@appsforgood/agent-kit-runtime") {
     console.log("installing and importing published runtime");
@@ -112,4 +123,5 @@ try {
   );
 } finally {
   rmSync(tempRoot, { recursive: true, force: true });
+  if (tempCacheRoot) rmSync(tempCacheRoot, { recursive: true, force: true });
 }
