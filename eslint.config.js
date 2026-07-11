@@ -5,7 +5,17 @@ import prettier from "eslint-config-prettier";
 
 export default tseslint.config(
   {
-    ignores: ["dist/", "node_modules/", "coverage/", "release-artifacts/", ".agent-kit/", "research/workdir/", "examples/", "src/studio/**/assets/**"]
+    ignores: [
+      "dist/",
+      "**/dist/",
+      "node_modules/",
+      "coverage/",
+      "release-artifacts/",
+      ".agent-kit/",
+      "research/workdir/",
+      "examples/",
+      "src/studio/**/assets/**"
+    ]
   },
   js.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
@@ -13,7 +23,14 @@ export default tseslint.config(
     languageOptions: {
       parserOptions: {
         projectService: {
-          allowDefaultProject: ["eslint.config.js", "tsup.config.ts", "vitest.config.ts", "scripts/*.mjs", "scripts/lib/*.mjs"]
+          allowDefaultProject: [
+            "eslint.config.js",
+            "tsup.config.ts",
+            "vitest.config.ts",
+            "packages/runtime/tsup.config.ts",
+            "scripts/*.mjs",
+            "scripts/lib/*.mjs"
+          ]
         },
         tsconfigRootDir: import.meta.dirname
       }

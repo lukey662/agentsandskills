@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import {
@@ -24,6 +25,7 @@ import {
   redactSensitive,
   safeSlug,
   validateRelativeArtifactPath,
+  withFileLock,
   writeJsonFile,
   writeTextFile
 } from "./shared.js";
@@ -69,6 +71,10 @@ function transcriptPath(sessionId: string): string {
   return `${sessionDir(sessionId)}/transcript.md`;
 }
 
+function sessionLockPath(sessionId: string): string {
+  return `${sessionDir(sessionId)}/.session.lock`;
+}
+
 function readDefaultWorkflowOutputs(cwd: string, workflowId: string): StudioSessionContractValue["requiredOutputs"] {
   const roster = readJsonFile<{ workflows?: Array<{ id?: string; requiredOutputs?: string[] }> }>(cwd, DEFAULT_AGENT_ROSTER_TARGET);
   const workflow = roster?.workflows?.find((item) => item.id === workflowId);
@@ -81,7 +87,7 @@ function readDefaultWorkflowOutputs(cwd: string, workflowId: string): StudioSess
 export function startSession(cwd: string, options: StartSessionOptions): SessionCommandResult {
   ensureStudioDirs(cwd);
   const datePrefix = new Date().toISOString().slice(0, 10);
-  const sessionId = safeSlug(`${datePrefix}-${options.title}`);
+  const sessionId = safeSlug(`${datePrefix}-${options.title}-${randomUUID().slice(0, 8)}`);
   const now = nowIso();
   const workflowId = options.workflowId ?? "planning";
   const session: StudioSessionContractValue = {
@@ -150,7 +156,19 @@ function writeSession(cwd: string, session: StudioSessionContractValue): void {
 }
 
 export function appendSessionEvent(cwd: string, sessionId: string, event: SessionEventContractValue): SessionEventContractValue {
-  const parsed = SessionEventContract.parse(redactEvent(event));
+  return withFileLock(cwd, sessionLockPath(sessionId), () => appendSessionEventUnlocked(cwd, sessionId, event));
+}
+
+function appendSessionEventUnlocked(cwd: string, sessionId: string, event: SessionEventContractValue): SessionEventContractValue {
+  const existingEvents = readSessionEvents(cwd, sessionId);
+  const sequence = existingEvents.reduce((highest, item) => Math.max(highest, item.sequence ?? 0), 0) + 1;
+  const parsed = SessionEventContract.parse(
+    redactEvent({
+      ...event,
+      eventId: event.eventId ?? randomUUID(),
+      sequence: event.sequence ?? sequence
+    })
+  );
   appendJsonLine(cwd, eventsPath(sessionId), parsed);
   const session = readSession(cwd, sessionId);
   const updated: StudioSessionContractValue = {
@@ -263,25 +281,27 @@ export function recordRequiredOutput(
   const trimmedName = name.trim();
   if (!trimmedName) throw new Error("Required output name is required.");
   const sessionId = getActiveSessionId(cwd);
-  const session = readSession(cwd, sessionId);
-  const now = nowIso();
-  const output = {
-    name: trimmedName,
-    status,
-    ...(evidence ? { evidence: redactSensitive(evidence) } : {})
-  };
-  const outputIndex = session.requiredOutputs.findIndex((item) => item.name === trimmedName);
-  const requiredOutputs =
-    outputIndex === -1
-      ? [...session.requiredOutputs, output]
-      : session.requiredOutputs.map((item, index) => (index === outputIndex ? { ...item, ...output } : item));
-  writeSession(cwd, { ...session, requiredOutputs, updatedAt: now });
-  return appendSessionEvent(cwd, sessionId, {
-    type: "required_output_updated",
-    createdAt: now,
-    outputName: trimmedName,
-    outputStatus: status,
-    ...(evidence ? { evidence: [evidence] } : {})
+  return withFileLock(cwd, sessionLockPath(sessionId), () => {
+    const session = readSession(cwd, sessionId);
+    const now = nowIso();
+    const output = {
+      name: trimmedName,
+      status,
+      ...(evidence ? { evidence: redactSensitive(evidence) } : {})
+    };
+    const outputIndex = session.requiredOutputs.findIndex((item) => item.name === trimmedName);
+    const requiredOutputs =
+      outputIndex === -1
+        ? [...session.requiredOutputs, output]
+        : session.requiredOutputs.map((item, index) => (index === outputIndex ? { ...item, ...output } : item));
+    writeSession(cwd, { ...session, requiredOutputs, updatedAt: now });
+    return appendSessionEventUnlocked(cwd, sessionId, {
+      type: "required_output_updated",
+      createdAt: now,
+      outputName: trimmedName,
+      outputStatus: status,
+      ...(evidence ? { evidence: [evidence] } : {})
+    });
   });
 }
 
@@ -301,14 +321,16 @@ export function renderActiveSession(cwd: string): SessionCommandResult {
 }
 
 export function renderSession(cwd: string, sessionId: string): SessionCommandResult {
-  const session = readSession(cwd, sessionId);
-  const events = readSessionEvents(cwd, sessionId);
-  const renderedAt = nowIso();
-  const updated = { ...session, renderedAt, updatedAt: renderedAt };
-  writeTextFile(cwd, indexPath(sessionId), renderSessionIndex(updated, events));
-  writeTextFile(cwd, transcriptPath(sessionId), renderSessionTranscript(updated, events));
-  writeSession(cwd, updated);
-  return { sessionId, sessionPath: sessionDir(sessionId) };
+  return withFileLock(cwd, sessionLockPath(sessionId), () => {
+    const session = readSession(cwd, sessionId);
+    const events = readSessionEvents(cwd, sessionId);
+    const renderedAt = nowIso();
+    const updated = { ...session, renderedAt, updatedAt: renderedAt };
+    writeTextFile(cwd, indexPath(sessionId), renderSessionIndex(updated, events));
+    writeTextFile(cwd, transcriptPath(sessionId), renderSessionTranscript(updated, events));
+    writeSession(cwd, updated);
+    return { sessionId, sessionPath: sessionDir(sessionId) };
+  });
 }
 
 function renderSessionIndex(session: StudioSessionContractValue, events: SessionEventContractValue[]): string {
@@ -318,7 +340,8 @@ function renderSessionIndex(session: StudioSessionContractValue, events: Session
   const artifacts = events.filter((event) => event.type === "artifact_recorded");
   const verification = events.filter((event) => event.type === "verification_recorded");
 
-  return `# Council Session: ${escapeMarkdownText(session.title)}
+  return (
+    `# Council Session: ${escapeMarkdownText(session.title)}
 
 Generated from \`${sessionDir(session.sessionId)}/events.jsonl\` at ${session.renderedAt ?? session.updatedAt}.
 
@@ -369,7 +392,8 @@ ${verification.map((event) => `| ${escapeMarkdownTableCell(event.command)} | ${e
 ## Next Actions
 
 ${renderNextActions(session, verification)}
-`;
+`.trimEnd() + "\n"
+  );
 }
 
 function renderDecisionRow(event: SessionEventContractValue): string {
@@ -436,10 +460,12 @@ function renderSessionTranscript(session: StudioSessionContractValue, events: Se
     })
     .join("\n\n");
 
-  return `# Transcript: ${escapeMarkdownText(session.title)}
+  return (
+    `# Transcript: ${escapeMarkdownText(session.title)}
 
 Generated from \`${sessionDir(session.sessionId)}/events.jsonl\`.
 
 ${sections || "No events recorded."}
-`;
+`.trimEnd() + "\n"
+  );
 }

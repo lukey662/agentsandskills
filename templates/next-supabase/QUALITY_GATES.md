@@ -18,7 +18,7 @@ Use `agent-kit audit --min-readiness <level>` in CI when the project wants a mer
 Baseline means the project is usable and the agent kit can audit it.
 
 - `AGENTS.md`, `AGENT_ROSTER.md`, `ASSISTANT_ADAPTERS.md`, `COUNCIL.md`, `SPEC.md`, `DECISIONS.md`, `DOCS.md`, `DESIGN.md`, `MESSAGING.md`, `MODEL_ROUTING.md`, `STYLE_GUIDE.md`, `SECURITY.md`, `TESTING.md`, `DEPLOYMENT.md`, and `UPGRADE.md` exist.
-- `.agent-kit/agent-roster.json`, `.agent-kit/model-routing.json`, and `.agent-kit/schemas/` exist.
+- `.agent-kit/agent-roster.json`, `.agent-kit/model-routing.json`, disabled-by-default `.agent-kit/orchestrator.json`, and `.agent-kit/schemas/` exist.
 - `.agent-kit/assistant-adapters/` exists.
 - Runtime adapters such as Antigravity are validated with `agent-kit adapter validate <target>` before being treated as active.
 - Agent Studio schemas for project context, correction rules, session events, and studio sessions exist when the installed kit version includes them.
@@ -47,6 +47,7 @@ Strong means the project is safe for repeated team or agent delivery.
 - `TESTING.md` defines unit, regression, smoke, visual QA, accessibility, and release checks.
 - `DEPLOYMENT.md` documents environments, migrations, env vars, observability, rollback, and post-release verification.
 - `UPGRADE.md` documents diff/update flow, release notes, migration review, generated types, and rollback evidence.
+- When executable orchestration is enabled, `orchestrate validate` passes and provider aliases, credentials, mutation roles, MCP, Docker, limits, and approvals have named owners.
 
 ### Best-Practice
 
@@ -63,6 +64,7 @@ Best-practice means evidence can survive handoff, release, and later audit.
 - Runtime adapter evidence includes command/plugin validation, portable `SKILL.md` coverage, package allowlist coverage, and proof that adapter files point back to Agent Kit source-of-truth contracts.
 - Repo health includes issue/PR templates, CODEOWNERS, dependency updates, CodeQL or equivalent scanning, dependency review, provenance expectations, support, conduct, and governance.
 - Public or shared package releases use Trusted Publishing or equivalent identity-bound release provenance.
+- Executable runs have offline plan evidence, explicit approvals, bounded provider/tool outcomes, redacted run events, isolated worktree status, scoped commit review, and a manual merge/remove decision.
 
 ## Change Acceptance Matrix
 
@@ -76,6 +78,7 @@ Best-practice means evidence can survive handoff, release, and later audit.
 | Security-sensitive | Security Reviewer, Lead Architect, QA | OWASP review, boundary validation, dependency/secret review, regression or smoke evidence |
 | Release/package | Deployment/Observability Engineer, Security Reviewer, QA, Docs | Release gate output, dependency audit, install/deploy smoke, provenance or publish identity evidence |
 | Runtime adapter/package | Planner, Lead Architect, Security Reviewer, QA, Docs | `agent-kit adapter validate`, `agent-kit package validate`, command/skill asset coverage, source-of-truth references, no secret-like runtime assets |
+| Executable orchestration | Planner, Lead Architect, Security Reviewer, QA, Docs, Deployment/Observability Engineer | `orchestrate validate` and plan, provider/MCP policy, approvals, run ID/events, worktree/commit, timeout/cancel behavior, manual integration decision |
 | Upgrade/dependency | Planner, Lead Architect, Security Reviewer, QA, Docs, Deployment/Observability Engineer | Release notes, codemods or migration guide, `agent-kit diff`, conflict review, audit output, rollback notes |
 
 ## Evidence Rules
@@ -91,3 +94,4 @@ Best-practice means evidence can survive handoff, release, and later audit.
 - A local customization is acceptable only when `.agent-kit/overrides.json` explains why and when it was reviewed.
 - A human correction is not durable until it is stored in `.agent-kit/corrections/`, remains secret-safe, has a clear scope, and is visible to future agents through installed instructions.
 - An upgrade is not complete until `UPGRADE.md` records version changes, migration impact, rollback process, and verification evidence.
+- IDE delegation is not executable-runtime evidence. Require `orchestrate status`, versioned run events, checkpoint state, and worktree/commit evidence.

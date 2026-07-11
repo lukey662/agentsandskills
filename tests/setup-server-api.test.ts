@@ -6,6 +6,7 @@ import { initProject } from "../src/install/install.js";
 import { loadOnboardingState } from "../src/studio/onboarding-state.js";
 import { startSetupServer } from "../src/studio/setup-server.js";
 import { applyDesignDraft, applyDrafts, applyMessagingDraft, loadDesignDraft, saveDesignDraft, saveMessagingDraft } from "../src/studio/wizard/drafts.js";
+import { localMutation } from "./helpers/local-http.js";
 
 let roots: string[] = [];
 
@@ -35,15 +36,93 @@ function tempProject(): string {
 }
 
 describe("setup server API routes", () => {
+  it("rejects non-loopback bind hosts", async () => {
+    const root = tempProject();
+    await expect(startSetupServer({ cwd: root, host: "0.0.0.0", port: 0 })).rejects.toThrow(/only accepts loopback hosts/);
+  });
+
+  it("serves nonce-protected HTML with local security headers", async () => {
+    const root = tempProject();
+    const server = await startSetupServer({ cwd: root, port: 0 });
+    try {
+      const res = await fetch(server.url);
+      const html = await res.text();
+      const csp = res.headers.get("content-security-policy") ?? "";
+      expect(res.headers.get("x-frame-options")).toBe("DENY");
+      expect(csp).toContain("script-src 'nonce-");
+      expect(csp).not.toContain("script-src 'unsafe-inline'");
+      expect(html).toContain('meta name="agent-kit-csrf-token"');
+      expect(html).toContain('script nonce="');
+      expect(server.url).not.toContain(server.csrfToken);
+    } finally {
+      await server.close();
+    }
+  });
+
+  it("rejects missing tokens, cross-site origins, and non-JSON mutations", async () => {
+    const root = tempProject();
+    const server = await startSetupServer({ cwd: root, port: 0 });
+    try {
+      const missingToken = await fetch(`${server.url}/api/state`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: "{}"
+      });
+      expect(missingToken.status).toBe(403);
+
+      const crossSite = await fetch(`${server.url}/api/state`, {
+        ...localMutation(server, { method: "PATCH", body: "{}" }),
+        headers: {
+          ...Object.fromEntries(new Headers(localMutation(server, { method: "PATCH" }).headers).entries()),
+          Origin: "https://evil.example",
+          "Sec-Fetch-Site": "cross-site"
+        }
+      });
+      expect(crossSite.status).toBe(403);
+
+      const wrongType = await fetch(`${server.url}/api/state`, {
+        method: "PATCH",
+        headers: { "Content-Type": "text/plain", "X-Agent-Kit-CSRF": server.csrfToken },
+        body: "{}"
+      });
+      expect(wrongType.status).toBe(415);
+    } finally {
+      await server.close();
+    }
+  });
+
+  it("rejects secret-like values before writing structured drafts", async () => {
+    const root = tempProject();
+    const server = await startSetupServer({ cwd: root, port: 0 });
+    const secret = `sk-proj-${"a".repeat(32)}`;
+    try {
+      const res = await fetch(
+        `${server.url}/api/drafts/design`,
+        localMutation(server, {
+          method: "POST",
+          body: JSON.stringify({ audience: secret, contentInventory: "Tasks", antiReferences: "None" })
+        })
+      );
+      expect(res.status).toBe(400);
+      expect(JSON.stringify(await res.json())).not.toContain(secret);
+      const draftPath = join(root, ".agent-kit", "onboarding", "design-draft.json");
+      expect(existsSync(draftPath)).toBe(false);
+    } finally {
+      await server.close();
+    }
+  });
+
   it("PATCH /api/state completes a valid section", async () => {
     const root = tempProject();
     const server = await startSetupServer({ cwd: root, port: 0 });
     try {
-      const res = await fetch(`${server.url}/api/state`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ completeSection: "product", depth: "quick" })
-      });
+      const res = await fetch(
+        `${server.url}/api/state`,
+        localMutation(server, {
+          method: "PATCH",
+          body: JSON.stringify({ completeSection: "product", depth: "quick" })
+        })
+      );
       expect(res.ok).toBe(true);
       const onboarding = loadOnboardingState(root);
       expect(onboarding.completedSections).toContain("product");
@@ -57,11 +136,13 @@ describe("setup server API routes", () => {
     const root = tempProject();
     const server = await startSetupServer({ cwd: root, port: 0 });
     try {
-      const res = await fetch(`${server.url}/api/state`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ completeSection: "not-a-real-section" })
-      });
+      const res = await fetch(
+        `${server.url}/api/state`,
+        localMutation(server, {
+          method: "PATCH",
+          body: JSON.stringify({ completeSection: "not-a-real-section" })
+        })
+      );
       expect(res.status).toBe(400);
       const body = (await res.json()) as { error: string };
       expect(body.error).toContain("Invalid section id");
@@ -88,7 +169,7 @@ describe("setup server API routes", () => {
     const root = tempProject();
     const server = await startSetupServer({ cwd: root, port: 0 });
     try {
-      const res = await fetch(`${server.url}/api/context/import`, { method: "POST" });
+      const res = await fetch(`${server.url}/api/context/import`, localMutation(server, { method: "POST" }));
       expect(res.ok).toBe(true);
       expect(existsSync(join(root, ".agent-kit", "onboarding", "wizard-draft.json"))).toBe(true);
     } finally {
@@ -100,11 +181,13 @@ describe("setup server API routes", () => {
     const root = tempProject();
     const server = await startSetupServer({ cwd: root, port: 0 });
     try {
-      const res = await fetch(`${server.url}/api/checklist/visual-qa`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tier: "baseline" })
-      });
+      const res = await fetch(
+        `${server.url}/api/checklist/visual-qa`,
+        localMutation(server, {
+          method: "POST",
+          body: JSON.stringify({ tier: "baseline" })
+        })
+      );
       expect(res.ok).toBe(true);
       const onboarding = loadOnboardingState(root);
       expect(onboarding.visualQaTier).toBe("baseline");
@@ -118,15 +201,17 @@ describe("setup server API routes", () => {
     const root = tempProject();
     const server = await startSetupServer({ cwd: root, port: 0 });
     try {
-      const res = await fetch(`${server.url}/api/drafts/design`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          audience: "Operators",
-          contentInventory: "Tasks and queues",
-          antiReferences: "Generic dashboards"
+      const res = await fetch(
+        `${server.url}/api/drafts/design`,
+        localMutation(server, {
+          method: "POST",
+          body: JSON.stringify({
+            audience: "Operators",
+            contentInventory: "Tasks and queues",
+            antiReferences: "Generic dashboards"
+          })
         })
-      });
+      );
       expect(res.ok).toBe(true);
       const body = (await res.json()) as { preview: string; draft: { audience: string } };
       expect(body.preview).toContain("Operators");
@@ -141,11 +226,13 @@ describe("setup server API routes", () => {
     const root = tempProject();
     const server = await startSetupServer({ cwd: root, port: 0 });
     try {
-      const res = await fetch(`${server.url}/api/drafts/messaging`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ audience: "Buyers", pain: "Slow workflows", outcome: "Faster delivery" })
-      });
+      const res = await fetch(
+        `${server.url}/api/drafts/messaging`,
+        localMutation(server, {
+          method: "POST",
+          body: JSON.stringify({ audience: "Buyers", pain: "Slow workflows", outcome: "Faster delivery" })
+        })
+      );
       expect(res.ok).toBe(true);
       const body = (await res.json()) as { preview: string };
       expect(body.preview).toContain("Buyers");
@@ -160,7 +247,7 @@ describe("setup server API routes", () => {
     saveMessagingDraft(root, { audience: "Ops", pain: "Delay", outcome: "Speed" });
     const server = await startSetupServer({ cwd: root, port: 0 });
     try {
-      const res = await fetch(`${server.url}/api/drafts/apply`, { method: "POST" });
+      const res = await fetch(`${server.url}/api/drafts/apply`, localMutation(server, { method: "POST" }));
       expect(res.ok).toBe(true);
       const design = readFileSync(join(root, "DESIGN.md"), "utf8");
       const messaging = readFileSync(join(root, "MESSAGING.md"), "utf8");
@@ -175,11 +262,13 @@ describe("setup server API routes", () => {
     const root = tempProject();
     const server = await startSetupServer({ cwd: root, port: 0 });
     try {
-      const res = await fetch(`${server.url}/api/checklist/ide`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ideSurface: "cursor" })
-      });
+      const res = await fetch(
+        `${server.url}/api/checklist/ide`,
+        localMutation(server, {
+          method: "POST",
+          body: JSON.stringify({ ideSurface: "cursor" })
+        })
+      );
       expect(res.ok).toBe(true);
       const body = (await res.json()) as { activation?: { activated: string[] } };
       expect(body.activation?.activated).toContain("cursor");
@@ -192,7 +281,7 @@ describe("setup server API routes", () => {
     const root = tempProject();
     const server = await startSetupServer({ cwd: root, port: 0 });
     try {
-      const res = await fetch(`${server.url}/api/agentic-level/refresh`, { method: "POST" });
+      const res = await fetch(`${server.url}/api/agentic-level/refresh`, localMutation(server, { method: "POST" }));
       expect(res.ok).toBe(true);
       const body = (await res.json()) as { agenticLevel?: { currentLevel: number } };
       expect(body.agenticLevel?.currentLevel).toBeGreaterThanOrEqual(3);
@@ -205,11 +294,13 @@ describe("setup server API routes", () => {
     const root = tempProject();
     const server = await startSetupServer({ cwd: root, port: 0 });
     try {
-      const res = await fetch(`${server.url}/api/draft`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ form: { productSummary: "x".repeat(260_000) } })
-      });
+      const res = await fetch(
+        `${server.url}/api/draft`,
+        localMutation(server, {
+          method: "POST",
+          body: JSON.stringify({ form: { productSummary: "x".repeat(260_000) } })
+        })
+      );
       expect(res.status).toBe(400);
       const body = (await res.json()) as { error: string };
       expect(body.error).toContain("too large");
@@ -222,11 +313,13 @@ describe("setup server API routes", () => {
     const root = tempProject();
     const server = await startSetupServer({ cwd: root, port: 0 });
     try {
-      const res = await fetch(`${server.url}/api/draft`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: "{not-json"
-      });
+      const res = await fetch(
+        `${server.url}/api/draft`,
+        localMutation(server, {
+          method: "POST",
+          body: "{not-json"
+        })
+      );
       expect(res.status).toBe(400);
     } finally {
       await server.close();

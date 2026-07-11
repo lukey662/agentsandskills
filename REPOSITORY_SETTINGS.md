@@ -30,14 +30,19 @@ Create environment `npm-publish` with:
 
 - Required reviewers enabled.
 - Prevent self-review enabled where available.
-- Deployment branches restricted to `main` and release events.
-- Preferred path: no npm publish token secret once Trusted Publishing is confirmed for this package.
-- Current fallback: a maintainer npm publish token secret on the release workflow so manual publish dispatch can complete until npm Trusted Publishing is configured.
-- Any fallback npm token secrets deleted after Trusted Publishing is confirmed.
+- Deployment branches restricted to `main`.
+- No npm package-write token secrets. Automated publication must fail closed when Trusted Publishing is unavailable.
+- Required reviewers should protect manual non-dry-run dispatches without preventing the normal version-PR merge path.
 
-The npm trusted publisher must match:
+Under **Actions > General > Workflow permissions**, allow GitHub Actions to create pull requests. The version workflow has job-scoped `contents: write` and `pull-requests: write` permissions and uses that setting only to open or update the Changesets version PR.
 
-- Package: `@appsforgood/next-supabase-kit`
+Create this npm Trusted Publisher for each of these package names:
+
+- `@appsforgood/next-supabase-kit`
+- `@appsforgood/agent-kit-runtime`
+
+Each trusted publisher must match:
+
 - Provider: GitHub Actions
 - Repository: `lukey662/agentsandskills`
 - Workflow: `release.yml`
@@ -54,6 +59,7 @@ Enable:
 - Dependabot security updates.
 - Code scanning alerts.
 - Secret scanning where available.
+- Push protection for detected secrets where available.
 
 ## Issues, Discussions, And Labels
 

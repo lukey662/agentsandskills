@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import { copyFileSync, cpSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -5,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { AuditReportContract } from "../src/config/contracts.js";
 import { ROOT_DOCS } from "../src/config/defaults.js";
 import { auditProject, createAuditReport, isAuditReadinessLevel, meetsMinimumReadiness } from "../src/install/audit.js";
+import { auditReportToSarif, createAuditReportV2 } from "../src/install/audit-v2.js";
 import { initProject } from "../src/install/install.js";
 import { sha256 } from "../src/utils/fs.js";
 
@@ -16,6 +18,10 @@ function writeDefaultRoster(targetRoot: string): void {
 
 function writeDefaultModelRouting(targetRoot: string): void {
   copyFileSync(join(process.cwd(), "model-routing", "default-model-routing.json"), join(targetRoot, ".agent-kit", "model-routing.json"));
+}
+
+function writeDefaultOrchestrator(targetRoot: string): void {
+  copyFileSync(join(process.cwd(), "templates", "next-supabase", ".agent-kit", "orchestrator.json"), join(targetRoot, ".agent-kit", "orchestrator.json"));
 }
 
 function writeDefaultSchemas(targetRoot: string): void {
@@ -94,6 +100,7 @@ describe("auditProject", () => {
     );
     writeDefaultRoster(root);
     writeDefaultModelRouting(root);
+    writeDefaultOrchestrator(root);
     writeDefaultSchemas(root);
     mkdirSync(join(root, ".agent-kit", "assistant-adapters"), { recursive: true });
 
@@ -119,6 +126,41 @@ describe("auditProject", () => {
     expect(report.readiness.level).toBe("needs-improvement");
     expect(AuditReportContract.safeParse(report).success).toBe(true);
     expect(report.findings.length).toBeGreaterThan(0);
+  });
+
+  it("emits versioned rule evidence, suppressions, and SARIF without changing v1", () => {
+    const v1 = createAuditReport(root);
+    const v2Before = createAuditReportV2(root);
+    expect(Object.keys(v1).sort()).toEqual(["findings", "readiness", "summary"]);
+    expect(v2Before.schemaVersion).toBe(2);
+    expect(v2Before.findings.every((finding) => finding.ruleId && finding.ruleVersion && finding.confidence)).toBe(true);
+    const suppressible = v2Before.findings.find((finding) => finding.level === "warn" || finding.level === "fail");
+    expect(suppressible).toBeDefined();
+
+    writeFileSync(
+      join(root, ".agent-kit", "overrides.json"),
+      `${JSON.stringify(
+        {
+          templates: {},
+          auditRules: {
+            [suppressible!.ruleId]: {
+              reason: "Accepted for this fixture only.",
+              owner: "qa",
+              reviewedAt: "2026-07-11",
+              expiresAt: "2099-01-01"
+            }
+          }
+        },
+        null,
+        2
+      )}\n`
+    );
+    const v2After = createAuditReportV2(root);
+    expect(v2After.findings.find((finding) => finding.ruleId === suppressible!.ruleId)?.suppressed).toBe(true);
+    expect(v2After.summary.suppressed).toBeGreaterThan(0);
+    const sarif = auditReportToSarif(v2After);
+    expect(sarif.version).toBe("2.1.0");
+    expect(sarif.runs[0]?.tool.driver.rules.length).toBeGreaterThan(0);
   });
 
   it("does not require installed-project root docs when auditing the package source repository", () => {
@@ -244,6 +286,28 @@ describe("auditProject", () => {
     writeFileSync(join(root, ".agent-kit", "model-routing.json"), JSON.stringify({ schemaVersion: 1 }, null, 2));
     findings = auditProject(root);
     expect(findings.some((finding) => finding.level === "warn" && finding.message.includes("does not match the model-routing contract"))).toBe(true);
+  });
+
+  it("fails secret-bearing or unusable enabled orchestrator config", () => {
+    writeFileSync(
+      join(root, ".agent-kit", "orchestrator.json"),
+      JSON.stringify({
+        schemaVersion: 1,
+        enabled: true,
+        defaultAlias: "balanced",
+        providers: { primary: { kind: "openai", credentialRef: "sk-proj-this-is-a-resolved-secret-value" } },
+        modelAliases: {}
+      })
+    );
+    let finding = auditProject(root).find((item) => item.area === "orchestrator" && item.level === "fail");
+    expect(finding?.message).toContain("resolved credential");
+
+    writeFileSync(
+      join(root, ".agent-kit", "orchestrator.json"),
+      JSON.stringify({ schemaVersion: 1, enabled: true, defaultAlias: "balanced", providers: {}, modelAliases: {} })
+    );
+    finding = auditProject(root).find((item) => item.area === "orchestrator" && item.level === "fail");
+    expect(finding?.message).toContain("defaultAlias is not configured");
   });
 
   it("fails when the roster does not match the runtime contract", () => {
@@ -503,6 +567,46 @@ describe("auditProject", () => {
     expect(findings.some((finding) => finding.area === "project-reality" && finding.level === "fail" && finding.message.includes("row level security"))).toBe(
       true
     );
+  });
+
+  it("reports each migration-created table that lacks RLS", () => {
+    mkdirSync(join(root, "supabase", "migrations"), { recursive: true });
+    writeFileSync(
+      join(root, "supabase", "migrations", "001_tables.sql"),
+      "create table public.accounts (id uuid primary key);\ncreate table public.events (id uuid primary key);\nalter table public.accounts enable row level security;\n"
+    );
+    const finding = auditProject(root).find((item) => item.ruleId === "project-reality.supabase.rls-per-table" && item.level === "fail");
+    expect(finding?.message).toContain("public.events");
+    expect(finding?.message).not.toContain("public.accounts, public.events");
+  });
+
+  it("does not treat placeholder test scripts as executable evidence", () => {
+    writeFileSync(join(root, "package.json"), JSON.stringify({ scripts: { test: "echo no tests yet" } }, null, 2));
+    const finding = auditProject(root).find((item) => item.ruleId === "project-reality.tests.executable-script");
+    expect(finding?.level).toBe("warn");
+    expect(finding?.message).toContain("credible executable test evidence");
+  });
+
+  it("scans Git-tracked files and omits detected secret values from evidence", () => {
+    const secret = `sk-proj-${"z".repeat(32)}`;
+    writeFileSync(join(root, "leaked.ts"), `export const token = "${secret}";\n`);
+    execFileSync("git", ["init"], { cwd: root, stdio: "ignore" });
+    execFileSync("git", ["add", "leaked.ts"], { cwd: root, stdio: "ignore" });
+    const finding = auditProject(root).find((item) => item.ruleId === "project-reality.secrets.git-tracked");
+    expect(finding?.level).toBe("fail");
+    expect(finding?.message).toContain("leaked.ts");
+    expect(JSON.stringify(finding)).not.toContain(secret);
+  });
+
+  it("does not report documented placeholders or lower-case source variables as secrets", () => {
+    writeFileSync(join(root, ".env.example"), "GITHUB_TOKEN=ghp_replace_with_a_fine_grained_token\n");
+    writeFileSync(join(root, "client.ts"), "const token = options.token ?? process.env.GITHUB_TOKEN;\n");
+    writeFileSync(join(root, "fixture.test.ts"), 'writeFileSync(".env", "API_KEY=secret\\n");\n');
+    execFileSync("git", ["init"], { cwd: root, stdio: "ignore" });
+    execFileSync("git", ["add", ".env.example", "client.ts", "fixture.test.ts"], { cwd: root, stdio: "ignore" });
+
+    const finding = auditProject(root).find((item) => item.ruleId === "project-reality.secrets.git-tracked");
+    expect(finding?.level).toBe("pass");
   });
 
   it("passes project-reality RLS when migrations enable RLS", () => {

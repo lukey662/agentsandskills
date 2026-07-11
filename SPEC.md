@@ -170,6 +170,24 @@ Required and current coverage:
 
 The shared `npm run release:check` gate includes `npm run smoke:studio`. Broken context/session/correction behavior should fail in automation before reaching user testing.
 
+## Executable Orchestrator Surface
+
+`@appsforgood/agent-kit-runtime` is an optional workspace and public npm package. Baseline behavior remains available when it is absent or `.agent-kit/orchestrator.json` has `enabled: false`.
+
+Required contracts:
+
+- Config validates against `schemas/orchestrator.schema.json`; raw credentials are rejected in favor of `env:` and `keychain:` references.
+- Roster workflows compile to an explicit sequence with bounded steps, visits, retries, tool calls, output, and total run time.
+- Ordered model aliases enforce required capabilities before provider invocation and record deterministic fallback outcomes.
+- Provider and MCP HTTP calls reject redirects, unsafe protocols, embedded credentials, non-allowlisted hosts, and private/special DNS results unless explicitly permitted.
+- Stdio MCP and Cursor execution require global host-mutation opt-in plus a resumable host approval.
+- Worktree writes require approval; destructive and secret tool actions fail closed. Docker commands have no network by default.
+- Source dirty changes are excluded from the worktree only after acknowledgement. Tracked sensitive filenames block worktree creation.
+- LangGraph checkpoints persist in SQLite. Redacted run/event records validate against `runtime-run.schema.json` and `runtime-event.schema.json`.
+- Applicable plan, external, mutation, host, and final-commit gates pause and resume without replaying a completed mutating agent.
+- Finalization creates at most one scoped commit and never merges, pushes, opens a pull request, deploys, or applies migrations.
+- CLI and Studio use the same runtime service and evidence store.
+
 ## Upgrade Surface
 
 Installed projects receive `UPGRADE.md` and `.agent-kit/` assets for upgrade review. Upgrade work must support:
@@ -238,16 +256,16 @@ Required frontend evidence:
 
 ## Release System
 
-The package is published as a public npm package.
+The root kit and optional runtime are published as separate public npm packages.
 
 Release workflow requirements:
 
 - GitHub Actions workflow: `.github/workflows/release.yml`
 - GitHub environment: `npm-publish`
-- Publish trigger: published GitHub Release or manual workflow dispatch with `dry_run=false`
+- Publish trigger: version metadata pushed to `main` or manual workflow dispatch with `dry_run=false`
 - Publish authentication: npm Trusted Publishing through GitHub Actions OIDC
-- Publish command: create a package tarball, attest the SBOM for that tarball, scrub inherited npm token state, then run `npm publish <tarball> --access public` with a token-free npm config
-- Public install verification: `npx @appsforgood/next-supabase-kit doctor`
+- Publish command: create and attest separate root/runtime tarballs and SBOMs, publish runtime then root through OIDC with inherited token state scrubbed, and verify both registry packages
+- Public install verification: import the runtime native package, run root `doctor`, `init`, `audit`, and `orchestrate validate`, then create the GitHub release
 
 The release workflow must run typecheck, tests, build, dependency audit, SBOM check, install smoke, and package dry run before publishing.
 
@@ -261,3 +279,4 @@ The release workflow must run typecheck, tests, build, dependency audit, SBOM ch
 - Generate a CycloneDX SBOM from `package-lock.json`, upload release evidence, and attest the SBOM for the published tarball.
 - Do not record secrets, raw environment values, access tokens, database URLs, private customer data, or hidden model reasoning in project-context, correction, or session files.
 - Redact common secret patterns from recorded command output and generated Markdown.
+- Pin reviewed npm lifecycle-script approvals for required native/build packages and deny optional unneeded scripts.

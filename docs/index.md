@@ -4,12 +4,12 @@
 
 [Package on npm](https://www.npmjs.com/package/@appsforgood/next-supabase-kit) · [Source on GitHub](https://github.com/lukey662/agentsandskills)
 
-**Latest release:** v0.1.8
+**Current source release:** v0.2.0
 
 ## Quick Start
 
 ```bash
-npx @appsforgood/next-supabase-kit@0.1.8 init --stack next-supabase --setup --open
+npx @appsforgood/next-supabase-kit@latest init --stack next-supabase --setup --open
 npx @appsforgood/next-supabase-kit audit
 npx @appsforgood/next-supabase-kit audit --min-readiness baseline-setup
 ```
@@ -21,6 +21,16 @@ npx @appsforgood/next-supabase-kit init --activate antigravity
 ```
 
 The installer never silently overwrites your docs: files that differ from the templates are preserved, and the new template is written to `.agent-kit/conflicts/` for review.
+
+Optional executable council workflows use the separately installed runtime:
+
+```bash
+npm install --save-dev @appsforgood/agent-kit-runtime
+agent-kit orchestrate validate
+agent-kit orchestrate plan "Describe the goal"
+```
+
+The installed `.agent-kit/orchestrator.json` is disabled by default. Runtime execution requires explicit provider, credential-reference, sandbox, MCP, and approval policy.
 
 Every command accepts `--json`. Mutating commands (`init`, `update`, `add skill`, `correction apply`) also accept `--dry-run`.
 
@@ -88,6 +98,16 @@ Skills activate from roster `defaultFor` tags—for example, schema/RLS work rou
 | `correction` | `list`, `add`, `apply`, `retire`, `propose-upstream` |
 | `studio export` | Static HTML export |
 | `studio serve` | Live localhost office with SSE (`--open`) |
+
+### Executable orchestration
+
+| Command | Purpose |
+| --- | --- |
+| `orchestrate validate` | Validate runtime config, roster references, workflow bounds, and policy |
+| `orchestrate plan <goal>` | Resolve a deterministic workflow and preview agents, models, tools, and approvals |
+| `orchestrate run <goal>` | Start a checkpointed run in an isolated worktree |
+| `orchestrate status [run-id]` | Inspect persisted run state and approvals |
+| `orchestrate approve|resume|cancel|export` | Control a paused run and export redacted evidence |
 
 ### Research (maintainers)
 

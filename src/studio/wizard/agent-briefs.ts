@@ -1,4 +1,4 @@
-import { ensureStudioDirs, nowIso, readJsonFile, writeJsonFile, writeTextFile } from "../shared.js";
+import { ensureStudioDirs, escapeMarkdownText, nowIso, readJsonFile, writeJsonFile, writeTextFile } from "../shared.js";
 import { loadProjectRosterAgents } from "./roster.js";
 
 export const AGENT_BRIEFS_JSON = ".agent-kit/onboarding/agent-briefs.json";
@@ -50,7 +50,7 @@ export function renderAgentBriefsMarkdown(cwd: string, file: AgentBriefsFile): s
     const text = file.briefs[agent.id]?.trim();
     if (!text) continue;
     wroteAny = true;
-    lines.push(`## ${agent.name}`, "", `**Role:** ${agent.roleSummary}`, "", text, "");
+    lines.push(`## ${escapeMarkdownText(agent.name)}`, "", `**Role:** ${escapeMarkdownText(agent.roleSummary)}`, "", escapeMarkdownText(text), "");
   }
   if (!wroteAny) {
     lines.push("_No agent briefs recorded yet. Run `agent-kit setup` to brief your team._", "");

@@ -86,6 +86,28 @@ describe("agent-kit CLI contract", () => {
     expect(result.exitCode).toBe(1);
   });
 
+  it("supports audit schema v2 and SARIF while preserving --json v1", () => {
+    const root = makeTempProject();
+    runCli(["init", "--no-setup"], root);
+
+    const v2Result = runCli(["audit", "--json", "--schema-version", "2"], root);
+    expect(v2Result.exitCode).toBe(0);
+    const v2 = JSON.parse(v2Result.stdout) as {
+      schemaVersion: number;
+      summary: { suppressed: number };
+      findings: Array<{ ruleId: string; confidence: string; evidence: unknown[] }>;
+    };
+    expect(v2.schemaVersion).toBe(2);
+    expect(typeof v2.summary.suppressed).toBe("number");
+    expect(v2.findings[0]?.ruleId).toBeTruthy();
+
+    const sarifResult = runCli(["audit", "--format", "sarif"], root);
+    expect(sarifResult.exitCode).toBe(0);
+    const sarif = JSON.parse(sarifResult.stdout) as { version: string; runs: unknown[] };
+    expect(sarif.version).toBe("2.1.0");
+    expect(sarif.runs).toHaveLength(1);
+  });
+
   it("audit exits non-zero when readiness is below the requested minimum", () => {
     const root = makeTempProject();
     runCli(["init", "--no-setup"], root);
@@ -127,5 +149,24 @@ describe("agent-kit CLI contract", () => {
     const result = runCli(["doctor"], makeTempProject());
     expect(result.exitCode).toBe(0);
     expect(result.stdout).toContain("status: ok");
+  });
+
+  it("validates and plans the optional orchestrator without provider calls", () => {
+    const root = makeTempProject();
+    expect(runCli(["init", "--no-setup"], root).exitCode).toBe(0);
+
+    const validation = runCli(["orchestrate", "validate", "--json"], root);
+    expect(validation.exitCode).toBe(0);
+    const validationJson = JSON.parse(validation.stdout) as { valid: boolean; enabled: boolean; warnings: string[] };
+    expect(validationJson.valid).toBe(true);
+    expect(validationJson.enabled).toBe(false);
+    expect(validationJson.warnings).toContain("No model providers are configured.");
+
+    const plan = runCli(["orchestrate", "plan", "Review", "the", "release", "--workflow", "planning", "--json"], root);
+    expect(plan.exitCode).toBe(0);
+    const planJson = JSON.parse(plan.stdout) as { workflowId: string; sequence: string[]; approvals: string[] };
+    expect(planJson.workflowId).toBe("planning");
+    expect(planJson.sequence[0]).toBe("planner");
+    expect(planJson.approvals).toContain("plan");
   });
 });

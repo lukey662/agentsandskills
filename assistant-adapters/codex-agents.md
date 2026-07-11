@@ -49,3 +49,5 @@ Record in `ASSISTANT_ADAPTERS.md`:
 - Any known limitations or manual invocation steps.
 
 Run `agent-kit adapter validate codex` after activation.
+
+Codex custom agents are instruction adapters. Use `agent-kit orchestrate validate`, `plan`, `run`, and `status` when a task requires the executable checkpointed council; do not infer graph execution from a delegated IDE thread.

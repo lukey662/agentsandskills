@@ -449,7 +449,13 @@ describe("public package readiness", () => {
     expect(existsSync(join(root, "scripts", "post-publish-verify.mjs"))).toBe(true);
     expect(existsSync(join(root, "scripts", "example-check.mjs"))).toBe(true);
     expect(existsSync(join(root, "scripts", "version-check.mjs"))).toBe(true);
+    expect(existsSync(join(root, "scripts", "version-packages.mjs"))).toBe(true);
     expect(existsSync(join(root, "scripts", "sbom-check.mjs"))).toBe(true);
+    expect(existsSync(join(root, "schemas", "orchestrator.schema.json"))).toBe(true);
+    expect(existsSync(join(root, "schemas", "runtime-event.schema.json"))).toBe(true);
+    expect(existsSync(join(root, "schemas", "runtime-run.schema.json"))).toBe(true);
+    expect(existsSync(join(root, "packages", "runtime", "package.json"))).toBe(true);
+    expect(existsSync(join(root, "templates", "next-supabase", ".agent-kit", "runtime", "gitignore.template"))).toBe(true);
 
     const prTemplate = readFileSync(join(root, ".github", "pull_request_template.md"), "utf8");
     const dependabot = readFileSync(join(root, ".github", "dependabot.yml"), "utf8");
@@ -478,18 +484,24 @@ describe("public package readiness", () => {
     expect(release).toContain("attestations: write");
     expect(release).toContain("npm run release:check");
     expect(release).toContain("node scripts/sbom-check.mjs --output release-artifacts/sbom.cdx.json");
+    expect(release).toContain("--workspace packages/runtime --output release-artifacts/runtime-sbom.cdx.json");
     expect(release).toContain("actions/upload-artifact");
     expect(release).toContain("actions/attest-sbom");
     expect(release).toContain("sbom-path: release-artifacts/sbom.cdx.json");
-    expect(release).toContain('registry-url: "https://registry.npmjs.org"');
-    expect(release).toContain("NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}");
-    expect(release).toContain('npm publish "${tarball}" --access public --provenance');
-    expect(release).toContain('npm publish "${tarball}" --access public');
+    expect(release).toContain("sbom-path: release-artifacts/runtime-sbom.cdx.json");
+    expect(release).toContain("Publish runtime through npm Trusted Publishing");
+    expect(release).toContain("Publish through npm Trusted Publishing");
+    expect(release).toContain("env -u NODE_AUTH_TOKEN -u NPM_TOKEN npm publish");
+    expect(release).not.toContain("secrets.NPM_TOKEN");
+    expect(release).not.toContain("NODE_AUTH_TOKEN:");
+    expect(release).toContain("--access public --provenance");
     expect(release).toContain("node scripts/post-publish-verify.mjs");
+    expect(release).toContain("Verify runtime package from the public registry");
+    expect(release.indexOf("Publish runtime through npm Trusted Publishing")).toBeLessThan(release.indexOf("Publish through npm Trusted Publishing"));
     expect(ci).toContain("npm run release:check");
-    expect(release).toContain("Validate manual publish ref");
+    expect(release.indexOf("Verify package from the public registry")).toBeLessThan(release.indexOf("Create GitHub release after registry verification"));
     expect(supplyChain).toContain("Trusted Publishing");
-    expect(supplyChain).toContain("token-backed publish fallback");
+    expect(supplyChain).not.toContain("token-backed publish fallback");
     expect(supplyChain).toContain("provenance");
     expect(supplyChain).toContain("SBOM");
     expect(repositorySettings).toContain("Branch Protection");
@@ -497,6 +509,26 @@ describe("public package readiness", () => {
     expect(repositorySettings).toContain("Private vulnerability reporting");
     expect(labels).toContain("needs-triage");
     expect(labels).toContain("risk: security");
+  });
+
+  it("pins every third-party workflow action to an immutable commit SHA", () => {
+    const workflows = listFiles(join(root, ".github", "workflows")).filter((file) => /\.ya?ml$/i.test(file));
+
+    for (const workflow of workflows) {
+      const source = readFileSync(workflow, "utf8");
+      const actionUses = [...source.matchAll(/^\s*uses:\s*([^\s#]+)/gm)].map((match) => match[1]);
+
+      for (const action of actionUses) {
+        if (!action || action.startsWith("./")) continue;
+        expect(action, `${workflow} must pin ${action} to a 40-character commit SHA`).toMatch(/@[0-9a-f]{40}$/);
+      }
+    }
+  });
+
+  it("uses the root-aware version driver for workspace releases", () => {
+    const workflow = readFileSync(join(root, ".github", "workflows", "version.yml"), "utf8");
+    expect(workflow).toContain("version: npm run changeset:version");
+    expect(workflow).not.toContain("version: npx changeset version");
   });
 
   it("uses one shared release-readiness command for local, CI, and release gates", () => {
@@ -521,6 +553,9 @@ describe("public package readiness", () => {
     expect(releaseCheck).toContain("schemas/session-event.schema.json");
     expect(releaseCheck).toContain("schemas/studio-session.schema.json");
     expect(releaseCheck).toContain("schemas/onboarding-state.schema.json");
+    expect(releaseCheck).toContain("schemas/orchestrator.schema.json");
+    expect(releaseCheck).toContain("schemas/runtime-event.schema.json");
+    expect(releaseCheck).toContain("schemas/runtime-run.schema.json");
     expect(releaseCheck).toContain("model-routing/default-model-routing.json");
     expect(releaseCheck).toContain("examples/next-supabase-installed/.agent-kit/agent-roster.json");
     expect(releaseCheck).toContain("examples/next-supabase-installed/.agent-kit/model-routing.json");
@@ -553,11 +588,15 @@ describe("public package readiness", () => {
     expect(exampleCheck).toContain("Example audit output");
 
     const versionCheck = readFileSync(join(root, "scripts", "version-check.mjs"), "utf8");
+    const versionPackages = readFileSync(join(root, "scripts", "version-packages.mjs"), "utf8");
     expect(versionCheck).toContain("semverPattern");
     expect(versionCheck).toContain("CHANGELOG.md");
     expect(versionCheck).toContain("package-lock");
     expect(versionCheck).toContain("refs/tags/");
     expect(versionCheck).toContain("v${version}");
+    expect(versionPackages).toContain("must target exactly one package");
+    expect(packageJson.scripts?.["changeset:version"]).toBe("node scripts/version-packages.mjs");
+    expect(releaseCheck).toContain('["run", "changeset:check"]');
 
     expect(postPublishVerify).toContain('run("npm", ["view", packageSpec');
     expect(postPublishVerify).toContain("npx");

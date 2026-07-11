@@ -27,7 +27,7 @@ describe("diffProject", () => {
     expect(result.preview.wouldCreateModelRouting).toBe(true);
   });
 
-  it("flags customized roster and model routing as changed conflicts", () => {
+  it("keeps customized roster and model routing when the package assets are unchanged", () => {
     const root = mkdtempSync(join(tmpdir(), "agent-kit-diff-changed-"));
     tempRoots.push(root);
     initProject({ cwd: root });
@@ -38,9 +38,9 @@ describe("diffProject", () => {
     const result = diffProject(root);
     expect(result.agentRoster).toBe("changed");
     expect(result.modelRouting).toBe("changed");
-    expect(result.preview.wouldWriteAgentRosterConflict).toBe(true);
-    expect(result.preview.wouldWriteModelRoutingConflict).toBe(true);
-    expect(result.preview.wouldWriteConflicts).toEqual(expect.arrayContaining([".agent-kit/agent-roster.json", ".agent-kit/model-routing.json"]));
+    expect(result.preview.wouldWriteAgentRosterConflict).toBe(false);
+    expect(result.preview.wouldWriteModelRoutingConflict).toBe(false);
+    expect(result.preview.wouldWriteConflicts).toEqual([]);
     expect(result.libraryFolders.missing).toEqual([]);
   });
 });

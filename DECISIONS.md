@@ -729,3 +729,32 @@ Default all commands to concise human-readable output (semantic ANSI color only 
 ### Consequences
 
 Machine consumers must pass `--json` (smoke scripts and tests were updated accordingly); human output is explicitly not a stable contract. The CLI gains two small runtime dependencies (`picocolors`, `@clack/prompts`).
+## 2026-07-11 - Publish And Verify npm Before Creating GitHub Releases
+
+### Context
+
+The `v0.1.9` GitHub release was published before npm completed, and the workflow injected `secrets.NPM_TOKEN` despite the documented OIDC-only policy. npm then requested OTP authentication, leaving a public GitHub release with no matching registry version. The Changesets workflow also lacked the repository-level permission needed to create its version PR.
+
+### Decision
+
+Use npm Trusted Publishing as the only automated package-write path. A merged Changesets version PR triggers release inspection; an unpublished package is packed, attested, published, and verified from the public registry before the workflow creates its tag and GitHub release. Pin every third-party workflow action to an immutable commit SHA. Keep the published `v0.1.9` tag immutable and describe it as superseded rather than moving it to a different commit.
+
+### Consequences
+
+Missing OIDC configuration now fails closed. Retrying after npm succeeds but GitHub release creation fails is safe because release and registry state are inspected independently. Repository administrators must allow GitHub Actions to create pull requests for the scoped Changesets workflow.
+
+## 2026-07-11 - Ship Optional LangGraph Orchestration As A Separate Package
+
+### Context
+
+The roster, IDE adapters, and Agent Studio evidence could describe a council but could not execute or resume one. Adding provider behavior to the baseline package would force credentials, native SQLite, and orchestration dependencies onto projects that only need instruction adapters.
+
+### Decision
+
+Ship `@appsforgood/agent-kit-runtime` as an optional workspace and public package. Compile validated roster sequences to explicit bounded LangGraph nodes, checkpoint in SQLite, route providers through deterministic capability-gated aliases, support allowlisted MCP, and pause at risk-tiered approval gates. Keep mutations in isolated Git worktrees with Docker as the default command boundary. Permit Cursor and stdio MCP host processes only after config opt-in and host approval. Persist redacted versioned evidence. Allow one approved scoped commit, but never merge, push, open a pull request, deploy, or apply migrations.
+
+The root CLI and localhost Studio dynamically import the runtime. Disabled or absent runtime state must not break baseline install, audit, sessions, or adapters. Publish and verify runtime before the root package in the OIDC release job, with separate tarballs and SBOM attestations.
+
+### Consequences
+
+Projects gain inspectable, resumable execution without changing the canonical roster. Baseline installs remain lightweight. Runtime users accept a reviewed native SQLite addon, Docker or explicit host-execution policy, provider/MCP configuration, and operator approval workflow. IDE delegation alone is no longer valid runtime evidence. The earlier “Scope Optional Runtime Orchestration Separately” decision is superseded by this implemented contract.

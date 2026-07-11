@@ -71,3 +71,17 @@ Use `MODEL_ROUTING.md` and `.agent-kit/model-routing.json` as the provider-neutr
 ### Consequences
 
 Exact model names remain dated recommendations, while agents keep stable profile intent and evidence requirements.
+
+## Optional Executable Orchestrator
+
+### Context
+
+IDE rules and subagents provide advisory council routing but are not proof that an executable, resumable workflow ran.
+
+### Decision
+
+Keep `.agent-kit/orchestrator.json` disabled by default. When programmatic execution is required, install `@appsforgood/agent-kit-runtime`, validate deterministic aliases and credential references, and use its bounded LangGraph, SQLite checkpoint, approval, MCP, Docker, worktree, and redacted-evidence contracts. Permit at most one approved scoped commit; retain merge, push, pull request, deployment, and migration decisions for the operator.
+
+### Consequences
+
+The project can opt into stronger execution enforcement without making provider credentials or native runtime dependencies part of baseline Agent Kit use. Host execution and private network exceptions require explicit local rationale and approval evidence.

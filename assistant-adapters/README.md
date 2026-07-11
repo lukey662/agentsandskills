@@ -22,8 +22,11 @@ Adapters should point back to those files. Do not maintain separate policy, secu
 - `cursor-agent-kit.mdc`: Cursor project-rule template.
 - `claude-code-subagents.md`: Claude Code project subagent template guidance.
 - `antigravity.md`: Antigravity plugin, command, runtime skill, and validation guidance.
+- `orchestrator-runtime.md`: executable LangGraph runtime, approvals, sandbox, provider, MCP, worktree, and evidence guidance.
 - `model-selection/`: dated setup examples for Codex, Claude Code, Cursor, and GitHub Copilot model routing.
 
 ## Activation Rule
 
 Record active tool surfaces in `ASSISTANT_ADAPTERS.md`. A project is not best-practice ready simply because adapter templates exist; the team must document which tools are active, how model selection is handled, whether enforcement is enforced/partial/advisory/manual, and what evidence proves the canonical council instructions loaded.
+
+IDE adapters are not execution evidence. Claim an orchestrated run only when `agent-kit orchestrate status`, runtime JSONL evidence, and the SQLite checkpointed workflow confirm it.

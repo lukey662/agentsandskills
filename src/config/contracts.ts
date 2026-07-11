@@ -283,6 +283,8 @@ export const StudioSessionContract = z
 
 export const SessionEventContract = z
   .object({
+    eventId: z.string().uuid().optional(),
+    sequence: z.number().int().positive().optional(),
     type: z.enum([
       "session_started",
       "project_context_loaded",

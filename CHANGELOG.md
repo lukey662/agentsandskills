@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.0
+
+- Ship the leading-harness release: hash-aware manifest v2 updates, audit v2 with SARIF and suppressions, hardened localhost Agent Studio APIs, and optional executable council workflows through `@appsforgood/agent-kit-runtime`. Runtime workflows use validated roster routing, SQLite checkpoints, explicit approval gates, provider and allowlisted MCP adapters, Docker-first tools, isolated Git worktrees, bounded retries/timeouts, cancellation, redacted evidence, and scoped commits. Release automation now publishes and verifies the runtime and root packages with separate SBOM attestations before creating a GitHub release.
+
 ## 0.1.9
 
 - Added explicit anti-slop UI rules for frontend work, including accent-border cards, gradient-as-design, card soup, fake dashboard proof, vague SaaS sayings, decorative credibility, oversized glass panels, ornamental icon walls, filler sections, and inaccessible decorative state styling.

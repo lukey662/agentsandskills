@@ -1,7 +1,7 @@
 import type { AgentKitConfig } from "./types.js";
 
 export const PACKAGE_NAME = "@appsforgood/next-supabase-kit";
-export const PACKAGE_VERSION = "0.1.9";
+export const PACKAGE_VERSION = "0.2.0";
 
 export const DEFAULT_CONFIG: AgentKitConfig = {
   stack: "next-supabase",
@@ -65,6 +65,10 @@ export const DEFAULT_AGENT_ROSTER_SOURCE = "rosters/next-supabase-default-counci
 export const DEFAULT_AGENT_ROSTER_TARGET = ".agent-kit/agent-roster.json";
 export const DEFAULT_MODEL_ROUTING_SOURCE = "model-routing/default-model-routing.json";
 export const DEFAULT_MODEL_ROUTING_TARGET = ".agent-kit/model-routing.json";
+export const DEFAULT_ORCHESTRATOR_SOURCE = "templates/next-supabase/.agent-kit/orchestrator.json";
+export const DEFAULT_ORCHESTRATOR_TARGET = ".agent-kit/orchestrator.json";
+export const DEFAULT_RUNTIME_IGNORE_SOURCE = "templates/next-supabase/.agent-kit/runtime/gitignore.template";
+export const DEFAULT_RUNTIME_IGNORE_TARGET = ".agent-kit/runtime/.gitignore";
 
 export const CURSOR_ADAPTER_FILES = [
   {

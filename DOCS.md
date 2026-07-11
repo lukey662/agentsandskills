@@ -2,13 +2,14 @@
 
 ## Architecture
 
-The package has four main subsystems:
+The repository has five main subsystems:
 
 - CLI commands in `src/cli`
 - Install and audit logic in `src/install`
 - GitHub research and repo analysis in `src/research`
 - Static installable assets in `templates`, `agents`, `skills`, `prompts`, `checklists`, `design-adapters`, `design-briefs`, `profiles`, `rosters`, `model-routing`, and `schemas`
 - Runtime adapter assets in `antigravity` and portable skill wrappers in `runtime-skills`
+- Optional executable orchestration in `packages/runtime`
 
 The CLI reads bundled assets from the package root so the same commands work in local development and after build.
 
@@ -33,13 +34,13 @@ agent-kit init --activate all       # all of the above (Cursor rules remain on e
 
 - **Tier A — policy-only:** plain `init` installs council docs + Cursor always-on rules. One agent role-plays the council.
 - **Tier B — native specialists:** `init --activate cursor|claude|codex` generates IDE-specific council subagents/custom agents from `.agent-kit/agent-roster.json`.
-- **Tier C — programmatic orchestration (future):** optional `agent-kit orchestrate` per `RUNTIME_ORCHESTRATION_SCOPE.md`.
+- **Tier C — programmatic orchestration:** optional `@appsforgood/agent-kit-runtime` and `agent-kit orchestrate`, with SQLite checkpoints, approvals, provider/MCP adapters, isolated worktrees, and redacted evidence.
 
 Validate activation with `agent-kit adapter validate cursor|codex|claude|all`.
 
 Existing files are never overwritten by default. Conflicting template updates are written to `.agent-kit/conflicts/`.
 
-The installer writes `.agent-kit/agent-roster.json` from `rosters/next-supabase-default-council.json`, writes `.agent-kit/model-routing.json` from `model-routing/default-model-routing.json`, and copies JSON Schema contracts into `.agent-kit/schemas/`. Installed schemas cover the agent roster, council-session records, model routing, and audit-report output. The roster is the default council contract:
+The installer writes `.agent-kit/agent-roster.json`, `.agent-kit/model-routing.json`, disabled-by-default `.agent-kit/orchestrator.json`, `.agent-kit/runtime/.gitignore`, and JSON Schema contracts. Installed schemas include orchestrator config plus runtime run/event evidence. The roster is the default council contract:
 
 - Planner starts planning, roadmap, scope, and ambiguous requests.
 - Lead Architect reviews core changes before implementation.
@@ -88,7 +89,7 @@ The package deliberately separates AI operating mechanisms:
 - `.agent-kit/council-sessions/*/events.jsonl` plus rendered Markdown make visible agent collaboration inspectable without a database.
 - `ASSISTANT_ADAPTERS.md` records active IDEs, model-selection status, tool/MCP setup, and evidence.
 - Optional hooks can enforce local policies, but they are not enabled by default because they execute local commands and require trust review.
-- Optional Milestone 9 orchestration (`agent-kit orchestrate`) is scoped in `RUNTIME_ORCHESTRATION_SCOPE.md` and remains opt-in. It reuses the same roster and session contracts without replacing IDE subagents.
+- Optional orchestration (`agent-kit orchestrate`) compiles roster workflows to bounded LangGraph nodes without replacing IDE subagents. Runtime evidence uses dedicated versioned run/event contracts.
 
 If a project stores structured council sessions in `.agent-kit/council-sessions/*.json`, audit validates each record against the runtime contract that mirrors `schemas/council-session.schema.json`.
 
@@ -123,6 +124,11 @@ agent-kit studio serve --open
 | `GET /api/events/stream` | SSE stream when events append |
 | `POST /api/sessions/:id/note` | Record a council note (`{ agent, text }`) into `events.jsonl` |
 | `POST /api/sessions/:id/render` | Render `index.md` and `transcript.md` for the session |
+| `GET /api/runtime/runs` | List checkpointed orchestrator runs |
+| `GET /api/runtime/runs/:id` | Read one run and its redacted events |
+| `POST /api/runtime/runs` | Start a run |
+| `POST /api/runtime/runs/:id/decision` | Approve or reject the pending gate |
+| `POST /api/runtime/runs/:id/cancel` | Cancel a paused or in-process local run |
 
 The live office UI includes a **session picker** (reconnect SSE to any session), an **Add note** form, and a **Render markdown** button that call the POST endpoints above. All mutations stay localhost-only and reuse the same file contracts as the CLI.
 
@@ -198,7 +204,7 @@ Correction scopes are limited to `session`, `project`, `agent`, and `upstream-pr
 
 Every Agent Studio milestone must include automated tests with the feature. Current coverage includes unit tests, fixture-project tests, CLI smoke tests, example snapshot checks, regression tests for install/update/diff behavior, and security tests for required-output status validation, redaction, path traversal, malformed JSON/JSONL, static export secret safety, and secret-looking values. `npm run smoke:studio` is wired into `npm run release:check` so context/session/correction/export regressions fail before user testing.
 
-Direct AI orchestration can be added later as an opt-in mode, but baseline Agent Studio works through installed IDE agents and local file updates.
+Direct AI orchestration is optional. Baseline Agent Studio still works through installed IDE agents and local file updates when the runtime package is absent or disabled.
 
 Audit validates frontend maturity beyond tokens and states. `DESIGN.md` must capture brand, content, user needs, creative direction, reference set, anti-references, distinctiveness, critique guidance, frontend distinctiveness benchmark, frontend product-quality scorecard, and design tokens. `STYLE_GUIDE.md` must require content-first creative direction before implementation. `TESTING.md` must document visual QA or visual-regression evidence for important UI changes.
 

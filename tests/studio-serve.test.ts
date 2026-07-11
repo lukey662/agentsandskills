@@ -1,4 +1,5 @@
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
@@ -9,6 +10,7 @@ import { renderLiveStudioHtmlWithContext } from "../src/studio/office/render.js"
 import { markSectionComplete } from "../src/studio/onboarding-state.js";
 import { recordHandoff, recordNote, startSession } from "../src/studio/session.js";
 import { startStudioServer } from "../src/studio/studio-server.js";
+import { localMutation } from "./helpers/local-http.js";
 
 let roots: string[] = [];
 
@@ -46,6 +48,10 @@ describe("agent-kit studio serve", () => {
     expect(html).toContain("transcript-panel");
     expect(html).toContain('id="session-picker"');
     expect(html).toContain('id="studio-render-btn"');
+    expect(html).toContain('id="studio-runtime-tab"');
+    expect(html).toContain('id="runtime-start-form"');
+    expect(html).toContain('id="runtime-start-btn" disabled');
+    expect(html).toContain('id="runtime-approval"');
   });
 
   it("maps office stations to wizard section ids", () => {
@@ -113,17 +119,19 @@ describe("agent-kit studio serve", () => {
     const session = startSession(root, { title: "Note render test", workflowId: "planning" });
     const server = await startStudioServer({ cwd: root, port: 0 });
     try {
-      const noteRes = await fetch(`${server.url}/api/sessions/${session.sessionId}/note`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ agent: "planner", text: "Studio note from API test." })
-      });
+      const noteRes = await fetch(
+        `${server.url}/api/sessions/${session.sessionId}/note`,
+        localMutation(server, {
+          method: "POST",
+          body: JSON.stringify({ agent: "planner", text: "Studio note from API test." })
+        })
+      );
       expect(noteRes.ok).toBe(true);
       const noteBody = (await noteRes.json()) as { event: { text: string; type: string } };
       expect(noteBody.event.type).toBe("agent_message");
       expect(noteBody.event.text).toContain("Studio note");
 
-      const renderRes = await fetch(`${server.url}/api/sessions/${session.sessionId}/render`, { method: "POST" });
+      const renderRes = await fetch(`${server.url}/api/sessions/${session.sessionId}/render`, localMutation(server, { method: "POST" }));
       expect(renderRes.ok).toBe(true);
       const renderBody = (await renderRes.json()) as { rendered: boolean; files: string[] };
       expect(renderBody.rendered).toBe(true);
@@ -138,22 +146,90 @@ describe("agent-kit studio serve", () => {
     const session = startSession(root, { title: "Validation test", workflowId: "planning" });
     const server = await startStudioServer({ cwd: root, port: 0 });
     try {
-      const badId = await fetch(`${server.url}/api/sessions/bad%2Fid/note`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ agent: "planner", text: "x" })
-      });
+      const badId = await fetch(
+        `${server.url}/api/sessions/bad%2Fid/note`,
+        localMutation(server, {
+          method: "POST",
+          body: JSON.stringify({ agent: "planner", text: "x" })
+        })
+      );
       expect(badId.status).toBe(400);
 
       const longText = "x".repeat(4000);
-      const tooLong = await fetch(`${server.url}/api/sessions/${session.sessionId}/note`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ agent: "planner", text: longText })
-      });
+      const tooLong = await fetch(
+        `${server.url}/api/sessions/${session.sessionId}/note`,
+        localMutation(server, {
+          method: "POST",
+          body: JSON.stringify({ agent: "planner", text: longText })
+        })
+      );
       expect(tooLong.status).toBe(400);
     } finally {
       await server.close();
+    }
+  });
+
+  it("starts and rejects a checkpointed runtime run through the secured API", async () => {
+    const root = tempProject();
+    const cache = mkdtempSync(join(tmpdir(), "agent-kit-runtime-studio-cache-"));
+    roots.push(cache);
+    const previousCache = process.env.XDG_CACHE_HOME;
+    process.env.XDG_CACHE_HOME = cache;
+    const configPath = join(root, ".agent-kit", "orchestrator.json");
+    const config = JSON.parse(readFileSync(configPath, "utf8")) as Record<string, unknown>;
+    config.enabled = true;
+    config.providers = { local: { kind: "ollama" } };
+    config.modelAliases = {
+      balanced: { candidates: [{ provider: "local", model: "test-model" }], requiredCapabilities: ["text"] }
+    };
+    writeFileSync(configPath, `${JSON.stringify(config, null, 2)}\n`);
+    execFileSync("git", ["init", "-q"], { cwd: root });
+    execFileSync("git", ["config", "user.name", "Agent Kit Test"], { cwd: root });
+    execFileSync("git", ["config", "user.email", "agent-kit@example.invalid"], { cwd: root });
+    execFileSync("git", ["add", "."], { cwd: root });
+    execFileSync("git", ["commit", "-qm", "initial"], { cwd: root });
+
+    const server = await startStudioServer({ cwd: root, port: 0 });
+    try {
+      const list = await fetch(`${server.url}/api/runtime/runs`);
+      expect(list.ok).toBe(true);
+      await expect(list.json()).resolves.toMatchObject({ enabled: true, runs: [] });
+
+      const started = await fetch(
+        `${server.url}/api/runtime/runs`,
+        localMutation(server, {
+          method: "POST",
+          body: JSON.stringify({ goal: "Review project documentation", workflowId: "planning" })
+        })
+      );
+      const startedBody = (await started.json()) as {
+        run: { runId: string; status: string; pendingApproval?: { risk: string } };
+        events: Array<{ type: string }>;
+        error?: string;
+      };
+      expect(started.status, startedBody.error).toBe(201);
+      expect(startedBody.run.status).toBe("awaiting-approval");
+      expect(startedBody.run.pendingApproval?.risk).toBe("plan");
+      expect(startedBody.events.some((event) => event.type === "approval_requested")).toBe(true);
+
+      const detail = await fetch(`${server.url}/api/runtime/runs/${startedBody.run.runId}`);
+      expect(detail.ok).toBe(true);
+
+      const rejected = await fetch(
+        `${server.url}/api/runtime/runs/${startedBody.run.runId}/decision`,
+        localMutation(server, {
+          method: "POST",
+          body: JSON.stringify({ decision: "reject", actor: "studio-test" })
+        })
+      );
+      expect(rejected.ok).toBe(true);
+      const rejectedBody = (await rejected.json()) as { run: { status: string; pendingApproval?: unknown } };
+      expect(rejectedBody.run.status).toBe("cancelled");
+      expect(rejectedBody.run.pendingApproval).toBeUndefined();
+    } finally {
+      await server.close();
+      if (previousCache === undefined) delete process.env.XDG_CACHE_HOME;
+      else process.env.XDG_CACHE_HOME = previousCache;
     }
   });
 

@@ -2,6 +2,21 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://agent-skills.dev/schemas/audit-report.schema.json",
   "title": "Agent Kit Audit Report",
+  "$defs": {
+    "readiness": {
+      "type": "object",
+      "required": ["level", "summary", "nextActions"],
+      "additionalProperties": false,
+      "properties": {
+        "level": {
+          "type": "string",
+          "enum": ["needs-setup", "baseline-setup", "needs-improvement", "best-practice-candidate"]
+        },
+        "summary": { "type": "string", "minLength": 1 },
+        "nextActions": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  },
   "type": "object",
   "required": ["summary", "readiness", "findings"],
   "additionalProperties": false,
@@ -16,22 +31,7 @@
         "fail": { "type": "integer", "minimum": 0 }
       }
     },
-    "readiness": {
-      "type": "object",
-      "required": ["level", "summary", "nextActions"],
-      "additionalProperties": false,
-      "properties": {
-        "level": {
-          "type": "string",
-          "enum": ["needs-setup", "baseline-setup", "needs-improvement", "best-practice-candidate"]
-        },
-        "summary": { "type": "string", "minLength": 1 },
-        "nextActions": {
-          "type": "array",
-          "items": { "type": "string" }
-        }
-      }
-    },
+    "readiness": { "$ref": "#/$defs/readiness" },
     "findings": {
       "type": "array",
       "items": {

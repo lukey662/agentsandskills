@@ -10,7 +10,7 @@ import {
   StudioSessionContract,
   formatContractIssues
 } from "../config/contracts.js";
-import { DEFAULT_AGENT_ROSTER_TARGET, DEFAULT_MODEL_ROUTING_TARGET, ROOT_DOCS } from "../config/defaults.js";
+import { DEFAULT_AGENT_ROSTER_TARGET, DEFAULT_MODEL_ROUTING_TARGET, DEFAULT_ORCHESTRATOR_TARGET, ROOT_DOCS } from "../config/defaults.js";
 import type { AuditFinding, AuditReadiness, AuditReport, StackProfile } from "../config/types.js";
 import { listFilesRecursive, sha256 } from "../utils/fs.js";
 import { findPackageRoot } from "../utils/package-root.js";
@@ -18,6 +18,7 @@ import { AGENT_RULES_JSON, CONTEXT_JSON, CONTEXT_MD, PROJECT_RULES_JSON, STUDIO_
 import { getSetupProgress, onboardingStateExists } from "../studio/onboarding-state.js";
 import { readManifest } from "./install.js";
 import { assistantAdapterRowIsActive } from "./assistant-adapters-table.js";
+import { projectRealityRules } from "./audit-rules/project-reality.js";
 
 interface TemplateOverride {
   reason?: string;
@@ -95,13 +96,17 @@ const REQUIRED_SCHEMA_FILES = [
   "agent-roster.schema.json",
   "council-session.schema.json",
   "audit-report.schema.json",
+  "audit-report-v2.schema.json",
   "model-routing.schema.json",
   "project-context.schema.json",
   "correction-rules.schema.json",
   "session-event.schema.json",
   "studio-session.schema.json",
   "onboarding-state.schema.json",
-  "agentic-level.schema.json"
+  "agentic-level.schema.json",
+  "orchestrator.schema.json",
+  "runtime-run.schema.json",
+  "runtime-event.schema.json"
 ] as const;
 const COUNCIL_SESSION_DIR = ".agent-kit/council-sessions";
 
@@ -491,6 +496,58 @@ function addSchemaFindings(cwd: string, findings: AuditFinding[], schemaRootRela
         remediation: "Restore the schema from the package or rerun agent-kit update."
       });
     }
+  }
+}
+
+function addOrchestratorFindings(cwd: string, findings: AuditFinding[], relativePath = DEFAULT_ORCHESTRATOR_TARGET): void {
+  const path = join(cwd, relativePath);
+  if (!existsSync(path)) {
+    findings.push({
+      level: "warn",
+      area: "orchestrator",
+      message: `${relativePath} is missing.`,
+      remediation: "Run agent-kit update to install the disabled-by-default optional runtime policy."
+    });
+    return;
+  }
+  const text = readFileSync(path, "utf8");
+  if (containsLikelySecret(text)) {
+    findings.push({
+      level: "fail",
+      area: "orchestrator",
+      message: `${relativePath} appears to contain a resolved credential.`,
+      remediation: "Replace credential values with env:NAME or keychain:account references and rotate exposed secrets."
+    });
+    return;
+  }
+  try {
+    const config = JSON.parse(text) as {
+      schemaVersion?: unknown;
+      enabled?: unknown;
+      defaultAlias?: unknown;
+      providers?: unknown;
+      modelAliases?: unknown;
+    };
+    if (config.schemaVersion !== 1 || typeof config.enabled !== "boolean") throw new Error("schemaVersion must be 1 and enabled must be boolean");
+    if (!config.providers || typeof config.providers !== "object" || Array.isArray(config.providers)) throw new Error("providers must be an object");
+    if (!config.modelAliases || typeof config.modelAliases !== "object" || Array.isArray(config.modelAliases))
+      throw new Error("modelAliases must be an object");
+    if (config.enabled) {
+      if (typeof config.defaultAlias !== "string" || !config.defaultAlias) throw new Error("enabled runtime requires defaultAlias");
+      if (!Object.hasOwn(config.modelAliases, config.defaultAlias)) throw new Error("enabled runtime defaultAlias is not configured");
+    }
+    findings.push({
+      level: "pass",
+      area: "orchestrator",
+      message: `${relativePath} is valid and ${config.enabled ? "enabled" : "disabled by default"}.`
+    });
+  } catch (error) {
+    findings.push({
+      level: "fail",
+      area: "orchestrator",
+      message: `${relativePath} is invalid: ${error instanceof Error ? error.message : String(error)}.`,
+      remediation: "Restore it from the current template and run agent-kit orchestrate validate before enabling execution."
+    });
   }
 }
 
@@ -1316,28 +1373,30 @@ function addMessagingFindings(cwd: string, findings: AuditFinding[]): void {
   }
 }
 
-export function auditProject(cwd: string): AuditFinding[] {
+export interface AuditProjectOptions {
+  packageSource?: boolean;
+}
+
+export function auditProject(cwd: string, options: AuditProjectOptions = {}): AuditFinding[] {
   const findings: AuditFinding[] = [];
   const manifest = readManifest(cwd);
   const packageRepository = isPackageRepository(cwd);
-  const packageSourceMode = packageRepository && !manifest;
+  const packageSourceMode = options.packageSource === true || (packageRepository && !manifest);
   const docsCwd = packageSourceMode ? join(cwd, "templates", "next-supabase") : cwd;
 
-  if (!manifest) {
-    if (packageRepository) {
-      findings.push({
-        level: "pass",
-        area: "install",
-        message: "Package source repository mode detected; installed-project manifest is not required."
-      });
-    } else {
-      findings.push({
-        level: "fail",
-        area: "install",
-        message: "Project has no .agent-kit/manifest.json.",
-        remediation: "Run agent-kit init --stack next-supabase."
-      });
-    }
+  if (packageSourceMode) {
+    findings.push({
+      level: "pass",
+      area: "install",
+      message: "Package source repository mode detected; installed-project manifest is not required."
+    });
+  } else if (!manifest) {
+    findings.push({
+      level: "fail",
+      area: "install",
+      message: "Project has no .agent-kit/manifest.json.",
+      remediation: "Run agent-kit init --stack next-supabase."
+    });
   } else {
     findings.push({
       level: "pass",
@@ -1346,12 +1405,15 @@ export function auditProject(cwd: string): AuditFinding[] {
     });
   }
 
-  addTemplateHashFindings(cwd, findings);
+  if (!packageSourceMode) addTemplateHashFindings(cwd, findings);
   addAgentRosterFindings(cwd, findings, packageSourceMode ? "rosters/next-supabase-default-council.json" : DEFAULT_AGENT_ROSTER_TARGET);
   addSchemaFindings(cwd, findings, packageSourceMode ? "schemas" : ".agent-kit/schemas");
-  addCouncilSessionRecordFindings(cwd, findings);
-  if (!packageRepository || existsSync(join(cwd, CONTEXT_JSON)) || existsSync(join(cwd, COUNCIL_SESSION_DIR))) {
-    addAgentStudioFindings(cwd, findings);
+  addOrchestratorFindings(cwd, findings, packageSourceMode ? "templates/next-supabase/.agent-kit/orchestrator.json" : DEFAULT_ORCHESTRATOR_TARGET);
+  if (!packageSourceMode) {
+    addCouncilSessionRecordFindings(cwd, findings);
+    if (!packageRepository || existsSync(join(cwd, CONTEXT_JSON)) || existsSync(join(cwd, COUNCIL_SESSION_DIR))) {
+      addAgentStudioFindings(cwd, findings);
+    }
   }
 
   for (const doc of ROOT_DOCS) {
@@ -1378,7 +1440,7 @@ export function auditProject(cwd: string): AuditFinding[] {
   addQualityGateFindings(docsCwd, findings);
   addUpgradeFindings(docsCwd, findings);
   addProjectEvidenceFindings(docsCwd, findings);
-  addProjectRealityFindings(cwd, findings, { packageRepository });
+  findings.push(...projectRealityRules.evaluate({ cwd, packageRepository, observedAt: new Date().toISOString() }));
 
   const security = readDoc(docsCwd, "SECURITY.md");
   if (!includesAny(security, ["OWASP", "Top 10"])) {
@@ -1430,134 +1492,7 @@ export function auditProject(cwd: string): AuditFinding[] {
   return findings;
 }
 
-function readPackageJson(cwd: string): { scripts?: Record<string, string> } | null {
-  const path = join(cwd, "package.json");
-  if (!existsSync(path)) return null;
-  try {
-    return JSON.parse(readFileSync(path, "utf8")) as { scripts?: Record<string, string> };
-  } catch {
-    return null;
-  }
-}
-
-function containsLikelySecretForAudit(relativeFile: string, content: string): boolean {
-  const normalized = relativeFile.replace(/\\/g, "/");
-  const testSecretFixture = ["sk", "test", "fake", "secret", "value"].join("_");
-  if (normalized.startsWith("tests/") && content.includes(`const fakeSecret = "${testSecretFixture}"`) && content.includes("not.toContain(fakeSecret)")) {
-    return containsLikelySecret(content.split(testSecretFixture).join("[TEST_SECRET_FIXTURE]"));
-  }
-  return containsLikelySecret(content);
-}
-
-function addProjectRealityFindings(cwd: string, findings: AuditFinding[], options: { packageRepository?: boolean } = {}): void {
-  const migrationsDir = join(cwd, "supabase", "migrations");
-  if (existsSync(migrationsDir)) {
-    const sqlFiles = listFilesRecursive(migrationsDir).filter((file) => file.endsWith(".sql"));
-    if (sqlFiles.length === 0) {
-      findings.push({
-        level: "warn",
-        area: "project-reality",
-        message: "supabase/migrations exists but contains no SQL migration files.",
-        remediation: "Add versioned SQL migrations or remove the empty migrations directory if Supabase is not in use."
-      });
-    } else {
-      const rlsFiles = sqlFiles.filter((file) => {
-        const content = readFileSync(join(migrationsDir, file), "utf8");
-        return /enable\s+row\s+level\s+security/i.test(content);
-      });
-      if (rlsFiles.length === 0) {
-        findings.push({
-          level: "fail",
-          area: "project-reality",
-          message: "No Supabase migration enables row level security.",
-          remediation: "Add `ALTER TABLE ... ENABLE ROW LEVEL SECURITY` (or equivalent) in supabase/migrations before shipping user data."
-        });
-      } else {
-        findings.push({
-          level: "pass",
-          area: "project-reality",
-          message: `Supabase migrations enable RLS in ${rlsFiles.length} file(s).`
-        });
-      }
-    }
-  }
-
-  const packageJson = readPackageJson(cwd);
-  if (!packageJson) {
-    findings.push({
-      level: "warn",
-      area: "project-reality",
-      message: "No package.json found to verify test scripts.",
-      remediation: "Add package.json with test, lint, and build scripts appropriate to the stack."
-    });
-  } else {
-    const scripts = packageJson.scripts ?? {};
-    const testScript = scripts.test ?? scripts["test:unit"] ?? scripts["test:ci"];
-    if (!testScript) {
-      findings.push({
-        level: "warn",
-        area: "project-reality",
-        message: "package.json has no test script (test, test:unit, or test:ci).",
-        remediation: "Add a test script and document it in TESTING.md."
-      });
-    } else {
-      findings.push({
-        level: "pass",
-        area: "project-reality",
-        message: "package.json defines a test script."
-      });
-    }
-  }
-
-  const trackedSourceFiles = listFilesRecursive(cwd).filter((file) => {
-    if (file.includes("node_modules/") || file.includes(".agent-kit/")) return false;
-    return /\.(ts|tsx|js|jsx|env|json)$/.test(file);
-  });
-  const secretHits = trackedSourceFiles
-    .map((file) => {
-      const content = readFileSync(join(cwd, file), "utf8");
-      return containsLikelySecretForAudit(file, content) ? file : null;
-    })
-    .filter((file): file is string => file !== null)
-    .slice(0, 5);
-  if (secretHits.length > 0) {
-    findings.push({
-      level: "fail",
-      area: "project-reality",
-      message: `Possible committed secret patterns detected in: ${secretHits.join(", ")}.`,
-      remediation: "Remove secrets from tracked files, rotate exposed credentials, and use environment variables."
-    });
-  } else if (trackedSourceFiles.length > 0) {
-    findings.push({
-      level: "pass",
-      area: "project-reality",
-      message: "No obvious committed secret patterns detected in tracked source files."
-    });
-  }
-
-  if (options.packageRepository) {
-    findings.push({
-      level: "pass",
-      area: "project-reality",
-      message: "Package source repository mode does not require installed-project context files."
-    });
-  } else if (!existsSync(join(cwd, CONTEXT_JSON))) {
-    findings.push({
-      level: "warn",
-      area: "project-reality",
-      message: ".agent-kit/project-context.json is missing.",
-      remediation: "Run agent-kit init or agent-kit context init to create project context."
-    });
-  } else {
-    findings.push({
-      level: "pass",
-      area: "project-reality",
-      message: ".agent-kit/project-context.json exists."
-    });
-  }
-}
-
-function createReadiness(findings: AuditFinding[], summary: AuditReport["summary"]): AuditReadiness {
+export function createAuditReadiness(findings: AuditFinding[], summary: AuditReport["summary"]): AuditReadiness {
   const nextActions = findings
     .filter((finding) => finding.level === "fail" || finding.level === "warn")
     .map((finding) => finding.remediation ?? finding.message)
@@ -1595,9 +1530,14 @@ function createReadiness(findings: AuditFinding[], summary: AuditReport["summary
   };
 }
 
-export function createAuditReport(cwd: string): AuditReport {
-  const findings = auditProject(cwd);
+export function createAuditReport(cwd: string, options: AuditProjectOptions = {}): AuditReport {
+  const findings = auditProject(cwd, options).map((finding): AuditFinding => ({
+    level: finding.level,
+    area: finding.area,
+    message: finding.message,
+    ...(finding.remediation ? { remediation: finding.remediation } : {})
+  }));
   const summary: AuditReport["summary"] = { pass: 0, warn: 0, fail: 0 };
   for (const finding of findings) summary[finding.level] += 1;
-  return { summary, readiness: createReadiness(findings, summary), findings };
+  return { summary, readiness: createAuditReadiness(findings, summary), findings };
 }

@@ -26,6 +26,8 @@ Use `AGENTS.md`, `AGENT_ROSTER.md`, `.agent-kit/agent-roster.json`, `MODEL_ROUTI
 
 Run `agent-kit audit --min-readiness baseline-setup` for setup validity. Use `agent-kit audit --min-readiness best-practice-candidate` only when project-specific evidence has replaced starter placeholders.
 
+This Cursor rule is an instruction adapter, not proof that the executable council ran. Use `agent-kit orchestrate validate` and `agent-kit orchestrate status` for runtime evidence. A Cursor executor route additionally requires `cursor.enabled`, `sandbox.allowHostMutations`, an isolated worktree, and explicit host-mutation approval.
+
 ## Model Selection
 
 Use Cursor's active model picker or team model policy with the profile in `MODEL_ROUTING.md`. Treat this rule as advisory unless the active Cursor environment provides enforceable model controls.

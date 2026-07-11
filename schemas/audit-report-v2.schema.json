@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-skills.dev/schemas/audit-report-v2.schema.json",
+  "title": "Agent Kit Audit Report v2",
+  "type": "object",
+  "required": ["schemaVersion", "generatedAt", "tool", "root", "summary", "readiness", "findings"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": 2 },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "tool": {
+      "type": "object",
+      "required": ["name", "version"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "const": "agent-kit" },
+        "version": { "type": "string", "minLength": 1 }
+      }
+    },
+    "root": { "const": "." },
+    "summary": {
+      "type": "object",
+      "required": ["pass", "warn", "fail", "suppressed"],
+      "additionalProperties": false,
+      "properties": {
+        "pass": { "type": "integer", "minimum": 0 },
+        "warn": { "type": "integer", "minimum": 0 },
+        "fail": { "type": "integer", "minimum": 0 },
+        "suppressed": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "readiness": { "$ref": "audit-report.schema.json#/$defs/readiness" },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["level", "area", "message", "ruleId", "ruleVersion", "confidence", "evidence"],
+        "additionalProperties": false,
+        "properties": {
+          "level": { "type": "string", "enum": ["pass", "warn", "fail"] },
+          "area": { "type": "string", "minLength": 1 },
+          "message": { "type": "string", "minLength": 1 },
+          "remediation": { "type": "string", "minLength": 1 },
+          "ruleId": { "type": "string", "minLength": 1 },
+          "ruleVersion": { "type": "string", "minLength": 1 },
+          "helpUri": { "type": "string", "format": "uri" },
+          "confidence": { "type": "string", "enum": ["low", "medium", "high"] },
+          "fixable": { "type": "boolean" },
+          "suppressed": { "type": "boolean" },
+          "suppressionReason": { "type": "string", "minLength": 1 },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["kind", "summary"],
+              "additionalProperties": false,
+              "properties": {
+                "kind": { "type": "string", "enum": ["file", "command", "configuration", "runtime"] },
+                "summary": { "type": "string", "minLength": 1 },
+                "path": { "type": "string", "minLength": 1 },
+                "line": { "type": "integer", "minimum": 1 },
+                "column": { "type": "integer", "minimum": 1 },
+                "observedAt": { "type": "string", "format": "date-time" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

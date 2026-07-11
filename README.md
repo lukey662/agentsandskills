@@ -18,12 +18,14 @@ This is not just a prompt bundle. A project gets machine-readable agent routing,
 
 It also includes a local Agent Studio workflow: project context, durable human corrections, append-only session events, and rendered Markdown transcripts that work without a database, web server, background daemon, or separate model API key.
 
+Projects that need executable council workflows can add the optional `@appsforgood/agent-kit-runtime` package. It compiles the same roster into checkpointed LangGraph runs with provider/MCP adapters, risk approvals, Docker-first mutation isolation, Git worktrees, and redacted evidence.
+
 ## Quick Start
 
-Use this in a Next.js + Supabase project (latest published: **v0.1.8** on npm; `main` is preparing **v0.1.9**):
+Use the current stable package in a Next.js + Supabase project:
 
 ```bash
-npx @appsforgood/next-supabase-kit@0.1.8 init --stack next-supabase --setup --open
+npx @appsforgood/next-supabase-kit@latest init --stack next-supabase --setup --open
 npx @appsforgood/next-supabase-kit audit
 npx @appsforgood/next-supabase-kit audit --min-readiness baseline-setup
 ```
@@ -41,6 +43,16 @@ Promote IDE/runtime adapters after install:
 npx @appsforgood/next-supabase-kit init --activate cursor --activate antigravity
 npx @appsforgood/next-supabase-kit adapter validate all
 ```
+
+Optional executable orchestration:
+
+```bash
+npm install --save-dev @appsforgood/agent-kit-runtime
+agent-kit orchestrate validate
+agent-kit orchestrate plan "Describe the goal"
+```
+
+`.agent-kit/orchestrator.json` is installed disabled. Configure verified provider model IDs and `env:` or `keychain:` credential references before enabling it.
 
 The installer preserves existing docs. If a file already exists and differs from the template, the new version is written to `.agent-kit/conflicts/` for review.
 
@@ -91,7 +103,7 @@ Twenty slash commands map to the delivery lifecycle. Each one activates the righ
 SETUP → SPEC/PLAN → BUILD → VERIFY → REVIEW → SHIP
 ```
 
-**Workflow commands** (`/setup`, `/spec`, …) are runtime adapters. **Package CLI** commands (`agent-kit init`, `audit`, `session`, …) are documented under [CLI Reference](#cli-reference) below. Cursor loads rules and skills from `init`; Antigravity gets native slash commands from `init --activate antigravity`. See `ASSISTANT_ADAPTERS.md` for per-IDE setup.
+**Workflow commands** (`/setup`, `/spec`, …) are instruction adapters. **Package CLI** commands (`agent-kit init`, `audit`, `session`, `orchestrate`, …) are documented under [CLI Reference](#cli-reference) below. Cursor loads rules and skills from `init`; Antigravity gets native slash commands from `init --activate antigravity`. Only `agent-kit orchestrate` is evidence that the executable checkpointed council ran. See `ASSISTANT_ADAPTERS.md` for per-IDE setup.
 
 ### Core lifecycle commands
 
@@ -279,6 +291,23 @@ agent-kit session render
 agent-kit session close --status complete
 ```
 
+### Optional orchestrator
+
+| Command | Purpose |
+| --- | --- |
+| `orchestrate validate` | Validate runtime config, roster references, and bounds without provider calls |
+| `orchestrate plan <goal...>` | Compile the offline workflow sequence and approval envelope |
+| `orchestrate run <goal...>` | Start a checkpointed run in an isolated worktree |
+| `orchestrate approve <run-id>` | Approve the current gate and resume |
+| `orchestrate resume <run-id> --decision ...` | Explicitly approve or reject a gate |
+| `orchestrate status [run-id]` | Read persisted run state |
+| `orchestrate cancel <run-id>` | Cancel a paused or local in-process run |
+| `orchestrate export <run-id>` | Render redacted run evidence as Markdown |
+| `provider probe`, `mcp probe` | Explicitly test configured external adapters |
+| `credential set`, `credential delete` | Manage OS-keychain references without CLI value flags |
+
+The runtime may create one approved scoped commit on `agent-kit/<run-id>`. It never merges, pushes, opens a pull request, deploys, or applies migrations. See [RUNTIME_ORCHESTRATION_SCOPE.md](RUNTIME_ORCHESTRATION_SCOPE.md) and [packages/runtime/README.md](packages/runtime/README.md).
+
 ### Corrections
 
 | Command | Purpose |
@@ -458,7 +487,7 @@ Release expectations:
 - Dependency Review, CodeQL, OpenSSF Scorecard, Dependabot, SBOM validation, and SBOM attestation.
 - Post-publish verification with `npm run publish:verify`.
 
-The package is published to public npm under `@appsforgood/next-supabase-kit@0.1.8`. Every release must pass `npm run release:check` before publish and `npm run publish:verify` after (registry visibility, clean `npx` doctor/init/audit). Post-publish verification last passed **2026-07-04** against the live registry: `@0.1.8` doctor, clean init, and `audit --min-readiness baseline-setup` with zero failures. Version `0.1.9` is prepared on `main` but is not published until npm MFA or Trusted Publishing configuration allows the release workflow to complete.
+The public package identities are `@appsforgood/next-supabase-kit` and `@appsforgood/agent-kit-runtime`. Every release must pass `npm run release:check`. The OIDC workflow publishes runtime before root when needed, attests separate package-rooted SBOMs, verifies both packages from the public registry, and only then creates the matching GitHub release. Registry metadata is the source of truth for the latest published versions.
 
 ## Repository Health
 

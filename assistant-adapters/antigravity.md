@@ -19,6 +19,8 @@ This adapter packages Agent Kit as native Antigravity-style plugin assets while 
 
 Runtime command files must wrap those files. Do not fork role definitions, security policy, frontend quality rules, release gates, or session evidence rules into command prompts.
 
+Antigravity commands are instruction adapters. They do not replace or prove execution by `@appsforgood/agent-kit-runtime`; use `agent-kit orchestrate status` and exported run evidence for that claim.
+
 ## Activation
 
 ```bash

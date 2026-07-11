@@ -1,0 +1,167 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-skills.dev/schemas/orchestrator.schema.json",
+  "title": "Agent Kit Orchestrator Configuration",
+  "type": "object",
+  "required": ["schemaVersion"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "enabled": { "type": "boolean", "default": false },
+    "defaultWorkflow": { "type": "string", "minLength": 1, "default": "planning" },
+    "defaultAlias": { "type": "string", "minLength": 1, "default": "balanced" },
+    "databasePath": { "type": "string", "minLength": 1, "default": ".agent-kit/runtime/runtime.sqlite" },
+    "providers": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/provider" },
+      "default": {}
+    },
+    "modelAliases": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/modelAlias" },
+      "default": {}
+    },
+    "agentRoutes": {
+      "type": "object",
+      "additionalProperties": { "type": "string", "minLength": 1 },
+      "default": {}
+    },
+    "agentExecutors": {
+      "type": "object",
+      "additionalProperties": { "enum": ["model", "cursor"] },
+      "default": {}
+    },
+    "mutationAgents": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "cursor": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean", "default": false },
+        "command": { "type": "string", "minLength": 1, "default": "cursor-agent" },
+        "args": { "type": "array", "items": { "type": "string" } },
+        "timeoutMs": { "type": "integer", "minimum": 1000, "maximum": 3600000 }
+      }
+    },
+    "mcpServers": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/mcpServer" },
+      "default": {}
+    },
+    "sandbox": { "$ref": "#/$defs/sandbox" },
+    "approvals": { "$ref": "#/$defs/approvals" },
+    "limits": { "$ref": "#/$defs/limits" }
+  },
+  "$defs": {
+    "credentialRef": {
+      "type": "string",
+      "pattern": "^(?:env:[A-Z][A-Z0-9_]*|keychain:[a-zA-Z0-9_.:@/-]+)$"
+    },
+    "capability": {
+      "enum": ["text", "tools", "parallel-tools", "structured-output", "streaming", "vision", "reasoning", "usage"]
+    },
+    "provider": {
+      "type": "object",
+      "required": ["kind"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": ["openai", "anthropic", "gemini", "xai", "deepseek", "kimi", "glm", "openrouter", "ollama", "lm-studio", "vllm", "openai-compatible"]
+        },
+        "baseUrl": { "type": "string", "format": "uri" },
+        "credentialRef": { "$ref": "#/$defs/credentialRef" },
+        "allowPrivateNetwork": { "type": "boolean", "default": false },
+        "capabilities": { "type": "array", "items": { "$ref": "#/$defs/capability" }, "uniqueItems": true },
+        "timeoutMs": { "type": "integer", "minimum": 1000, "maximum": 600000 }
+      }
+    },
+    "modelAlias": {
+      "type": "object",
+      "required": ["candidates"],
+      "additionalProperties": false,
+      "properties": {
+        "candidates": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["provider", "model"],
+            "additionalProperties": false,
+            "properties": {
+              "provider": { "type": "string", "minLength": 1 },
+              "model": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "requiredCapabilities": { "type": "array", "items": { "$ref": "#/$defs/capability" }, "uniqueItems": true },
+        "maxAttempts": { "type": "integer", "minimum": 1, "maximum": 10 }
+      }
+    },
+    "mcpServer": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["transport", "command"],
+          "additionalProperties": false,
+          "properties": {
+            "transport": { "const": "stdio" },
+            "command": { "type": "string", "minLength": 1 },
+            "args": { "type": "array", "items": { "type": "string" } },
+            "envRefs": { "type": "object", "additionalProperties": { "$ref": "#/$defs/credentialRef" } },
+            "allowHostExecution": { "type": "boolean", "default": false },
+            "allowedTools": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["transport", "url", "allowedHosts"],
+          "additionalProperties": false,
+          "properties": {
+            "transport": { "const": "streamable-http" },
+            "url": { "type": "string", "format": "uri" },
+            "authRef": { "$ref": "#/$defs/credentialRef" },
+            "allowedHosts": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+            "allowPrivateNetwork": { "type": "boolean", "default": false },
+            "allowedTools": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+          }
+        }
+      ]
+    },
+    "sandbox": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "provider": { "enum": ["docker", "host-readonly"] },
+        "image": { "type": "string", "minLength": 1 },
+        "network": { "enum": ["none", "approved"] },
+        "allowHostMutations": { "type": "boolean" },
+        "timeoutMs": { "type": "integer", "minimum": 1000, "maximum": 3600000 },
+        "memoryMb": { "type": "integer", "minimum": 128, "maximum": 32768 },
+        "cpus": { "type": "number", "exclusiveMinimum": 0, "maximum": 32 }
+      }
+    },
+    "approvals": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mode": { "const": "risk-tiered" },
+        "requirePlan": { "type": "boolean" },
+        "requireFinalCommit": { "type": "boolean" }
+      }
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "maxSteps": { "type": "integer", "minimum": 1, "maximum": 100 },
+        "maxAgentVisits": { "type": "integer", "minimum": 1, "maximum": 10 },
+        "maxRetriesPerNode": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "maxToolCallsPerAgent": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "runTimeoutMs": { "type": "integer", "minimum": 1000, "maximum": 86400000 }
+      }
+    }
+  }
+}

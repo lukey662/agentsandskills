@@ -74,6 +74,6 @@ Kit was installed with `init --stack next-supabase`. Setup should be run from th
 
 ## Next steps (optional)
 
-- Publish `@appsforgood/next-supabase-kit@0.1.2` so `npx` serves Agent Office and `studio serve`.
-- Run setup on AI news through the office flow and complete agent briefings + product context.
-- Milestone 9 direct AI orchestration remains deferred (see `RUNTIME_ORCHESTRATION_SCOPE.md`).
+- Keep setup and Studio behavior covered by the shared release gate and browser smoke evidence.
+- Run setup on downstream projects through the office flow and complete agent briefings plus product context.
+- Dogfood the optional runtime using the security and approval contract in `RUNTIME_ORCHESTRATION_SCOPE.md`; baseline projects should remain runtime-free.

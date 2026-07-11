@@ -183,5 +183,5 @@ Scope: README/docs discoverability + three new Antigravity adapters
 | Canonical index | `prompts/lifecycle-command-index.md` for delivery commands (parallel to `prompts/ui-command-index.md`) |
 | New adapters | `/spec`, `/test`, `/review` in `antigravity/commands/` (20 total native commands) |
 | Roster | `testing` and `code-review` workflows; planning triggers for spec keywords |
-| Out of scope | `/build`, `/webperf`, `/code-simplify`, `/build auto` — documented as future orchestration |
+| Historical scope | `/build`, `/webperf`, `/code-simplify`, and `/build auto` were deferred in this 0.1.7 review; the later runtime ships bounded roster workflows rather than cloning those command semantics |
 | Verification | `npm test`, `agent-kit adapter validate antigravity` after build |

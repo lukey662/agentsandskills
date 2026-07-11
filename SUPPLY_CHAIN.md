@@ -1,18 +1,18 @@
 # Supply Chain Security
 
-This package is intended for public npm distribution and downstream project bootstrapping. Release integrity is part of the product, not an optional operations detail.
+The root kit and optional runtime are intended for public npm distribution. Release integrity is part of the product, not an optional operations detail.
 
 ## Publish Identity
 
-- Public package: `@appsforgood/next-supabase-kit`.
-- Publish path: GitHub Actions release workflow through npm Trusted Publishing when configured, with a token-backed publish fallback for the current npm package setup.
-- Authentication: prefer OIDC trusted publisher; the fallback uses a scoped npm automation token stored as a GitHub Actions secret.
+- Public packages: `@appsforgood/next-supabase-kit` and `@appsforgood/agent-kit-runtime`.
+- Publish path: GitHub Actions release workflow through npm Trusted Publishing.
+- Authentication: short-lived GitHub OIDC identity only; automated publishing has no npm token fallback.
 - Environment: `npm-publish`.
-- Trusted publisher must be scoped to repository `lukey662/agentsandskills`, workflow `release.yml`, and allowed action `npm publish`.
+- Each npm package must have its own Trusted Publisher scoped to repository `lukey662/agentsandskills`, workflow `release.yml`, environment `npm-publish`, and allowed action `npm publish`.
 
-When npm Trusted Publishing is used from a public GitHub repository for a public package, npm generates provenance attestations automatically. Until that package-level publisher is confirmed in npm, the release workflow publishes with the configured secret and `--provenance` so npm still receives GitHub Actions provenance.
+The workflow removes inherited npm token variables, supplies a token-free npm configuration, and requires the GitHub OIDC request context before publishing. A missing or incorrect package-level Trusted Publisher fails closed instead of switching authentication modes. Successful publication carries npm provenance tied to that workflow identity.
 
-The release workflow also creates a deterministic package tarball, generates a CycloneDX SBOM from `package-lock.json`, uploads the tarball, SBOM, and pack metadata as release evidence, and attests the SBOM against the exact tarball path that is published to npm.
+The release workflow creates separate root/runtime tarballs and package-rooted CycloneDX SBOMs, uploads them as release evidence, and attests each SBOM against its exact tarball. Runtime publishes before root when both are new. Both public packages are verified before the matching GitHub release, so a partial npm publish cannot create an apparently successful source release.
 
 ## Release Gates
 
@@ -22,16 +22,16 @@ Before publish:
 - `npm run release:check`
 - Public release review
 
-`npm run release:check` validates JSON assets, typechecks, tests, builds, runs install smoke, runs dependency audit, validates SBOM generation, and performs package dry run. The install smoke also inspects packaged public files for forbidden private-package text.
+`npm run release:check` validates JSON assets, typechecks both workspaces, tests, builds both packages, runs install smoke, runs dependency audit, validates SBOM generation, and performs root/runtime package dry runs. The install smoke also inspects packaged public files for forbidden private-package text.
 
 `npm run sbom:check` validates that the lockfile-derived CycloneDX SBOM can be generated, includes runtime dependencies, and has no unresolved required dependency links. Optional platform-specific dependency links may be skipped when npm records optional package edges that are not present for the current install target.
 
 After publish:
 
 - `npm view @appsforgood/next-supabase-kit@<version> version`
-- `npx --yes @appsforgood/next-supabase-kit@<version> doctor`
-- `npx --yes @appsforgood/next-supabase-kit@<version> init --stack next-supabase` in a clean temp project
-- `npx --yes @appsforgood/next-supabase-kit@<version> audit --json` with zero failures
+- `npm view @appsforgood/agent-kit-runtime@<version> version`
+- Clean install and import of `@appsforgood/agent-kit-runtime`
+- Clean install of both packages followed by root `doctor`, `init`, `audit --json` with zero failures, and `orchestrate validate --json`
 
 The release workflow and `npm run publish:verify` both use `scripts/post-publish-verify.mjs` for this post-publish verification path.
 
@@ -39,7 +39,7 @@ The release workflow and `npm run publish:verify` both use `scripts/post-publish
 
 - CI verifies package behavior on push and pull request.
 - Dependency Review blocks pull requests that introduce moderate or worse known vulnerabilities.
-- Dependabot proposes npm and GitHub Actions updates.
+- Dependabot proposes npm and GitHub Actions updates; workflow actions remain pinned to immutable commit SHAs with reviewed version comments.
 - CodeQL scans JavaScript/TypeScript code.
 - OpenSSF Scorecard publishes repository security posture as code-scanning evidence.
 - CODEOWNERS identifies default review ownership for source, templates, schemas, and workflows.
@@ -47,9 +47,10 @@ The release workflow and `npm run publish:verify` both use `scripts/post-publish
 
 ## Maintainer Rules
 
-- Do not use bypass-2FA npm publish tokens for automation; any fallback token must be scoped for package publishing and stored only as a GitHub Actions secret.
+- Do not use npm publish tokens for automation. Maintainer-local OTP publishing is an explicit recovery operation, not a workflow fallback.
 - Do not publish from unreviewed branches or untrusted workflow changes.
 - Treat workflow edits as release-risk changes requiring security and maintainer review.
-- Rotate and delete fallback publish secrets after Trusted Publishing is confirmed.
+- Keep package-write token secrets absent from repository and environment configuration.
 - Keep package contents free of secrets, private downstream data, and copied third-party source.
 - Keep SBOM generation and attestation in the shared release path; do not publish an unattested tarball when the workflow is available.
+- Keep `allowScripts` approvals version-pinned to reviewed required native/build packages. Explicitly deny optional package scripts that are not needed.

@@ -8,9 +8,11 @@ import { resolveNpmCommand, resolveNpxCommand } from "./lib/npm-command.mjs";
 
 const repoRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const packageJson = JSON.parse(readFileSync(join(repoRoot, "package.json"), "utf8"));
+const runtimePackageJson = JSON.parse(readFileSync(join(repoRoot, "packages", "runtime", "package.json"), "utf8"));
 const packageName = process.env.AGENT_KIT_VERIFY_PACKAGE_NAME ?? packageJson.name;
 const packageVersion = process.env.AGENT_KIT_VERIFY_PACKAGE_VERSION ?? packageJson.version;
 const packageSpec = process.argv[2] ?? `${packageName}@${packageVersion}`;
+const runtimeSpec = process.env.AGENT_KIT_VERIFY_RUNTIME_SPEC ?? `${runtimePackageJson.name}@${runtimePackageJson.version}`;
 const registry = process.env.npm_config_registry ?? "https://registry.npmjs.org";
 const tempRoot = mkdtempSync(join(tmpdir(), "agent-kit-published-verify-"));
 const env = {
@@ -33,7 +35,7 @@ function run(command, args, options = {}) {
 }
 
 function runInstalledAgentKit(args, options = {}) {
-  return run("npm", ["exec", "--yes", "--package", packageSpec, "--", "agent-kit", ...args], options);
+  return run("npm", ["exec", "--", "agent-kit", ...args], options);
 }
 
 function verifyPackageVisible() {
@@ -63,6 +65,28 @@ try {
   console.log("preparing clean temp project");
   run("npm", ["init", "--yes"], { cwd: tempRoot, stdio: "ignore" });
 
+  if (packageName === "@appsforgood/agent-kit-runtime") {
+    console.log("installing and importing published runtime");
+    run("npm", ["install", "--save-exact", packageSpec, `--registry=${registry}`], { cwd: tempRoot, stdio: "inherit" });
+    run(
+      process.execPath,
+      [
+        "--input-type=module",
+        "-e",
+        "const runtime = await import('@appsforgood/agent-kit-runtime'); if (typeof runtime.AgentKitRuntimeService !== 'function') process.exit(1); console.log('runtime import passed');"
+      ],
+      { cwd: tempRoot, stdio: "inherit" }
+    );
+    console.log(`published runtime verification passed: ${packageSpec}`);
+    process.exit(0);
+  }
+
+  console.log("installing published Agent Kit packages");
+  run("npm", ["install", "--save-exact", packageSpec, ...(runtimeSpec ? [runtimeSpec] : []), `--registry=${registry}`], {
+    cwd: tempRoot,
+    stdio: "inherit"
+  });
+
   console.log("running published doctor");
   runInstalledAgentKit(["doctor"], { cwd: tempRoot, stdio: "inherit" });
 
@@ -74,6 +98,13 @@ try {
   const auditReport = JSON.parse(auditOutput);
   if (auditReport.summary?.fail !== 0) {
     throw new Error(`Expected published install audit to have 0 failures, got ${auditReport.summary?.fail}.\n${auditOutput}`);
+  }
+
+  if (runtimeSpec) {
+    console.log("validating published orchestrator integration");
+    const orchestratorOutput = runInstalledAgentKit(["orchestrate", "validate", "--json"], { cwd: tempRoot });
+    const orchestrator = JSON.parse(orchestratorOutput);
+    if (orchestrator.valid !== true) throw new Error(`Published orchestrator validation failed.\n${orchestratorOutput}`);
   }
 
   console.log(

@@ -35,3 +35,4 @@ Start with the Planner workflow. For core changes, hand off to Lead Architect. F
 - Document active subagents and verification evidence in `ASSISTANT_ADAPTERS.md`.
 - Record model-selection evidence and limitations in `ASSISTANT_ADAPTERS.md`.
 - Avoid giving a subagent broader tool access than its role needs.
+- Treat Claude subagents as instruction adapters. Use `agent-kit orchestrate ...` and its run evidence when the task requires the executable checkpointed council.

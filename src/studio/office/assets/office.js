@@ -36,6 +36,9 @@
     studioSessionId: boot.activeSessionId || "",
     studioEvents: [],
     studioEventSource: null,
+    runtimeRuns: [],
+    runtimeRunId: "",
+    runtimeEvents: [],
     speechBubbles: [],
     agenticLevel: null
   };
@@ -77,7 +80,25 @@
     studioNoteForm: document.getElementById("studio-note-form"),
     studioNoteAgent: document.getElementById("studio-note-agent"),
     studioNoteText: document.getElementById("studio-note-text"),
-    studioRenderBtn: document.getElementById("studio-render-btn")
+    studioRenderBtn: document.getElementById("studio-render-btn"),
+    studioCouncilTab: document.getElementById("studio-council-tab"),
+    studioRuntimeTab: document.getElementById("studio-runtime-tab"),
+    studioCouncilView: document.getElementById("studio-council-view"),
+    studioRuntimeView: document.getElementById("studio-runtime-view"),
+    runtimeStartForm: document.getElementById("runtime-start-form"),
+    runtimeStartBtn: document.getElementById("runtime-start-btn"),
+    runtimeGoal: document.getElementById("runtime-goal"),
+    runtimeDirtyBase: document.getElementById("runtime-dirty-base"),
+    runtimePicker: document.getElementById("runtime-picker"),
+    runtimeRefreshBtn: document.getElementById("runtime-refresh-btn"),
+    runtimeSummary: document.getElementById("runtime-summary"),
+    runtimeApproval: document.getElementById("runtime-approval"),
+    runtimeApprovalTitle: document.getElementById("runtime-approval-title"),
+    runtimeApprovalDetail: document.getElementById("runtime-approval-detail"),
+    runtimeApproveBtn: document.getElementById("runtime-approve-btn"),
+    runtimeRejectBtn: document.getElementById("runtime-reject-btn"),
+    runtimeCancelBtn: document.getElementById("runtime-cancel-btn"),
+    runtimeEventList: document.getElementById("runtime-event-list")
   };
 
   const ctx = els.canvas?.getContext("2d");
@@ -175,7 +196,13 @@
   }
 
   async function api(path, options) {
-    const response = await fetch(path, options);
+    const requestOptions = options ? { ...options } : {};
+    const method = String(requestOptions.method || "GET").toUpperCase();
+    if (!["GET", "HEAD", "OPTIONS"].includes(method)) {
+      const token = document.querySelector('meta[name="agent-kit-csrf-token"]')?.getAttribute("content") || "";
+      requestOptions.headers = { ...(requestOptions.headers || {}), "Content-Type": "application/json", "X-Agent-Kit-CSRF": token };
+    }
+    const response = await fetch(path, requestOptions);
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || "Request failed");
     return data;
@@ -230,6 +257,7 @@
       window.setTimeout(() => els.officeHint?.classList.add("hidden"), 6000);
     }
     connectStudioStream();
+    await loadRuntimeRuns().catch((error) => renderRuntimeUnavailable(error.message));
   }
 
   function populateSessionPicker(sessions, selectedId) {
@@ -257,7 +285,123 @@
       : '<option value="planner">Planner</option>';
   }
 
+  function switchStudioView(view) {
+    const runtime = view === "runtime";
+    if (els.studioCouncilView) els.studioCouncilView.hidden = runtime;
+    if (els.studioRuntimeView) els.studioRuntimeView.hidden = !runtime;
+    els.studioCouncilTab?.classList.toggle("active", !runtime);
+    els.studioRuntimeTab?.classList.toggle("active", runtime);
+    els.studioCouncilTab?.setAttribute("aria-selected", String(!runtime));
+    els.studioRuntimeTab?.setAttribute("aria-selected", String(runtime));
+    if (runtime) void loadRuntimeRuns().catch((error) => renderRuntimeUnavailable(error.message));
+  }
+
+  function populateRuntimePicker() {
+    if (!els.runtimePicker) return;
+    els.runtimePicker.innerHTML = state.runtimeRuns.length
+      ? state.runtimeRuns
+          .map(
+            (run) =>
+              '<option value="' +
+              escapeHtml(run.runId) +
+              '"' +
+              (run.runId === state.runtimeRunId ? " selected" : "") +
+              ">" +
+              escapeHtml(run.runId.slice(0, 30) + " · " + run.status) +
+              "</option>"
+          )
+          .join("")
+      : '<option value="">No runs</option>';
+  }
+
+  async function loadRuntimeRuns() {
+    const response = await api("/api/runtime/runs");
+    const runtimeEnabled = response.enabled === true;
+    if (els.runtimeStartBtn) els.runtimeStartBtn.disabled = !runtimeEnabled;
+    state.runtimeRuns = Array.isArray(response.runs) ? response.runs : [];
+    if (!state.runtimeRunId || !state.runtimeRuns.some((run) => run.runId === state.runtimeRunId)) {
+      state.runtimeRunId = state.runtimeRuns[0]?.runId || "";
+    }
+    populateRuntimePicker();
+    if (state.runtimeRunId) await loadRuntimeRun(state.runtimeRunId);
+    else if (runtimeEnabled) renderRuntimeRun(null, []);
+    else renderRuntimeUnavailable("Runtime is disabled in .agent-kit/orchestrator.json.");
+  }
+
+  async function loadRuntimeRun(runId) {
+    if (!runId) {
+      renderRuntimeRun(null, []);
+      return;
+    }
+    const response = await api("/api/runtime/runs/" + encodeURIComponent(runId));
+    state.runtimeRunId = runId;
+    state.runtimeEvents = response.events || [];
+    const index = state.runtimeRuns.findIndex((run) => run.runId === runId);
+    if (index >= 0) state.runtimeRuns[index] = response.run;
+    else state.runtimeRuns.unshift(response.run);
+    populateRuntimePicker();
+    renderRuntimeRun(response.run, state.runtimeEvents);
+  }
+
+  function renderRuntimeUnavailable(message) {
+    if (els.runtimeStartBtn) els.runtimeStartBtn.disabled = true;
+    if (els.runtimeSummary) els.runtimeSummary.innerHTML = "<div><dt>Status</dt><dd>" + escapeHtml(message) + "</dd></div>";
+    if (els.runtimeEventList) els.runtimeEventList.innerHTML = "";
+    if (els.runtimeApproval) els.runtimeApproval.hidden = true;
+    if (els.runtimeCancelBtn) els.runtimeCancelBtn.hidden = true;
+  }
+
+  function renderRuntimeRun(run, events) {
+    if (els.runtimeSummary) {
+      const items = run
+        ? [
+            ["Status", run.status],
+            ["Workflow", run.workflowId],
+            ["Agent", run.activeAgentId || "—"],
+            ["Commit", run.commit ? run.commit.slice(0, 12) : "—"]
+          ]
+        : [["Status", "No runs"]];
+      els.runtimeSummary.innerHTML = items.map(([label, value]) => "<div><dt>" + escapeHtml(label) + "</dt><dd>" + escapeHtml(value) + "</dd></div>").join("");
+    }
+    const pending = run?.pendingApproval;
+    if (els.runtimeApproval) els.runtimeApproval.hidden = !pending;
+    if (els.runtimeApprovalTitle) els.runtimeApprovalTitle.textContent = pending?.title || "";
+    if (els.runtimeApprovalDetail) els.runtimeApprovalDetail.textContent = pending?.detail || "";
+    const terminal = !run || ["complete", "failed", "cancelled"].includes(run.status);
+    if (els.runtimeCancelBtn) els.runtimeCancelBtn.hidden = terminal;
+    if (els.runtimeEventList) {
+      els.runtimeEventList.innerHTML = (events || [])
+        .slice(-100)
+        .map(
+          (event) =>
+            '<li><span class="tx-time">' +
+            escapeHtml((event.createdAt || "").slice(11, 19)) +
+            "</span> <strong>" +
+            escapeHtml(event.agentId || "run") +
+            "</strong> " +
+            escapeHtml(eventLabel(event)) +
+            "</li>"
+        )
+        .join("");
+      els.runtimeEventList.scrollTop = els.runtimeEventList.scrollHeight;
+    }
+    if (run && els.sessionPill && !els.studioRuntimeView?.hidden) els.sessionPill.textContent = run.runId.slice(0, 24);
+  }
+
+  async function decideRuntime(decision) {
+    if (!state.runtimeRunId) return;
+    const response = await api("/api/runtime/runs/" + encodeURIComponent(state.runtimeRunId) + "/decision", {
+      method: "POST",
+      body: JSON.stringify({ decision, actor: "studio-operator" })
+    });
+    state.runtimeEvents = response.events || [];
+    renderRuntimeRun(response.run, state.runtimeEvents);
+    await loadRuntimeRuns();
+  }
+
   function bindStudioControls() {
+    els.studioCouncilTab?.addEventListener("click", () => switchStudioView("council"));
+    els.studioRuntimeTab?.addEventListener("click", () => switchStudioView("runtime"));
     if (els.sessionPicker) {
       els.sessionPicker.addEventListener("change", () => {
         state.studioSessionId = els.sessionPicker.value;
@@ -309,6 +453,60 @@
         }
       });
     }
+    if (els.runtimePicker) {
+      els.runtimePicker.addEventListener("change", () => {
+        state.runtimeRunId = els.runtimePicker.value;
+        void loadRuntimeRun(state.runtimeRunId).catch((error) => setStatus("error", error.message));
+      });
+    }
+    els.runtimeRefreshBtn?.addEventListener("click", () => {
+      void loadRuntimeRuns().catch((error) => setStatus("error", error.message));
+    });
+    if (els.runtimeStartForm) {
+      els.runtimeStartForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const goal = (els.runtimeGoal?.value || "").trim();
+        if (!goal) {
+          setStatus("error", "Enter a run goal.");
+          return;
+        }
+        try {
+          const response = await api("/api/runtime/runs", {
+            method: "POST",
+            body: JSON.stringify({ goal, acknowledgeDirtyBase: Boolean(els.runtimeDirtyBase?.checked) })
+          });
+          state.runtimeRunId = response.run.runId;
+          state.runtimeEvents = response.events || [];
+          if (els.runtimeGoal) els.runtimeGoal.value = "";
+          await loadRuntimeRuns();
+          setStatus("ok", "Run started.");
+        } catch (error) {
+          setStatus("error", error.message);
+        }
+      });
+    }
+    els.runtimeApproveBtn?.addEventListener("click", () => {
+      void decideRuntime("approve").catch((error) => setStatus("error", error.message));
+    });
+    els.runtimeRejectBtn?.addEventListener("click", () => {
+      void decideRuntime("reject").catch((error) => setStatus("error", error.message));
+    });
+    els.runtimeCancelBtn?.addEventListener("click", async () => {
+      if (!state.runtimeRunId) return;
+      try {
+        const response = await api("/api/runtime/runs/" + encodeURIComponent(state.runtimeRunId) + "/cancel", { method: "POST" });
+        state.runtimeEvents = response.events || [];
+        renderRuntimeRun(response.run, state.runtimeEvents);
+        await loadRuntimeRuns();
+      } catch (error) {
+        setStatus("error", error.message);
+      }
+    });
+    window.setInterval(() => {
+      if (els.studioRuntimeView && !els.studioRuntimeView.hidden) {
+        void loadRuntimeRuns().catch(() => undefined);
+      }
+    }, 2500);
   }
 
   function connectStudioStream() {

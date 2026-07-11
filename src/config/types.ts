@@ -26,6 +26,7 @@ export interface AgentKitConfig {
 }
 
 export interface InstallManifest {
+  schemaVersion?: 1 | 2;
   packageName: string;
   packageVersion: string;
   stack: StackProfile;
@@ -36,6 +37,7 @@ export interface InstallManifest {
   agentRoster?: string;
   modelRouting?: string;
   templateHashes?: Record<string, string>;
+  assetHashes?: Record<string, string>;
 }
 
 export interface AuditFinding {
@@ -43,6 +45,21 @@ export interface AuditFinding {
   area: string;
   message: string;
   remediation?: string;
+  ruleId?: string;
+  ruleVersion?: string;
+  helpUri?: string;
+  confidence?: "low" | "medium" | "high";
+  evidence?: AuditEvidence[];
+  fixable?: boolean;
+}
+
+export interface AuditEvidence {
+  kind: "file" | "command" | "configuration" | "runtime";
+  summary: string;
+  path?: string;
+  line?: number;
+  column?: number;
+  observedAt?: string;
 }
 
 export type AuditReadinessLevel = "needs-setup" | "needs-improvement" | "baseline-setup" | "best-practice-candidate";
@@ -57,6 +74,25 @@ export interface AuditReport {
   summary: Record<AuditFinding["level"], number>;
   readiness: AuditReadiness;
   findings: AuditFinding[];
+}
+
+export interface AuditFindingV2 extends AuditFinding {
+  ruleId: string;
+  ruleVersion: string;
+  confidence: "low" | "medium" | "high";
+  evidence: AuditEvidence[];
+  suppressed?: boolean;
+  suppressionReason?: string;
+}
+
+export interface AuditReportV2 {
+  schemaVersion: 2;
+  generatedAt: string;
+  tool: { name: "agent-kit"; version: string };
+  root: ".";
+  summary: AuditReport["summary"] & { suppressed: number };
+  readiness: AuditReadiness;
+  findings: AuditFindingV2[];
 }
 
 export interface RepoCandidate {

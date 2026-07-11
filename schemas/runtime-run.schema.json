@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-skills.dev/schemas/runtime-run.schema.json",
+  "title": "Agent Kit Runtime Run",
+  "type": "object",
+  "required": ["schemaVersion", "runId", "workflowId", "goal", "status", "createdAt", "updatedAt", "sourceRoot", "baseCommit", "results"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "runId": { "type": "string", "pattern": "^[a-zA-Z0-9_-]+$" },
+    "workflowId": { "type": "string", "minLength": 1 },
+    "goal": { "type": "string", "minLength": 1 },
+    "status": { "$ref": "#/$defs/status" },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "updatedAt": { "type": "string", "format": "date-time" },
+    "sourceRoot": { "type": "string", "minLength": 1 },
+    "baseCommit": { "type": "string", "minLength": 1 },
+    "worktreePath": { "type": "string", "minLength": 1 },
+    "branchName": { "type": "string", "minLength": 1 },
+    "activeAgentId": { "type": "string", "minLength": 1 },
+    "pendingApproval": { "$ref": "#/$defs/approvalRequest" },
+    "commit": { "type": "string", "minLength": 1 },
+    "changed": { "type": "string" },
+    "results": { "type": "array", "items": { "$ref": "#/$defs/agentResult" } },
+    "error": { "type": "string" }
+  },
+  "$defs": {
+    "status": { "enum": ["planned", "running", "awaiting-approval", "blocked", "cancelled", "failed", "complete"] },
+    "risk": { "enum": ["plan", "write", "network", "secret", "destructive", "host-mutation", "final-commit"] },
+    "approvalRequest": {
+      "type": "object",
+      "required": ["approvalId", "runId", "risk", "title", "detail", "requestedAt"],
+      "additionalProperties": false,
+      "properties": {
+        "approvalId": { "type": "string", "minLength": 1 },
+        "runId": { "type": "string", "minLength": 1 },
+        "risk": { "$ref": "#/$defs/risk" },
+        "title": { "type": "string", "minLength": 1 },
+        "detail": { "type": "string" },
+        "requestedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "agentResult": {
+      "type": "object",
+      "required": ["agentId", "summary", "decision", "risk", "artifacts", "verification"],
+      "additionalProperties": false,
+      "properties": {
+        "agentId": { "type": "string", "minLength": 1 },
+        "summary": { "type": "string" },
+        "decision": { "type": "string" },
+        "risk": { "type": "string" },
+        "artifacts": { "type": "array", "items": { "type": "string" } },
+        "verification": { "type": "array", "items": { "type": "string" } },
+        "requestedHandoff": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

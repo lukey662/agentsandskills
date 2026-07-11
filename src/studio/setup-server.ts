@@ -23,6 +23,15 @@ import { renderSetupWizardHtmlWithContext } from "./wizard/render.js";
 import { SECTION_LABELS, type WizardDepth, type WizardSectionId } from "./wizard/steps.js";
 import { computeAgenticLevel, invalidateAgenticLevelCache, summarizeAdapterValidation } from "./agentic-level.js";
 import { readJsonBody } from "./shared.js";
+import {
+  LocalHttpRequestError,
+  assertSecureLocalRequest,
+  baseSecurityHeaders,
+  createLocalHttpSecurity,
+  formatLocalUrl,
+  secureLocalHtml,
+  type LocalHttpSecurity
+} from "./local-http-security.js";
 
 export interface SetupServerOptions {
   cwd: string;
@@ -36,6 +45,7 @@ export interface SetupServerHandle {
   requestedPort: number;
   portFallback: boolean;
   defaultView: "office";
+  csrfToken: string;
   close: () => Promise<void>;
 }
 
@@ -44,20 +54,21 @@ const DEFAULT_HOST = "127.0.0.1";
 
 function sendJson(response: ServerResponse, statusCode: number, payload: unknown): void {
   response.writeHead(statusCode, {
+    ...baseSecurityHeaders(),
     "Content-Type": "application/json; charset=utf-8",
-    "Cache-Control": "no-store"
+    "Content-Security-Policy": "default-src 'none'; frame-ancestors 'none'"
   });
   response.end(JSON.stringify(payload));
 }
 
-function sendHtml(response: ServerResponse, html: string): void {
+function sendHtml(response: ServerResponse, html: string, security: LocalHttpSecurity): void {
+  const secured = secureLocalHtml(html, security);
   response.writeHead(200, {
+    ...baseSecurityHeaders(),
     "Content-Type": "text/html; charset=utf-8",
-    "Cache-Control": "no-store",
-    "Content-Security-Policy":
-      "default-src 'none'; connect-src 'self'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'self'"
+    "Content-Security-Policy": secured.csp
   });
-  response.end(html);
+  response.end(secured.body);
 }
 
 function buildStatePayload(cwd: string, options: { forceAgenticRefresh?: boolean } = {}): Record<string, unknown> {
@@ -88,7 +99,7 @@ function buildStatePayload(cwd: string, options: { forceAgenticRefresh?: boolean
 }
 
 function sendRedirect(response: ServerResponse, location: string): void {
-  response.writeHead(302, { Location: location, "Cache-Control": "no-store" });
+  response.writeHead(302, { ...baseSecurityHeaders(), Location: location });
   response.end();
 }
 
@@ -110,7 +121,16 @@ function markOfficeSectionComplete(cwd: string, stationId: string, form: Record<
   markSectionComplete(cwd, section);
 }
 
-async function handleRequest(cwd: string, request: IncomingMessage, response: ServerResponse): Promise<void> {
+async function handleRequest(cwd: string, request: IncomingMessage, response: ServerResponse, security: LocalHttpSecurity): Promise<void> {
+  try {
+    assertSecureLocalRequest(request, security);
+  } catch (error) {
+    if (error instanceof LocalHttpRequestError) {
+      sendJson(response, error.statusCode, { error: error.message });
+      return;
+    }
+    throw error;
+  }
   const url = new URL(request.url ?? "/", "http://127.0.0.1");
 
   if (request.method === "GET" && url.pathname === "/setup/wizard") {
@@ -119,12 +139,12 @@ async function handleRequest(cwd: string, request: IncomingMessage, response: Se
   }
 
   if (request.method === "GET" && (url.pathname === "/" || url.pathname === "/office" || url.pathname === "/setup")) {
-    sendHtml(response, renderSetupOfficeHtmlWithContext(cwd));
+    sendHtml(response, renderSetupOfficeHtmlWithContext(cwd), security);
     return;
   }
 
   if (request.method === "GET" && url.pathname === "/wizard") {
-    sendHtml(response, renderSetupWizardHtmlWithContext(cwd));
+    sendHtml(response, renderSetupWizardHtmlWithContext(cwd), security);
     return;
   }
 
@@ -329,12 +349,13 @@ function listen(server: Server, host: string, port: number): Promise<number> {
 
 export async function startSetupServer(options: SetupServerOptions): Promise<SetupServerHandle> {
   const host = options.host ?? DEFAULT_HOST;
+  const security = createLocalHttpSecurity(host);
   const requestedPort = options.port ?? DEFAULT_PORT;
   ensureProjectContextForSetup(options.cwd);
   loadOnboardingState(options.cwd);
 
   const server = createServer((request, response) => {
-    handleRequest(options.cwd, request, response).catch((error) => {
+    handleRequest(options.cwd, request, response, security).catch((error) => {
       sendJson(response, 500, { error: error instanceof Error ? error.message : String(error) });
     });
   });
@@ -352,12 +373,15 @@ export async function startSetupServer(options: SetupServerOptions): Promise<Set
     }
   }
 
+  security.port = port;
+
   return {
-    url: `http://${host}:${port}`,
+    url: formatLocalUrl(host, port),
     port,
     requestedPort,
     portFallback,
     defaultView: "office",
+    csrfToken: security.csrfToken,
     close: () =>
       new Promise((resolve, reject) => {
         server.close((closeError) => {

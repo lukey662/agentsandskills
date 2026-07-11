@@ -606,6 +606,38 @@ export function validatePackage(cwd: string): ValidationReport {
 
   findings.push(...validateAntigravity(cwd).findings);
 
+  const runtimeRequired = [
+    "packages/runtime/package.json",
+    "packages/runtime/README.md",
+    "packages/runtime/CHANGELOG.md",
+    "packages/runtime/LICENSE",
+    "packages/runtime/src/index.ts"
+  ];
+  for (const target of runtimeRequired) {
+    if (!existsSync(join(cwd, target))) {
+      findings.push({ level: "fail", area: "runtime-package", message: `${target} is missing.` });
+    }
+  }
+  const runtimeManifest = readJson(join(cwd, "packages", "runtime", "package.json"));
+  if (!isRecord(runtimeManifest) || runtimeManifest.name !== "@appsforgood/agent-kit-runtime") {
+    findings.push({ level: "fail", area: "runtime-package", message: "Runtime package name is missing or invalid." });
+  } else {
+    const publishConfig = isRecord(runtimeManifest.publishConfig) ? runtimeManifest.publishConfig : {};
+    const files = Array.isArray(runtimeManifest.files) ? runtimeManifest.files : [];
+    if (runtimeManifest.license !== "MIT") {
+      findings.push({ level: "fail", area: "runtime-package", message: "Runtime package must declare the MIT license." });
+    }
+    if (publishConfig.access !== "public" || publishConfig.provenance !== true) {
+      findings.push({ level: "fail", area: "runtime-package", message: "Runtime package must require public provenance publishing." });
+    }
+    for (const required of ["dist", "README.md", "CHANGELOG.md", "LICENSE"]) {
+      if (!files.includes(required)) findings.push({ level: "fail", area: "runtime-package", message: `Runtime package files omits ${required}.` });
+    }
+    if (findings.every((finding) => finding.area !== "runtime-package" || finding.level !== "fail")) {
+      findings.push({ level: "pass", area: "runtime-package", message: "Runtime package metadata and public artifacts are complete." });
+    }
+  }
+
   for (const doc of ["README.md", "DOCS.md", "SPEC.md", "DECISIONS.md", "QUALITY_GATES.md", "TESTING.md", "UPGRADE.md"]) {
     const path = join(cwd, doc);
     const text = existsSync(path) ? readFileSync(path, "utf8") : "";
@@ -636,7 +668,7 @@ export function validatePackage(cwd: string): ValidationReport {
     }
   }
 
-  const auditReport = createAuditReport(cwd);
+  const auditReport = createAuditReport(cwd, { packageSource: true });
   if (auditReport.summary.fail > 0) {
     findings.push({
       level: "fail",

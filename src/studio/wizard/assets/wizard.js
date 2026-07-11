@@ -59,7 +59,13 @@
   }
 
   async function api(path, options) {
-    const response = await fetch(path, options);
+    const requestOptions = options ? { ...options } : {};
+    const method = String(requestOptions.method || "GET").toUpperCase();
+    if (!["GET", "HEAD", "OPTIONS"].includes(method)) {
+      const token = document.querySelector('meta[name="agent-kit-csrf-token"]')?.getAttribute("content") || "";
+      requestOptions.headers = { ...(requestOptions.headers || {}), "Content-Type": "application/json", "X-Agent-Kit-CSRF": token };
+    }
+    const response = await fetch(path, requestOptions);
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || "Request failed");
     return data;

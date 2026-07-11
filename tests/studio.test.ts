@@ -19,9 +19,11 @@ import {
   recordHandoff,
   recordRequiredOutput,
   recordVerification,
+  readSessionEvents,
   renderActiveSession,
   startSession
 } from "../src/studio/session.js";
+import { localMutation } from "./helpers/local-http.js";
 
 let roots: string[] = [];
 
@@ -52,6 +54,29 @@ function tempProject(): string {
 }
 
 describe("Agent Studio local workflow", () => {
+  it("creates collision-safe session ids and ordered event identities", () => {
+    const root = tempProject();
+    initProjectContext(root);
+    const first = startSession(root, { title: "Repeated title", workflowId: "planning" });
+    const second = startSession(root, { title: "Repeated title", workflowId: "planning" });
+    expect(second.sessionId).not.toBe(first.sessionId);
+
+    recordDecision(root, "planner", "Use the second run.");
+    const events = readSessionEvents(root, second.sessionId);
+    expect(events.map((event) => event.sequence)).toEqual([1, 2]);
+    expect(new Set(events.map((event) => event.eventId)).size).toBe(events.length);
+  });
+
+  it("ignores an incomplete trailing JSONL write until it is completed", () => {
+    const root = tempProject();
+    initProjectContext(root);
+    const session = startSession(root, { title: "Interrupted append" });
+    appendFileSync(join(root, ".agent-kit", "council-sessions", session.sessionId, "events.jsonl"), '{"type":"agent_message"');
+    const events = readSessionEvents(root, session.sessionId);
+    expect(events).toHaveLength(1);
+    expect(events[0]?.type).toBe("session_started");
+  });
+
   it("creates project context from a local scan and renders markdown", () => {
     const root = tempProject();
 
@@ -105,6 +130,8 @@ describe("Agent Studio local workflow", () => {
     expect(index).toContain("Handoff Graph");
     expect(index).toContain("frontend-design-lead");
     expect(transcript).toContain("planner");
+    expect(index.endsWith("\n\n")).toBe(false);
+    expect(transcript.endsWith("\n\n")).toBe(false);
     expect(corrections.project).toHaveLength(1);
     expect(JSON.stringify(corrections)).not.toContain(fakeSecret);
     expect(index).not.toContain(fakeSecret);
@@ -313,25 +340,27 @@ describe("Agent Studio local workflow", () => {
       expect(viewModel.projectName).toBe("studio-test-project");
       expect(viewModel.openQuestions.length).toBeGreaterThan(0);
 
-      const saveResponse = await fetch(`${server.url}/api/context`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          productSummary: "Test product summary for studio setup.",
-          productCategory: "content-app",
-          primaryAudience: "Leaders",
-          primaryWorkflows: "Workflow one\nWorkflow two\nWorkflow three",
-          authModel: "Supabase Auth with admin allowlist.",
-          tenantModel: "single-user",
-          uiPreferred: "Clear and readable.",
-          uiAvoid: "Generic dashboards.",
-          valueProposition: "Users complete the primary workflow faster with less manual work.",
-          proof: "Human-reviewed drafts",
-          objections: "Too much AI slop — Every publish requires review.",
-          qualityTarget: "needs-improvement",
-          owner: "qa-owner"
+      const saveResponse = await fetch(
+        `${server.url}/api/context`,
+        localMutation(server, {
+          method: "POST",
+          body: JSON.stringify({
+            productSummary: "Test product summary for studio setup.",
+            productCategory: "content-app",
+            primaryAudience: "Leaders",
+            primaryWorkflows: "Workflow one\nWorkflow two\nWorkflow three",
+            authModel: "Supabase Auth with admin allowlist.",
+            tenantModel: "single-user",
+            uiPreferred: "Clear and readable.",
+            uiAvoid: "Generic dashboards.",
+            valueProposition: "Users complete the primary workflow faster with less manual work.",
+            proof: "Human-reviewed drafts",
+            objections: "Too much AI slop — Every publish requires review.",
+            qualityTarget: "needs-improvement",
+            owner: "qa-owner"
+          })
         })
-      });
+      );
       expect(saveResponse.ok).toBe(true);
       const saved = (await saveResponse.json()) as { openQuestions: string[] };
       expect(saved.openQuestions).toHaveLength(0);

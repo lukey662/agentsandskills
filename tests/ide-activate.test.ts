@@ -92,7 +92,11 @@ describe("activateIdeTargets", () => {
 
     const result = activateIdeTargets({ cwd: root, targets: ["codex"] });
     expect(readFileSync(configPath, "utf8")).toBe(customConfig);
-    expect(result.conflicts.some((entry) => entry.startsWith(".codex/config.toml ->"))).toBe(true);
+    const conflict = result.conflicts.find((entry) => entry.startsWith(".codex/config.toml ->"));
+    expect(conflict).toBeDefined();
+    const conflictPath = conflict!.split(" -> ")[1]!;
+    expect(conflictPath).toMatch(/^\.agent-kit\/conflicts\//);
+    expect(readFileSync(join(root, conflictPath), "utf8")).not.toBe(customConfig);
     expect(existsSync(join(root, ".codex/agents/planner.toml"))).toBe(true);
   });
 

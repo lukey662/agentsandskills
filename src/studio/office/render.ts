@@ -70,6 +70,51 @@ function renderOfficeHtml(boot: OfficeBootConfig | undefined, mode: "setup" | "s
   const isStudio = mode === "studio";
   const title = isStudio ? "Agent Kit — Live Studio" : "Agent Kit — Setup Office";
   const dataView = isStudio ? "studio-v1" : "office-v1";
+  const studioAside = `<aside class="transcript-panel" id="transcript-panel" aria-label="Agent Studio activity">
+      <div class="studio-tabs" role="tablist" aria-label="Studio view">
+        <button type="button" class="studio-tab active" id="studio-council-tab" role="tab" aria-selected="true" aria-controls="studio-council-view">Council</button>
+        <button type="button" class="studio-tab" id="studio-runtime-tab" role="tab" aria-selected="false" aria-controls="studio-runtime-view">Runs</button>
+      </div>
+      <section id="studio-council-view" role="tabpanel" aria-labelledby="studio-council-tab">
+        <div class="studio-controls" id="studio-controls">
+          <label class="studio-label" for="session-picker">Session</label>
+          <select id="session-picker" aria-label="Council session"></select>
+          <form id="studio-note-form" class="studio-note-form">
+            <select id="studio-note-agent" aria-label="Agent for note"></select>
+            <input id="studio-note-text" type="text" maxlength="3999" placeholder="Add council note…" />
+            <button type="submit" class="btn secondary">Add note</button>
+          </form>
+          <button type="button" class="btn primary" id="studio-render-btn">Render markdown</button>
+        </div>
+        <h2>Transcript</h2>
+        <ol id="transcript-list"></ol>
+      </section>
+      <section id="studio-runtime-view" role="tabpanel" aria-labelledby="studio-runtime-tab" hidden>
+        <form id="runtime-start-form" class="runtime-start-form">
+          <label class="studio-label" for="runtime-goal">Goal</label>
+          <textarea id="runtime-goal" maxlength="20000" rows="4" required></textarea>
+          <label class="runtime-check"><input id="runtime-dirty-base" type="checkbox" /> Exclude current local changes</label>
+          <button type="submit" class="btn primary" id="runtime-start-btn" disabled>Start run</button>
+        </form>
+        <div class="runtime-toolbar">
+          <label class="studio-label" for="runtime-picker">Run</label>
+          <select id="runtime-picker" aria-label="Runtime run"></select>
+          <button type="button" class="btn secondary" id="runtime-refresh-btn">Refresh</button>
+        </div>
+        <dl class="runtime-summary" id="runtime-summary"></dl>
+        <div class="runtime-approval" id="runtime-approval" hidden>
+          <strong id="runtime-approval-title"></strong>
+          <p id="runtime-approval-detail"></p>
+          <div class="runtime-actions">
+            <button type="button" class="btn primary" id="runtime-approve-btn">Approve</button>
+            <button type="button" class="btn secondary" id="runtime-reject-btn">Reject</button>
+          </div>
+        </div>
+        <button type="button" class="btn secondary runtime-cancel" id="runtime-cancel-btn" hidden>Cancel run</button>
+        <h2>Run events</h2>
+        <ol id="runtime-event-list"></ol>
+      </section>
+    </aside>`;
 
   return `<!doctype html>
 <html lang="en">
@@ -112,7 +157,7 @@ function renderOfficeHtml(boot: OfficeBootConfig | undefined, mode: "setup" | "s
       <div id="nameplate-layer" class="nameplate-layer" aria-hidden="true"></div>
       <div id="office-hint" class="office-hint hidden" role="status">${isStudio ? "Watching council session events…" : "Click a desk or zone to brief your agent team."}</div>
     </div>
-    ${isStudio ? '<aside class="transcript-panel" id="transcript-panel" aria-label="Session transcript"><div class="studio-controls" id="studio-controls"><label class="studio-label" for="session-picker">Session</label><select id="session-picker" aria-label="Council session"></select><form id="studio-note-form" class="studio-note-form"><select id="studio-note-agent" aria-label="Agent for note"></select><input id="studio-note-text" type="text" maxlength="3999" placeholder="Add council note…" /><button type="submit" class="btn secondary">Add note</button></form><button type="button" class="btn primary" id="studio-render-btn">Render markdown</button></div><h2>Transcript</h2><ol id="transcript-list"></ol></aside>' : ""}
+    ${isStudio ? studioAside : ""}
   </main>
   <div id="status" class="status" role="status" aria-live="polite"></div>
   <div id="depth-modal" class="modal modal-blur" hidden>

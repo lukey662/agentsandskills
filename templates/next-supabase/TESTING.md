@@ -69,6 +69,12 @@ agent-kit audit --min-readiness baseline-setup
 agent-kit adapter validate all   # when IDE or adapter assets change
 ```
 
+## Optional Orchestrator Tests
+
+When `.agent-kit/orchestrator.json` is enabled, add evidence for offline config/plan validation, required capability routing, approval pause/resume, provider/MCP failure handling, Docker or explicit host policy, worktree isolation, scoped commit review, cancellation/timeout, and redacted event export. Use mocked loopback providers for deterministic tests; keep real credentials out of fixtures and CI logs.
+
+Run `agent-kit orchestrate status <run-id>` after a test run and record the run ID, approvals, worktree/commit, and remaining manual merge or cleanup step.
+
 ## Security-Focused Tests
 
 Prioritize:

@@ -1,10 +1,11 @@
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname, isAbsolute, join, relative, resolve } from "node:path";
 import { Command } from "commander";
 import type { AuditReadinessLevel } from "../config/types.js";
 import { addSkill, listSkills } from "../install/add-skill.js";
 import { validateAdapter, validatePackage, type AdapterValidationTarget, type ValidationReport } from "../install/adapter-validate.js";
 import { READINESS_ORDER, createAuditReport, isAuditReadinessLevel, meetsMinimumReadiness } from "../install/audit.js";
+import { auditReportToSarif, createAuditReportV2 } from "../install/audit-v2.js";
 import { diffProject } from "../install/diff.js";
 import { initProject } from "../install/install.js";
 import { updateProject } from "../install/update.js";
@@ -44,6 +45,46 @@ type RequiredOutputStatus = (typeof requiredOutputStatuses)[number];
 
 function isRequiredOutputStatus(value: string): value is RequiredOutputStatus {
   return requiredOutputStatuses.includes(value as RequiredOutputStatus);
+}
+
+type RuntimeService = InstanceType<(typeof import("@appsforgood/agent-kit-runtime"))["AgentKitRuntimeService"]>;
+
+async function loadRuntimeService(): Promise<RuntimeService> {
+  try {
+    const { AgentKitRuntimeService } = await import("@appsforgood/agent-kit-runtime");
+    return new AgentKitRuntimeService(process.cwd());
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (message.includes("@appsforgood/agent-kit-runtime") || message.includes("Cannot find package")) {
+      throw new Error("The optional orchestrator runtime is not installed. Run: npm install --save-dev @appsforgood/agent-kit-runtime");
+    }
+    throw error;
+  }
+}
+
+function printRuntimeRecord(record: Awaited<ReturnType<RuntimeService["run"]>>): void {
+  line(`${style.bold(record.runId)} ${record.status}`);
+  line(`workflow: ${record.workflowId}`);
+  if (record.branchName) line(`branch: ${record.branchName}`);
+  if (record.commit) line(`commit: ${record.commit}`);
+  if (record.pendingApproval) {
+    line(`approval: ${record.pendingApproval.approvalId} (${record.pendingApproval.risk})`);
+    detail(record.pendingApproval.title);
+  }
+  if (record.error) line(style.fail(`failure: ${record.error}`));
+}
+
+async function readCredentialValue(): Promise<string> {
+  if (!process.stdin.isTTY) {
+    const value = readFileSync(0, "utf8").replace(/[\r\n]+$/, "");
+    if (!value) throw new Error("Credential value was empty.");
+    return value;
+  }
+  const clack = await import("@clack/prompts");
+  const value = await clack.password({ message: "Credential value" });
+  if (clack.isCancel(value)) throw new Error("Credential entry cancelled.");
+  if (typeof value !== "string" || !value) throw new Error("Credential value was empty.");
+  return value;
 }
 
 program.name("agent-kit").description("Next.js + Supabase agent, skill, docs, design, and research kit.").version(PACKAGE_VERSION);
@@ -202,9 +243,23 @@ program
   .command("audit")
   .description("Audit an existing project for agent-kit coverage gaps.")
   .option("--json", "Print machine-readable JSON output.")
+  .option("--schema-version <version>", "JSON audit schema version: 1 or 2.", "1")
+  .option("--format <format>", "Output format: human, json, or sarif.")
   .option("--min-readiness <level>", `Exit non-zero unless readiness is at least this level: ${READINESS_ORDER.join(", ")}.`)
-  .action((options: { json?: boolean; minReadiness?: string }) => {
-    const report = createAuditReport(process.cwd());
+  .action((options: { json?: boolean; schemaVersion: string; format?: string; minReadiness?: string }) => {
+    if (options.schemaVersion !== "1" && options.schemaVersion !== "2") {
+      fail(`Invalid --schema-version value "${options.schemaVersion}". Expected 1 or 2.`);
+      process.exitCode = 1;
+      return;
+    }
+    const format = options.format ?? (options.json ? "json" : "human");
+    if (!new Set(["human", "json", "sarif"]).has(format)) {
+      fail(`Invalid --format value "${format}". Expected human, json, or sarif.`);
+      process.exitCode = 1;
+      return;
+    }
+    const reportV2 = options.schemaVersion === "2" || format === "sarif" ? createAuditReportV2(process.cwd()) : undefined;
+    const report = reportV2 ?? createAuditReport(process.cwd());
     let minimumReadiness: AuditReadinessLevel | undefined;
     if (options.minReadiness) {
       if (!isAuditReadinessLevel(options.minReadiness)) {
@@ -215,7 +270,9 @@ program
       minimumReadiness = options.minReadiness;
     }
 
-    if (options.json) {
+    if (format === "sarif") {
+      printJson(auditReportToSarif(reportV2!));
+    } else if (format === "json") {
       printJson(report);
     } else {
       const readinessStyle = report.summary.fail > 0 ? style.fail : report.summary.warn > 0 ? style.warn : style.pass;
@@ -762,6 +819,193 @@ correction
     const result = proposeCorrectionUpstream(process.cwd(), id);
     if (options.json) printJson(result);
     else line(`Created upstream proposal from correction ${id}.`);
+  });
+
+const orchestrate = program.command("orchestrate").description("Run checkpointed council workflows with the optional local runtime.");
+
+orchestrate
+  .command("validate")
+  .description("Validate orchestrator config, roster references, bounds, and credential references without calling providers.")
+  .option("--json", "Print machine-readable JSON output.")
+  .action(async (options: { json?: boolean }) => {
+    const result = (await loadRuntimeService()).validate();
+    if (options.json) printJson(result);
+    else {
+      heading("agent-kit orchestrator");
+      line(`status: ${result.valid ? "valid" : "invalid"}`);
+      line(`enabled: ${result.enabled}`);
+      line(`roster: ${result.rosterId}`);
+      line(`workflows: ${result.workflows.join(", ")}`);
+      line(`providers: ${result.providers.join(", ") || "none"}`);
+      for (const warning of result.warnings) detail(`warning: ${warning}`);
+    }
+  });
+
+orchestrate
+  .command("plan <goal...>")
+  .description("Compile a deterministic offline workflow plan from the installed roster.")
+  .option("--workflow <workflow>", "Use an explicit roster workflow id.")
+  .option("--json", "Print machine-readable JSON output.")
+  .action(async (goalParts: string[], options: { workflow?: string; json?: boolean }) => {
+    const result = (await loadRuntimeService()).plan(goalParts.join(" "), options.workflow);
+    if (options.json) printJson(result);
+    else {
+      heading(`Workflow: ${result.workflowId}`);
+      line(`sequence: ${result.sequence.join(" -> ")}`);
+      line(`council: ${result.council.join(", ")}`);
+      line(`approvals: ${result.approvals.join(", ") || "none"}`);
+      line(`model aliases: ${result.modelAliases.join(", ") || "none"}`);
+      line(`MCP servers: ${result.mcpServers.join(", ") || "none"}`);
+    }
+  });
+
+orchestrate
+  .command("run <goal...>")
+  .description("Start a foreground checkpointed workflow in an isolated Git worktree.")
+  .option("--workflow <workflow>", "Use an explicit roster workflow id.")
+  .option("--acknowledge-dirty-base", "Acknowledge that current uncommitted changes will be excluded from the worktree.")
+  .option("--json", "Print machine-readable JSON output.")
+  .action(async (goalParts: string[], options: { workflow?: string; acknowledgeDirtyBase?: boolean; json?: boolean }) => {
+    const result = await (
+      await loadRuntimeService()
+    ).run(goalParts.join(" "), {
+      ...(options.workflow ? { workflowId: options.workflow } : {}),
+      ...(options.acknowledgeDirtyBase ? { acknowledgeDirtyBase: true } : {})
+    });
+    if (options.json) printJson(result);
+    else printRuntimeRecord(result);
+  });
+
+orchestrate
+  .command("status [run-id]")
+  .description("Show one runtime run or list recent runs.")
+  .option("--json", "Print machine-readable JSON output.")
+  .action(async (runId: string | undefined, options: { json?: boolean }) => {
+    const result = (await loadRuntimeService()).status(runId);
+    if (options.json) printJson(result);
+    else if (Array.isArray(result)) {
+      if (result.length === 0) line("No runtime runs found.");
+      for (const record of result) printRuntimeRecord(record);
+    } else {
+      printRuntimeRecord(result);
+    }
+  });
+
+orchestrate
+  .command("approve <run-id>")
+  .description("Approve the pending gate and resume the checkpointed workflow.")
+  .option("--actor <actor>", "Decision actor.", process.env.USER ?? "operator")
+  .option("--note <note>", "Decision note.")
+  .option("--json", "Print machine-readable JSON output.")
+  .action(async (runId: string, options: { actor: string; note?: string; json?: boolean }) => {
+    const runtime = await loadRuntimeService();
+    const record = runtime.status(runId);
+    if (Array.isArray(record) || !record.pendingApproval) throw new Error(`Run ${runId} has no pending approval.`);
+    const result = await runtime.resume(runId, {
+      approvalId: record.pendingApproval.approvalId,
+      decision: "approve",
+      actor: options.actor,
+      ...(options.note ? { note: options.note } : {})
+    });
+    if (options.json) printJson(result);
+    else printRuntimeRecord(result);
+  });
+
+orchestrate
+  .command("resume <run-id>")
+  .description("Resume a pending gate with an explicit approve or reject decision.")
+  .requiredOption("--decision <decision>", "approve or reject.")
+  .option("--actor <actor>", "Decision actor.", process.env.USER ?? "operator")
+  .option("--note <note>", "Decision note.")
+  .option("--json", "Print machine-readable JSON output.")
+  .action(async (runId: string, options: { decision: string; actor: string; note?: string; json?: boolean }) => {
+    if (options.decision !== "approve" && options.decision !== "reject") throw new Error("--decision must be approve or reject.");
+    const runtime = await loadRuntimeService();
+    const record = runtime.status(runId);
+    if (Array.isArray(record) || !record.pendingApproval) throw new Error(`Run ${runId} has no pending approval.`);
+    const result = await runtime.resume(runId, {
+      approvalId: record.pendingApproval.approvalId,
+      decision: options.decision,
+      actor: options.actor,
+      ...(options.note ? { note: options.note } : {})
+    });
+    if (options.json) printJson(result);
+    else printRuntimeRecord(result);
+  });
+
+orchestrate
+  .command("cancel <run-id>")
+  .description("Cancel a planned or approval-paused run.")
+  .option("--json", "Print machine-readable JSON output.")
+  .action(async (runId: string, options: { json?: boolean }) => {
+    const result = (await loadRuntimeService()).cancel(runId);
+    if (options.json) printJson(result);
+    else printRuntimeRecord(result);
+  });
+
+orchestrate
+  .command("export <run-id>")
+  .description("Export redacted JSONL-backed runtime evidence as Markdown.")
+  .option("--output <path>", "Project-relative output path.")
+  .option("--json", "Print machine-readable JSON output.")
+  .action(async (runId: string, options: { output?: string; json?: boolean }) => {
+    const evidence = (await loadRuntimeService()).exportEvidence(runId);
+    if (!options.output) {
+      line(evidence.trimEnd());
+      return;
+    }
+    if (isAbsolute(options.output)) throw new Error("--output must be project-relative.");
+    const root = resolve(process.cwd());
+    const output = resolve(root, options.output);
+    const relationship = relative(root, output);
+    if (relationship.startsWith("..") || isAbsolute(relationship)) throw new Error("--output must remain inside the project.");
+    mkdirSync(dirname(output), { recursive: true });
+    writeFileSync(output, evidence, { mode: 0o600 });
+    if (options.json) printJson({ runId, output: relationship.replace(/\\/g, "/") });
+    else line(`Exported ${runId} evidence to ${relationship}.`);
+  });
+
+const provider = program.command("provider").description("Probe configured orchestrator model providers.");
+provider
+  .command("probe [provider-id]")
+  .description("Probe one provider or all configured providers.")
+  .option("--json", "Print machine-readable JSON output.")
+  .action(async (providerId: string | undefined, options: { json?: boolean }) => {
+    const result = await (await loadRuntimeService()).probeProvider(providerId);
+    if (options.json) printJson(result);
+    else
+      for (const probe of result) line(`${probe.available ? "PASS" : "FAIL"} ${probe.providerId} ${probe.latencyMs}ms${probe.error ? `: ${probe.error}` : ""}`);
+  });
+
+const credential = program.command("credential").description("Manage orchestrator credentials in the OS keychain.");
+credential
+  .command("set <reference>")
+  .description("Read a credential from a masked prompt or stdin and store a keychain: reference.")
+  .action(async (reference: string) => {
+    const value = await readCredentialValue();
+    await (await loadRuntimeService()).setCredential(reference, value);
+    line(`Stored ${reference} in the OS keychain.`);
+  });
+
+credential
+  .command("delete <reference>")
+  .description("Delete a keychain credential reference.")
+  .option("--json", "Print machine-readable JSON output.")
+  .action(async (reference: string, options: { json?: boolean }) => {
+    const deleted = await (await loadRuntimeService()).deleteCredential(reference);
+    if (options.json) printJson({ reference, deleted });
+    else line(deleted ? `Deleted ${reference}.` : `No credential existed for ${reference}.`);
+  });
+
+const mcp = program.command("mcp").description("Probe explicitly configured MCP servers.");
+mcp
+  .command("probe <server>")
+  .description("Connect, ping, and list allowlisted tools for one MCP server.")
+  .option("--json", "Print machine-readable JSON output.")
+  .action(async (server: string, options: { json?: boolean }) => {
+    const result = await (await loadRuntimeService()).probeMcp(server);
+    if (options.json) printJson(result);
+    else printJson(result);
   });
 
 const studio = program.command("studio").description("Export and serve local Agent Studio views.");

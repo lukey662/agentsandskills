@@ -11,6 +11,7 @@ import { applyDesignDraft, saveDesignDraft } from "../src/studio/wizard/drafts.j
 import { renderSetupWizardHtml } from "../src/studio/wizard/render.js";
 import { buildWizardFormState } from "../src/studio/wizard/wizard-draft.js";
 import { writeFileSync } from "node:fs";
+import { localMutation } from "./helpers/local-http.js";
 
 let roots: string[] = [];
 
@@ -92,32 +93,36 @@ describe("Startup setup wizard", () => {
       const state = (await stateRes.json()) as { projectName: string; progress: { depth: string } };
       expect(state.projectName).toBe("wizard-test-project");
 
-      await fetch(`${server.url}/api/state`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ depth: "standard" })
-      });
-
-      const saveRes = await fetch(`${server.url}/api/context`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ideSurface: "cursor",
-          productSummary: "A task-first SaaS app for operators.",
-          productCategory: "saas",
-          primaryAudience: "Operations managers",
-          primaryWorkflows: "Configure workspace\nRun primary workflow\nExport results",
-          authModel: "Supabase Auth with RLS.",
-          tenantModel: "team",
-          uiPreferred: "Clear and task-first.",
-          uiAvoid: "Generic dashboards.",
-          valueProposition: "Operators finish work faster.",
-          proof: "Shipped workflow automation",
-          objections: "Too complex? — Three-step primary flow.",
-          qualityTarget: "needs-improvement",
-          owner: "owner"
+      await fetch(
+        `${server.url}/api/state`,
+        localMutation(server, {
+          method: "PATCH",
+          body: JSON.stringify({ depth: "standard" })
         })
-      });
+      );
+
+      const saveRes = await fetch(
+        `${server.url}/api/context`,
+        localMutation(server, {
+          method: "POST",
+          body: JSON.stringify({
+            ideSurface: "cursor",
+            productSummary: "A task-first SaaS app for operators.",
+            productCategory: "saas",
+            primaryAudience: "Operations managers",
+            primaryWorkflows: "Configure workspace\nRun primary workflow\nExport results",
+            authModel: "Supabase Auth with RLS.",
+            tenantModel: "team",
+            uiPreferred: "Clear and task-first.",
+            uiAvoid: "Generic dashboards.",
+            valueProposition: "Operators finish work faster.",
+            proof: "Shipped workflow automation",
+            objections: "Too complex? — Three-step primary flow.",
+            qualityTarget: "needs-improvement",
+            owner: "owner"
+          })
+        })
+      );
       expect(saveRes.ok).toBe(true);
       const saved = (await saveRes.json()) as { openQuestions: string[]; progress: { quickComplete: boolean } };
       expect(saved.openQuestions).toHaveLength(0);
@@ -131,11 +136,13 @@ describe("Startup setup wizard", () => {
     const root = tempProject();
     const server = await startSetupServer({ cwd: root, port: 0 });
     try {
-      const res = await fetch(`${server.url}/api/checklist/ide`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ideSurface: "cursor" })
-      });
+      const res = await fetch(
+        `${server.url}/api/checklist/ide`,
+        localMutation(server, {
+          method: "POST",
+          body: JSON.stringify({ ideSurface: "cursor" })
+        })
+      );
       expect(res.ok).toBe(true);
       const data = (await res.json()) as {
         adapterValidation?: { target: string | null; fail: number };

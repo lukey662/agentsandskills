@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
-import { ensureDir, writeText } from "../utils/fs.js";
+import { ensureDir, writeConflictProposal, writeText } from "../utils/fs.js";
 import { loadProjectRosterAgents, type RosterAgent } from "../studio/wizard/roster.js";
 import type { ActivateIdeResult } from "./ide-activate.js";
 
@@ -79,10 +79,11 @@ function writeGeneratedAgentFile(cwd: string, relativePath: string, content: str
       result.unchanged.push(relativePath);
       return;
     }
-    const conflictPath = join(cwd, ".agent-kit", "conflicts", relativePath.replace(/\//g, "__"));
-    ensureDir(join(cwd, ".agent-kit", "conflicts"));
-    writeText(conflictPath, existing);
-    result.conflicts.push(`${relativePath} -> ${conflictPath}`);
+    const proposal = writeConflictProposal(cwd, relativePath, content, {
+      currentContent: existing,
+      reason: "Generated agent content changed while the local target is customized."
+    });
+    result.conflicts.push(`${relativePath} -> ${proposal.conflictPath}`);
     return;
   }
   ensureDir(join(cwd, relativePath.split("/").slice(0, -1).join("/")));

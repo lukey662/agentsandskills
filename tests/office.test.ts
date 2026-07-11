@@ -8,6 +8,7 @@ import { renderSetupOfficeHtml, renderSetupOfficeHtmlWithContext } from "../src/
 import { loadProjectRosterAgents } from "../src/studio/wizard/roster.js";
 import { startSetupServer } from "../src/studio/setup-server.js";
 import { writeFileSync } from "node:fs";
+import { localMutation } from "./helpers/local-http.js";
 
 let roots: string[] = [];
 
@@ -108,18 +109,47 @@ describe("Agent Office setup view", () => {
     renderSetupOfficeHtmlWithContext(root);
     const server = await startSetupServer({ cwd: root, port: 0 });
     try {
-      await fetch(`${server.url}/api/state`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ depth: "quick" })
-      });
+      await fetch(
+        `${server.url}/api/state`,
+        localMutation(server, {
+          method: "PATCH",
+          body: JSON.stringify({ depth: "quick" })
+        })
+      );
 
-      const draftRes = await fetch(`${server.url}/api/draft`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          stationId: "agent-planner",
-          form: {
+      const draftRes = await fetch(
+        `${server.url}/api/draft`,
+        localMutation(server, {
+          method: "POST",
+          body: JSON.stringify({
+            stationId: "agent-planner",
+            form: {
+              ideSurface: "cursor",
+              productSummary: "Office smoke product.",
+              productCategory: "saas",
+              primaryAudience: "Operators",
+              primaryWorkflows: "One\nTwo",
+              authModel: "Supabase Auth.",
+              tenantModel: "single-user",
+              uiPreferred: "Clear.",
+              uiAvoid: "",
+              valueProposition: "Faster ops.",
+              proof: "",
+              objections: "",
+              qualityTarget: "baseline-setup",
+              owner: "test",
+              agentBrief_planner: "Route editorial work carefully."
+            }
+          })
+        })
+      );
+      expect(draftRes.ok).toBe(true);
+
+      const saveRes = await fetch(
+        `${server.url}/api/context`,
+        localMutation(server, {
+          method: "POST",
+          body: JSON.stringify({
             ideSurface: "cursor",
             productSummary: "Office smoke product.",
             productCategory: "saas",
@@ -135,32 +165,9 @@ describe("Agent Office setup view", () => {
             qualityTarget: "baseline-setup",
             owner: "test",
             agentBrief_planner: "Route editorial work carefully."
-          }
+          })
         })
-      });
-      expect(draftRes.ok).toBe(true);
-
-      const saveRes = await fetch(`${server.url}/api/context`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ideSurface: "cursor",
-          productSummary: "Office smoke product.",
-          productCategory: "saas",
-          primaryAudience: "Operators",
-          primaryWorkflows: "One\nTwo",
-          authModel: "Supabase Auth.",
-          tenantModel: "single-user",
-          uiPreferred: "Clear.",
-          uiAvoid: "",
-          valueProposition: "Faster ops.",
-          proof: "",
-          objections: "",
-          qualityTarget: "baseline-setup",
-          owner: "test",
-          agentBrief_planner: "Route editorial work carefully."
-        })
-      });
+      );
       expect(saveRes.ok).toBe(true);
       const saved = (await saveRes.json()) as { openQuestions: string[] };
       expect(saved.openQuestions).toHaveLength(0);

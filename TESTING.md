@@ -62,6 +62,23 @@ The kit ships optional smoke scripts for Agent Office and wizard UI rendering:
 
 Antigravity runtime slash commands (`/setup`, `/spec`, `/plan`, `/test`, `/review`, `/ship`, UI harness commands, and others) are adapter entrypoints only. Canonical workflow steps live in `.agent-kit/prompts/lifecycle-command-index.md`, `.agent-kit/prompts/ui-command-index.md`, and the council contract in `.agent-kit/agent-roster.json`.
 
+## Executable Runtime Verification
+
+Changes under `packages/runtime`, orchestrator config/schema, CLI bridges, or Studio run controls require focused evidence for:
+
+- Config/roster validation with zero provider calls for `orchestrate validate` and `plan`.
+- Deterministic capability mismatch and provider fallback behavior.
+- Provider request/response normalization and redirect rejection through loopback mocks.
+- MCP host/tool allowlists, private-address rejection, stdio host opt-in, and credential references.
+- Sensitive path denial, recursive evidence redaction, partial JSONL recovery, and ordered event IDs.
+- Real SQLite interrupt/resume through plan, mutation, and final-commit gates without replaying a mutating node.
+- Dirty-base acknowledgement, sensitive tracked-file rejection, isolated worktree branch, and one scoped commit.
+- Docker immutable image ID plus read-only, capability, privilege, network, and resource flags.
+- Root CLI optional-import behavior and secured Studio start/detail/decision/cancel APIs.
+- Separate runtime/root pack dry runs, package metadata, SBOMs, OIDC publish order, and post-publish import/integration verification.
+
+Provider and MCP probes are explicit live checks and must not be required for deterministic unit tests. Do not put real provider credentials in CI fixtures.
+
 ## Security-Focused Tests
 
 Prioritize:

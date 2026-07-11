@@ -9,6 +9,7 @@ Canonical source of truth:
 - `.agent-kit/agent-roster.json`
 - `MODEL_ROUTING.md`
 - `.agent-kit/model-routing.json`
+- `.agent-kit/orchestrator.json`
 - `.agent-kit/project-context.json`
 - `.agent-kit/project-context.md`
 - `.agent-kit/corrections/project-rules.json`
@@ -20,6 +21,9 @@ Canonical source of truth:
 - `.agent-kit/schemas/session-event.schema.json`
 - `.agent-kit/schemas/project-context.schema.json`
 - `.agent-kit/schemas/correction-rules.schema.json`
+- `.agent-kit/schemas/orchestrator.schema.json`
+- `.agent-kit/schemas/runtime-run.schema.json`
+- `.agent-kit/schemas/runtime-event.schema.json`
 - `QUALITY_GATES.md`
 
 ## Active Tool Surfaces
@@ -31,6 +35,7 @@ Canonical source of truth:
 | Cursor | `.cursor/rules/cursor-agent-kit.mdc` and `.cursor/rules/cursor-model-selection.mdc` | Active, verified 2026-07-02 | Advisory (user model picker) | Advisory | Verified 2026-07-02 (owner: lukey662): both rules load as always-apply workspace rules in Cursor; `agent-kit init` on this repo confirmed root docs and `.agent-kit/` referenced by the rules now exist. Session evidence: `.agent-kit/council-sessions/2026-07-02-world-class-repo-hardening/`. | This repo dogfoods its own kit. Re-run `agent-kit diff` after kit updates if the canonical adapter files changed. |
 | Claude Code | `.claude/agents/*.md` and optional `CLAUDE.md` | Not active | Not applicable | Partial | Not used on this repo as of 2026-07-02 (owner: lukey662). | Use `.agent-kit/assistant-adapters/claude-code-subagents.md` and `model-selection/claude-code-subagents-with-models.md` as starting points if Claude Code is adopted. |
 | Antigravity | `.antigravity/agent-kit/plugin.json` and `commands/*.toml` | Available via `init --activate antigravity` | Not applicable | Partial | Validated with `agent-kit adapter validate antigravity`. | Native slash commands: `/setup`, `/spec`, `/plan`, `/handoff`, `/frontend`, UI harness commands, `/audit`, `/test`, `/review`, `/security`, `/copy`, `/ship`, `/upgrade`. Canonical workflow steps: `.agent-kit/prompts/lifecycle-command-index.md`. |
+| Agent Kit Runtime | `.agent-kit/orchestrator.json`, `@appsforgood/agent-kit-runtime`, `agent-kit orchestrate ...` | Available; disabled by default | Enforced aliases and capability gates | Enforced local graph and approval policy | Verified 2026-07-11 with SQLite interrupt/resume, provider, sandbox, worktree, CLI, and Studio tests. | This is the executable council. IDE adapters above remain instruction surfaces. |
 
 ## Model Selection
 
@@ -51,6 +56,21 @@ Canonical source of truth:
 - Keep commands concrete and verified. Document known failures or environment prerequisites.
 - Update this file when a tool is added, removed, or confirmed to load the project instructions.
 - Record MCP/tool connector setup separately from model-selection setup. Tool access and model choice are different controls.
+- Do not claim an orchestrated run from IDE delegation alone. Require runtime status, events, checkpoint, and scoped commit evidence.
+
+## Executable Runtime
+
+Install `@appsforgood/agent-kit-runtime`, configure credential references and deterministic aliases in `.agent-kit/orchestrator.json`, then run:
+
+```bash
+agent-kit orchestrate validate
+agent-kit orchestrate plan "Describe the goal"
+agent-kit orchestrate run "Describe the goal"
+agent-kit orchestrate approve <run-id>
+agent-kit orchestrate status <run-id>
+```
+
+Runs use explicit roster sequences, SQLite checkpoints, risk-tiered approvals, redacted JSONL evidence, an isolated Git worktree, Docker-first mutations, and an optional approved Cursor host executor. The runtime may create one scoped commit; it never merges, pushes, or opens a pull request. See `.agent-kit/assistant-adapters/orchestrator-runtime.md`.
 
 ## Cursor Activation
 

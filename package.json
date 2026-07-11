@@ -1,6 +1,6 @@
 {
   "name": "@appsforgood/next-supabase-kit",
-  "version": "0.1.9",
+  "version": "0.2.0",
   "description": "Open agent council, skills, prompts, checklists, and markdown templates for Next.js and Supabase projects.",
   "type": "module",
   "repository": {
@@ -69,15 +69,21 @@
     "node": ">=20"
   },
   "packageManager": "npm@11.6.2",
+  "workspaces": [
+    "packages/runtime"
+  ],
   "scripts": {
-    "build": "tsup && node scripts/copy-studio-assets.mjs",
+    "build": "npm run build --workspace @appsforgood/agent-kit-runtime && tsup && node scripts/copy-studio-assets.mjs",
+    "predev": "npm run build --workspace @appsforgood/agent-kit-runtime",
     "dev": "tsx src/cli/index.ts",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && npm run typecheck --workspace @appsforgood/agent-kit-runtime",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "pretest": "npm run build --workspace @appsforgood/agent-kit-runtime",
     "test": "vitest run",
+    "pretest:coverage": "npm run build --workspace @appsforgood/agent-kit-runtime",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
     "smoke": "node dist/index.js doctor",
@@ -93,7 +99,8 @@
     "sbom:generate": "node scripts/sbom-check.mjs --output sbom.cdx.json",
     "publish:verify": "node scripts/post-publish-verify.mjs",
     "changeset": "changeset",
-    "changeset:version": "changeset version",
+    "changeset:check": "node scripts/version-packages.mjs --check",
+    "changeset:version": "node scripts/version-packages.mjs",
     "release:check": "node scripts/release-check.mjs",
     "pack:check": "npm pack --dry-run",
     "dogfood:init": "node scripts/dogfood-init.mjs",
@@ -106,6 +113,14 @@
     "picocolors": "^1.1.1",
     "simple-git": "^3.27.0",
     "zod": "^4.4.3"
+  },
+  "peerDependencies": {
+    "@appsforgood/agent-kit-runtime": "^0.1.0"
+  },
+  "peerDependenciesMeta": {
+    "@appsforgood/agent-kit-runtime": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@changesets/cli": "^2.31.0",
@@ -125,5 +140,10 @@
   },
   "overrides": {
     "esbuild": "0.28.1"
+  },
+  "allowScripts": {
+    "better-sqlite3@12.11.1": true,
+    "esbuild@0.28.1": true,
+    "fsevents": false
   }
 }

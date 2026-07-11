@@ -327,7 +327,7 @@ Acceptance:
 - `[x]` Add `npm run smoke:studio` and wire it into `npm run release:check` before any Agent Studio feature is marked complete.
 - `[x]` Add optional `agent-kit studio export` static HTML view after the Markdown-first workflow is useful.
 - `[x]` Add `agent-kit studio serve` — localhost live office with SSE session events, session picker, note/render POST endpoints, and interactive studio controls (Milestone 8 complete).
-- `[ ]` Defer direct AI API orchestration until the file protocol is proven across more projects.
+- `[x]` Ship optional direct orchestration as `@appsforgood/agent-kit-runtime`, reusing the roster and event contracts with LangGraph checkpoints, explicit approvals, isolated worktrees, Docker-first tools, provider/MCP adapters, bounded execution, and redacted evidence.
 
 Acceptance:
 
@@ -336,27 +336,24 @@ Acceptance:
 - Human corrections can be promoted into durable project or agent rules and loaded by future IDE-agent work.
 - Audit can distinguish a generic baseline install from a context-aware install with active session evidence.
 - The Markdown-first flow works without SQLite, a web server, or a separate AI orchestration runtime.
+- Projects that opt into executable orchestration can validate, plan, run, pause, resume, cancel, and export a council workflow without changing the baseline IDE-driven contract.
 - Every completed Phase 9 feature is covered by automated unit, regression, smoke, and security tests, and the shared release gate fails before users see broken context/session/correction behavior.
 
 ## Current Next Actions
 
-1. Confirm npm org `@appsforgood` access and publish rights for `@appsforgood/next-supabase-kit`.
-2. Configure npm Trusted Publishing for package `@appsforgood/next-supabase-kit`: GitHub user `lukey662`, repository `agentsandskills`, workflow `release.yml`, environment `npm-publish`, allowed action `npm publish`.
-3. If npm requires the package to exist before trusted publishing can be configured, complete a one-time manual OTP bootstrap publish from the verified `main` checkout.
-4. Delete any legacy npm publish secrets after the trusted-publisher path is confirmed.
-5. Dispatch the `Release` workflow with `dry_run=false`.
-6. Verify public package install with `npm run publish:verify`.
-7. Review generated conflicts from the Agent Studio dogfood project and decide which customized docs should adopt the latest template wording.
-8. Activate at least one assistant adapter in a real project and record whether the chosen tool loads the canonical council instructions.
-9. Apply the reference-led design critique gate to one real frontend change with desktop/mobile screenshot evidence.
-10. Revisit live local GUI and direct AI API orchestration after the file protocol is proven across more than one project.
+1. Keep npm Trusted Publisher records current for both `@appsforgood/agent-kit-runtime` and `@appsforgood/next-supabase-kit` against `release.yml` and the `npm-publish` environment.
+2. Run `npm run release:check`, then let the push-triggered release workflow publish runtime before root and verify both registry installs.
+3. Dogfood one read-only planning run and one mutation-capable worktree run in a real project, recording approval, cancellation, evidence, and scoped-commit behavior.
+4. Add provider conformance fixtures as providers evolve; do not infer model capability from marketing names.
+5. Review generated install conflicts and promote only intentional template updates.
+6. Continue applying reference-led design and browser QA gates to real frontend work.
 
 Latest release evidence:
 
-- Package metadata now targets public npm package `@appsforgood/next-supabase-kit`.
-- Release workflow uses npm Trusted Publishing/OIDC instead of a long-lived publish token.
-- Public install verification uses `npx` without a package token and requires clean temp init plus zero-failure audit.
-- Public release evidence: `@appsforgood/next-supabase-kit@0.1.1` published on npm; **0.1.2** adds Agent Office polish + `studio serve` (pending publish after `npm run release:check`).
+- Package metadata targets public npm packages `@appsforgood/next-supabase-kit` and `@appsforgood/agent-kit-runtime`.
+- Release workflow uses npm Trusted Publishing/OIDC instead of a long-lived automation token.
+- Public verification installs the runtime, imports its API, then installs the root kit and proves clean `doctor`, `init`, `audit`, and `orchestrate validate` behavior.
+- Separate CycloneDX SBOMs and attestations bind each published tarball to its own reachable dependency graph.
 
 Latest dogfood evidence:
 

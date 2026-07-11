@@ -24,6 +24,7 @@ Use `agent-kit audit --min-readiness best-practice-candidate` only after starter
 - Review `AGENTS.md`, `AGENT_ROSTER.md`, `ASSISTANT_ADAPTERS.md`, `MODEL_ROUTING.md`, `COUNCIL.md`, `QUALITY_GATES.md`, `SECURITY.md`, `TESTING.md`, and `DEPLOYMENT.md`.
 - If using Antigravity, review `.antigravity/agent-kit/plugin.json`, `.antigravity/agent-kit/commands/*.toml`, and `.antigravity/runtime-skills/*/SKILL.md`.
 - Validate runtime adapter assets with `agent-kit adapter validate antigravity`.
+- If `@appsforgood/agent-kit-runtime` is installed, finish or cancel paused runs, update it deliberately, review `.agent-kit/orchestrator.json` and runtime schema conflict proposals, then run `agent-kit orchestrate validate` and an offline plan.
 - Record accepted tradeoffs in `DECISIONS.md`.
 - Update this file with package version, release notes, migration status, rollback notes, owner, and date.
 

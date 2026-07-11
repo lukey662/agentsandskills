@@ -6,6 +6,8 @@
   "required": ["type", "createdAt"],
   "additionalProperties": false,
   "properties": {
+    "eventId": { "type": "string", "format": "uuid" },
+    "sequence": { "type": "integer", "minimum": 1 },
     "type": {
       "type": "string",
       "enum": [

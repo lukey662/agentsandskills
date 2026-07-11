@@ -11,4 +11,4 @@ When a request is ambiguous, planning-oriented, roadmap-related, or spans multip
 
 Delegate to the `@planner` subagent in `.cursor/agents/planner.md` when the task needs isolated planning context.
 
-Read project context, corrections, and `AGENT_ROSTER.md` before choosing a workflow.
+Read `AGENTS.md`, `.agent-kit/agent-roster.json`, `MODEL_ROUTING.md`, project context, and active corrections before choosing a workflow.

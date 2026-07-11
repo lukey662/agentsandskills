@@ -1,15 +1,11 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { join } from "node:path";
-import {
-  DEFAULT_AGENT_ROSTER_SOURCE,
-  DEFAULT_AGENT_ROSTER_TARGET,
-  DEFAULT_MODEL_ROUTING_SOURCE,
-  DEFAULT_MODEL_ROUTING_TARGET,
-  LIBRARY_FOLDERS,
-  ROOT_DOCS
-} from "../config/defaults.js";
-import { sha256 } from "../utils/fs.js";
+import { DEFAULT_AGENT_ROSTER_TARGET, DEFAULT_MODEL_ROUTING_TARGET, LIBRARY_FOLDERS, ROOT_DOCS } from "../config/defaults.js";
+import { resolveInside } from "../utils/fs.js";
 import { findPackageRoot } from "../utils/package-root.js";
+import { planFileUpdate, type FileUpdatePlan } from "./file-update-plan.js";
+import { readManifest } from "./install.js";
+import { listManagedAssets } from "./managed-assets.js";
 
 export type DiffStatus = "missing" | "unchanged" | "changed";
 
@@ -35,83 +31,59 @@ export interface DiffResult {
   };
 }
 
-function statusForTextFile(target: string, template: string): DiffStatus {
-  if (!existsSync(target)) return "missing";
-
-  const targetHash = sha256(readFileSync(target, "utf8"));
-  const templateHash = sha256(readFileSync(template, "utf8"));
-  return targetHash === templateHash ? "unchanged" : "changed";
+function diffStatus(plan: FileUpdatePlan): DiffStatus {
+  if (plan.action === "created") return "missing";
+  if (plan.action === "unchanged") return "unchanged";
+  return "changed";
 }
 
 export function diffProject(cwd: string, stack = "next-supabase"): DiffResult {
   const packageRoot = findPackageRoot();
-  const templateRoot = join(packageRoot, "templates", stack);
-  const libraryFolders = {
-    missing: [] as string[],
-    present: [] as string[],
-    willRefresh: [...LIBRARY_FOLDERS]
-  };
-  const result: DiffResult = {
-    missing: [],
-    unchanged: [],
-    changed: [],
-    agentRoster: "missing",
-    modelRouting: "missing",
-    libraryFolders,
+  const manifest = readManifest(cwd);
+  const assets = listManagedAssets(packageRoot, stack);
+  const plans = assets.map((asset) => ({
+    asset,
+    plan: planFileUpdate({
+      target: asset.target,
+      sourcePath: asset.sourcePath,
+      targetPath: resolveInside(cwd, asset.target),
+      installedHash: manifest?.assetHashes?.[asset.target] ?? manifest?.templateHashes?.[asset.target],
+      force: false
+    })
+  }));
+  const byTarget = new Map(plans.map(({ asset, plan }) => [asset.target, { asset, plan }]));
+  const rootPlans = ROOT_DOCS.map((target) => byTarget.get(target)?.plan).filter((plan): plan is FileUpdatePlan => Boolean(plan));
+  const agentPlan = byTarget.get(DEFAULT_AGENT_ROSTER_TARGET)?.plan;
+  const modelPlan = byTarget.get(DEFAULT_MODEL_ROUTING_TARGET)?.plan;
+  const mutatingActions = new Set(["created", "updated", "overwritten"]);
+  const refreshedFolders = [
+    ...new Set(plans.filter(({ asset, plan }) => asset.libraryFolder && mutatingActions.has(plan.action)).map(({ asset }) => asset.libraryFolder!))
+  ].sort();
+
+  const missingFolders = LIBRARY_FOLDERS.filter((folder) => !existsSync(join(cwd, ".agent-kit", folder)));
+  const presentFolders = LIBRARY_FOLDERS.filter((folder) => !missingFolders.includes(folder));
+  const wouldCreate = plans.filter(({ plan }) => plan.action === "created").map(({ plan }) => plan.target);
+  const wouldWriteConflicts = plans.filter(({ plan }) => plan.action === "conflict").map(({ plan }) => plan.target);
+
+  return {
+    missing: rootPlans.filter((plan) => plan.action === "created").map((plan) => plan.target),
+    unchanged: rootPlans.filter((plan) => plan.action === "unchanged").map((plan) => plan.target),
+    changed: rootPlans.filter((plan) => plan.action !== "created" && plan.action !== "unchanged").map((plan) => plan.target),
+    agentRoster: agentPlan ? diffStatus(agentPlan) : "missing",
+    modelRouting: modelPlan ? diffStatus(modelPlan) : "missing",
+    libraryFolders: {
+      missing: missingFolders,
+      present: presentFolders,
+      willRefresh: refreshedFolders
+    },
     preview: {
-      wouldCreate: [],
-      wouldWriteConflicts: [],
-      wouldRefreshLibraryFolders: [...LIBRARY_FOLDERS],
-      wouldCreateAgentRoster: false,
-      wouldWriteAgentRosterConflict: false,
-      wouldCreateModelRouting: false,
-      wouldWriteModelRoutingConflict: false
+      wouldCreate,
+      wouldWriteConflicts,
+      wouldRefreshLibraryFolders: refreshedFolders,
+      wouldCreateAgentRoster: agentPlan?.action === "created",
+      wouldWriteAgentRosterConflict: agentPlan?.action === "conflict",
+      wouldCreateModelRouting: modelPlan?.action === "created",
+      wouldWriteModelRoutingConflict: modelPlan?.action === "conflict"
     }
   };
-
-  for (const doc of ROOT_DOCS) {
-    const target = join(cwd, doc);
-    const template = join(templateRoot, doc);
-    const status = statusForTextFile(target, template);
-
-    if (status === "missing") {
-      result.missing.push(doc);
-      result.preview.wouldCreate.push(doc);
-      continue;
-    }
-
-    if (status === "unchanged") result.unchanged.push(doc);
-    else {
-      result.changed.push(doc);
-      result.preview.wouldWriteConflicts.push(doc);
-    }
-  }
-
-  result.agentRoster = statusForTextFile(join(cwd, DEFAULT_AGENT_ROSTER_TARGET), join(packageRoot, DEFAULT_AGENT_ROSTER_SOURCE));
-  if (result.agentRoster === "missing") {
-    result.preview.wouldCreate.push(DEFAULT_AGENT_ROSTER_TARGET);
-    result.preview.wouldCreateAgentRoster = true;
-  }
-  if (result.agentRoster === "changed") {
-    result.preview.wouldWriteConflicts.push(DEFAULT_AGENT_ROSTER_TARGET);
-    result.preview.wouldWriteAgentRosterConflict = true;
-  }
-
-  result.modelRouting = statusForTextFile(join(cwd, DEFAULT_MODEL_ROUTING_TARGET), join(packageRoot, DEFAULT_MODEL_ROUTING_SOURCE));
-  if (result.modelRouting === "missing") {
-    result.preview.wouldCreate.push(DEFAULT_MODEL_ROUTING_TARGET);
-    result.preview.wouldCreateModelRouting = true;
-  }
-  if (result.modelRouting === "changed") {
-    result.preview.wouldWriteConflicts.push(DEFAULT_MODEL_ROUTING_TARGET);
-    result.preview.wouldWriteModelRoutingConflict = true;
-  }
-
-  for (const folder of LIBRARY_FOLDERS) {
-    const target = join(cwd, ".agent-kit", folder);
-    if (existsSync(target)) libraryFolders.present.push(folder);
-    else libraryFolders.missing.push(folder);
-  }
-
-  return result;
 }

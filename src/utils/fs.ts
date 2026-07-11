@@ -1,5 +1,5 @@
-import { createHash } from "node:crypto";
-import { cpSync, existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { createHash, randomUUID } from "node:crypto";
+import { cpSync, existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { basename, dirname, isAbsolute, join, relative, resolve } from "node:path";
 
 export function ensureDir(path: string): void {
@@ -13,7 +13,13 @@ export function readTextIfExists(path: string): string | null {
 
 export function writeText(path: string, content: string): void {
   ensureDir(dirname(path));
-  writeFileSync(path, content);
+  const temporaryPath = join(dirname(path), `.${basename(path)}.${process.pid}.${randomUUID()}.tmp`);
+  try {
+    writeFileSync(temporaryPath, content);
+    renameSync(temporaryPath, path);
+  } finally {
+    rmSync(temporaryPath, { force: true });
+  }
 }
 
 export function sha256(content: string): string {
@@ -67,6 +73,46 @@ export interface CopyResult {
   conflictPath?: string;
 }
 
+export interface ConflictProposalResult {
+  conflictPath: string;
+  metadataPath: string;
+}
+
+export function writeConflictProposal(
+  targetRoot: string,
+  targetRelativePath: string,
+  proposedContent: string,
+  options: { currentContent?: string | undefined; reason?: string; sourceVersion?: string } = {}
+): ConflictProposalResult {
+  const proposalHash = sha256(proposedContent);
+  const safeTarget = targetRelativePath.replace(/[^a-zA-Z0-9_.-]/g, "__");
+  const baseName = `${safeTarget}.${proposalHash.slice(0, 12)}`;
+  const conflictRoot = join(targetRoot, ".agent-kit", "conflicts");
+  const proposalPath = join(conflictRoot, `${baseName}.proposed`);
+  const metadataPath = join(conflictRoot, `${baseName}.json`);
+  const normalizedTarget = targetRelativePath.replace(/\\/g, "/");
+  writeText(proposalPath, proposedContent);
+  writeText(
+    metadataPath,
+    `${JSON.stringify(
+      {
+        schemaVersion: 1,
+        target: normalizedTarget,
+        proposedSha256: proposalHash,
+        ...(options.currentContent !== undefined ? { currentSha256: sha256(options.currentContent) } : {}),
+        ...(options.reason ? { reason: options.reason } : {}),
+        ...(options.sourceVersion ? { sourceVersion: options.sourceVersion } : {})
+      },
+      null,
+      2
+    )}\n`
+  );
+  return {
+    conflictPath: relative(targetRoot, proposalPath).replace(/\\/g, "/"),
+    metadataPath: relative(targetRoot, metadataPath).replace(/\\/g, "/")
+  };
+}
+
 export function copyTextWithConflict(
   sourcePath: string,
   targetRoot: string,
@@ -91,15 +137,19 @@ export function copyTextWithConflict(
     return { action: "overwritten", target: targetRelativePath };
   }
 
-  const conflictRoot = options.conflictRoot ?? join(targetRoot, ".agent-kit", "conflicts");
-  const safeName = `${Date.now()}-${targetRelativePath.replace(/[^a-zA-Z0-9_.-]/g, "_")}`;
-  const conflictPath = join(conflictRoot, safeName);
-  writeText(conflictPath, sourceContent);
+  const defaultConflictRoot = join(targetRoot, ".agent-kit", "conflicts");
+  if (options.conflictRoot && resolve(options.conflictRoot) !== resolve(defaultConflictRoot)) {
+    throw new Error("Custom conflict roots are no longer supported; proposals must stay under .agent-kit/conflicts.");
+  }
+  const proposal = writeConflictProposal(targetRoot, targetRelativePath, sourceContent, {
+    currentContent: existingContent,
+    reason: "Local content differs from the proposed package content."
+  });
 
   return {
     action: "conflict",
     target: targetRelativePath,
-    conflictPath: relative(targetRoot, conflictPath)
+    conflictPath: proposal.conflictPath
   };
 }
 

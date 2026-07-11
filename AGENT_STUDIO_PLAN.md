@@ -23,7 +23,7 @@ Current Markdown-first V1 status:
 
 - Implemented: schemas, local context scan/render/validate, guided install, session event logging, Markdown rendering, static HTML export, correction lifecycle commands, adapter guidance, audit checks, fixture tests, example snapshots, and `npm run smoke:studio`.
 - Release-gated: `npm run release:check` runs the Agent Studio smoke path.
-- Still future: live local GUI/canvas view and direct AI API orchestration.
+- Implemented after Markdown-first V1: localhost Agent Office/Studio UI and optional direct orchestration through `@appsforgood/agent-kit-runtime`.
 
 ## Core Decision
 
@@ -50,7 +50,7 @@ All state lives in the downstream project under `.agent-kit/`. The user can insp
 
 The installed IDE/chat agent is the actor that updates files after user feedback. The kit supplies the file contracts, CLI helpers, adapter instructions, renderers, and audit checks.
 
-Direct OpenAI, Anthropic, or other model API orchestration is a later optional mode, not the baseline assumption.
+Direct provider orchestration is an optional installed mode, not the baseline assumption. It reuses the same roster and evidence contracts while adding SQLite checkpoints and explicit execution policy under `.agent-kit/runtime/`.
 
 ### Markdown Readability
 
@@ -731,23 +731,24 @@ Acceptance:
 
 Estimate: 4 to 8 days.
 
-### Milestone 9: Optional Direct AI Orchestration
+### Milestone 9: Optional Direct AI Orchestration (Complete)
 
 Deliverables:
 
-- Provider-neutral orchestrator config.
-- Optional API key loading from local env.
-- Cost and token logging.
-- Tool permission model.
-- Agent execution loop using the same session event log.
+- Provider-neutral orchestrator config installed disabled by default.
+- Environment and OS-keychain credential references without file or inline-secret fallback.
+- Deterministic model routing with capability checks and bounded fallback.
+- Allowlisted MCP, Docker-first tools, isolated worktrees, and risk-tiered approval gates.
+- LangGraph execution with SQLite checkpoints, pause/resume/cancel controls, bounded retries/timeouts, scoped commits, and redacted versioned evidence.
+- Root CLI and Agent Studio controls that dynamically load the optional runtime package.
 
 Acceptance:
 
 - Baseline kit still works without API keys.
 - Direct orchestration is opt-in.
 - Secrets are never written to session logs.
-
-Estimate: 2 to 4 weeks after the file protocol is proven.
+- Baseline install, audit, sessions, and IDE adapters continue to work when the runtime is absent or disabled.
+- Runtime execution never merges, pushes, opens pull requests, deploys, or applies migrations.
 
 ## Recommended Build Order
 
@@ -759,7 +760,7 @@ Estimate: 2 to 4 weeks after the file protocol is proven.
 6. Adapter and audit integration.
 7. Static studio export. Complete.
 8. Live studio.
-9. Direct AI orchestration.
+9. Direct AI orchestration. Complete as an optional package.
 
 The Markdown-first version is the high-value path. The live GUI should not start until the file protocol is useful by itself.
 

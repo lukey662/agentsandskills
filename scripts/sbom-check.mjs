@@ -8,7 +8,13 @@ const repoRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const args = process.argv.slice(2);
 const outputIndex = args.indexOf("--output");
 const outputPath = outputIndex >= 0 ? args[outputIndex + 1] : null;
-const packageJson = JSON.parse(readFileSync(join(repoRoot, "package.json"), "utf8"));
+const workspaceIndex = args.indexOf("--workspace");
+const workspacePath = workspaceIndex >= 0 ? args[workspaceIndex + 1] : "";
+if (workspaceIndex >= 0 && (!workspacePath || workspacePath.startsWith("/") || workspacePath.split(/[\\/]/).includes(".."))) {
+  throw new Error("--workspace must be a project-relative package directory.");
+}
+const packageRoot = workspacePath ? join(repoRoot, workspacePath) : repoRoot;
+const packageJson = JSON.parse(readFileSync(join(packageRoot, "package.json"), "utf8"));
 const packageLock = JSON.parse(readFileSync(join(repoRoot, "package-lock.json"), "utf8"));
 
 function fail(message) {
@@ -87,7 +93,7 @@ const packageEntries = Object.entries(packageLock.packages ?? {})
   .sort(([a], [b]) => a.localeCompare(b));
 
 const pathToRef = new Map();
-const components = packageEntries.map(([packagePath, entry]) => {
+const allComponents = packageEntries.map(([packagePath, entry]) => {
   const name = packageNameFromPath(packagePath);
   const version = entry.version;
   const ref = bomRef(name, version, packagePath);
@@ -121,18 +127,25 @@ function resolveDependencyPath(fromPath, dependencyName) {
   }
 }
 
-const unresolved = [];
+const unresolvedLinks = [];
 const skippedOptional = [];
-const rootRef = bomRef(packageJson.name, packageJson.version, "");
-const rootDependencyNames = [...Object.keys(packageJson.dependencies ?? {}), ...Object.keys(packageJson.devDependencies ?? {})].sort();
+const rootRef = bomRef(packageJson.name, packageJson.version, workspacePath);
+const rootOptionalDependencies = new Set(Object.keys(packageJson.optionalDependencies ?? {}));
+const rootDependencyNames = [...Object.keys(packageJson.dependencies ?? {}), ...rootOptionalDependencies].sort();
 
 const dependencies = [
   {
     ref: rootRef,
     dependsOn: rootDependencyNames
       .map((dependencyName) => {
-        const resolvedPath = resolveDependencyPath("", dependencyName);
-        if (!resolvedPath) unresolved.push(`${packageJson.name} -> ${dependencyName}`);
+        const resolvedPath = resolveDependencyPath(workspacePath, dependencyName);
+        if (!resolvedPath) {
+          unresolvedLinks.push({
+            ref: rootRef,
+            link: `${packageJson.name} -> ${dependencyName}`,
+            optional: rootOptionalDependencies.has(dependencyName)
+          });
+        }
         return resolvedPath ? pathToRef.get(resolvedPath) : null;
       })
       .filter(Boolean)
@@ -140,7 +153,8 @@ const dependencies = [
 ];
 
 for (const [packagePath, entry] of packageEntries) {
-  const names = [...Object.keys(entry.dependencies ?? {}), ...Object.keys(entry.optionalDependencies ?? {})].sort();
+  const optionalNames = new Set(Object.keys(entry.optionalDependencies ?? {}));
+  const names = [...Object.keys(entry.dependencies ?? {}), ...optionalNames].sort();
   dependencies.push({
     ref: pathToRef.get(packagePath),
     dependsOn: names
@@ -148,14 +162,30 @@ for (const [packagePath, entry] of packageEntries) {
         const resolvedPath = resolveDependencyPath(packagePath, dependencyName);
         if (!resolvedPath) {
           const unresolvedLink = `${packagePath} -> ${dependencyName}`;
-          if (entry.optional || entry.devOptional) skippedOptional.push(unresolvedLink);
-          else unresolved.push(unresolvedLink);
+          const optional = optionalNames.has(dependencyName) || entry.optional || entry.devOptional;
+          unresolvedLinks.push({ ref: pathToRef.get(packagePath), link: unresolvedLink, optional });
+          if (optional) skippedOptional.push(unresolvedLink);
         }
         return resolvedPath ? pathToRef.get(resolvedPath) : null;
       })
       .filter(Boolean)
   });
 }
+
+const dependenciesByRef = new Map(dependencies.map((dependency) => [dependency.ref, dependency.dependsOn]));
+const reachable = new Set([rootRef]);
+const queue = [rootRef];
+while (queue.length > 0) {
+  const ref = queue.shift();
+  for (const dependency of dependenciesByRef.get(ref) ?? []) {
+    if (reachable.has(dependency)) continue;
+    reachable.add(dependency);
+    queue.push(dependency);
+  }
+}
+const components = allComponents.filter((component) => reachable.has(component["bom-ref"]));
+const scopedDependencies = dependencies.filter((dependency) => reachable.has(dependency.ref));
+const unresolved = unresolvedLinks.filter((item) => reachable.has(item.ref) && !item.optional).map((item) => item.link);
 
 const sbom = {
   $schema: "http://cyclonedx.org/schema/bom-1.5.schema.json",
@@ -187,11 +217,11 @@ const sbom = {
           url: packageJson.repository?.url ?? "https://github.com/lukey662/agentsandskills"
         }
       ],
-      properties: [{ name: "cdx:npm:package:path", value: "" }]
+      properties: [{ name: "cdx:npm:package:path", value: workspacePath }]
     }
   },
   components,
-  dependencies
+  dependencies: scopedDependencies
 };
 
 const requiredRuntimeDependencies = Object.keys(packageJson.dependencies ?? {});
@@ -222,6 +252,6 @@ if (outputPath) {
   console.log(`wrote ${basename(target)} with ${components.length} components (${skippedOptional.length} optional-platform links skipped)`);
 } else {
   console.log(
-    `sbom check passed: CycloneDX ${sbom.specVersion}, ${components.length} components, ${dependencies.length} dependency records, ${skippedOptional.length} optional-platform links skipped`
+    `sbom check passed: CycloneDX ${sbom.specVersion}, ${components.length} components, ${scopedDependencies.length} dependency records, ${skippedOptional.length} optional-platform links skipped`
   );
 }

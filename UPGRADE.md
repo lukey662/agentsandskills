@@ -13,13 +13,13 @@ This file defines how maintainers and downstream projects should upgrade Agent K
 
 Before publishing a new package version:
 
-1. Update `CHANGELOG.md` with user-visible changes, migration notes, and deprecations.
+1. Update changesets plus root/runtime changelogs with user-visible changes, migration notes, and deprecations.
 2. Update `ROADMAP.md` and `BEST_PRACTICE_EVIDENCE.md` when a research finding becomes enforced behavior.
 3. Run `npm run release:check`.
 4. Run `agent-kit package validate` from the source repository when runtime adapter or package assets changed.
-5. Confirm the pack dry run includes only public-safe files.
-6. Publish through npm Trusted Publishing.
-7. Verify public install with `npx @appsforgood/next-supabase-kit`.
+5. Confirm root and runtime pack dry runs include only public-safe files.
+6. Publish runtime then root through npm Trusted Publishing with separate SBOM attestations.
+7. Verify public runtime import plus root `doctor`, `init`, `audit`, and `orchestrate validate`.
 
 ## Downstream Upgrade Checklist
 
@@ -32,6 +32,16 @@ npx @appsforgood/next-supabase-kit@latest update
 npx @appsforgood/next-supabase-kit@latest adapter validate antigravity
 npx @appsforgood/next-supabase-kit@latest audit --min-readiness baseline-setup
 ```
+
+Projects using executable orchestration should also upgrade the optional runtime deliberately:
+
+```bash
+npm install --save-dev @appsforgood/agent-kit-runtime@latest
+agent-kit orchestrate validate
+agent-kit orchestrate plan "Upgrade verification"
+```
+
+Review `.agent-kit/orchestrator.json` conflict proposals, schema changes, provider capability declarations, MCP/host/private-network exceptions, Docker image availability, native `better-sqlite3` install policy, and checkpoint compatibility before enabling runs. Finish or cancel paused runs before changing runtime versions.
 
 The package includes an older-install regression fixture that exercises this path. The fixture proves update preserves customized docs, writes conflict templates, installs new current baseline docs and `.agent-kit/` assets, then audits with zero failures.
 

@@ -6,6 +6,7 @@ Canonical source of truth:
 
 - `.agent-kit/model-routing.json`
 - `.agent-kit/schemas/model-routing.schema.json`
+- `.agent-kit/orchestrator.json`
 - `.agent-kit/agent-roster.json`
 - `ASSISTANT_ADAPTERS.md`
 
@@ -16,6 +17,7 @@ Canonical source of truth:
 - Keep model choice as a dated, reviewable routing layer.
 - Do not store secrets, API keys, billing notes, private model entitlement details, or workspace-only vendor terms in this file.
 - If an IDE cannot enforce per-agent model choice, document the limitation honestly and use the closest manual or advisory setup.
+- Runtime aliases must use an ordered candidate list, explicit required capabilities, and bounded attempts. Missing capabilities are skipped before a provider call.
 
 ## Agent Profiles
 
@@ -41,6 +43,13 @@ Canonical source of truth:
 | Cursor | `.cursor/rules/*.mdc` | Unverified | Advisory | Record date, owner, model picker/team setting, and loaded rule evidence. |
 | GitHub Copilot | `.github/copilot-instructions.md`, `.github/instructions/*.instructions.md` | Unverified | Advisory | Record date, owner, selected chat/coding-agent model, and loaded instruction evidence. |
 | Antigravity | `.antigravity/agent-kit/plugin.json`, `.antigravity/agent-kit/commands/*.toml`, `.antigravity/runtime-skills/*/SKILL.md` | Unverified | Advisory | Record date, owner, `agent-kit adapter validate antigravity`, and optional native `agy plugin validate` output. |
+| Agent Kit Runtime | `.agent-kit/orchestrator.json` | Alias routing and fallbacks | Enforced | Record `orchestrate validate`, provider probes, selected provider/model events, and fallback reasons. |
+
+## Runtime Aliases
+
+The executable runtime supports native adapters for OpenAI, Anthropic, Gemini, and OpenAI-compatible APIs including xAI/Grok, DeepSeek, Kimi, GLM, OpenRouter, Ollama, LM Studio, and vLLM. Configure project-owned model names in `.agent-kit/orchestrator.json`; do not copy dated IDE recommendations into active runtime aliases without verifying provider documentation and access.
+
+Each alias is deterministic: candidates are attempted in order, capability mismatches do not consume an attempt, provider failures are recorded, and `maxAttempts` bounds fallback. Tool-using agents automatically require the `tools` capability, so text-only local models fail closed instead of receiving unsupported tool calls.
 
 ## June 2026 Commented Recommendations
 

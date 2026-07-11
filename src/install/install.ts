@@ -8,6 +8,10 @@ import {
   DEFAULT_CONFIG,
   DEFAULT_MODEL_ROUTING_SOURCE,
   DEFAULT_MODEL_ROUTING_TARGET,
+  DEFAULT_ORCHESTRATOR_SOURCE,
+  DEFAULT_ORCHESTRATOR_TARGET,
+  DEFAULT_RUNTIME_IGNORE_SOURCE,
+  DEFAULT_RUNTIME_IGNORE_TARGET,
   LIBRARY_FOLDERS,
   PACKAGE_NAME,
   PACKAGE_VERSION,
@@ -15,9 +19,10 @@ import {
 } from "../config/defaults.js";
 import type { InstallManifest, StackProfile } from "../config/types.js";
 import { initProjectContext } from "../studio/context.js";
-import { copyDirectory, copyTextWithConflict, ensureDir, sha256, writeText } from "../utils/fs.js";
+import { copyTextWithConflict, ensureDir, sha256, writeText } from "../utils/fs.js";
 import { findPackageRoot } from "../utils/package-root.js";
 import { activateIdeTargets, parseActivateTargets, type ActivateIdeResult, type IdeTarget } from "./ide-activate.js";
+import { hashManagedAssets, listManagedAssets } from "./managed-assets.js";
 
 export interface InitOptions {
   cwd: string;
@@ -41,6 +46,7 @@ export function initProject(options: InitOptions): InitResult {
   const stack = options.stack ?? DEFAULT_CONFIG.stack;
   const packageRoot = findPackageRoot();
   const templateRoot = join(packageRoot, "templates", stack);
+  const managedAssets = listManagedAssets(packageRoot, stack);
 
   if (!existsSync(templateRoot)) {
     throw new Error(`Unsupported stack profile: ${stack}`);
@@ -76,8 +82,13 @@ export function initProject(options: InitOptions): InitResult {
     }
   }
 
-  for (const folder of LIBRARY_FOLDERS) {
-    copyDirectory(join(packageRoot, folder), join(cwd, ".agent-kit", folder));
+  for (const asset of managedAssets.filter((item) => item.category === "library")) {
+    const libraryCopy = copyTextWithConflict(asset.sourcePath, cwd, asset.target, {
+      force: Boolean(options.force),
+      conflictRoot: join(cwd, ".agent-kit", "conflicts")
+    });
+    if (libraryCopy.action === "overwritten") result.overwritten.push(libraryCopy.target);
+    if (libraryCopy.action === "conflict") result.conflicts.push(`${libraryCopy.target} -> ${libraryCopy.conflictPath}`);
   }
 
   for (const adapter of CURSOR_ADAPTER_FILES) {
@@ -111,7 +122,26 @@ export function initProject(options: InitOptions): InitResult {
   if (modelRoutingCopy.action === "overwritten") result.overwritten.push(modelRoutingCopy.target);
   if (modelRoutingCopy.action === "conflict") result.conflicts.push(`${modelRoutingCopy.target} -> ${modelRoutingCopy.conflictPath}`);
 
+  const orchestratorCopy = copyTextWithConflict(join(packageRoot, DEFAULT_ORCHESTRATOR_SOURCE), cwd, DEFAULT_ORCHESTRATOR_TARGET, {
+    force: Boolean(options.force),
+    conflictRoot: join(cwd, ".agent-kit", "conflicts")
+  });
+  if (orchestratorCopy.action === "created") result.copied.push(orchestratorCopy.target);
+  if (orchestratorCopy.action === "unchanged") result.unchanged.push(orchestratorCopy.target);
+  if (orchestratorCopy.action === "overwritten") result.overwritten.push(orchestratorCopy.target);
+  if (orchestratorCopy.action === "conflict") result.conflicts.push(`${orchestratorCopy.target} -> ${orchestratorCopy.conflictPath}`);
+
+  const runtimeIgnoreCopy = copyTextWithConflict(join(packageRoot, DEFAULT_RUNTIME_IGNORE_SOURCE), cwd, DEFAULT_RUNTIME_IGNORE_TARGET, {
+    force: Boolean(options.force),
+    conflictRoot: join(cwd, ".agent-kit", "conflicts")
+  });
+  if (runtimeIgnoreCopy.action === "created") result.copied.push(runtimeIgnoreCopy.target);
+  if (runtimeIgnoreCopy.action === "unchanged") result.unchanged.push(runtimeIgnoreCopy.target);
+  if (runtimeIgnoreCopy.action === "overwritten") result.overwritten.push(runtimeIgnoreCopy.target);
+  if (runtimeIgnoreCopy.action === "conflict") result.conflicts.push(`${runtimeIgnoreCopy.target} -> ${runtimeIgnoreCopy.conflictPath}`);
+
   const manifest: InstallManifest = {
+    schemaVersion: 2,
     packageName: PACKAGE_NAME,
     packageVersion: PACKAGE_VERSION,
     stack,
@@ -120,7 +150,8 @@ export function initProject(options: InitOptions): InitResult {
     libraryFolders: [...LIBRARY_FOLDERS],
     agentRoster: DEFAULT_AGENT_ROSTER_TARGET,
     modelRouting: DEFAULT_MODEL_ROUTING_TARGET,
-    templateHashes
+    templateHashes,
+    assetHashes: hashManagedAssets(managedAssets)
   };
 
   writeText(join(cwd, ".agent-kit", "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);

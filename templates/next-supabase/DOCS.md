@@ -20,6 +20,7 @@ Document:
 - Agent council routing in `.agent-kit/agent-roster.json`
 - Assistant activation surfaces in `ASSISTANT_ADAPTERS.md`
 - Optional runtime adapter surfaces such as `.antigravity/agent-kit/` and `.antigravity/runtime-skills/`
+- Optional executable orchestration in `@appsforgood/agent-kit-runtime`, configured by `.agent-kit/orchestrator.json`
 - Model profile routing in `MODEL_ROUTING.md` and `.agent-kit/model-routing.json`
 - Council-session evidence in `COUNCIL.md`
 - Agent, council-session, model-routing, and audit-report schemas in `.agent-kit/schemas/`
@@ -42,6 +43,7 @@ Document primary workflows, including:
 - Planning and core-change handoffs from `AGENT_ROSTER.md`
 - Tool-specific assistant activation from `ASSISTANT_ADAPTERS.md`
 - Runtime command validation with `agent-kit adapter validate antigravity` when Antigravity is active
+- Offline runtime validation and planning with `agent-kit orchestrate validate` and `agent-kit orchestrate plan`
 - UI improvement command workflows from `.agent-kit/prompts/ui-command-index.md`
 - Deterministic UI detector and acceptance review from `.agent-kit/checklists/ui-detectors.md` and `.agent-kit/checklists/ui-acceptance-rubric.md`
 - Model-selection setup, enforcement status, and limitations from `MODEL_ROUTING.md`
@@ -60,6 +62,12 @@ Document primary workflows, including:
 - Deployment workflow
 
 Runtime command files are adapters only. Native commands such as `/plan`, `/security`, `/frontend`, `/ui-audit`, `/ui-polish`, `/layout-cleanup`, `/responsive-cleanup`, `/accessibility-pass`, `/distinctiveness-pass`, `/screenshot-critique`, `/browser-qa`, `/copy`, `/handoff`, `/audit`, `/setup`, `/upgrade`, and `/ship` should point back to `AGENTS.md`, `.agent-kit/agent-roster.json`, `QUALITY_GATES.md`, `.agent-kit/skills/`, and Agent Studio evidence.
+
+## Optional Orchestrator
+
+Install `@appsforgood/agent-kit-runtime` only when the project needs executable council workflows. Keep `.agent-kit/orchestrator.json` disabled until provider aliases, credential references, mutation roles, MCP allowlists, Docker policy, limits, and approvals are reviewed.
+
+The runtime compiles roster sequences to bounded LangGraph nodes, checkpoints in SQLite, records redacted JSONL evidence, pauses for risk-tiered approvals, and uses an isolated Git worktree. It may create one approved scoped commit but never merges, pushes, opens a pull request, deploys, or applies migrations automatically. `agent-kit studio serve` exposes the same run and approval state in its Runs tab.
 
 High-risk UI work must include desktop and mobile screenshots plus authenticated or permission-state evidence when the surface requires login, roles, tenant context, or permissions.
 

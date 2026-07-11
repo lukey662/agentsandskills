@@ -25,10 +25,15 @@ async function waitForServer(url, attempts = 30) {
   throw new Error(`Setup server did not become ready at ${url}`);
 }
 
-async function saveContext(baseUrl) {
+async function saveContext(baseUrl, csrfToken) {
   const response = await fetch(`${baseUrl}/api/context`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Origin: baseUrl,
+      "Sec-Fetch-Site": "same-origin",
+      "X-Agent-Kit-CSRF": csrfToken
+    },
     body: JSON.stringify({
       productSummary: "Smoke test product summary for wizard setup.",
       productCategory: "saas",
@@ -93,7 +98,9 @@ try {
     const officeHtml = await officeRes.text();
     if (!officeHtml.includes("Agent Office")) throw new Error("Office HTML missing expected title.");
     if (!officeHtml.includes("office-floor")) throw new Error("Office HTML missing canvas.");
-    await saveContext(baseUrl);
+    const csrfToken = officeHtml.match(/<meta name="agent-kit-csrf-token" content="([^"]+)">/)?.[1];
+    if (!csrfToken) throw new Error("Office HTML is missing the local request token.");
+    await saveContext(baseUrl, csrfToken);
     const statusOutput = execFileSync("node", [cliPath, "setup", "--status"], {
       cwd: tempRoot,
       encoding: "utf8"

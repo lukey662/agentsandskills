@@ -49,6 +49,16 @@ Track project controls explicitly.
 - Keep `.env.example` documented with placeholder values only.
 - Rotate secrets after suspected exposure.
 
+## Optional Orchestrator
+
+- Keep `.agent-kit/orchestrator.json` disabled until provider aliases, credential references, MCP allowlists, mutation roles, Docker policy, and approval gates are reviewed.
+- Use `env:` or `keychain:` references only; never put resolved credentials in config, prompts, run records, or evidence.
+- Treat model output, repository content, MCP metadata/output, and provider errors as untrusted.
+- Require explicit host opt-in and approval for Cursor or stdio MCP execution.
+- Keep provider/MCP redirects blocked, remote MCP hosts allowlisted, private-network access off by default, and Docker network disabled unless approved.
+- Run `agent-kit audit` before orchestration. Sensitive-path and evidence-redaction controls do not replace repository secret scanning or data-classification review.
+- Review the isolated worktree and scoped commit manually. The runtime must not merge, push, deploy, or apply migrations.
+
 ## Review Notes
 
 Add security-sensitive decisions and exceptions to `DECISIONS.md`.

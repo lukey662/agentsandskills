@@ -16,12 +16,17 @@ const jsonFiles = [
   "schemas/agent-roster.schema.json",
   "schemas/council-session.schema.json",
   "schemas/audit-report.schema.json",
+  "schemas/audit-report-v2.schema.json",
   "schemas/model-routing.schema.json",
   "schemas/project-context.schema.json",
   "schemas/correction-rules.schema.json",
   "schemas/session-event.schema.json",
   "schemas/studio-session.schema.json",
   "schemas/onboarding-state.schema.json",
+  "schemas/orchestrator.schema.json",
+  "schemas/runtime-run.schema.json",
+  "schemas/runtime-event.schema.json",
+  "templates/next-supabase/.agent-kit/orchestrator.json",
   "examples/next-supabase-installed/.agent-kit/agent-roster.json",
   "examples/next-supabase-installed/.agent-kit/model-routing.json",
   "examples/next-supabase-installed/.agent-kit/manifest.json",
@@ -53,6 +58,7 @@ function run(name, args) {
 
 validateJson();
 run("Version consistency check", ["run", "version:check"]);
+run("Changeset plan check", ["run", "changeset:check"]);
 run("Typecheck", ["run", "typecheck"]);
 run("Lint", ["run", "lint"]);
 run("Format check", ["run", "format:check"]);
@@ -68,5 +74,6 @@ run("Baseline audit gate smoke", ["run", "smoke:audit-gate"]);
 run("Dependency audit", ["audit", "--audit-level=moderate"]);
 run("SBOM check", ["run", "sbom:check"]);
 run("Package dry run", ["pack", "--dry-run"]);
+run("Runtime package dry run", ["pack", "--dry-run", "--workspace", "@appsforgood/agent-kit-runtime"]);
 
 console.log("\nrelease check passed");

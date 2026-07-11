@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-skills.dev/schemas/runtime-event.schema.json",
+  "title": "Agent Kit Runtime Event",
+  "type": "object",
+  "required": ["schemaVersion", "eventId", "sequence", "runId", "createdAt", "type"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "eventId": { "type": "string", "minLength": 1 },
+    "sequence": { "type": "integer", "minimum": 1 },
+    "runId": { "type": "string", "minLength": 1 },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "type": {
+      "enum": [
+        "run_started",
+        "run_status_changed",
+        "agent_started",
+        "agent_completed",
+        "handoff",
+        "approval_requested",
+        "approval_decided",
+        "tool_started",
+        "tool_completed",
+        "provider_selected",
+        "artifact",
+        "verification",
+        "run_error",
+        "run_completed"
+      ]
+    },
+    "agentId": { "type": "string", "minLength": 1 },
+    "text": { "type": "string" },
+    "status": { "enum": ["planned", "running", "awaiting-approval", "blocked", "cancelled", "failed", "complete"] },
+    "approval": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["approvalId", "runId", "risk", "title", "detail", "requestedAt"],
+          "additionalProperties": false,
+          "properties": {
+            "approvalId": { "type": "string", "minLength": 1 },
+            "runId": { "type": "string", "minLength": 1 },
+            "risk": { "enum": ["plan", "write", "network", "secret", "destructive", "host-mutation", "final-commit"] },
+            "title": { "type": "string", "minLength": 1 },
+            "detail": { "type": "string" },
+            "requestedAt": { "type": "string", "format": "date-time" }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["approvalId", "decision", "decidedAt"],
+          "additionalProperties": false,
+          "properties": {
+            "approvalId": { "type": "string", "minLength": 1 },
+            "decision": { "enum": ["approve", "reject"] },
+            "decidedAt": { "type": "string", "format": "date-time" },
+            "actor": { "type": "string", "minLength": 1 },
+            "note": { "type": "string" }
+          }
+        }
+      ]
+    },
+    "data": { "type": "object", "additionalProperties": true }
+  }
+}
