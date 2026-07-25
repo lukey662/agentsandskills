@@ -17,9 +17,6 @@
 |-- LOOP_CODING.md
 |-- DEPLOYMENT.md
 |-- UPGRADE.md
-|-- .github
-|   `-- workflows
-|       `-- agent-kit-audit.yml
 |-- .cursor
 |   `-- rules
 |       |-- cursor-agent-kit.mdc

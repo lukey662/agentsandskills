@@ -17,12 +17,14 @@ Protect `main` with:
 - Do not allow deletions.
 - Restrict bypasses to maintainers only.
 
-Required status checks:
+Optional status checks, only after GitHub Actions entitlement is confirmed and the project deliberately chooses hosted CI as required:
 
 - `Verify package`
 - `Review dependency changes`
 - `Analyze JavaScript and TypeScript`
 - `Scorecard`
+
+With the default `githubActions.mode: "off"`, configure no required hosted status checks. GitHub billing, spending-limit, or pre-execution failures cannot be recovered inside workflow YAML and must not block commit/push or ordinary phase progression. Preserve equivalent local test, audit, dependency, and security evidence in the council session.
 
 ## Release Environment
 

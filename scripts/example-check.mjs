@@ -115,6 +115,8 @@ try {
     stableManifest(readJson(join(tempRoot, ".agent-kit", "manifest.json")))
   );
 
+  assertDeepEqual("Example config", readJson(join(exampleRoot, ".agent-kit", "config.json")), readJson(join(tempRoot, ".agent-kit", "config.json")));
+
   assertDeepEqual("Example audit output", stableAudit(readJson(join(exampleRoot, "audit-output.json"))), stableAudit(generatedAudit));
 
   assertTreeSummary();

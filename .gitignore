@@ -32,7 +32,6 @@ research/workdir/
 examples/next-supabase-installed/.agent-kit/agents/
 examples/next-supabase-installed/.agent-kit/assistant-adapters/
 examples/next-supabase-installed/.agent-kit/checklists/
-examples/next-supabase-installed/.agent-kit/config.json
 examples/next-supabase-installed/.agent-kit/conflicts/
 examples/next-supabase-installed/.agent-kit/design-adapters/
 examples/next-supabase-installed/.agent-kit/design-briefs/

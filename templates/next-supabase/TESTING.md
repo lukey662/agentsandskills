@@ -44,7 +44,23 @@ Required rules:
 
 ## CI Gates
 
-Every project should define the smallest reliable CI gate for its risk profile.
+Every project should define the smallest reliable verification gate for its risk profile. Local verification is the default and must be recorded before commit/push or phase progression. Hosted GitHub Actions is optional and must not be treated as required when jobs cannot start because of account billing, spending limits, or entitlement.
+
+Use `agent-kit init --github-actions` only to install the advisory hosted audit. Automatic runs require the repository variable `AGENT_KIT_ACTIONS_ENABLED=true`; keep `githubActions.mode` as `off` or `advisory` unless branch protection and Actions availability have been explicitly verified.
+
+Default local gate (remove only commands the project genuinely does not expose, and record the gap):
+
+```bash
+npm ci
+npm run typecheck
+npm test
+npm run build
+npm audit --audit-level=high
+npx --yes @appsforgood/next-supabase-kit@0.2.1 audit --min-readiness baseline-setup
+agent-kit session verify --command "local delivery gate" --result pass --notes "Record commands, commit SHA, and verification time."
+```
+
+A failed or unavailable hosted job never converts missing local evidence into a pass.
 
 Recommended baseline:
 

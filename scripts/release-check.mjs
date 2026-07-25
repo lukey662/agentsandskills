@@ -28,6 +28,7 @@ const jsonFiles = [
   "schemas/runtime-event.schema.json",
   "templates/next-supabase/.agent-kit/orchestrator.json",
   "examples/next-supabase-installed/.agent-kit/agent-roster.json",
+  "examples/next-supabase-installed/.agent-kit/config.json",
   "examples/next-supabase-installed/.agent-kit/model-routing.json",
   "examples/next-supabase-installed/.agent-kit/manifest.json",
   "examples/next-supabase-installed/audit-output.json"

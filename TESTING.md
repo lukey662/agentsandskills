@@ -40,7 +40,19 @@ Required rules:
 
 ## CI Gates
 
-Every project should define the smallest reliable CI gate for its risk profile.
+Every project should define the smallest reliable verification gate for its risk profile. Local verification is the default and must be recorded before commit/push or phase progression. Hosted GitHub Actions is optional and must not be treated as required when jobs cannot start because of account billing, spending limits, or entitlement.
+
+Use `agent-kit init --github-actions` only to install the advisory hosted audit. Automatic runs require the repository variable `AGENT_KIT_ACTIONS_ENABLED=true`; keep `githubActions.mode` as `off` or `advisory` unless branch protection and Actions availability have been explicitly verified.
+
+For this package, the authoritative local gate is:
+
+```bash
+npm run release:check
+npm run smoke:audit-gate
+agent-kit session verify --command "npm run release:check && npm run smoke:audit-gate" --result pass --notes "Record commit SHA and verification time."
+```
+
+A failed or unavailable hosted job never converts missing local evidence into a pass.
 
 Recommended baseline:
 

@@ -5,7 +5,8 @@ This repo ships `@appsforgood/next-supabase-kit` and the optional `@appsforgood/
 ## Environments
 
 - Local: development against `src/` with `npm run dev`; `npm run build` produces `dist/index.js`.
-- CI: `.github/workflows/ci.yml` runs `release:check` and `smoke:audit-gate` on every push and pull request to `main`.
+- Local delivery gate: `npm run release:check` and `npm run smoke:audit-gate`; this evidence is sufficient for commit/push when hosted Actions is unavailable.
+- Optional CI: `.github/workflows/ci.yml` mirrors local verification when GitHub Actions entitlement is working. Billing or spending-limit startup failures are infrastructure failures, not code failures.
 - Release: `.github/workflows/release.yml` publishes runtime before root from the `npm-publish` GitHub environment using npm Trusted Publishing (OIDC), generates and attests a package-rooted SBOM for each tarball, and verifies both public packages before creating a GitHub release.
 
 ## Environment Variables
@@ -20,7 +21,7 @@ Before publishing a new version:
 
 1. Update root/runtime changesets and changelogs, then confirm `npm run version:check` passes for both workspace manifests.
 2. Run `npm run release:check` locally (typecheck, tests, build, smoke install/studio/audit, example check, SBOM check, pack dry run).
-3. Merge to `main` and confirm CI is green.
+3. Merge to `main` after the local release gate passes. Confirm hosted CI too only when this repository has deliberately enabled it as a required gate.
 4. The release workflow packs and attests both packages, publishes runtime before root when needed, verifies both from the public registry, then creates the root-version GitHub release.
 5. Confirm public runtime import plus root `doctor`, `init`, `audit`, and `orchestrate validate` verification passed.
 
@@ -34,7 +35,7 @@ Before publishing a new version:
 
 ## Rollback
 
-- Code: revert the offending commit on `main`; CI must return green before any re-release.
+- Code: revert the offending commit on `main`; the local release gate must return green before any re-release. Hosted CI is additional evidence when available.
 - Package: npm unpublish is restricted, so ship a patch release with the fix and deprecate the broken version with `npm deprecate`.
 - Release workflow mistakes: the workflow validates the publish ref and dry-run mode exercises all gates without credentials; failed publishes leave no partial state.
 - Runtime execution: reject/cancel the gate, inspect the cached worktree and `agent-kit/<run-id>` branch, preserve or remove the scoped commit manually, and keep SQLite/JSONL evidence until the incident review is complete.

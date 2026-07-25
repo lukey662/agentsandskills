@@ -8,6 +8,8 @@ Document each environment:
 - Preview
 - Production
 
+Hosted GitHub Actions is off by default. Local verification is sufficient for commit/push and normal phase progression when required checks pass. Enable the advisory workflow with `agent-kit init --github-actions`, set `AGENT_KIT_ACTIONS_ENABLED=true` only when automatic runs are wanted, and do not configure it as a required status check until Actions jobs can reliably start.
+
 ## Environment Variables
 
 Document required variables with placeholder examples only.

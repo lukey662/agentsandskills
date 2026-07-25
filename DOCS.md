@@ -17,7 +17,7 @@ Package-level research decisions are recorded in `DECISIONS.md`.
 
 ## Install Behavior
 
-`agent-kit init --stack next-supabase` installs root markdown docs, copies library assets into `.agent-kit/`, runs a lightweight project scan to create `.agent-kit/project-context.json`, installs Cursor rules, and ships `.github/workflows/agent-kit-audit.yml`.
+`agent-kit init --stack next-supabase` installs root markdown docs, copies library assets into `.agent-kit/`, runs a lightweight project scan to create `.agent-kit/project-context.json`, and installs Cursor rules. GitHub Actions is off by default; pass `--github-actions` to install the advisory `.github/workflows/agent-kit-audit.yml` template. Its automatic jobs remain disabled until `AGENT_KIT_ACTIONS_ENABLED=true` is set as a repository variable.
 
 Promote other IDE surfaces with:
 

@@ -25,7 +25,7 @@ export interface ManagedAsset {
   libraryFolder?: string;
 }
 
-export function listManagedAssets(packageRoot: string, stack: string): ManagedAsset[] {
+export function listManagedAssets(packageRoot: string, stack: string, options: { includeCi?: boolean } = {}): ManagedAsset[] {
   const assets: ManagedAsset[] = [];
   const templateRoot = join(packageRoot, "templates", stack);
 
@@ -41,8 +41,10 @@ export function listManagedAssets(packageRoot: string, stack: string): ManagedAs
     { target: DEFAULT_ORCHESTRATOR_TARGET, sourcePath: join(packageRoot, DEFAULT_ORCHESTRATOR_SOURCE), category: "orchestrator" },
     { target: DEFAULT_RUNTIME_IGNORE_TARGET, sourcePath: join(packageRoot, DEFAULT_RUNTIME_IGNORE_SOURCE), category: "orchestrator" }
   );
-  for (const template of CI_TEMPLATE_FILES) {
-    assets.push({ target: template.target, sourcePath: join(packageRoot, template.source), category: "ci" });
+  if (options.includeCi) {
+    for (const template of CI_TEMPLATE_FILES) {
+      assets.push({ target: template.target, sourcePath: join(packageRoot, template.source), category: "ci" });
+    }
   }
   for (const folder of LIBRARY_FOLDERS) {
     for (const relativePath of listFilesRecursive(join(packageRoot, folder))) {

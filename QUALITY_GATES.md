@@ -81,6 +81,7 @@ Best-practice means evidence can survive handoff, release, and later audit.
 
 ## Evidence Rules
 
+- Hosted GitHub Actions is opt-in. A billing, spending-limit, or pre-execution entitlement failure is not test evidence and does not block commit/push or phase progression when local required gates pass; a project may separately require hosted checks only after reliable Actions startup and branch protection are verified.
 - A checklist item is not done until the evidence is linked or named.
 - A test is not evidence unless it covers the behavior, risk, or contract being claimed.
 - A screenshot is not visual QA unless it covers the important viewport, state, and content.

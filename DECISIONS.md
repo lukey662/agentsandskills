@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-07-25 - Make Hosted GitHub Actions Opt-In
+
+### Context
+
+GitHub can reject every job before execution when an account has no usable Actions entitlement, a failed payment, or an exhausted spending limit. The package previously installed an automatically triggered hosted audit on every fresh project, while delivery guidance could treat green remote CI as a prerequisite even though no project code ran.
+
+### Decision
+
+Set `githubActions.mode` to `off` for fresh installs and do not create `.github/workflows/agent-kit-audit.yml` unless `agent-kit init --github-actions` is passed. The opt-in workflow is advisory: manual dispatch remains available, and automatic push/pull-request jobs require the repository variable `AGENT_KIT_ACTIONS_ENABLED=true`. Keep local tests and `agent-kit audit --min-readiness baseline-setup` fail-closed. Never silently delete an existing workflow; legacy managed workflows remain eligible for a safe update to the advisory guard.
+
+### Consequences
+
+Unavailable hosted billing cannot be mistaken for a product regression or block normal commit/push and phase progression by default. Projects that require hosted checks must explicitly enable Actions, confirm jobs can start, set branch protection deliberately, and accept that entitlement outages are release infrastructure blockers. npm Trusted Publishing remains a separate explicit release path that still requires GitHub Actions OIDC.
+
 ## 2026-07-04 - Complete Live Studio Milestone 8
 
 ### Context

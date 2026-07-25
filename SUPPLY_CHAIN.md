@@ -37,8 +37,9 @@ The release workflow and `npm run publish:verify` both use `scripts/post-publish
 
 ## Repository Automation
 
-- CI verifies package behavior on push and pull request.
-- Dependency Review blocks pull requests that introduce moderate or worse known vulnerabilities.
+- Local `npm run release:check` is the default package verification and supply-chain gate.
+- Hosted CI may mirror package verification on push and pull request when Actions entitlement is deliberately enabled.
+- Dependency Review can block pull requests that introduce moderate or worse known vulnerabilities when hosted Actions is available; otherwise review `npm audit` and lockfile changes locally.
 - Dependabot proposes npm and GitHub Actions updates; workflow actions remain pinned to immutable commit SHAs with reviewed version comments.
 - CodeQL scans JavaScript/TypeScript code.
 - OpenSSF Scorecard publishes repository security posture as code-scanning evidence.

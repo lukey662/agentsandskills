@@ -106,6 +106,14 @@ npx agent-kit context init
 npx agent-kit context ask
 ```
 
+GitHub Actions is off by default. Opt in to the advisory audit workflow only when the repository has working Actions entitlement:
+
+```bash
+npx agent-kit init --github-actions
+```
+
+The workflow runs manually by default. Set the repository variable `AGENT_KIT_ACTIONS_ENABLED=true` to enable its push and pull-request jobs. Do not make the check required until the repository can reliably start Actions jobs.
+
 ### Resume project onboarding
 
 ```bash
@@ -156,7 +164,7 @@ npx agent-kit audit --schema-version 2 --format json
 npx agent-kit audit --schema-version 2 --format sarif > agent-kit.sarif
 ```
 
-### Fail CI below the required evidence level
+### Fail a local or explicitly enabled CI gate below the required evidence level
 
 ```bash
 npx agent-kit audit --min-readiness baseline-setup
@@ -181,22 +189,21 @@ on:
 
 jobs:
   audit:
+    if: ${{ github.event_name == 'workflow_dispatch' || vars.AGENT_KIT_ACTIONS_ENABLED == 'true' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version: 24
-          cache: npm
-      - run: npm ci
-      - run: npx agent-kit audit --min-readiness baseline-setup
+      - run: npx --yes @appsforgood/next-supabase-kit@0.2.1 audit --min-readiness baseline-setup
 ```
 
-The installed template at `.github/workflows/agent-kit-audit.yml` is the maintained starting point.
+Run `agent-kit init --github-actions` to install the maintained `.github/workflows/agent-kit-audit.yml` template. Fresh installs do not create an active hosted workflow. Account billing, spending-limit, or Actions-startup failures are external infrastructure failures; they do not replace required local test and audit evidence and do not block commit/push or normal phase progression. A project may separately make hosted checks required only after verifying Actions entitlement and branch protection.
 
 ## Common Delivery Workflows
 

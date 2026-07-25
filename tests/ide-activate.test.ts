@@ -3,6 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { validateAdapter } from "../src/install/adapter-validate.js";
+import { diffProject } from "../src/install/diff.js";
 import { initProject } from "../src/install/install.js";
 import { activateIdeTargets } from "../src/install/ide-activate.js";
 import { buildSubagentMarkdown, quoteYamlScalar } from "../src/install/roster-adapters.js";
@@ -100,12 +101,50 @@ describe("activateIdeTargets", () => {
     expect(existsSync(join(root, ".codex/agents/planner.toml"))).toBe(true);
   });
 
-  it("installs CI template and project context on plain init", () => {
+  it("keeps GitHub Actions off and installs project context on plain init", () => {
     const result = initProject({ cwd: root });
     expect(result.contextPath).toBe(".agent-kit/project-context.json");
     expect(existsSync(join(root, ".agent-kit/project-context.json"))).toBe(true);
+    expect(existsSync(join(root, ".github/workflows/agent-kit-audit.yml"))).toBe(false);
+    expect([...result.copied, ...result.unchanged]).not.toContain(".github/workflows/agent-kit-audit.yml");
+    const config = JSON.parse(readFileSync(join(root, ".agent-kit/config.json"), "utf8")) as {
+      githubActions?: { mode?: string };
+    };
+    expect(config.githubActions?.mode).toBe("off");
+    const manifest = JSON.parse(readFileSync(join(root, ".agent-kit/manifest.json"), "utf8")) as {
+      assetHashes?: Record<string, string>;
+    };
+    expect(manifest.assetHashes?.[".github/workflows/agent-kit-audit.yml"]).toBeUndefined();
+  });
+
+  it("installs the advisory CI template only with explicit opt-in", () => {
+    const result = initProject({ cwd: root, githubActions: true });
     expect(existsSync(join(root, ".github/workflows/agent-kit-audit.yml"))).toBe(true);
     expect([...result.copied, ...result.unchanged]).toContain(".github/workflows/agent-kit-audit.yml");
+    const config = JSON.parse(readFileSync(join(root, ".agent-kit/config.json"), "utf8")) as {
+      githubActions?: { mode?: string };
+    };
+    expect(config.githubActions?.mode).toBe("advisory");
+    const manifest = JSON.parse(readFileSync(join(root, ".agent-kit/manifest.json"), "utf8")) as {
+      assetHashes?: Record<string, string>;
+    };
+    expect(manifest.assetHashes?.[".github/workflows/agent-kit-audit.yml"]).toMatch(/^[a-f0-9]{64}$/);
+
+    const preview = diffProject(root);
+    expect(preview.preview.wouldCreate).not.toContain(".github/workflows/agent-kit-audit.yml");
+    expect(preview.preview.wouldWriteConflicts).not.toContain(".github/workflows/agent-kit-audit.yml");
+  });
+
+  it("preserves an explicit GitHub Actions opt-in when init is rerun", () => {
+    initProject({ cwd: root, githubActions: true });
+    const result = initProject({ cwd: root });
+
+    expect(existsSync(join(root, ".github/workflows/agent-kit-audit.yml"))).toBe(true);
+    expect([...result.copied, ...result.unchanged]).toContain(".github/workflows/agent-kit-audit.yml");
+    const config = JSON.parse(readFileSync(join(root, ".agent-kit/config.json"), "utf8")) as {
+      githubActions?: { mode?: string };
+    };
+    expect(config.githubActions?.mode).toBe("advisory");
   });
 
   it("wires init --activate through initProject", () => {

@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Make GitHub Actions opt-in for fresh Agent Kit installs. Local verification remains required, `init --github-actions` installs an advisory workflow, automatic hosted jobs require `AGENT_KIT_ACTIONS_ENABLED=true`, and updates preserve existing workflows.
+
 ## 0.2.1
 
 - Rewrite the public README with verified setup commands and task-oriented examples for audits, council sessions, UI review, upgrades, and optional runtime orchestration.

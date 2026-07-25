@@ -6,7 +6,7 @@ import { resolveInside, writeConflictProposal, writeText } from "../utils/fs.js"
 import { findPackageRoot } from "../utils/package-root.js";
 import { planFileUpdate, type PlannedUpdateAction } from "./file-update-plan.js";
 import { hashManagedAssets, listManagedAssets } from "./managed-assets.js";
-import { initProject, readManifest } from "./install.js";
+import { initProject, readGithubActionsMode, readManifest } from "./install.js";
 
 export type UpdateAction = PlannedUpdateAction;
 
@@ -70,7 +70,7 @@ export function updateProject(options: UpdateOptions): UpdateResult {
   const templateRoot = join(packageRoot, "templates", stack);
   if (!existsSync(templateRoot)) throw new Error(`Unsupported stack profile in manifest: ${stack}`);
 
-  const assets = listManagedAssets(packageRoot, stack);
+  const assets = listManagedAssets(packageRoot, stack, { includeCi: readGithubActionsMode(cwd) !== "off" });
   const plans = assets.map((asset) =>
     planFileUpdate({
       target: asset.target,

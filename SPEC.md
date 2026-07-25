@@ -23,6 +23,7 @@ Supported commands:
 - `research summarize`
 - `research propose-updates`
 - `init --guided`
+- `init --github-actions` (optional advisory hosted audit; off by default)
 - `onboard`
 - `context init`
 - `context scan`
@@ -50,6 +51,8 @@ Supported commands:
 - `studio export`
 
 Existing project files must not be overwritten by default. Template conflicts are written to `.agent-kit/conflicts/`, and installed template hashes are tracked in `.agent-kit/manifest.json`.
+
+Fresh installs write `.agent-kit/config.json` with `githubActions.mode: "off"` and do not create a workflow. Explicit `init --github-actions` writes `mode: "advisory"` and installs the maintained workflow with job-level opt-in. Local verification remains authoritative for commit/push and phase progression. Updates never delete an existing workflow; older managed workflows remain updateable so they can receive the advisory execution guard.
 
 `update` performs a hash-aware merge using the manifest template hashes. Per file it reports one action:
 

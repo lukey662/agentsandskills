@@ -17,7 +17,7 @@ import {
   PACKAGE_VERSION,
   ROOT_DOCS
 } from "../config/defaults.js";
-import type { InstallManifest, StackProfile } from "../config/types.js";
+import type { AgentKitConfig, InstallManifest, StackProfile } from "../config/types.js";
 import { initProjectContext } from "../studio/context.js";
 import { copyTextWithConflict, ensureDir, sha256, writeText } from "../utils/fs.js";
 import { findPackageRoot } from "../utils/package-root.js";
@@ -29,6 +29,7 @@ export interface InitOptions {
   stack?: StackProfile;
   force?: boolean;
   activate?: string[];
+  githubActions?: boolean;
 }
 
 export interface InitResult {
@@ -46,7 +47,9 @@ export function initProject(options: InitOptions): InitResult {
   const stack = options.stack ?? DEFAULT_CONFIG.stack;
   const packageRoot = findPackageRoot();
   const templateRoot = join(packageRoot, "templates", stack);
-  const managedAssets = listManagedAssets(packageRoot, stack);
+  const existingGithubActionsMode = readGithubActionsMode(cwd);
+  const githubActionsMode = options.githubActions || existingGithubActionsMode === "advisory" ? "advisory" : "off";
+  const managedAssets = listManagedAssets(packageRoot, stack, { includeCi: githubActionsMode !== "off" });
 
   if (!existsSync(templateRoot)) {
     throw new Error(`Unsupported stack profile: ${stack}`);
@@ -155,19 +158,25 @@ export function initProject(options: InitOptions): InitResult {
   };
 
   writeText(join(cwd, ".agent-kit", "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);
-  writeText(join(cwd, ".agent-kit", "config.json"), `${JSON.stringify(DEFAULT_CONFIG, null, 2)}\n`);
+  const config: AgentKitConfig = {
+    ...DEFAULT_CONFIG,
+    githubActions: { mode: githubActionsMode }
+  };
+  writeText(join(cwd, ".agent-kit", "config.json"), `${JSON.stringify(config, null, 2)}\n`);
   const overridesPath = join(cwd, ".agent-kit", "overrides.json");
   if (!existsSync(overridesPath)) writeText(overridesPath, `${JSON.stringify({ templates: {} }, null, 2)}\n`);
 
-  for (const template of CI_TEMPLATE_FILES) {
-    const ciCopy = copyTextWithConflict(join(packageRoot, template.source), cwd, template.target, {
-      force: Boolean(options.force),
-      conflictRoot: join(cwd, ".agent-kit", "conflicts")
-    });
-    if (ciCopy.action === "created") result.copied.push(ciCopy.target);
-    if (ciCopy.action === "unchanged") result.unchanged.push(ciCopy.target);
-    if (ciCopy.action === "overwritten") result.overwritten.push(ciCopy.target);
-    if (ciCopy.action === "conflict") result.conflicts.push(`${ciCopy.target} -> ${ciCopy.conflictPath}`);
+  if (githubActionsMode !== "off") {
+    for (const template of CI_TEMPLATE_FILES) {
+      const ciCopy = copyTextWithConflict(join(packageRoot, template.source), cwd, template.target, {
+        force: Boolean(options.force),
+        conflictRoot: join(cwd, ".agent-kit", "conflicts")
+      });
+      if (ciCopy.action === "created") result.copied.push(ciCopy.target);
+      if (ciCopy.action === "unchanged") result.unchanged.push(ciCopy.target);
+      if (ciCopy.action === "overwritten") result.overwritten.push(ciCopy.target);
+      if (ciCopy.action === "conflict") result.conflicts.push(`${ciCopy.target} -> ${ciCopy.conflictPath}`);
+    }
   }
 
   const context = initProjectContext(cwd);
@@ -195,4 +204,25 @@ export function readManifest(cwd: string): InstallManifest | null {
   const manifestPath = join(cwd, ".agent-kit", "manifest.json");
   if (!existsSync(manifestPath)) return null;
   return JSON.parse(readFileSync(manifestPath, "utf8")) as InstallManifest;
+}
+
+export function readGithubActionsMode(cwd: string): AgentKitConfig["githubActions"]["mode"] {
+  const configPath = join(cwd, ".agent-kit", "config.json");
+  if (!existsSync(configPath)) {
+    const manifest = readManifest(cwd);
+    return manifest?.assetHashes?.[".github/workflows/agent-kit-audit.yml"] ? "advisory" : "off";
+  }
+  try {
+    const config = JSON.parse(readFileSync(configPath, "utf8")) as Partial<AgentKitConfig>;
+    const mode = config.githubActions?.mode;
+    if (mode === "off" || mode === "advisory") return mode;
+
+    // Older installs shipped the workflow before this setting existed. Keep managing
+    // that known asset so update can safely apply the advisory job-level guard.
+    const manifest = readManifest(cwd);
+    return manifest?.assetHashes?.[".github/workflows/agent-kit-audit.yml"] ? "advisory" : "off";
+  } catch {
+    const manifest = readManifest(cwd);
+    return manifest?.assetHashes?.[".github/workflows/agent-kit-audit.yml"] ? "advisory" : "off";
+  }
 }

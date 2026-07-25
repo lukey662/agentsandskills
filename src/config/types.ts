@@ -6,6 +6,9 @@ export interface AgentKitConfig {
   stack: StackProfile;
   projectType: "saas" | "marketplace" | "admin" | "content" | "custom";
   docsMode: "advisory" | "required";
+  githubActions: {
+    mode: "off" | "advisory";
+  };
   agentCouncil: {
     required: boolean;
     rosterPath: string;

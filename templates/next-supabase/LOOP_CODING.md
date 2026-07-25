@@ -66,7 +66,7 @@ The kit does **not** ship unsupervised orchestration. It documents safe local en
 | --- | --- | --- |
 | Pre-commit test or audit | Catch drift before commit | `.agent-kit/prompts/audit-project-setup.md`, project `npm test` |
 | Post-edit lint/typecheck | Fast feedback on save | Project ESLint / `tsc --noEmit` in editor or CI |
-| PR CI audit gate | Block merge below readiness | `.github/workflows/agent-kit-audit.yml` template |
+| Optional hosted audit | Advisory unless explicitly enabled and required | `agent-kit init --github-actions`; `AGENT_KIT_ACTIONS_ENABLED=true` |
 | Adapter validate on PR | Prove IDE activation stays valid | `agent-kit adapter validate all` when adapter assets change |
 
 For Cursor-specific hook/automation patterns, see Cursor Automations docs and keep Planner-first triage **opt-in** — never as a replacement for Security Reviewer or human release approval.

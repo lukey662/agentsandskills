@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "sessionId": "2026-07-25-make-github-actions-opt-in-by-default-32a2b568",
+  "title": "Make GitHub Actions opt-in by default",
+  "createdAt": "2026-07-25T01:53:21.281Z",
+  "updatedAt": "2026-07-25T02:04:54.414Z",
+  "status": "complete",
+  "workflowId": "core-change",
+  "request": "Make GitHub Actions opt-in by default",
+  "affectedLayers": [],
+  "activeAgentId": "lead-architect",
+  "nextAgentId": "deployment-observability-engineer",
+  "qualityTarget": "baseline-setup",
+  "requiredOutputs": [
+    {
+      "name": "architecture decision",
+      "status": "complete",
+      "evidence": "DECISIONS.md 2026-07-25 ADR"
+    },
+    {
+      "name": "maturity evidence",
+      "status": "complete",
+      "evidence": "Full local release gate passed; generated install audit has zero failures."
+    },
+    {
+      "name": "security review",
+      "status": "complete",
+      "evidence": "Pinned actions, exact scoped package, read-only permissions, no downstream lifecycle scripts or secrets."
+    },
+    {
+      "name": "test evidence",
+      "status": "complete",
+      "evidence": "45 focused tests and 205 full-suite tests passed."
+    },
+    {
+      "name": "doc updates",
+      "status": "complete",
+      "evidence": "README, SPEC, DECISIONS, DOCS, QUALITY_GATES, TESTING, DEPLOYMENT, REPOSITORY_SETTINGS, SUPPLY_CHAIN, and installed templates updated."
+    },
+    {
+      "name": "upgrade evidence when applicable",
+      "status": "complete",
+      "evidence": "Legacy pristine workflows receive the advisory guard; explicit off preserves existing YAML; regression tests cover both."
+    },
+    {
+      "name": "release or rollback notes",
+      "status": "complete",
+      "evidence": "Changeset added; local gate is authoritative; npm OIDC release remains explicitly Actions-dependent."
+    }
+  ],
+  "renderedAt": "2026-07-25T02:04:54.295Z"
+}

@@ -99,6 +99,7 @@ interface InitCommandOptions {
   setup?: boolean;
   noSetup?: boolean;
   open?: boolean;
+  githubActions?: boolean;
 }
 
 async function runGuidedContextPrompts(cwd: string): Promise<void> {
@@ -167,6 +168,7 @@ program
   .option("--stack <stack>", "Stack profile to install.", "next-supabase")
   .option("--force", "Overwrite existing docs instead of writing conflicts.")
   .option("--activate <targets...>", "Promote IDE/runtime adapters: cursor, claude, codex, copilot, antigravity, or all.")
+  .option("--github-actions", "Install the optional advisory GitHub Actions audit workflow (off by default).")
   .option("--guided", "Also create local project context files (interactive on a terminal, scan-based otherwise).")
   .option("--dry-run", "Preview what init would create or conflict on without writing files.")
   .option("--json", "Print machine-readable JSON output.")
@@ -177,7 +179,7 @@ program
     const cwd = process.cwd();
 
     if (options.dryRun) {
-      const preview = diffProject(cwd, options.stack);
+      const preview = diffProject(cwd, options.stack, options.githubActions ? { githubActions: true } : {});
       if (options.json) {
         printJson({ dryRun: true, preview: preview.preview, missing: preview.missing, changed: preview.changed, unchanged: preview.unchanged });
         return;
@@ -195,6 +197,7 @@ program
       cwd,
       stack: options.stack,
       force: Boolean(options.force),
+      githubActions: Boolean(options.githubActions),
       ...(options.activate ? { activate: options.activate } : {})
     });
     const context = options.guided ? initProjectContext(cwd) : null;

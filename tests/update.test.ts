@@ -210,6 +210,53 @@ function writeManifestFile(root: string, manifest: Record<string, unknown>): voi
 }
 
 describe("updateProject hash-aware semantics", () => {
+  it("upgrades a pristine legacy workflow to the advisory guard", () => {
+    const root = mkdtempSync(join(tmpdir(), "agent-kit-update-"));
+    tempRoots.push(root);
+    initProject({ cwd: root, githubActions: true });
+    const workflowTarget = ".github/workflows/agent-kit-audit.yml";
+    const workflowPath = join(root, workflowTarget);
+    const legacyWorkflow = readFileSync(workflowPath, "utf8")
+      .replace(/^\s*# Automatic hosted CI.*\n/m, "")
+      .replace(/^\s*# Set the repository variable.*\n/m, "")
+      .replace(/^\s*if:.*AGENT_KIT_ACTIONS_ENABLED.*\n/m, "");
+    writeFileSync(workflowPath, legacyWorkflow);
+    const manifest = readManifestFile(root);
+    setInstalledHash(manifest, workflowTarget, sha256(legacyWorkflow));
+    writeManifestFile(root, manifest);
+    const configPath = join(root, ".agent-kit/config.json");
+    const config = JSON.parse(readFileSync(configPath, "utf8")) as Record<string, unknown>;
+    delete config.githubActions;
+    writeFileSync(configPath, `${JSON.stringify(config, null, 2)}\n`);
+
+    const result = updateProject({ cwd: root });
+
+    expect(result.files).toContainEqual(expect.objectContaining({ target: workflowTarget, action: "updated" }));
+    expect(readFileSync(workflowPath, "utf8")).toContain("vars.AGENT_KIT_ACTIONS_ENABLED == 'true'");
+  });
+
+  it("preserves an existing GitHub Actions workflow after Actions are switched off", () => {
+    const root = mkdtempSync(join(tmpdir(), "agent-kit-update-"));
+    tempRoots.push(root);
+    initProject({ cwd: root, githubActions: true });
+    const workflowPath = join(root, ".github/workflows/agent-kit-audit.yml");
+    const workflow = readFileSync(workflowPath, "utf8");
+    const configPath = join(root, ".agent-kit/config.json");
+    const config = JSON.parse(readFileSync(configPath, "utf8")) as { githubActions: { mode: string } };
+    config.githubActions.mode = "off";
+    writeFileSync(configPath, `${JSON.stringify(config, null, 2)}\n`);
+
+    const result = updateProject({ cwd: root });
+
+    expect(readFileSync(workflowPath, "utf8")).toBe(workflow);
+    expect(result.files).toContainEqual(
+      expect.objectContaining({
+        target: ".github/workflows/agent-kit-audit.yml",
+        action: "kept-local"
+      })
+    );
+  });
+
   it("auto-updates pristine docs installed from an older template", () => {
     const root = freshInstall();
 

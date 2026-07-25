@@ -543,6 +543,24 @@ describe("public package readiness", () => {
     }
   });
 
+  it("keeps the optional downstream Actions workflow advisory and supply-chain pinned", () => {
+    const workflow = readFileSync(join(root, "templates", "next-supabase", ".github", "workflows", "agent-kit-audit.yml"), "utf8");
+    const packageVersion = JSON.parse(readFileSync(join(root, "package.json"), "utf8")) as { version: string };
+
+    expect(workflow).toContain("vars.AGENT_KIT_ACTIONS_ENABLED == 'true'");
+    expect(workflow).toContain("github.event_name == 'workflow_dispatch'");
+    expect(workflow).toContain("permissions:\n  contents: read");
+    expect(workflow).toContain("persist-credentials: false");
+    expect(workflow).toContain(`@appsforgood/next-supabase-kit@${packageVersion.version}`);
+    expect(workflow).not.toContain("pull_request_target");
+    expect(workflow).not.toContain("npm ci");
+    expect(workflow).not.toMatch(/secrets\./);
+
+    for (const action of [...workflow.matchAll(/^\s*uses:\s*([^\s#]+)/gm)].map((match) => match[1])) {
+      expect(action).toMatch(/@[0-9a-f]{40}$/);
+    }
+  });
+
   it("uses the root-aware version driver for workspace releases", () => {
     const workflow = readFileSync(join(root, ".github", "workflows", "version.yml"), "utf8");
     expect(workflow).toContain("version: npm run changeset:version");
@@ -585,6 +603,7 @@ describe("public package readiness", () => {
     expect(releaseCheck).toContain("schemas/runtime-run.schema.json");
     expect(releaseCheck).toContain("model-routing/default-model-routing.json");
     expect(releaseCheck).toContain("examples/next-supabase-installed/.agent-kit/agent-roster.json");
+    expect(releaseCheck).toContain("examples/next-supabase-installed/.agent-kit/config.json");
     expect(releaseCheck).toContain("examples/next-supabase-installed/.agent-kit/model-routing.json");
     expect(releaseCheck).toContain("examples/next-supabase-installed/audit-output.json");
     expect(releaseCheck).toContain('["run", "version:check"]');

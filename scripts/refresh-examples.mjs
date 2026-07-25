@@ -32,14 +32,12 @@ try {
   manifest.installedAt = JSON.parse(readFileSync(join(exampleRoot, ".agent-kit", "manifest.json"), "utf8")).installedAt;
 
   writeFileSync(join(exampleRoot, ".agent-kit", "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);
+  writeFileSync(join(exampleRoot, ".agent-kit", "config.json"), readFileSync(join(tempRoot, ".agent-kit", "config.json"), "utf8"));
   writeFileSync(join(exampleRoot, "audit-output.json"), `${JSON.stringify(generatedAudit, null, 2)}\n`);
 
   const treeLines = [
     ".",
     ...manifest.docs.map((doc) => `|-- ${doc}`),
-    "|-- .github",
-    "|   `-- workflows",
-    "|       `-- agent-kit-audit.yml",
     "|-- .cursor",
     "|   `-- rules",
     "|       |-- cursor-agent-kit.mdc",

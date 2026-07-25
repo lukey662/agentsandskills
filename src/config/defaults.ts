@@ -7,6 +7,9 @@ export const DEFAULT_CONFIG: AgentKitConfig = {
   stack: "next-supabase",
   projectType: "saas",
   docsMode: "advisory",
+  githubActions: {
+    mode: "off"
+  },
   agentCouncil: {
     required: true,
     rosterPath: ".agent-kit/agent-roster.json",

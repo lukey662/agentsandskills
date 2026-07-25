@@ -19,7 +19,7 @@ export function formatInitSummary(result: InitResult): string {
     lines.push(`IDE activation: ${result.activation.activated.join(", ")}`);
   }
   if ([...result.copied, ...result.unchanged].some((path) => path.includes("agent-kit-audit.yml"))) {
-    lines.push("CI template: .github/workflows/agent-kit-audit.yml");
+    lines.push("Optional CI template: .github/workflows/agent-kit-audit.yml (automatic runs require AGENT_KIT_ACTIONS_ENABLED=true)");
   }
   lines.push("", "Next: teach agents about your project with the setup wizard (~5 min).", "  agent-kit setup --open");
   return lines.join("\n");
