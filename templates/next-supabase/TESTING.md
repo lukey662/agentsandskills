@@ -56,7 +56,7 @@ npm run typecheck
 npm test
 npm run build
 npm audit --audit-level=high
-npx --yes @appsforgood/next-supabase-kit@0.2.1 audit --min-readiness baseline-setup
+npx --yes @appsforgood/next-supabase-kit@0.3.0 audit --min-readiness baseline-setup
 agent-kit session verify --command "local delivery gate" --result pass --notes "Record commands, commit SHA, and verification time."
 ```
 

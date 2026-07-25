@@ -31,4 +31,4 @@ jobs:
           node-version: "24"
 
       - name: Run baseline audit gate
-        run: npx --yes @appsforgood/next-supabase-kit@0.2.1 audit --json --min-readiness baseline-setup
+        run: npx --yes @appsforgood/next-supabase-kit@0.3.0 audit --json --min-readiness baseline-setup

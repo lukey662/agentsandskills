@@ -200,7 +200,7 @@ jobs:
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version: 24
-      - run: npx --yes @appsforgood/next-supabase-kit@0.2.1 audit --min-readiness baseline-setup
+      - run: npx --yes @appsforgood/next-supabase-kit@0.3.0 audit --min-readiness baseline-setup
 ```
 
 Run `agent-kit init --github-actions` to install the maintained `.github/workflows/agent-kit-audit.yml` template. Fresh installs do not create an active hosted workflow. Account billing, spending-limit, or Actions-startup failures are external infrastructure failures; they do not replace required local test and audit evidence and do not block commit/push or normal phase progression. A project may separately make hosted checks required only after verifying Actions entitlement and branch protection.

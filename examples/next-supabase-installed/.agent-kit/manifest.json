@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "packageName": "@appsforgood/next-supabase-kit",
-  "packageVersion": "0.2.1",
+  "packageVersion": "0.3.0",
   "stack": "next-supabase",
   "installedAt": "2026-07-04T01:32:06.844Z",
   "docs": [
@@ -54,7 +54,7 @@
     "QUALITY_GATES.md": "b3d5b754972201eae89f7a46fd279c3b12cda3e2145a1445f6329864566249da",
     "STYLE_GUIDE.md": "70b984b69829f23b87af3f85535bed1bce81a0452e451aed876219fb416d7671",
     "SECURITY.md": "6f6aeed911059a9e0259b93322ef25212411d23daee3091975a868585fa280d5",
-    "TESTING.md": "0c3fb2a1aa3f6204a0f5af63103e31779058baa50ea0d8c3c199fe49a91686bf",
+    "TESTING.md": "f4d604ff7935959d402f952db9be7ca4a444652b12f7ac46c97f4cc08553b4dd",
     "LOOP_CODING.md": "a0f454cf1865dbce985dbdaa3f3232002ad5b83005eaa7c00d212085351d2b45",
     "DEPLOYMENT.md": "da3a395c857dc7809227d4a134939d0d9d10e43dee5b06f14c7d613fd5471301",
     "UPGRADE.md": "589e301cc77eeaa56397c5759a11db596f0930ff1aaf53369be424a227b653d1"
@@ -227,7 +227,7 @@
     "SKILLS.md": "320b76f37e8b509d597ba01331d3b1a4dc4f1eb68b6d2294ba4125fb2ab02970",
     "SPEC.md": "6424090a564467176fff1f85e93855d41ed383bc525e67ba3d43d4908daad095",
     "STYLE_GUIDE.md": "70b984b69829f23b87af3f85535bed1bce81a0452e451aed876219fb416d7671",
-    "TESTING.md": "0c3fb2a1aa3f6204a0f5af63103e31779058baa50ea0d8c3c199fe49a91686bf",
+    "TESTING.md": "f4d604ff7935959d402f952db9be7ca4a444652b12f7ac46c97f4cc08553b4dd",
     "UPGRADE.md": "589e301cc77eeaa56397c5759a11db596f0930ff1aaf53369be424a227b653d1"
   }
 }

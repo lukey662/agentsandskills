@@ -1,8 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.3.0
 
-- Make GitHub Actions opt-in for fresh Agent Kit installs. Local verification remains required, `init --github-actions` installs an advisory workflow, automatic hosted jobs require `AGENT_KIT_ACTIONS_ENABLED=true`, and updates preserve existing workflows.
+- Make GitHub Actions opt-in for fresh installs while preserving local verification gates and existing downstream workflows.
 
 ## 0.2.1
 
