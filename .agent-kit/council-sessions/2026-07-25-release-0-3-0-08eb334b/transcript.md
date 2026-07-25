@@ -16,3 +16,6 @@ Generated from `.agent-kit/council-sessions/2026-07-25-release-0-3-0-08eb334b/ev
 - 2026-07-25T02:16:50.191Z `required_output_updated`: decision: complete
 - 2026-07-25T02:16:50.315Z `required_output_updated`: risk: complete
 - 2026-07-25T02:16:50.439Z `required_output_updated`: verification evidence: complete
+- 2026-07-25T03:30:11.398Z `verification_recorded`: npm publish ./appsforgood-next-supabase-kit-0.3.0.tgz --access public --provenance=false
+- 2026-07-25T03:30:11.555Z `verification_recorded`: npm run publish:verify
+- 2026-07-25T03:30:11.709Z `verification_recorded`: gh release view v0.3.0 --repo lukey662/agentsandskills

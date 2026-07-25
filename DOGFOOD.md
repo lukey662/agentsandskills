@@ -199,3 +199,18 @@ Scope: publish the verified README rewrite through npm Trusted Publishing and co
 | Runtime package | `@appsforgood/agent-kit-runtime` remains at `0.1.3`; the release workflow correctly skipped its unchanged package. |
 | GitHub release | [`v0.2.1`](https://github.com/lukey662/agentsandskills/releases/tag/v0.2.1) was created only after public-registry verification. |
 | Supply chain | Trusted Publishing used GitHub Actions OIDC and generated the root-package SBOM attestation before publication. |
+
+## 2026-07-25 - Opt-In Actions Release 0.3.0
+
+Date: 2026-07-25
+Scope: make GitHub Actions opt-in for fresh Agent Kit installs while preserving local quality gates.
+
+| Evidence | Result |
+| --- | --- |
+| Release commit | `00a3d15` (`Release 0.3.0`) was pushed to `main`. |
+| Local release gate | `npm run release:check` passed with 205 tests plus build, lint, typecheck, package, example, smoke, SBOM, audit, and pack validation. |
+| Root package | `@appsforgood/next-supabase-kit@0.3.0` is public; registry shasum `ca3967c64d9167de46e53c2c9fcc78b1d070bf96` matches the packed artifact. |
+| Published-package verification | `npm run publish:verify` passed with `72 pass / 4 warn / 0 fail`, including a clean install, `doctor`, `init`, `audit`, and orchestrator validation. The warnings are dependency/install-policy notices from the clean consumer project. |
+| Runtime package | `@appsforgood/agent-kit-runtime` remains at `0.1.3`; no runtime change was included. |
+| GitHub release | [`v0.3.0`](https://github.com/lukey662/agentsandskills/releases/tag/v0.3.0) was created after public-registry verification. |
+| Supply-chain recovery | GitHub Actions billing prevented the OIDC Trusted Publishing path. An authenticated maintainer-local publish used `--provenance=false`; therefore this release has no GitHub OIDC provenance attestation. |

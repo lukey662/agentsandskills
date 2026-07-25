@@ -3,8 +3,8 @@
   "sessionId": "2026-07-25-release-0-3-0-08eb334b",
   "title": "Release 0.3.0",
   "createdAt": "2026-07-25T02:16:49.817Z",
-  "updatedAt": "2026-07-25T02:16:50.564Z",
-  "status": "in-progress",
+  "updatedAt": "2026-07-25T03:30:12.178Z",
+  "status": "complete",
   "workflowId": "release",
   "request": "Release 0.3.0",
   "affectedLayers": [],
@@ -27,5 +27,5 @@
       "evidence": "npm run release:check passed for 0.3.0."
     }
   ],
-  "renderedAt": "2026-07-25T02:16:50.564Z"
+  "renderedAt": "2026-07-25T03:30:12.024Z"
 }
