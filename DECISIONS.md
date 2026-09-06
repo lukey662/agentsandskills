@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-09-06 - Deslop Last And Frontend Token Split
+
+### Context
+
+Public copy still read as generated after `product-copy`. `frontend-design` still pointed at newsprint / cream-serif defaults that Anthropic’s own 2026-06 skill now lists as generated clusters.
+
+### Decision
+
+Add `deslop` as a default skill. Copy’s end run is `product-copy` → screenshot → `deslop` → second `deslop` on the rewrite. Uplift `frontend-design` to a 4-token palette (field / ink / accent / line), keep kit charcoal tokens off downstream apps, and reject cream-editorial, neon-on-black decoration, SaaS card kits, and broadsheet newsprint as 2026 defaults.
+
+### Consequences
+
+The default pack is six agents and twelve skills. Copy cannot mark work done without `deslop`. Design restyles leftover visual P0s; Copy only lists them.
+
 ## 2026-09-06 - Agents, Skills, And Screenshot QA
 
 ### Context
@@ -12,7 +26,7 @@ A GitHub scan of top skill packs (Anthropic, addyosmani/agent-skills, wshobson/a
 
 ### Decision
 
-Ship a default pack of six agents and eleven skills. `init` writes `AGENTS.md`, `USER_GUIDE.md`, and native IDE files. QA of user-visible work requires desktop and mobile screenshots and image review. Session, Studio, research, and orchestrate leave the default CLI.
+Ship a default pack of six agents and twelve skills (eleven plus later `deslop`). `init` writes `AGENTS.md`, `USER_GUIDE.md`, and native IDE files. QA of user-visible work requires desktop and mobile screenshots and image review. Session, Studio, research, and orchestrate leave the default CLI.
 
 ### Consequences
 

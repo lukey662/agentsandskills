@@ -583,7 +583,7 @@
             </tr>
             <tr>
               <td><code>frontend-design</code></td>
-              <td>Layout, hierarchy, anti-generic UI</td>
+              <td>Layout, simple palette, anti-generic UI</td>
             </tr>
             <tr>
               <td><code>accessibility-wcag</code></td>
@@ -600,6 +600,10 @@
             <tr>
               <td><code>product-copy</code></td>
               <td>Headlines and CTAs</td>
+            </tr>
+            <tr>
+              <td><code>deslop</code></td>
+              <td>Last copy pass. Copy always runs this</td>
             </tr>
             <tr>
               <td><code>ship</code></td>
@@ -682,7 +686,7 @@ Act as the QA agent. Use the browser-qa skill. Do not review code alone. Open th
         <h3>UI polish</h3>
         <p>Design + <code>frontend-design</code> + <code>browser-qa</code>. Desktop and mobile. One happy-path shot is a fail.</p>
         <h3>Copy pass</h3>
-        <p>Copy reviews the <em>rendered</em> words in screenshots, not strings in TSX.</p>
+        <p>Copy reviews the <em>rendered</em> words in screenshots, not strings in TSX. Run <code>product-copy</code>, then <code>deslop</code> last.</p>
       </section>
 
       <section id="qa">

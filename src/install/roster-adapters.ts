@@ -113,7 +113,7 @@ export function generateAntigravityCommands(cwd: string, force: boolean, collect
     {
       name: "copy",
       description: "Review rendered conversion copy.",
-      prompt: "Act as the copy agent. Review the rendered words in screenshots, not just strings in source."
+      prompt: "Act as the copy agent. Review the rendered words in screenshots, not just strings in source. Run product-copy first, then deslop last. Always."
     },
     {
       name: "test",

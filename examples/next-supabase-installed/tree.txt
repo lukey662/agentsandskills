@@ -11,6 +11,7 @@ AGENTS.md
 .antigravity/agent-kit/plugin.json
 .antigravity/runtime-skills/accessibility-wcag/SKILL.md
 .antigravity/runtime-skills/browser-qa/SKILL.md
+.antigravity/runtime-skills/deslop/SKILL.md
 .antigravity/runtime-skills/frontend-design/SKILL.md
 .antigravity/runtime-skills/nextjs-app-router/SKILL.md
 .antigravity/runtime-skills/owasp-security-review/SKILL.md
@@ -42,6 +43,7 @@ CLAUDE.md
 .cursor/rules/cursor-agent-kit.mdc
 .cursor/skills/accessibility-wcag/SKILL.md
 .cursor/skills/browser-qa/SKILL.md
+.cursor/skills/deslop/SKILL.md
 .cursor/skills/frontend-design/SKILL.md
 .cursor/skills/nextjs-app-router/SKILL.md
 .cursor/skills/owasp-security-review/SKILL.md

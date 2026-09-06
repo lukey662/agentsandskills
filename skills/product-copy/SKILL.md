@@ -15,7 +15,7 @@ Engineers and coding agents on a Next.js + Supabase repo who already have Cursor
 
 ## Positioning (this product)
 
-Name the specialist. Prove the screen. Six agents, eleven skills, five IDEs. QA is two screenshots, not a file diff.
+Name the specialist. Prove the screen. Six agents, twelve skills, five IDEs. QA is two screenshots, not a file diff.
 
 Do not describe this as an “agent operating system,” a copilot marketplace, or “AI-powered delivery.”
 
@@ -51,4 +51,4 @@ Bad: `Start building today`.
 
 ## Done when
 
-Copy is specific and the rendered screenshot shows the key line and CTA clearly on desktop and mobile.
+Copy is specific and the rendered screenshot shows the key line and CTA clearly on desktop and mobile. Copy then runs `deslop` as the last pass — this skill is not the end of the run.
