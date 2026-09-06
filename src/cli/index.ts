@@ -10,10 +10,7 @@ import { detail, fail, heading, levelLabel, line, printJson } from "./output.js"
 
 const program = new Command();
 
-program
-  .name("agent-kit")
-  .description("Install agents, skills, and a user guide. QA must review screenshots, not code alone.")
-  .version(PACKAGE_VERSION);
+program.name("agent-kit").description("Install agents, skills, and a user guide. QA must review screenshots, not code alone.").version(PACKAGE_VERSION);
 
 program
   .command("init")
@@ -66,7 +63,9 @@ program
       return;
     }
     heading(options.dryRun ? "update preview" : "update");
-    line(`created ${result.summary.created}, updated ${result.summary.updated}, kept-local ${result.summary["kept-local"]}, conflicts ${result.summary.conflict}`);
+    line(
+      `created ${result.summary.created}, updated ${result.summary.updated}, kept-local ${result.summary["kept-local"]}, conflicts ${result.summary.conflict}`
+    );
   });
 
 const add = program.command("add").description("Add an optional agent or skill.");
@@ -148,15 +147,18 @@ adapter
   });
 
 const packageCommand = program.command("package").description("Validate this source package.");
-packageCommand.command("validate").option("--json", "Machine-readable output").action((options: { json?: boolean }) => {
-  const report = validatePackage();
-  if (options.json) printJson(report);
-  else {
-    heading("package validate");
-    for (const finding of report.findings) line(`${levelLabel(finding.level)} ${finding.area}  ${finding.message}`);
-  }
-  if (report.summary.fail > 0) process.exitCode = 1;
-});
+packageCommand
+  .command("validate")
+  .option("--json", "Machine-readable output")
+  .action((options: { json?: boolean }) => {
+    const report = validatePackage();
+    if (options.json) printJson(report);
+    else {
+      heading("package validate");
+      for (const finding of report.findings) line(`${levelLabel(finding.level)} ${finding.area}  ${finding.message}`);
+    }
+    if (report.summary.fail > 0) process.exitCode = 1;
+  });
 
 program.configureOutput({
   outputError: (str, write) => {

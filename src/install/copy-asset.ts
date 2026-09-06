@@ -22,14 +22,7 @@ export function recordCopy(collector: CopyCollector, result: CopyResult): void {
   }
 }
 
-export function copyFromPackage(
-  cwd: string,
-  packageRoot: string,
-  source: string,
-  target: string,
-  force: boolean,
-  collector: CopyCollector
-): void {
+export function copyFromPackage(cwd: string, packageRoot: string, source: string, target: string, force: boolean, collector: CopyCollector): void {
   recordCopy(
     collector,
     copyTextWithConflict(join(packageRoot, source), cwd, target, {
@@ -39,13 +32,7 @@ export function copyFromPackage(
   );
 }
 
-export function writeGenerated(
-  cwd: string,
-  relativePath: string,
-  content: string,
-  force: boolean,
-  collector: CopyCollector
-): void {
+export function writeGenerated(cwd: string, relativePath: string, content: string, force: boolean, collector: CopyCollector): void {
   const targetPath = join(cwd, relativePath);
   if (!force && existsSync(targetPath)) {
     const existing = readFileSync(targetPath, "utf8");
