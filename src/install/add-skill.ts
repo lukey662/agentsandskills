@@ -1,48 +1,57 @@
 import { existsSync, readFileSync } from "node:fs";
-import { join } from "node:path";
-import { copyTextWithConflict, listFilesRecursive, readTextIfExists, sha256, type CopyResult } from "../utils/fs.js";
+import { isOptionalSkill, listKnownSkills, skillSourcePath } from "../catalog.js";
 import { findPackageRoot } from "../utils/package-root.js";
+import { emptyCollector } from "./copy-asset.js";
+import { copyOptionalSkill } from "./roster-adapters.js";
 
 export function listSkills(): string[] {
-  const packageRoot = findPackageRoot();
-  return listFilesRecursive(join(packageRoot, "skills")).filter((file) => file.endsWith(".md"));
+  return listKnownSkills();
 }
 
-export interface AddSkillResult extends CopyResult {
+export interface AddSkillResult {
+  action: "created" | "unchanged" | "conflict" | "overwritten";
+  target: string;
   dryRun: boolean;
 }
 
 export function addSkill(cwd: string, skillName: string, options: { force?: boolean; dryRun?: boolean } = {}): AddSkillResult {
   const packageRoot = findPackageRoot();
-  const normalized = skillName.endsWith(".md") ? skillName : `${skillName}.md`;
-
-  if (!/^[a-z0-9-]+\.md$/.test(normalized)) {
+  const id = skillName.replace(/\.md$/, "").replace(/\/SKILL$/, "");
+  if (!/^[a-z0-9-]+$/.test(id)) {
     throw new Error("Skill names may contain only lowercase letters, numbers, and hyphens.");
   }
 
-  const sourcePath = join(packageRoot, "skills", normalized);
-
-  if (!existsSync(sourcePath)) {
-    const available = listSkills().join(", ");
-    throw new Error(`Unknown skill "${skillName}". Available skills: ${available}`);
+  const available = listKnownSkills(packageRoot);
+  if (!available.includes(id)) {
+    throw new Error(`Unknown skill "${skillName}". Available skills: ${available.join(", ")}`);
   }
 
-  const targetRelativePath = join(".agent-kit", "skills", normalized);
+  const sourcePath = skillSourcePath(packageRoot, id);
+  const target = `.cursor/skills/${id}/SKILL.md`;
 
   if (options.dryRun) {
-    const existing = readTextIfExists(join(cwd, targetRelativePath));
+    const existing = existsSync(`${cwd}/${target}`) ? readFileSync(`${cwd}/${target}`, "utf8") : null;
     const sourceContent = readFileSync(sourcePath, "utf8");
-    let action: CopyResult["action"];
-    if (existing === null) action = "created";
-    else if (sha256(existing) === sha256(sourceContent)) action = "unchanged";
-    else action = options.force ? "overwritten" : "conflict";
-    return { action, target: targetRelativePath, dryRun: true };
+    let action: AddSkillResult["action"] = "created";
+    if (existing === sourceContent) action = "unchanged";
+    else if (existing) action = options.force ? "overwritten" : "conflict";
+    return { action, target, dryRun: true };
   }
 
-  const result = copyTextWithConflict(sourcePath, cwd, targetRelativePath, {
-    force: Boolean(options.force),
-    conflictRoot: join(cwd, ".agent-kit", "conflicts")
-  });
+  const collector = emptyCollector();
+  copyOptionalSkill(cwd, id, Boolean(options.force), collector);
+  const action = collector.copied.includes(target)
+    ? "created"
+    : collector.unchanged.includes(target)
+      ? "unchanged"
+      : collector.overwritten.includes(target)
+        ? "overwritten"
+        : "conflict";
+  return { action, target, dryRun: false };
+}
 
-  return { ...result, dryRun: false };
+export function assertAddableSkill(id: string): void {
+  if (!isOptionalSkill(id) && !listKnownSkills().includes(id)) {
+    throw new Error(`Unknown skill "${id}".`);
+  }
 }

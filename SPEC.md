@@ -2,7 +2,7 @@
 
 ## Package Purpose
 
-`@appsforgood/next-supabase-kit` is a public reusable agent-kit package for Next.js and Supabase projects. It ships installable markdown templates, agents, skills, portable runtime skills, prompts, checklists, design adapters, assistant adapters, Antigravity runtime commands, model-routing profiles, design briefs, stack profiles, agent rosters, messaging/copy evidence templates, and a CLI for installing, auditing, updating, and reviewing those assets.
+`@appsforgood/next-supabase-kit` is a public pack of agents, skills, and a user guide for Next.js and Supabase projects. `init` writes `AGENTS.md`, `USER_GUIDE.md`, and native Cursor/Claude/Codex/Copilot/Antigravity files. QA of user-visible work requires desktop and mobile screenshots. The default CLI is `init`, `add`, `update`, `doctor`, and `adapter validate`.
 
 ## CLI Surface
 

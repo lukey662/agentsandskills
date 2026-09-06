@@ -96,29 +96,26 @@ try {
   if (!existsSync(installedCliPath)) {
     throw new Error(`Installed CLI is missing at ${installedCliPath}.`);
   }
-  execFileSync("node", [installedCliPath, "init", "--stack", "next-supabase"], { cwd: projectRoot, stdio: "inherit" });
-  const auditOutput = execFileSync("node", [installedCliPath, "audit", "--json", "--min-readiness", "baseline-setup"], {
+  execFileSync("node", [installedCliPath, "init", "--stack", "next-supabase", "--activate", "all"], {
+    cwd: projectRoot,
+    stdio: "inherit"
+  });
+  const doctorOutput = execFileSync("node", [installedCliPath, "doctor", "--json"], {
     cwd: projectRoot,
     encoding: "utf8"
   });
-  const auditReport = JSON.parse(auditOutput);
-  if (auditReport.summary?.fail !== 0) {
-    throw new Error(`Expected install smoke audit to have 0 failures, got ${auditReport.summary?.fail}.\n${auditOutput}`);
+  const doctorReport = JSON.parse(doctorOutput);
+  if (!doctorReport.ok) {
+    throw new Error(`Expected install smoke doctor to pass.\n${doctorOutput}`);
   }
-  if (
-    auditReport.readiness?.level !== "baseline-setup" &&
-    auditReport.readiness?.level !== "strong-delivery" &&
-    auditReport.readiness?.level !== "best-practice-candidate"
-  ) {
-    throw new Error(`Expected install smoke readiness baseline-setup or better, got ${auditReport.readiness?.level ?? "unknown"}.\n${auditOutput}`);
+  if (!existsSync(join(projectRoot, "USER_GUIDE.md"))) {
+    throw new Error("Expected init to install USER_GUIDE.md.");
   }
-  if (!existsSync(join(projectRoot, ".cursor", "rules", "cursor-agent-kit.mdc"))) {
-    throw new Error("Expected init to install .cursor/rules/cursor-agent-kit.mdc.");
+  if (!existsSync(join(projectRoot, ".cursor", "skills", "browser-qa", "SKILL.md"))) {
+    throw new Error("Expected init to install browser-qa.");
   }
 
-  console.log(
-    `install smoke passed: ${auditReport.summary.pass} pass / ${auditReport.summary.warn} warn / ${auditReport.summary.fail} fail / readiness ${auditReport.readiness?.level ?? "unknown"}`
-  );
+  console.log(`install smoke passed: doctor ok=${doctorReport.ok}`);
 } finally {
   rmSync(tempRoot, { recursive: true, force: true });
 }

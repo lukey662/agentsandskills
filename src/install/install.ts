@@ -1,204 +1,138 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import {
-  CI_TEMPLATE_FILES,
-  CURSOR_ADAPTER_FILES,
-  DEFAULT_AGENT_ROSTER_SOURCE,
-  DEFAULT_AGENT_ROSTER_TARGET,
-  DEFAULT_CONFIG,
-  DEFAULT_MODEL_ROUTING_SOURCE,
-  DEFAULT_MODEL_ROUTING_TARGET,
-  DEFAULT_ORCHESTRATOR_SOURCE,
-  DEFAULT_ORCHESTRATOR_TARGET,
-  DEFAULT_RUNTIME_IGNORE_SOURCE,
-  DEFAULT_RUNTIME_IGNORE_TARGET,
-  LIBRARY_FOLDERS,
-  PACKAGE_NAME,
-  PACKAGE_VERSION,
-  ROOT_DOCS
-} from "../config/defaults.js";
-import type { AgentKitConfig, InstallManifest, StackProfile } from "../config/types.js";
-import { initProjectContext } from "../studio/context.js";
+import { loadCatalog } from "../catalog.js";
+import { AGENTS_DOC_SOURCE, CURSOR_RULE_FILE, PACKAGE_NAME, PACKAGE_VERSION, ROOT_DOCS, USER_GUIDE_SOURCE } from "../config/defaults.js";
+import type { InstallManifest, StackProfile } from "../config/types.js";
 import { copyTextWithConflict, ensureDir, sha256, writeText } from "../utils/fs.js";
 import { findPackageRoot } from "../utils/package-root.js";
+import { emptyCollector, recordCopy, type CopyCollector } from "./copy-asset.js";
 import { activateIdeTargets, parseActivateTargets, type ActivateIdeResult, type IdeTarget } from "./ide-activate.js";
-import { hashManagedAssets, listManagedAssets } from "./managed-assets.js";
+import { listManagedAssets } from "./managed-assets.js";
 
 export interface InitOptions {
   cwd: string;
   stack?: StackProfile;
   force?: boolean;
   activate?: string[];
-  githubActions?: boolean;
+  legacyDocs?: boolean;
 }
 
-export interface InitResult {
-  copied: string[];
-  unchanged: string[];
-  conflicts: string[];
-  overwritten: string[];
+export interface InitResult extends CopyCollector {
   manifestPath: string;
-  contextPath?: string;
   activation?: ActivateIdeResult;
+  contextPath?: string;
 }
 
 export function initProject(options: InitOptions): InitResult {
   const cwd = options.cwd;
-  const stack = options.stack ?? DEFAULT_CONFIG.stack;
+  const stack = options.stack ?? "next-supabase";
   const packageRoot = findPackageRoot();
-  const templateRoot = join(packageRoot, "templates", stack);
-  const existingGithubActionsMode = readGithubActionsMode(cwd);
-  const githubActionsMode = options.githubActions || existingGithubActionsMode === "advisory" ? "advisory" : "off";
-  const managedAssets = listManagedAssets(packageRoot, stack, { includeCi: githubActionsMode !== "off" });
+  const force = Boolean(options.force);
 
-  if (!existsSync(templateRoot)) {
-    throw new Error(`Unsupported stack profile: ${stack}`);
-  }
-
-  ensureDir(join(cwd, ".agent-kit"));
   ensureDir(join(cwd, ".agent-kit", "conflicts"));
 
   const result: InitResult = {
-    copied: [],
-    unchanged: [],
-    conflicts: [],
-    overwritten: [],
+    ...emptyCollector(),
     manifestPath: ".agent-kit/manifest.json"
   };
 
   const templateHashes: Record<string, string> = {};
+  const agentsDoc = readFileSync(join(packageRoot, AGENTS_DOC_SOURCE), "utf8");
+  const userGuide = readFileSync(join(packageRoot, USER_GUIDE_SOURCE), "utf8");
+  templateHashes["AGENTS.md"] = sha256(agentsDoc);
+  templateHashes["USER_GUIDE.md"] = sha256(userGuide);
 
-  for (const doc of ROOT_DOCS) {
-    const templatePath = join(templateRoot, doc);
-    templateHashes[doc] = sha256(readFileSync(templatePath, "utf8"));
-
-    const copyResult = copyTextWithConflict(templatePath, cwd, doc, {
-      force: Boolean(options.force),
+  recordCopy(
+    result,
+    copyTextWithConflict(join(packageRoot, AGENTS_DOC_SOURCE), cwd, "AGENTS.md", {
+      force,
       conflictRoot: join(cwd, ".agent-kit", "conflicts")
-    });
+    })
+  );
+  recordCopy(
+    result,
+    copyTextWithConflict(join(packageRoot, USER_GUIDE_SOURCE), cwd, "USER_GUIDE.md", {
+      force,
+      conflictRoot: join(cwd, ".agent-kit", "conflicts")
+    })
+  );
 
-    if (copyResult.action === "created") result.copied.push(copyResult.target);
-    if (copyResult.action === "unchanged") result.unchanged.push(copyResult.target);
-    if (copyResult.action === "overwritten") result.overwritten.push(copyResult.target);
-    if (copyResult.action === "conflict") {
-      result.conflicts.push(`${copyResult.target} -> ${copyResult.conflictPath}`);
+  if (options.legacyDocs) {
+    const legacyRoot = join(packageRoot, "templates", stack);
+    const legacyDocs = [
+      "SPEC.md",
+      "DECISIONS.md",
+      "DESIGN.md",
+      "SECURITY.md",
+      "TESTING.md",
+      "QUALITY_GATES.md"
+    ];
+    for (const doc of legacyDocs) {
+      const source = join(legacyRoot, doc);
+      if (!existsSync(source)) continue;
+      recordCopy(
+        result,
+        copyTextWithConflict(source, cwd, doc, {
+          force,
+          conflictRoot: join(cwd, ".agent-kit", "conflicts")
+        })
+      );
     }
   }
 
-  for (const asset of managedAssets.filter((item) => item.category === "library")) {
-    const libraryCopy = copyTextWithConflict(asset.sourcePath, cwd, asset.target, {
-      force: Boolean(options.force),
-      conflictRoot: join(cwd, ".agent-kit", "conflicts")
-    });
-    if (libraryCopy.action === "overwritten") result.overwritten.push(libraryCopy.target);
-    if (libraryCopy.action === "conflict") result.conflicts.push(`${libraryCopy.target} -> ${libraryCopy.conflictPath}`);
-  }
+  const activateTargets = parseActivateTargets(options.activate);
+  const targets: IdeTarget[] = activateTargets.length > 0 ? activateTargets : ["cursor"];
+  result.activation = activateIdeTargets({ cwd, targets, force });
+  result.copied.push(...result.activation.copied.filter((path) => !result.copied.includes(path)));
+  result.unchanged.push(...result.activation.unchanged.filter((path) => !result.unchanged.includes(path)));
+  result.conflicts.push(...result.activation.conflicts.filter((path) => !result.conflicts.includes(path)));
+  result.overwritten.push(...result.activation.overwritten.filter((path) => !result.overwritten.includes(path)));
 
-  for (const adapter of CURSOR_ADAPTER_FILES) {
-    const adapterCopy = copyTextWithConflict(join(packageRoot, adapter.source), cwd, adapter.target, {
-      force: Boolean(options.force),
-      conflictRoot: join(cwd, ".agent-kit", "conflicts")
-    });
-    if (adapterCopy.action === "created") result.copied.push(adapterCopy.target);
-    if (adapterCopy.action === "unchanged") result.unchanged.push(adapterCopy.target);
-    if (adapterCopy.action === "overwritten") result.overwritten.push(adapterCopy.target);
-    if (adapterCopy.action === "conflict") {
-      result.conflicts.push(`${adapterCopy.target} -> ${adapterCopy.conflictPath}`);
+  const assets = listManagedAssets(packageRoot, { activated: targets });
+  const assetHashes: Record<string, string> = {};
+  for (const asset of assets) {
+    if (existsSync(asset.sourcePath)) assetHashes[asset.target] = sha256(readFileSync(asset.sourcePath, "utf8"));
+  }
+  // Generated files: hash what we just wrote
+  for (const relative of [...result.copied, ...result.unchanged, ...result.overwritten]) {
+    const path = join(cwd, relative);
+    if (existsSync(path) && !assetHashes[relative]) {
+      assetHashes[relative] = sha256(readFileSync(path, "utf8"));
     }
   }
 
-  const rosterCopy = copyTextWithConflict(join(packageRoot, DEFAULT_AGENT_ROSTER_SOURCE), cwd, DEFAULT_AGENT_ROSTER_TARGET, {
-    force: Boolean(options.force),
-    conflictRoot: join(cwd, ".agent-kit", "conflicts")
-  });
-  if (rosterCopy.action === "created") result.copied.push(rosterCopy.target);
-  if (rosterCopy.action === "unchanged") result.unchanged.push(rosterCopy.target);
-  if (rosterCopy.action === "overwritten") result.overwritten.push(rosterCopy.target);
-  if (rosterCopy.action === "conflict") result.conflicts.push(`${rosterCopy.target} -> ${rosterCopy.conflictPath}`);
-
-  const modelRoutingCopy = copyTextWithConflict(join(packageRoot, DEFAULT_MODEL_ROUTING_SOURCE), cwd, DEFAULT_MODEL_ROUTING_TARGET, {
-    force: Boolean(options.force),
-    conflictRoot: join(cwd, ".agent-kit", "conflicts")
-  });
-  if (modelRoutingCopy.action === "created") result.copied.push(modelRoutingCopy.target);
-  if (modelRoutingCopy.action === "unchanged") result.unchanged.push(modelRoutingCopy.target);
-  if (modelRoutingCopy.action === "overwritten") result.overwritten.push(modelRoutingCopy.target);
-  if (modelRoutingCopy.action === "conflict") result.conflicts.push(`${modelRoutingCopy.target} -> ${modelRoutingCopy.conflictPath}`);
-
-  const orchestratorCopy = copyTextWithConflict(join(packageRoot, DEFAULT_ORCHESTRATOR_SOURCE), cwd, DEFAULT_ORCHESTRATOR_TARGET, {
-    force: Boolean(options.force),
-    conflictRoot: join(cwd, ".agent-kit", "conflicts")
-  });
-  if (orchestratorCopy.action === "created") result.copied.push(orchestratorCopy.target);
-  if (orchestratorCopy.action === "unchanged") result.unchanged.push(orchestratorCopy.target);
-  if (orchestratorCopy.action === "overwritten") result.overwritten.push(orchestratorCopy.target);
-  if (orchestratorCopy.action === "conflict") result.conflicts.push(`${orchestratorCopy.target} -> ${orchestratorCopy.conflictPath}`);
-
-  const runtimeIgnoreCopy = copyTextWithConflict(join(packageRoot, DEFAULT_RUNTIME_IGNORE_SOURCE), cwd, DEFAULT_RUNTIME_IGNORE_TARGET, {
-    force: Boolean(options.force),
-    conflictRoot: join(cwd, ".agent-kit", "conflicts")
-  });
-  if (runtimeIgnoreCopy.action === "created") result.copied.push(runtimeIgnoreCopy.target);
-  if (runtimeIgnoreCopy.action === "unchanged") result.unchanged.push(runtimeIgnoreCopy.target);
-  if (runtimeIgnoreCopy.action === "overwritten") result.overwritten.push(runtimeIgnoreCopy.target);
-  if (runtimeIgnoreCopy.action === "conflict") result.conflicts.push(`${runtimeIgnoreCopy.target} -> ${runtimeIgnoreCopy.conflictPath}`);
-
+  const catalog = loadCatalog(packageRoot);
   const manifest: InstallManifest = {
-    schemaVersion: 2,
+    schemaVersion: 3,
     packageName: PACKAGE_NAME,
     packageVersion: PACKAGE_VERSION,
     stack,
     installedAt: new Date().toISOString(),
     docs: [...ROOT_DOCS],
-    libraryFolders: [...LIBRARY_FOLDERS],
-    agentRoster: DEFAULT_AGENT_ROSTER_TARGET,
-    modelRouting: DEFAULT_MODEL_ROUTING_TARGET,
+    activated: targets,
     templateHashes,
-    assetHashes: hashManagedAssets(managedAssets)
+    assetHashes
   };
 
   writeText(join(cwd, ".agent-kit", "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);
-  const config: AgentKitConfig = {
-    ...DEFAULT_CONFIG,
-    githubActions: { mode: githubActionsMode }
-  };
-  writeText(join(cwd, ".agent-kit", "config.json"), `${JSON.stringify(config, null, 2)}\n`);
-  const overridesPath = join(cwd, ".agent-kit", "overrides.json");
-  if (!existsSync(overridesPath)) writeText(overridesPath, `${JSON.stringify({ templates: {} }, null, 2)}\n`);
+  writeText(
+    join(cwd, ".agent-kit", "config.json"),
+    `${JSON.stringify({ stack, catalog: { defaultAgents: catalog.defaultAgents, defaultSkills: catalog.defaultSkills } }, null, 2)}\n`
+  );
 
-  if (githubActionsMode !== "off") {
-    for (const template of CI_TEMPLATE_FILES) {
-      const ciCopy = copyTextWithConflict(join(packageRoot, template.source), cwd, template.target, {
-        force: Boolean(options.force),
+  // Always keep the Cursor rule available even when only other IDEs were requested
+  if (!targets.includes("cursor")) {
+    recordCopy(
+      result,
+      copyTextWithConflict(join(packageRoot, CURSOR_RULE_FILE.source), cwd, CURSOR_RULE_FILE.target, {
+        force,
         conflictRoot: join(cwd, ".agent-kit", "conflicts")
-      });
-      if (ciCopy.action === "created") result.copied.push(ciCopy.target);
-      if (ciCopy.action === "unchanged") result.unchanged.push(ciCopy.target);
-      if (ciCopy.action === "overwritten") result.overwritten.push(ciCopy.target);
-      if (ciCopy.action === "conflict") result.conflicts.push(`${ciCopy.target} -> ${ciCopy.conflictPath}`);
-    }
-  }
-
-  const context = initProjectContext(cwd);
-  result.contextPath = context.contextPath;
-
-  const activateTargets = parseActivateTargets(options.activate);
-  if (activateTargets.length > 0) {
-    result.activation = activateIdeTargets({
-      cwd,
-      targets: activateTargets,
-      force: Boolean(options.force)
-    });
-    result.copied.push(...result.activation.copied.filter((path) => !result.copied.includes(path)));
-    result.unchanged.push(...result.activation.unchanged.filter((path) => !result.unchanged.includes(path)));
-    result.conflicts.push(...result.activation.conflicts.filter((path) => !result.conflicts.includes(path)));
-    result.overwritten.push(...result.activation.overwritten.filter((path) => !result.overwritten.includes(path)));
+      })
+    );
   }
 
   return result;
 }
-
-export { type IdeTarget };
 
 export function readManifest(cwd: string): InstallManifest | null {
   const manifestPath = join(cwd, ".agent-kit", "manifest.json");
@@ -206,23 +140,8 @@ export function readManifest(cwd: string): InstallManifest | null {
   return JSON.parse(readFileSync(manifestPath, "utf8")) as InstallManifest;
 }
 
-export function readGithubActionsMode(cwd: string): AgentKitConfig["githubActions"]["mode"] {
-  const configPath = join(cwd, ".agent-kit", "config.json");
-  if (!existsSync(configPath)) {
-    const manifest = readManifest(cwd);
-    return manifest?.assetHashes?.[".github/workflows/agent-kit-audit.yml"] ? "advisory" : "off";
-  }
-  try {
-    const config = JSON.parse(readFileSync(configPath, "utf8")) as Partial<AgentKitConfig>;
-    const mode = config.githubActions?.mode;
-    if (mode === "off" || mode === "advisory") return mode;
-
-    // Older installs shipped the workflow before this setting existed. Keep managing
-    // that known asset so update can safely apply the advisory job-level guard.
-    const manifest = readManifest(cwd);
-    return manifest?.assetHashes?.[".github/workflows/agent-kit-audit.yml"] ? "advisory" : "off";
-  } catch {
-    const manifest = readManifest(cwd);
-    return manifest?.assetHashes?.[".github/workflows/agent-kit-audit.yml"] ? "advisory" : "off";
-  }
+export function readGithubActionsMode(_cwd: string): "off" | "advisory" {
+  return "off";
 }
+
+export { type IdeTarget };

@@ -1,0 +1,6 @@
+name = "ship"
+description = "Release go / no-go."
+
+prompt = """
+Use the ship skill. Confirm env, migrations, rollback, and browser-qa evidence for user-visible changes.
+"""

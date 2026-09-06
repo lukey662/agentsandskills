@@ -1,42 +1,57 @@
-.
-|-- AGENTS.md
-|-- AGENT_ROSTER.md
-|-- ASSISTANT_ADAPTERS.md
-|-- COUNCIL.md
-|-- SKILLS.md
-|-- SPEC.md
-|-- DECISIONS.md
-|-- DOCS.md
-|-- DESIGN.md
-|-- MESSAGING.md
-|-- MODEL_ROUTING.md
-|-- QUALITY_GATES.md
-|-- STYLE_GUIDE.md
-|-- SECURITY.md
-|-- TESTING.md
-|-- LOOP_CODING.md
-|-- DEPLOYMENT.md
-|-- UPGRADE.md
-|-- .cursor
-|   `-- rules
-|       |-- cursor-agent-kit.mdc
-|       `-- cursor-model-selection.mdc
-`-- .agent-kit
-    |-- manifest.json
-    |-- agent-roster.json
-    |-- model-routing.json
-    |-- project-context.json
-    |-- project-context.md
-    |-- config.json
-    |-- overrides.json
-    |-- agents/
-    |-- skills/
-    |-- runtime-skills/
-    |-- prompts/
-    |-- checklists/
-    |-- design-adapters/
-    |-- assistant-adapters/
-    |-- design-briefs/
-    |-- profiles/
-    |-- rosters/
-    `-- schemas/
+.agent-kit/config.json
+.agent-kit/manifest.json
+AGENTS.md
+.antigravity/agent-kit/commands/browser-qa.toml
+.antigravity/agent-kit/commands/copy.toml
+.antigravity/agent-kit/commands/frontend.toml
+.antigravity/agent-kit/commands/plan.toml
+.antigravity/agent-kit/commands/security.toml
+.antigravity/agent-kit/commands/ship.toml
+.antigravity/agent-kit/commands/test.toml
+.antigravity/agent-kit/plugin.json
+.antigravity/runtime-skills/accessibility-wcag/SKILL.md
+.antigravity/runtime-skills/browser-qa/SKILL.md
+.antigravity/runtime-skills/frontend-design/SKILL.md
+.antigravity/runtime-skills/nextjs-app-router/SKILL.md
+.antigravity/runtime-skills/owasp-security-review/SKILL.md
+.antigravity/runtime-skills/planning/SKILL.md
+.antigravity/runtime-skills/postgres-migrations/SKILL.md
+.antigravity/runtime-skills/product-copy/SKILL.md
+.antigravity/runtime-skills/ship/SKILL.md
+.antigravity/runtime-skills/supabase-auth-rls/SKILL.md
+.antigravity/runtime-skills/testing-qa/SKILL.md
+.claude/agents/app-engineer.md
+.claude/agents/copy.md
+.claude/agents/design.md
+.claude/agents/planner.md
+.claude/agents/qa.md
+.claude/agents/security.md
+CLAUDE.md
+.codex/agents/app-engineer.toml
+.codex/agents/copy.toml
+.codex/agents/design.toml
+.codex/agents/planner.toml
+.codex/agents/qa.toml
+.codex/agents/security.toml
+.cursor/agents/app-engineer.md
+.cursor/agents/copy.md
+.cursor/agents/design.md
+.cursor/agents/planner.md
+.cursor/agents/qa.md
+.cursor/agents/security.md
+.cursor/rules/cursor-agent-kit.mdc
+.cursor/skills/accessibility-wcag/SKILL.md
+.cursor/skills/browser-qa/SKILL.md
+.cursor/skills/frontend-design/SKILL.md
+.cursor/skills/nextjs-app-router/SKILL.md
+.cursor/skills/owasp-security-review/SKILL.md
+.cursor/skills/planning/SKILL.md
+.cursor/skills/postgres-migrations/SKILL.md
+.cursor/skills/product-copy/SKILL.md
+.cursor/skills/ship/SKILL.md
+.cursor/skills/supabase-auth-rls/SKILL.md
+.cursor/skills/testing-qa/SKILL.md
+.github/copilot-instructions.md
+README.md
+tree.txt
+USER_GUIDE.md

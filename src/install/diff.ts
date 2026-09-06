@@ -4,7 +4,7 @@ import { DEFAULT_AGENT_ROSTER_TARGET, DEFAULT_MODEL_ROUTING_TARGET, LIBRARY_FOLD
 import { resolveInside } from "../utils/fs.js";
 import { findPackageRoot } from "../utils/package-root.js";
 import { planFileUpdate, type FileUpdatePlan } from "./file-update-plan.js";
-import { readGithubActionsMode, readManifest } from "./install.js";
+import { readManifest } from "./install.js";
 import { listManagedAssets } from "./managed-assets.js";
 
 export type DiffStatus = "missing" | "unchanged" | "changed";
@@ -37,11 +37,10 @@ function diffStatus(plan: FileUpdatePlan): DiffStatus {
   return "changed";
 }
 
-export function diffProject(cwd: string, stack = "next-supabase", options: { githubActions?: boolean } = {}): DiffResult {
+export function diffProject(cwd: string, _stack = "next-supabase", _options: { githubActions?: boolean } = {}): DiffResult {
   const packageRoot = findPackageRoot();
   const manifest = readManifest(cwd);
-  const includeCi = options.githubActions ?? readGithubActionsMode(cwd) !== "off";
-  const assets = listManagedAssets(packageRoot, stack, { includeCi });
+  const assets = listManagedAssets(packageRoot, { activated: ["cursor"] });
   const plans = assets.map((asset) => ({
     asset,
     plan: planFileUpdate({

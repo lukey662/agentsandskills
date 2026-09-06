@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.0
+
+- Simplify the pack to agents, skills, and a user guide. `init` writes `AGENTS.md`, `USER_GUIDE.md`, and native IDE files only.
+- Require screenshot QA: user-visible work is not done until desktop and mobile screenshots are captured and read.
+- Drop session, studio, research, and orchestrate commands from the default CLI.
+- Add `doctor`, `add agent`, and the `agents-and-skills` binary alias.
+- Existing 17-doc / `.agent-kit/` installs are not deleted; `update` leaves leftover files unmanaged.
+
 ## 0.3.0
 
 - Make GitHub Actions opt-in for fresh installs while preserving local verification gates and existing downstream workflows.

@@ -1,63 +1,47 @@
-import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
+import { addAgent } from "../src/install/add-agent.js";
 import { addSkill, listSkills } from "../src/install/add-skill.js";
+import { initProject } from "../src/install/install.js";
 
-let tempRoots: string[] = [];
+let roots: string[] = [];
 
 afterEach(() => {
-  for (const root of tempRoots) rmSync(root, { recursive: true, force: true });
-  tempRoots = [];
+  for (const root of roots) rmSync(root, { recursive: true, force: true });
+  roots = [];
 });
 
-function makeTempProject(): string {
-  const root = mkdtempSync(join(tmpdir(), "agent-kit-skill-"));
-  tempRoots.push(root);
+function temp(): string {
+  const root = mkdtempSync(join(tmpdir(), "agent-kit-add-"));
+  roots.push(root);
   return root;
 }
 
-describe("addSkill", () => {
-  it("rejects path-like skill names", () => {
-    expect(() => addSkill(process.cwd(), "../secret")).toThrow(/Skill names/);
+describe("add skill and agent", () => {
+  it("lists catalog skills", () => {
+    expect(listSkills()).toContain("browser-qa");
+    expect(listSkills()).toContain("debug");
   });
 
-  it("rejects unknown skills and lists what is available", () => {
-    expect(() => addSkill(makeTempProject(), "does-not-exist")).toThrow(/Available skills/);
+  it("adds an optional skill", () => {
+    const root = temp();
+    initProject({ cwd: root });
+    const result = addSkill(root, "debug");
+    expect(result.action).toBe("created");
+    expect(existsSync(join(root, ".cursor/skills/debug/SKILL.md"))).toBe(true);
   });
 
-  it("creates a known skill and reports unchanged on repeat", () => {
-    const root = makeTempProject();
-    const skillName = listSkills()[0]!.replace(/\.md$/, "");
-
-    const first = addSkill(root, skillName);
-    expect(first.action).toBe("created");
-    expect(existsSync(join(root, first.target))).toBe(true);
-
-    const second = addSkill(root, skillName);
-    expect(second.action).toBe("unchanged");
+  it("adds an optional agent", () => {
+    const root = temp();
+    initProject({ cwd: root });
+    const result = addAgent(root, "lead-architect");
+    expect(["created", "unchanged"]).toContain(result.action);
+    expect(existsSync(join(root, ".cursor/agents/lead-architect.md"))).toBe(true);
   });
 
-  it("previews without writing when dryRun is set", () => {
-    const root = makeTempProject();
-    const skillName = listSkills()[0]!.replace(/\.md$/, "");
-
-    const preview = addSkill(root, skillName, { dryRun: true });
-    expect(preview.action).toBe("created");
-    expect(preview.dryRun).toBe(true);
-    expect(existsSync(join(root, preview.target))).toBe(false);
-  });
-
-  it("reports conflicts for customized skills and overwrites with force", () => {
-    const root = makeTempProject();
-    const skillName = listSkills()[0]!.replace(/\.md$/, "");
-    const installed = addSkill(root, skillName);
-    writeFileSync(join(root, installed.target), "Customized skill content.\n");
-
-    const conflictPreview = addSkill(root, skillName, { dryRun: true });
-    expect(conflictPreview.action).toBe("conflict");
-
-    const forced = addSkill(root, skillName, { force: true });
-    expect(forced.action).toBe("overwritten");
+  it("rejects unknown skills", () => {
+    expect(() => addSkill(temp(), "not-a-skill")).toThrow(/Unknown skill/);
   });
 });

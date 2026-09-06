@@ -7,32 +7,7 @@ import { runNpm } from "./lib/npm-command.mjs";
 
 const repoRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 
-const jsonFiles = [
-  "package.json",
-  "research/scan-config.json",
-  "antigravity/plugin.json",
-  "rosters/next-supabase-default-council.json",
-  "model-routing/default-model-routing.json",
-  "schemas/agent-roster.schema.json",
-  "schemas/council-session.schema.json",
-  "schemas/audit-report.schema.json",
-  "schemas/audit-report-v2.schema.json",
-  "schemas/model-routing.schema.json",
-  "schemas/project-context.schema.json",
-  "schemas/correction-rules.schema.json",
-  "schemas/session-event.schema.json",
-  "schemas/studio-session.schema.json",
-  "schemas/onboarding-state.schema.json",
-  "schemas/orchestrator.schema.json",
-  "schemas/runtime-run.schema.json",
-  "schemas/runtime-event.schema.json",
-  "templates/next-supabase/.agent-kit/orchestrator.json",
-  "examples/next-supabase-installed/.agent-kit/agent-roster.json",
-  "examples/next-supabase-installed/.agent-kit/config.json",
-  "examples/next-supabase-installed/.agent-kit/model-routing.json",
-  "examples/next-supabase-installed/.agent-kit/manifest.json",
-  "examples/next-supabase-installed/audit-output.json"
-];
+const jsonFiles = ["package.json", "catalog.json"];
 
 function logStep(name) {
   console.log(`\n==> ${name}`);
@@ -69,9 +44,7 @@ run("Package asset validation", ["run", "package:validate"]);
 run("IDE adapter template validation", ["run", "adapter:validate"]);
 run("Example consistency check", ["run", "examples:check"]);
 run("Install smoke", ["run", "smoke:install"]);
-run("Agent Studio smoke", ["run", "smoke:studio"]);
-run("Setup wizard smoke", ["run", "smoke:setup"]);
-run("Baseline audit gate smoke", ["run", "smoke:audit-gate"]);
+run("Doctor gate smoke", ["run", "smoke:audit-gate"]);
 run("Dependency audit", ["audit", "--audit-level=moderate"]);
 run("SBOM check", ["run", "sbom:check"]);
 run("Package dry run", ["pack", "--dry-run"]);
