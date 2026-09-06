@@ -3,6 +3,8 @@ dist/
 coverage/
 .cursor/*
 !.cursor/rules/
+!examples/next-supabase-installed/.cursor/
+!examples/next-supabase-installed/.cursor/**
 release-artifacts/
 artifacts/
 sbom.cdx.json
@@ -40,7 +42,8 @@ examples/next-supabase-installed/.agent-kit/prompts/
 examples/next-supabase-installed/.agent-kit/rosters/
 examples/next-supabase-installed/.agent-kit/schemas/
 examples/next-supabase-installed/.agent-kit/skills/
-examples/next-supabase-installed/AGENTS.md
+!examples/next-supabase-installed/AGENTS.md
+!examples/next-supabase-installed/USER_GUIDE.md
 examples/next-supabase-installed/AGENT_ROSTER.md
 examples/next-supabase-installed/ASSISTANT_ADAPTERS.md
 examples/next-supabase-installed/COUNCIL.md

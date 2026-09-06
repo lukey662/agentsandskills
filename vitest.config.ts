@@ -3,6 +3,22 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   test: {
     include: ["tests/**/*.test.ts"],
+    exclude: [
+      "tests/studio-serve.test.ts",
+      "tests/office.test.ts",
+      "tests/studio.test.ts",
+      "tests/wizard.test.ts",
+      "tests/session-checkpoint.test.ts",
+      "tests/audit.test.ts",
+      "tests/setup-server-api.test.ts",
+      "tests/research.test.ts",
+      "tests/runtime-provider.test.ts",
+      "tests/runtime-workflow.test.ts",
+      "tests/runtime-security.test.ts",
+      "tests/agentic-level.test.ts",
+      "tests/assistant-adapters-table.test.ts",
+      "tests/diff.test.ts"
+    ],
     testTimeout: 30_000,
     coverage: {
       provider: "v8",

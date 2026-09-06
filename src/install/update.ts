@@ -1,12 +1,13 @@
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { DEFAULT_AGENT_ROSTER_TARGET, DEFAULT_MODEL_ROUTING_TARGET, LIBRARY_FOLDERS, PACKAGE_NAME, PACKAGE_VERSION, ROOT_DOCS } from "../config/defaults.js";
+import { PACKAGE_VERSION } from "../config/defaults.js";
 import type { InstallManifest } from "../config/types.js";
-import { resolveInside, writeConflictProposal, writeText } from "../utils/fs.js";
+import { resolveInside, sha256, writeConflictProposal, writeText } from "../utils/fs.js";
 import { findPackageRoot } from "../utils/package-root.js";
 import { planFileUpdate, type PlannedUpdateAction } from "./file-update-plan.js";
-import { hashManagedAssets, listManagedAssets } from "./managed-assets.js";
-import { initProject, readGithubActionsMode, readManifest } from "./install.js";
+import { initProject, readManifest } from "./install.js";
+import { listManagedAssets } from "./managed-assets.js";
+import type { IdeTarget } from "./ide-activate.js";
 
 export type UpdateAction = PlannedUpdateAction;
 
@@ -29,6 +30,17 @@ export interface UpdateOptions {
   cwd: string;
   force?: boolean;
   dryRun?: boolean;
+}
+
+function summarize(files: UpdateFileResult[]): Record<UpdateAction, number> {
+  return {
+    created: files.filter((file) => file.action === "created").length,
+    unchanged: files.filter((file) => file.action === "unchanged").length,
+    updated: files.filter((file) => file.action === "updated").length,
+    "kept-local": files.filter((file) => file.action === "kept-local").length,
+    conflict: files.filter((file) => file.action === "conflict").length,
+    overwritten: files.filter((file) => file.action === "overwritten").length
+  };
 }
 
 export function updateProject(options: UpdateOptions): UpdateResult {
@@ -59,103 +71,70 @@ export function updateProject(options: UpdateOptions): UpdateResult {
     return {
       dryRun,
       files,
-      libraryFoldersRefreshed: [...LIBRARY_FOLDERS],
+      libraryFoldersRefreshed: [],
       manifestPath: ".agent-kit/manifest.json",
       summary: summarize(files)
     };
   }
 
   const packageRoot = findPackageRoot();
-  const stack = manifest.stack ?? "next-supabase";
-  const templateRoot = join(packageRoot, "templates", stack);
-  if (!existsSync(templateRoot)) throw new Error(`Unsupported stack profile in manifest: ${stack}`);
+  const activated = (manifest.activated ?? ["cursor"]) as IdeTarget[];
+  const assets = listManagedAssets(packageRoot, { activated });
+  const files: UpdateFileResult[] = [];
 
-  const assets = listManagedAssets(packageRoot, stack, { includeCi: readGithubActionsMode(cwd) !== "off" });
-  const plans = assets.map((asset) =>
-    planFileUpdate({
+  for (const asset of assets) {
+    if (!existsSync(asset.sourcePath)) continue;
+    const plan = planFileUpdate({
       target: asset.target,
       sourcePath: asset.sourcePath,
       targetPath: resolveInside(cwd, asset.target),
       installedHash: manifest.assetHashes?.[asset.target] ?? manifest.templateHashes?.[asset.target],
       force
-    })
-  );
-  const files: UpdateFileResult[] = [];
+    });
 
-  for (const plan of plans) {
-    const result: UpdateFileResult = { target: plan.target, action: plan.action, reason: plan.reason };
+    let conflictPath: string | undefined;
     if (!dryRun) {
       if (plan.action === "created" || plan.action === "updated" || plan.action === "overwritten") {
-        writeText(resolveInside(cwd, plan.target), plan.sourceContent);
-      } else if (plan.action === "conflict") {
-        const proposal = writeConflictProposal(cwd, plan.target, plan.sourceContent, {
-          currentContent: plan.localContent,
-          reason: plan.reason,
-          sourceVersion: PACKAGE_VERSION
+        writeText(resolveInside(cwd, asset.target), plan.sourceContent);
+      }
+      if (plan.action === "conflict") {
+        const proposal = writeConflictProposal(cwd, asset.target, plan.sourceContent, {
+          currentContent: plan.localContent ?? "",
+          reason: "Template changed and the local file was customized."
         });
-        result.conflictPath = proposal.conflictPath;
+        conflictPath = proposal.conflictPath;
       }
     }
-    files.push(result);
-  }
 
-  const currentTargets = new Set(assets.map((asset) => asset.target));
-  for (const staleTarget of Object.keys(manifest.assetHashes ?? {})
-    .filter((target) => !currentTargets.has(target))
-    .sort()) {
-    if (!existsSync(resolveInside(cwd, staleTarget))) continue;
     files.push({
-      target: staleTarget,
-      action: "kept-local",
-      reason: "The asset is no longer shipped; it was retained for explicit manual removal."
+      target: asset.target,
+      action: plan.action,
+      reason: plan.reason,
+      ...(conflictPath ? { conflictPath } : {})
     });
   }
 
-  const refreshedFolders = [
-    ...new Set(
-      assets
-        .filter((asset, index) => asset.libraryFolder && ["created", "updated", "overwritten"].includes(plans[index]?.action ?? ""))
-        .map((asset) => asset.libraryFolder!)
-    )
-  ].sort();
-
   if (!dryRun) {
-    const assetHashes = hashManagedAssets(assets);
-    const updatedManifest: InstallManifest = {
-      schemaVersion: 2,
-      packageName: PACKAGE_NAME,
+    const nextHashes = { ...manifest.assetHashes };
+    for (const asset of assets) {
+      if (existsSync(asset.sourcePath)) nextHashes[asset.target] = sha256(readFileSync(asset.sourcePath, "utf8"));
+    }
+    const next: InstallManifest = {
+      ...manifest,
       packageVersion: PACKAGE_VERSION,
-      stack,
-      installedAt: manifest.installedAt,
+      schemaVersion: 3,
       updatedAt: new Date().toISOString(),
-      docs: [...ROOT_DOCS],
-      libraryFolders: [...LIBRARY_FOLDERS],
-      agentRoster: manifest.agentRoster ?? DEFAULT_AGENT_ROSTER_TARGET,
-      modelRouting: manifest.modelRouting ?? DEFAULT_MODEL_ROUTING_TARGET,
-      templateHashes: Object.fromEntries(ROOT_DOCS.map((doc) => [doc, assetHashes[doc] ?? ""])),
-      assetHashes
+      docs: ["AGENTS.md", "USER_GUIDE.md"],
+      assetHashes: nextHashes
     };
-    writeText(join(cwd, ".agent-kit", "manifest.json"), `${JSON.stringify(updatedManifest, null, 2)}\n`);
+    writeText(join(cwd, ".agent-kit", "manifest.json"), `${JSON.stringify(next, null, 2)}\n`);
   }
 
   return {
     dryRun,
     files,
-    libraryFoldersRefreshed: refreshedFolders,
+    libraryFoldersRefreshed: [],
     manifestPath: ".agent-kit/manifest.json",
     summary: summarize(files)
   };
-}
-
-function summarize(files: UpdateFileResult[]): Record<UpdateAction, number> {
-  const summary: Record<UpdateAction, number> = {
-    created: 0,
-    updated: 0,
-    unchanged: 0,
-    "kept-local": 0,
-    conflict: 0,
-    overwritten: 0
-  };
-  for (const file of files) summary[file.action] += 1;
-  return summary;
 }

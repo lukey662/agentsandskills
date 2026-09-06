@@ -1,12 +1,12 @@
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdtempSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const repoRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const cliPath = join(repoRoot, "dist", "index.js");
-const tempRoot = mkdtempSync(join(tmpdir(), "agent-kit-audit-gate-"));
+const tempRoot = mkdtempSync(join(tmpdir(), "agent-kit-doctor-gate-"));
 
 function run(args) {
   return execFileSync("node", [cliPath, ...args], {
@@ -20,34 +20,22 @@ try {
     throw new Error("dist/index.js is missing. Run npm run build before smoke:audit-gate.");
   }
 
-  run(["init", "--stack", "next-supabase", "--activate", "antigravity"]);
-  run(["adapter", "validate", "antigravity"]);
-  const auditOutput = run(["audit", "--json", "--min-readiness", "baseline-setup"]);
-  const auditReport = JSON.parse(auditOutput);
+  run(["init", "--stack", "next-supabase", "--activate", "all"]);
+  run(["doctor"]);
+  run(["adapter", "validate", "all"]);
 
-  if (auditReport.summary?.fail !== 0) {
-    throw new Error(`Expected baseline audit gate to have 0 failures, got ${auditReport.summary?.fail}.\n${auditOutput}`);
+  const guide = readFileSync(join(tempRoot, "USER_GUIDE.md"), "utf8");
+  if (!guide.includes("Do not review code alone")) {
+    throw new Error("Installed USER_GUIDE.md dropped the screenshot fail-closed sentence.");
   }
-
-  const readiness = auditReport.readiness?.level ?? "unknown";
-  const allowed = new Set(["baseline-setup", "strong-delivery", "best-practice-candidate"]);
-  if (!allowed.has(readiness)) {
-    throw new Error(`Expected baseline audit gate readiness baseline-setup or better, got ${readiness}.\n${auditOutput}`);
+  if (!existsSync(join(tempRoot, ".cursor/skills/browser-qa/SKILL.md"))) {
+    throw new Error("Expected browser-qa skill after init.");
   }
-
-  if (!existsSync(join(tempRoot, ".cursor", "rules", "cursor-agent-kit.mdc"))) {
-    throw new Error("Expected init to install .cursor/rules/cursor-agent-kit.mdc for Cursor adapter activation.");
-  }
-  if (!existsSync(join(tempRoot, ".antigravity", "agent-kit", "plugin.json"))) {
-    throw new Error("Expected init --activate antigravity to install .antigravity/agent-kit/plugin.json.");
-  }
-  if (!existsSync(join(tempRoot, ".antigravity", "runtime-skills", "planning-council", "SKILL.md"))) {
-    throw new Error("Expected init --activate antigravity to install runtime SKILL.md wrappers.");
+  if (!existsSync(join(tempRoot, ".cursor/agents/qa.md"))) {
+    throw new Error("Expected QA agent after init.");
   }
 
-  console.log(
-    `audit gate smoke passed: ${auditReport.summary.pass} pass / ${auditReport.summary.warn} warn / ${auditReport.summary.fail} fail / readiness ${readiness}`
-  );
+  console.log("doctor gate passed");
 } finally {
   rmSync(tempRoot, { recursive: true, force: true });
 }

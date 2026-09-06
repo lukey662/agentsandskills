@@ -1,233 +1,157 @@
-import { existsSync, readFileSync, readdirSync } from "node:fs";
-import { join } from "node:path";
-import { ensureDir, writeConflictProposal, writeText } from "../utils/fs.js";
-import { loadProjectRosterAgents, type RosterAgent } from "../studio/wizard/roster.js";
-import type { ActivateIdeResult } from "./ide-activate.js";
-
-export const CANONICAL_READ_LIST =
-  "`AGENTS.md`, `AGENT_ROSTER.md`, `.agent-kit/agent-roster.json`, `MODEL_ROUTING.md`, `.agent-kit/model-routing.json`, `.agent-kit/project-context.json`, `.agent-kit/project-context.md`, `.agent-kit/agent-briefs.md` when present, `.agent-kit/corrections/project-rules.json`, `.agent-kit/corrections/agent-rules.json`, `COUNCIL.md`, `.agent-kit/council-sessions/`, and `QUALITY_GATES.md`";
-
-type ReasoningEffort = "low" | "medium" | "high";
-
-/** Quote a value for YAML frontmatter scalar fields. */
-export function quoteYamlScalar(value: string): string {
-  return JSON.stringify(value);
-}
-
-function buildAgentHint(agentId: string, name: string): string {
-  if (agentId === "planner") return "Start with the Planner workflow.";
-  if (agentId === "lead-architect") return "Convene council for core changes before implementation.";
-  if (agentId === "frontend-design-lead") {
-    return "Require brand/content intake, creative-direction rationale, and visual QA evidence for UI changes.";
-  }
-  if (agentId === "security-reviewer") {
-    return "Review auth, RLS, data mutation, dependency, external-call, secret, and release-risk changes.";
-  }
-  return `Use for ${name.toLowerCase()} work defined in the roster.`;
-}
-
-function buildProactiveSuffix(agentId: string): string {
-  const suffixes: Record<string, string> = {
-    planner: "Use proactively for planning, scope breakdown, ambiguous requests, and workflow routing.",
-    "lead-architect": "Use proactively for core changes, architecture, and cross-layer decisions.",
-    "security-reviewer": "Use proactively for auth, RLS, API, Server Action, data mutation, dependency, secret, and release-risk changes.",
-    "frontend-design-lead": "Use proactively for UI, design system, accessibility, and visual QA work.",
-    "qa-engineer": "Use proactively after behavior changes to add or verify tests and acceptance evidence.",
-    "supabase-postgres-engineer": "Use proactively for schema, migrations, RLS, auth, and SQL changes.",
-    "nextjs-engineer": "Use proactively for App Router, Server Components, route handlers, and UI state work.",
-    "marketing-copy-lead": "Use proactively for public-facing copy, positioning, and conversion surfaces.",
-    "docs-maintainer": "Use proactively after significant changes to update living documentation.",
-    "deployment-observability-engineer": "Use proactively for release, env var, migration order, monitoring, and rollback work."
-  };
-  return suffixes[agentId] ?? "";
-}
-
-export function buildSubagentDescription(agent: RosterAgent, proactive: boolean): string {
-  const base = agent.roleSummary.length > 140 ? `${agent.roleSummary.slice(0, 137)}...` : agent.roleSummary;
-  if (!proactive) return base;
-  const suffix = buildProactiveSuffix(agent.id);
-  return suffix ? `${base} ${suffix}` : base;
-}
-
-export function buildSubagentMarkdown(agent: RosterAgent, options: { proactive?: boolean } = {}): string {
-  const description = buildSubagentDescription(agent, Boolean(options.proactive));
-  const agentFile = agent.file ?? `.agent-kit/agents/${agent.id}.md`;
-  const hint = buildAgentHint(agent.id, agent.name);
-
-  return `---
-name: ${quoteYamlScalar(agent.id)}
-description: ${quoteYamlScalar(description)}
----
-
-Read ${CANONICAL_READ_LIST} before making routing or implementation decisions.
-
-Also read \`${agentFile}\` for this role's detailed contract.
-
-${hint}
-
-For council work, delegate to this subagent instead of role-playing the council in the main thread.
-
-Record meaningful decisions, risks, handoffs, human corrections, artifacts, evidence, and verification through \`agent-kit session checkpoint\` or individual \`agent-kit session ...\` commands when available.
-`;
-}
-
-function writeGeneratedAgentFile(cwd: string, relativePath: string, content: string, force: boolean, result: ActivateIdeResult): void {
-  const targetPath = join(cwd, relativePath);
-  if (!force && existsSync(targetPath)) {
-    const existing = readFileSync(targetPath, "utf8");
-    if (existing === content) {
-      result.unchanged.push(relativePath);
-      return;
-    }
-    const proposal = writeConflictProposal(cwd, relativePath, content, {
-      currentContent: existing,
-      reason: "Generated agent content changed while the local target is customized."
-    });
-    result.conflicts.push(`${relativePath} -> ${proposal.conflictPath}`);
-    return;
-  }
-  ensureDir(join(cwd, relativePath.split("/").slice(0, -1).join("/")));
-  writeText(targetPath, content);
-  result.copied.push(relativePath);
-}
-
-export function generateMarkdownSubagents(cwd: string, agentsDir: string, options: { proactive?: boolean; force: boolean; result: ActivateIdeResult }): void {
-  ensureDir(join(cwd, agentsDir));
-  for (const agent of loadProjectRosterAgents(cwd)) {
-    const relativePath = `${agentsDir}/${agent.id}.md`;
-    writeGeneratedAgentFile(cwd, relativePath, buildSubagentMarkdown(agent, options), options.force, options.result);
-  }
-}
-
-const CURSOR_AGENTS_README = `# Cursor council subagents
-
-Project subagents generated from \`.agent-kit/agent-roster.json\`. Use them for isolated specialist context instead of role-playing the whole council in one chat.
-
-## Delegation
-
-| Risk / work type | Subagent |
-| --- | --- |
-| Planning / scope | \`@planner\` |
-| Core architecture | \`@lead-architect\` |
-| Auth / RLS / secrets | \`@security-reviewer\` or Task \`security-review\` |
-| Frontend UI | \`@frontend-design-lead\` |
-| QA / tests | \`@qa-engineer\` |
-
-Record handoffs with \`agent-kit session checkpoint --file <json>\` when the CLI is available.
-
-Regenerate with \`agent-kit init --activate cursor\` after roster changes.
-`;
-
-export function generateCursorSubagents(cwd: string, force: boolean, result: ActivateIdeResult): void {
-  generateMarkdownSubagents(cwd, ".cursor/agents", { proactive: true, force, result });
-  writeGeneratedAgentFile(cwd, ".cursor/agents/README.md", CURSOR_AGENTS_README, force, result);
-}
-
-export function loadAgentReasoningEffortMap(cwd: string): Map<string, ReasoningEffort> {
-  const path = join(cwd, ".agent-kit/model-routing.json");
-  const map = new Map<string, ReasoningEffort>();
-  if (!existsSync(path)) return map;
-
-  try {
-    const parsed = JSON.parse(readFileSync(path, "utf8")) as {
-      agentRoutes?: Array<{ agentId?: string; defaultEffort?: string; profileId?: string }>;
-      profiles?: Array<{ id?: string; reasoningEffort?: string }>;
-    };
-    const profileEffort = new Map<string, ReasoningEffort>();
-    for (const profile of parsed.profiles ?? []) {
-      if (profile.id && profile.reasoningEffort) {
-        const effort = profile.reasoningEffort as ReasoningEffort;
-        if (effort === "low" || effort === "medium" || effort === "high") {
-          profileEffort.set(profile.id, effort);
-        }
-      }
-    }
-    for (const binding of parsed.agentRoutes ?? []) {
-      if (!binding.agentId) continue;
-      const direct = binding.defaultEffort as ReasoningEffort | undefined;
-      if (direct === "low" || direct === "medium" || direct === "high") {
-        map.set(binding.agentId, direct);
-        continue;
-      }
-      if (binding.profileId && profileEffort.has(binding.profileId)) {
-        map.set(binding.agentId, profileEffort.get(binding.profileId)!);
-      }
-    }
-  } catch {
-    return map;
-  }
-  return map;
-}
+import { readFileSync } from "node:fs";
+import { agentSourcePath, loadCatalog, parseFrontmatter, skillSourcePath } from "../catalog.js";
+import { findPackageRoot } from "../utils/package-root.js";
+import { writeGenerated, type CopyCollector } from "./copy-asset.js";
 
 function escapeTomlString(value: string): string {
   return value.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
 }
 
-export function buildCodexAgentToml(agent: RosterAgent, effort: ReasoningEffort): string {
-  const description = buildSubagentDescription(agent, true);
-  const agentFile = agent.file ?? `.agent-kit/agents/${agent.id}.md`;
-  const hint = buildAgentHint(agent.id, agent.name);
-  const instructions = [
-    `Read AGENTS.md, AGENT_ROSTER.md, .agent-kit/agent-roster.json, MODEL_ROUTING.md,`,
-    `.agent-kit/model-routing.json, project context, corrections, COUNCIL.md, QUALITY_GATES.md,`,
-    `and ${agentFile} before reviewing or implementing.`,
-    "",
-    hint,
-    "",
-    "Record meaningful decisions, risks, handoffs, and verification through agent-kit session checkpoint when available."
-  ].join("\n");
+export function generateCursorAgents(cwd: string, force: boolean, collector: CopyCollector): void {
+  const packageRoot = findPackageRoot();
+  const catalog = loadCatalog(packageRoot);
+  for (const id of catalog.defaultAgents) {
+    const content = readFileSync(agentSourcePath(packageRoot, id), "utf8");
+    writeGenerated(cwd, `.cursor/agents/${id}.md`, content, force, collector);
+  }
+}
 
-  return `name = "${agent.id}"
+export function generateCursorSkills(cwd: string, force: boolean, collector: CopyCollector): void {
+  const packageRoot = findPackageRoot();
+  const catalog = loadCatalog(packageRoot);
+  for (const id of catalog.defaultSkills) {
+    const content = readFileSync(skillSourcePath(packageRoot, id), "utf8");
+    writeGenerated(cwd, `.cursor/skills/${id}/SKILL.md`, content, force, collector);
+  }
+}
+
+export function generateClaudeAgents(cwd: string, force: boolean, collector: CopyCollector): void {
+  const packageRoot = findPackageRoot();
+  const catalog = loadCatalog(packageRoot);
+  for (const id of catalog.defaultAgents) {
+    const content = readFileSync(agentSourcePath(packageRoot, id), "utf8");
+    writeGenerated(cwd, `.claude/agents/${id}.md`, content, force, collector);
+  }
+}
+
+export function generateCodexAgents(cwd: string, force: boolean, collector: CopyCollector): void {
+  const packageRoot = findPackageRoot();
+  const catalog = loadCatalog(packageRoot);
+  for (const id of catalog.defaultAgents) {
+    const markdown = readFileSync(agentSourcePath(packageRoot, id), "utf8");
+    const meta = parseFrontmatter(markdown);
+    const description = meta.description ?? id;
+    const toml = `name = "${id}"
 description = "${escapeTomlString(description)}"
-# model = "gpt-5.5"  # verify in your Codex environment; see MODEL_ROUTING.md
-model_reasoning_effort = "${effort}"
+model_reasoning_effort = "medium"
 
 developer_instructions = """
-${instructions}
+${markdown.replace(/"""/g, '\\"\\"\\"')}
 """
 `;
-}
-
-export function generateCodexCustomAgents(cwd: string, force: boolean, result: ActivateIdeResult): void {
-  ensureDir(join(cwd, ".codex/agents"));
-  const effortMap = loadAgentReasoningEffortMap(cwd);
-  for (const agent of loadProjectRosterAgents(cwd)) {
-    const effort = effortMap.get(agent.id) ?? "medium";
-    const relativePath = `.codex/agents/${agent.id}.toml`;
-    writeGeneratedAgentFile(cwd, relativePath, buildCodexAgentToml(agent, effort), force, result);
+    writeGenerated(cwd, `.codex/agents/${id}.toml`, toml, force, collector);
   }
 }
 
-function skillDescriptionFromMarkdown(text: string, skillId: string): string {
-  const useWhen = text.match(/## Use When\s*\n+\s*([^\n#]+)/);
-  if (useWhen?.[1]) return useWhen[1].trim().slice(0, 200);
-  const firstHeading = text.match(/^#\s+(.+)/m);
-  if (firstHeading?.[1]) return `${firstHeading[1].trim()} — Agent Kit council skill.`;
-  return `Agent Kit skill for ${skillId.replace(/-/g, " ")}.`;
-}
+export function generateCopilotInstructions(cwd: string, force: boolean, collector: CopyCollector): void {
+  const catalog = loadCatalog();
+  const content = `# Copilot instructions
 
-function kitSkillToCursorSkill(skillId: string, kitMarkdown: string): string {
-  const description = skillDescriptionFromMarkdown(kitMarkdown, skillId);
-  const body = kitMarkdown.replace(/^#\s+.+\n+/, "").trimStart();
-  return `---
-name: ${quoteYamlScalar(skillId)}
-description: ${quoteYamlScalar(description)}
----
+This repo uses a small agent and skill pack. Read \`AGENTS.md\` and \`USER_GUIDE.md\`.
 
-${body.trim()}
+When the user names a role, act as that agent:
+
+${catalog.defaultAgents.map((id) => `- ${id}`).join("\n")}
+
+${catalog.screenshotFailClosed}
+
+Do not review user-visible work from code alone. Use the browser-qa skill: open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.
+
+If you cannot open a browser, use Playwright:
+
+\`\`\`bash
+npx playwright screenshot --viewport-size=1280,720 "$URL" qa-evidence/<slug>/desktop.png
+npx playwright screenshot --viewport-size=390,844 "$URL" qa-evidence/<slug>/mobile.png
+\`\`\`
 `;
+  writeGenerated(cwd, ".github/copilot-instructions.md", content, force, collector);
 }
 
-export function generateCursorSkillsFromKit(cwd: string, force: boolean, result: ActivateIdeResult): void {
-  const skillsRoot = join(cwd, ".agent-kit/skills");
-  if (!existsSync(skillsRoot)) return;
+export function generateAntigravityCommands(cwd: string, force: boolean, collector: CopyCollector): void {
+  const commands: Array<{ name: string; description: string; prompt: string }> = [
+    {
+      name: "plan",
+      description: "Plan the change and name the owning agent.",
+      prompt: "Act as the planner agent. Plan this change. Name the owning agent, extra reviewers, and which screenshots QA must capture. Do not write code. Read AGENTS.md and USER_GUIDE.md."
+    },
+    {
+      name: "browser-qa",
+      description: "Live browser QA with desktop and mobile screenshots.",
+      prompt: "Act as the QA agent. Use the browser-qa skill. Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject."
+    },
+    {
+      name: "security",
+      description: "Auth, RLS, secrets, and OWASP review.",
+      prompt: "Act as the security agent. Review auth, RLS, IDOR, and secrets. Exercise login or denied states in the browser when they are user-visible."
+    },
+    {
+      name: "frontend",
+      description: "UI review from screenshots first.",
+      prompt: "Act as the design agent. Review the running UI from screenshots first. Desktop and mobile. Reject generic AI-looking layout."
+    },
+    {
+      name: "copy",
+      description: "Review rendered conversion copy.",
+      prompt: "Act as the copy agent. Review the rendered words in screenshots, not just strings in source."
+    },
+    {
+      name: "test",
+      description: "Run tests, then browser-qa for UI.",
+      prompt: "Act as the QA agent. Run applicable tests, then use browser-qa for any user-visible change."
+    },
+    {
+      name: "ship",
+      description: "Release go / no-go.",
+      prompt: "Use the ship skill. Confirm env, migrations, rollback, and browser-qa evidence for user-visible changes."
+    }
+  ];
 
-  for (const file of readdirSync(skillsRoot).filter((name) => name.endsWith(".md"))) {
-    const skillId = file.replace(/\.md$/, "");
-    const kitMarkdown = readFileSync(join(skillsRoot, file), "utf8");
-    const relativePath = `.cursor/skills/${skillId}/SKILL.md`;
-    writeGeneratedAgentFile(cwd, relativePath, kitSkillToCursorSkill(skillId, kitMarkdown), force, result);
+  writeGenerated(
+    cwd,
+    ".antigravity/agent-kit/plugin.json",
+    `${JSON.stringify({ name: "agents-and-skills", commands: commands.map((item) => item.name) }, null, 2)}\n`,
+    force,
+    collector
+  );
+
+  for (const command of commands) {
+    const toml = `name = "${command.name}"
+description = "${command.description}"
+
+prompt = """
+${command.prompt}
+"""
+`;
+    writeGenerated(cwd, `.antigravity/agent-kit/commands/${command.name}.toml`, toml, force, collector);
+  }
+
+  const packageRoot = findPackageRoot();
+  const catalog = loadCatalog(packageRoot);
+  for (const id of catalog.defaultSkills) {
+    const content = readFileSync(skillSourcePath(packageRoot, id), "utf8");
+    writeGenerated(cwd, `.antigravity/runtime-skills/${id}/SKILL.md`, content, force, collector);
   }
 }
 
-export { assistantAdapterRowIsActive } from "./assistant-adapters-table.js";
+export function copyOptionalAgent(cwd: string, id: string, force: boolean, collector: CopyCollector): void {
+  const packageRoot = findPackageRoot();
+  const content = readFileSync(agentSourcePath(packageRoot, id), "utf8");
+  writeGenerated(cwd, `.cursor/agents/${id}.md`, content, force, collector);
+  writeGenerated(cwd, `.claude/agents/${id}.md`, content, force, collector);
+}
+
+export function copyOptionalSkill(cwd: string, id: string, force: boolean, collector: CopyCollector): void {
+  const packageRoot = findPackageRoot();
+  const content = readFileSync(skillSourcePath(packageRoot, id), "utf8");
+  writeGenerated(cwd, `.cursor/skills/${id}/SKILL.md`, content, force, collector);
+}

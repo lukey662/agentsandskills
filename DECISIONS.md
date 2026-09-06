@@ -2,6 +2,22 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-09-06 - Agents, Skills, And Screenshot QA
+
+### Context
+
+The kit had become an operating system: 17 installed docs, Studio, session CLI, research, and LangGraph. Users needed agents and skills they could invoke. QA could pass on a code-only review.
+
+A GitHub scan of top skill packs (Anthropic, addyosmani/agent-skills, wshobson/agents, agentsmd) showed native `SKILL.md` folders, small specialist rosters, and live browser verification — not council ledgers.
+
+### Decision
+
+Ship a default pack of six agents and eleven skills. `init` writes `AGENTS.md`, `USER_GUIDE.md`, and native IDE files. QA of user-visible work requires desktop and mobile screenshots and image review. Session, Studio, research, and orchestrate leave the default CLI.
+
+### Consequences
+
+Downstream installs are smaller and teachable from `USER_GUIDE.md`. Existing 17-doc trees are not deleted. Domain skills (RLS, migrations) stay even though generic skill zoos omit them.
+
 ## 2026-07-25 - Make Hosted GitHub Actions Opt-In
 
 ### Context

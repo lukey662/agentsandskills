@@ -29,14 +29,15 @@ export interface AgentKitConfig {
 }
 
 export interface InstallManifest {
-  schemaVersion?: 1 | 2;
+  schemaVersion?: 1 | 2 | 3;
   packageName: string;
   packageVersion: string;
   stack: StackProfile;
   installedAt: string;
   updatedAt?: string;
   docs: string[];
-  libraryFolders: string[];
+  libraryFolders?: string[];
+  activated?: string[];
   agentRoster?: string;
   modelRouting?: string;
   templateHashes?: Record<string, string>;

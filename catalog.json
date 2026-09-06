@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "defaultAgents": ["planner", "app-engineer", "security", "design", "qa", "copy"],
+  "optionalAgents": ["lead-architect", "docs", "deploy", "research"],
+  "defaultSkills": [
+    "planning",
+    "nextjs-app-router",
+    "supabase-auth-rls",
+    "postgres-migrations",
+    "owasp-security-review",
+    "frontend-design",
+    "accessibility-wcag",
+    "browser-qa",
+    "testing-qa",
+    "product-copy",
+    "ship"
+  ],
+  "optionalSkills": ["ui-polish", "docs", "upgrade", "debug"],
+  "screenshotFailClosed": "A user-visible change is not done until someone opened the running UI, captured desktop and mobile screenshots, and reviewed those images."
+}

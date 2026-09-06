@@ -1423,7 +1423,7 @@ export function auditProject(cwd: string, options: AuditProjectOptions = {}): Au
       findings.push({ level: "pass", area: "docs", message: `${displayPath} exists.` });
     } else {
       findings.push({
-        level: doc === "MODEL_ROUTING.md" ? "warn" : "fail",
+        level: "fail",
         area: "docs",
         message: `${displayPath} is missing.`,
         remediation: packageSourceMode
