@@ -14,7 +14,7 @@ program.name("agent-kit").description("Install agents, skills, and a user guide.
 
 program
   .command("init")
-  .description("Install AGENTS.md, USER_GUIDE.md, and native IDE agents/skills.")
+  .description("Install AGENTS.md, USER_GUIDE.md, USER_GUIDE.html, and native IDE agents/skills.")
   .option("--stack <stack>", "Stack profile", "next-supabase")
   .option("--activate <targets...>", "IDE surfaces: cursor, claude, codex, copilot, antigravity, all")
   .option("--legacy-docs", "Also copy leftover living-doc templates")
@@ -24,11 +24,11 @@ program
   .action((options: { stack: "next-supabase"; activate?: string[]; legacyDocs?: boolean; force?: boolean; json?: boolean; dryRun?: boolean }) => {
     if (options.dryRun) {
       if (options.json) {
-        printJson({ dryRun: true, wouldWrite: ["AGENTS.md", "USER_GUIDE.md", ".cursor/agents/", ".cursor/skills/"] });
+        printJson({ dryRun: true, wouldWrite: ["AGENTS.md", "USER_GUIDE.md", "USER_GUIDE.html", ".cursor/agents/", ".cursor/skills/"] });
         return;
       }
       heading("init dry-run");
-      line("Would write AGENTS.md, USER_GUIDE.md, and native IDE agent/skill files.");
+      line("Would write AGENTS.md, USER_GUIDE.md, USER_GUIDE.html, and native IDE agent/skill files.");
       return;
     }
 
@@ -47,7 +47,7 @@ program
     line(`copied: ${result.copied.length}`);
     line(`unchanged: ${result.unchanged.length}`);
     line(`conflicts: ${result.conflicts.length}`);
-    detail("Read USER_GUIDE.md next.");
+    detail("Open USER_GUIDE.html next.");
   });
 
 program

@@ -18,6 +18,7 @@ describe("public package readiness", () => {
     expect(packageJson.bin?.["agents-and-skills"]).toBe("dist/index.js");
     expect(packageJson.files).toContain("catalog.json");
     expect(packageJson.files).toContain("USER_GUIDE.md");
+    expect(packageJson.files).toContain("USER_GUIDE.html");
     expect(packageJson.files).toContain("agents");
     expect(packageJson.files).toContain("skills");
     expect(packageJson.scripts?.smoke).toBe("node dist/index.js doctor");
@@ -25,7 +26,7 @@ describe("public package readiness", () => {
 
   it("README points at the user guide first", () => {
     const readme = readFileSync(join(root, "README.md"), "utf8");
-    expect(readme).toContain("USER_GUIDE.md");
+    expect(readme).toContain("USER_GUIDE.html");
     expect(readme).toContain("browser-qa");
     expect(readme).not.toContain("agent-kit session");
     expect(readme).not.toContain("agent-kit orchestrate");
@@ -37,6 +38,10 @@ describe("public package readiness", () => {
     expect(guide).toContain("A user-visible change is not done until someone opened the running UI");
     expect(guide).toContain("@planner");
     expect(guide).toContain("browser-qa");
+    const html = readFileSync(join(root, "USER_GUIDE.html"), "utf8");
+    expect(html).toContain("Do not review code alone");
+    expect(html).toContain("Ask one specialist");
+    expect(html).toContain('data-view="user-guide"');
   });
 
   it("canonical QA files exist", () => {

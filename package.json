@@ -29,6 +29,7 @@
     "skills",
     "assistant-adapters/cursor-agent-kit.mdc",
     "USER_GUIDE.md",
+    "USER_GUIDE.html",
     "examples/next-supabase-installed",
     "research/agent-skill-gap-report.md",
     "README.md",
