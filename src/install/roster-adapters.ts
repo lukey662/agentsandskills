@@ -25,6 +25,15 @@ export function generateCursorSkills(cwd: string, force: boolean, collector: Cop
   }
 }
 
+export function generatePortableSkills(cwd: string, force: boolean, collector: CopyCollector): void {
+  const packageRoot = findPackageRoot();
+  const catalog = loadCatalog(packageRoot);
+  for (const id of catalog.defaultSkills) {
+    const content = readFileSync(skillSourcePath(packageRoot, id), "utf8");
+    writeGenerated(cwd, `skills/${id}/SKILL.md`, content, force, collector);
+  }
+}
+
 export function generateClaudeAgents(cwd: string, force: boolean, collector: CopyCollector): void {
   const packageRoot = findPackageRoot();
   const catalog = loadCatalog(packageRoot);

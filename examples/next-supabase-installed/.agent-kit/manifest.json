@@ -72,6 +72,18 @@
     ".antigravity/runtime-skills/browser-qa/SKILL.md": "c04e2fa549d9ef6a7c91280859a6394ac59273e6866d537de879d1f1b5fcff1a",
     ".antigravity/runtime-skills/testing-qa/SKILL.md": "1e92f7c33e29747c51548c0d1f58507de53768aa9e9748c3be2809d88bf1dc1f",
     ".antigravity/runtime-skills/product-copy/SKILL.md": "2c6fe8e3752ad9f026cadd4ac02ff0a22a321f0714fe8b2baf99cdfae7b3d6c8",
-    ".antigravity/runtime-skills/ship/SKILL.md": "ac426092a1868dd1deb01689dc2f5591dbe40acb2fceec559adce41602bb8d6f"
-  }
+    ".antigravity/runtime-skills/ship/SKILL.md": "ac426092a1868dd1deb01689dc2f5591dbe40acb2fceec559adce41602bb8d6f",
+    "skills/planning/SKILL.md": "a542c55e76c8e5baa37132451b3dd1c4d49606d233037e0512f82b714603f51a",
+    "skills/nextjs-app-router/SKILL.md": "b598aa1f05ed8f0f31fc0d6bd8bb1011566d1164cb4fd5e8df2c0c02deffc532",
+    "skills/supabase-auth-rls/SKILL.md": "bdd632edb4f8d824f337fe4a14f306479e81a104d814764b463006b53fe4750a",
+    "skills/postgres-migrations/SKILL.md": "1d29ec1f31ebb824a5f4700f08d999b4e4dc9a0aefc7145722b13c6625e85db5",
+    "skills/owasp-security-review/SKILL.md": "8141770ea49648728d10e214283a7dce338af4780b66874c58360d9ef7ee4311",
+    "skills/frontend-design/SKILL.md": "57f7e00f248c3e868df3fb5957956ce443b28fdf3ecab615be95cf66f06172aa",
+    "skills/accessibility-wcag/SKILL.md": "1199b4852c2ad9981834a03dcc86edd1f68d8337d25aa13d3c4ad5518343a520",
+    "skills/browser-qa/SKILL.md": "c04e2fa549d9ef6a7c91280859a6394ac59273e6866d537de879d1f1b5fcff1a",
+    "skills/testing-qa/SKILL.md": "1e92f7c33e29747c51548c0d1f58507de53768aa9e9748c3be2809d88bf1dc1f",
+    "skills/product-copy/SKILL.md": "2c6fe8e3752ad9f026cadd4ac02ff0a22a321f0714fe8b2baf99cdfae7b3d6c8",
+    "skills/ship/SKILL.md": "ac426092a1868dd1deb01689dc2f5591dbe40acb2fceec559adce41602bb8d6f"
+  },
+  "updatedAt": "2026-09-06T02:06:50.428Z"
 }

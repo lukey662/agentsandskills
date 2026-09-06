@@ -1,4 +1,4 @@
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
@@ -29,5 +29,15 @@ describe("update", () => {
     roots.push(root);
     const result = updateProject({ cwd: root });
     expect(result.files.some((file) => file.target === "AGENTS.md")).toBe(true);
+  });
+
+  it("refreshes generated IDE agents on update", () => {
+    const root = mkdtempSync(join(tmpdir(), "agent-kit-update-refresh-"));
+    roots.push(root);
+    initProject({ cwd: root, activate: ["cursor"] });
+    writeFileSync(join(root, ".cursor/agents/qa.md"), "# stale\n");
+    updateProject({ cwd: root, force: true });
+    expect(readFileSync(join(root, ".cursor/agents/qa.md"), "utf8")).toContain("Do not review");
+    expect(existsSync(join(root, "skills/browser-qa/SKILL.md"))).toBe(true);
   });
 });

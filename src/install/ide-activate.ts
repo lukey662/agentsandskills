@@ -24,6 +24,13 @@ export interface ActivateIdeResult extends CopyCollector {
 
 const ALLOWED = new Set<IdeTarget>(["cursor", "claude", "codex", "copilot", "antigravity"]);
 
+export class InvalidActivateTargetError extends Error {
+  constructor(public readonly invalid: string[]) {
+    super(`Unknown --activate target(s): ${invalid.join(", ")}. Allowed: cursor, claude, codex, copilot, antigravity, all.`);
+    this.name = "InvalidActivateTargetError";
+  }
+}
+
 export function parseActivateTargets(raw: string[] | undefined): IdeTarget[] {
   if (!raw || raw.length === 0) return [];
   return normalizeTargets(raw.flatMap((value) => value.split(",")));
@@ -31,14 +38,21 @@ export function parseActivateTargets(raw: string[] | undefined): IdeTarget[] {
 
 function normalizeTargets(targets: string[]): IdeTarget[] {
   const normalized = new Set<IdeTarget>();
+  const invalid: string[] = [];
   for (const target of targets) {
     const value = target.trim().toLowerCase();
+    if (!value) continue;
     if (value === "all") {
       for (const item of ALLOWED) normalized.add(item);
       continue;
     }
-    if (ALLOWED.has(value as IdeTarget)) normalized.add(value as IdeTarget);
+    if (ALLOWED.has(value as IdeTarget)) {
+      normalized.add(value as IdeTarget);
+    } else {
+      invalid.push(target.trim());
+    }
   }
+  if (invalid.length > 0) throw new InvalidActivateTargetError(invalid);
   return [...normalized];
 }
 
