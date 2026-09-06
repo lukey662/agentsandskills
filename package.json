@@ -65,6 +65,7 @@
     "smoke": "node dist/index.js doctor",
     "smoke:install": "node scripts/smoke-install.mjs",
     "smoke:audit-gate": "node scripts/smoke-audit-gate.mjs",
+    "smoke:ui-screens": "node scripts/smoke-ui-screens.mjs",
     "package:validate": "node dist/index.js package validate",
     "examples:check": "node scripts/example-check.mjs",
     "version:check": "node scripts/version-check.mjs",

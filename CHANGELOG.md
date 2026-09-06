@@ -7,6 +7,7 @@
 - Drop session, studio, research, and orchestrate commands from the default CLI.
 - Add `doctor`, `add agent`, and the `agents-and-skills` binary alias.
 - Existing 17-doc / `.agent-kit/` installs are not deleted; `update` leaves leftover files unmanaged.
+- Keep `npm run smoke:ui-screens` as a Playwright desktop/mobile capture of the installed user guide, not the removed Studio wizard.
 
 ## 0.3.0
 
