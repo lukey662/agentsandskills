@@ -15,11 +15,7 @@ const baseUrl = `http://127.0.0.1:${port}`;
 const failClosed = "A user-visible change is not done until someone opened the running UI, captured desktop and mobile screenshots, and reviewed those images.";
 
 function escapeHtml(value) {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
+  return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
 }
 
 function renderGuidePage(guide, skill) {
