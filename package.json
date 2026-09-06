@@ -77,7 +77,7 @@
     "release:check": "node scripts/release-check.mjs",
     "pack:check": "npm pack --dry-run",
     "dogfood:init": "node scripts/dogfood-init.mjs",
-    "adapter:validate": "node dist/index.js adapter validate all"
+    "adapter:validate": "node scripts/adapter-validate-example.mjs"
   },
   "dependencies": {
     "@clack/prompts": "^1.6.0",

@@ -59,14 +59,7 @@ export function initProject(options: InitOptions): InitResult {
 
   if (options.legacyDocs) {
     const legacyRoot = join(packageRoot, "templates", stack);
-    const legacyDocs = [
-      "SPEC.md",
-      "DECISIONS.md",
-      "DESIGN.md",
-      "SECURITY.md",
-      "TESTING.md",
-      "QUALITY_GATES.md"
-    ];
+    const legacyDocs = ["SPEC.md", "DECISIONS.md", "DESIGN.md", "SECURITY.md", "TESTING.md", "QUALITY_GATES.md"];
     for (const doc of legacyDocs) {
       const source = join(legacyRoot, doc);
       if (!existsSync(source)) continue;

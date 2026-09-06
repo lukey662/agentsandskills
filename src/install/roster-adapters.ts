@@ -82,12 +82,14 @@ export function generateAntigravityCommands(cwd: string, force: boolean, collect
     {
       name: "plan",
       description: "Plan the change and name the owning agent.",
-      prompt: "Act as the planner agent. Plan this change. Name the owning agent, extra reviewers, and which screenshots QA must capture. Do not write code. Read AGENTS.md and USER_GUIDE.md."
+      prompt:
+        "Act as the planner agent. Plan this change. Name the owning agent, extra reviewers, and which screenshots QA must capture. Do not write code. Read AGENTS.md and USER_GUIDE.md."
     },
     {
       name: "browser-qa",
       description: "Live browser QA with desktop and mobile screenshots.",
-      prompt: "Act as the QA agent. Use the browser-qa skill. Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject."
+      prompt:
+        "Act as the QA agent. Use the browser-qa skill. Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject."
     },
     {
       name: "security",

@@ -43,7 +43,12 @@ function validateCursor(cwd: string): ValidationFinding[] {
   const catalog = loadCatalog();
   const findings: ValidationFinding[] = [];
   if (!has(cwd, ".cursor/rules/cursor-agent-kit.mdc")) {
-    findings.push({ level: "fail", area: "cursor", message: "Missing .cursor/rules/cursor-agent-kit.mdc", remediation: "Run agent-kit init --activate cursor" });
+    findings.push({
+      level: "fail",
+      area: "cursor",
+      message: "Missing .cursor/rules/cursor-agent-kit.mdc",
+      remediation: "Run agent-kit init --activate cursor"
+    });
   } else {
     findings.push({ level: "pass", area: "cursor", message: "Cursor rule is present." });
   }
@@ -51,7 +56,11 @@ function validateCursor(cwd: string): ValidationFinding[] {
     const path = `.cursor/agents/${id}.md`;
     if (!has(cwd, path)) {
       findings.push({ level: "fail", area: "cursor", message: `Missing ${path}` });
-    } else if (id === "qa" && !text(cwd, path).includes("Do not review user-visible work from code alone") && !text(cwd, path).includes("Do not review code alone")) {
+    } else if (
+      id === "qa" &&
+      !text(cwd, path).includes("Do not review user-visible work from code alone") &&
+      !text(cwd, path).includes("Do not review code alone")
+    ) {
       findings.push({ level: "fail", area: "cursor", message: "Cursor QA agent dropped the screenshot fail-closed rule." });
     } else {
       findings.push({ level: "pass", area: "cursor", message: `${path} is present.` });
@@ -72,11 +81,14 @@ function validateClaude(cwd: string): ValidationFinding[] {
   for (const id of catalog.defaultAgents) {
     const path = `.claude/agents/${id}.md`;
     findings.push(
-      has(cwd, path)
-        ? { level: "pass", area: "claude", message: `${path} is present.` }
-        : { level: "fail", area: "claude", message: `Missing ${path}` }
+      has(cwd, path) ? { level: "pass", area: "claude", message: `${path} is present.` } : { level: "fail", area: "claude", message: `Missing ${path}` }
     );
-    if (id === "qa" && has(cwd, path) && !text(cwd, path).includes("Do not review code alone") && !text(cwd, path).includes("Do not review user-visible work from code alone")) {
+    if (
+      id === "qa" &&
+      has(cwd, path) &&
+      !text(cwd, path).includes("Do not review code alone") &&
+      !text(cwd, path).includes("Do not review user-visible work from code alone")
+    ) {
       findings.push({ level: "fail", area: "claude", message: "Claude QA agent dropped the screenshot fail-closed rule." });
     }
   }
@@ -136,13 +148,7 @@ export function validateAdapter(cwd: string, target: AdapterValidationTarget): V
   if (target === "copilot") return report("copilot", validateCopilot(cwd));
   if (target === "antigravity") return report("antigravity", validateAntigravity(cwd));
 
-  return report("all", [
-    ...validateCursor(cwd),
-    ...validateClaude(cwd),
-    ...validateCodex(cwd),
-    ...validateCopilot(cwd),
-    ...validateAntigravity(cwd)
-  ]);
+  return report("all", [...validateCursor(cwd), ...validateClaude(cwd), ...validateCodex(cwd), ...validateCopilot(cwd), ...validateAntigravity(cwd)]);
 }
 
 export function validatePackage(): ValidationReport {

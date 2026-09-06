@@ -53,9 +53,7 @@ export function createDoctorReport(cwd: string): DoctorReport {
     findings.push({ level: "pass", area: "docs", message: "USER_GUIDE.md includes the screenshot fail-closed rule." });
   }
 
-  const qaSkill =
-    read(cwd, ".cursor/skills/browser-qa/SKILL.md") ??
-    read(cwd, "skills/browser-qa/SKILL.md");
+  const qaSkill = read(cwd, ".cursor/skills/browser-qa/SKILL.md") ?? read(cwd, "skills/browser-qa/SKILL.md");
   if (!qaSkill) {
     findings.push({ level: "fail", area: "skills", message: "browser-qa skill is missing." });
   } else if (!qaSkill.includes("Do not review code alone")) {

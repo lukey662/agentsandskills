@@ -58,13 +58,9 @@ export const DEFAULT_RUNTIME_IGNORE_SOURCE = "templates/next-supabase/.agent-kit
 export const DEFAULT_RUNTIME_IGNORE_TARGET = ".agent-kit/runtime/.gitignore";
 export const CURSOR_ADAPTER_FILES = [CURSOR_RULE_FILE] as const;
 export const CURSOR_SCOPED_ADAPTER_FILES = [] as const;
-export const COPILOT_INSTRUCTION_FILES = [
-  { source: "assistant-adapters/github-copilot-instructions.md", target: COPILOT_INSTRUCTION_TARGET }
-] as const;
+export const COPILOT_INSTRUCTION_FILES = [{ source: "assistant-adapters/github-copilot-instructions.md", target: COPILOT_INSTRUCTION_TARGET }] as const;
 export const CODEX_CONFIG_SOURCE = "assistant-adapters/model-selection/codex-config.example.toml";
-export const ANTIGRAVITY_PLUGIN_FILES = [
-  { source: "antigravity/plugin.json", target: ANTIGRAVITY_PLUGIN_TARGET }
-] as const;
+export const ANTIGRAVITY_PLUGIN_FILES = [{ source: "antigravity/plugin.json", target: ANTIGRAVITY_PLUGIN_TARGET }] as const;
 export const ANTIGRAVITY_COMMANDS_SOURCE_DIR = "antigravity/commands";
 export const ANTIGRAVITY_COMMANDS_TARGET_DIR = ".antigravity/agent-kit/commands";
 export const RUNTIME_SKILLS_SOURCE_DIR = "runtime-skills";
