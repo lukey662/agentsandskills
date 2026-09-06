@@ -27,4 +27,4 @@ Planner names the owner. Security joins auth/data/secret work. Design joins user
 
 ## Skills
 
-Default skills live in `.cursor/skills/*/SKILL.md` (and the matching Claude/Codex/Antigravity copies). QA of a screen always uses `browser-qa`, not `testing-qa` alone. Copy finishes public words with `deslop`.
+Default skills live in `.cursor/skills/*/SKILL.md` (and the matching Claude/Codex/Antigravity copies). QA of a screen always uses `browser-qa`, not `testing-qa` alone. Copy finishes public words with `deslop`. Planner uses `planning` and names owners; it does not run the other agents. Each agent file points at `catalog.json` for the full skill list.

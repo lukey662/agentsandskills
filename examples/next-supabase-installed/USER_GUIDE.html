@@ -516,7 +516,7 @@
 
       <section id="ask">
         <h2>Which agent do I ask?</h2>
-        <p>Do not ask one chat to be all six.</p>
+        <p>Do not ask one chat to be all six. Planner names the next specialist. It does not run the other agents.</p>
         <table>
           <thead>
             <tr>
@@ -611,7 +611,10 @@
             </tr>
           </tbody>
         </table>
-        <p>QA of a screen always uses <code>browser-qa</code>, not <code>testing-qa</code> alone.</p>
+        <p>
+          QA of a screen always uses <code>browser-qa</code>, not <code>testing-qa</code> alone. Each agent file names the skills it must
+          run, then points at <code>catalog.json</code> for the rest.
+        </p>
       </section>
 
       <section id="invoke">

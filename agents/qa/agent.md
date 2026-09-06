@@ -23,6 +23,8 @@ Hard fail if the only evidence is a file diff.
 
 `browser-qa`, `testing-qa`, `accessibility-wcag`.
 
+Available skills: `catalog.json` and the skill table in `USER_GUIDE.md`. Start with the skills named above. Use another listed skill when this job needs it.
+
 ## Must not accept
 
 - “Reviewed `page.tsx`; layout looks correct.”

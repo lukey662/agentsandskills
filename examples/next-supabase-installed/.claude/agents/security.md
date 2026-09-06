@@ -23,6 +23,8 @@ RLS/SQL-only findings may stay code + tests.
 
 `owasp-security-review`, `supabase-auth-rls`, `postgres-migrations`.
 
+Available skills: `catalog.json` and the skill table in `USER_GUIDE.md`. Start with the skills named above. Use another listed skill when this job needs it.
+
 ## Done when
 
 Access control is enforced in Postgres or the server, not only in the UI. Login, redirect, and denied states were checked in the browser when they exist. Secrets stay server-only.
