@@ -54,4 +54,5 @@ CLAUDE.md
 .github/copilot-instructions.md
 README.md
 tree.txt
+USER_GUIDE.html
 USER_GUIDE.md

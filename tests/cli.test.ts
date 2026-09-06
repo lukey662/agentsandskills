@@ -57,6 +57,7 @@ describe("agent-kit CLI", () => {
     expect(result.exitCode).toBe(0);
     expect(existsSync(join(root, "AGENTS.md"))).toBe(true);
     expect(existsSync(join(root, "USER_GUIDE.md"))).toBe(true);
+    expect(existsSync(join(root, "USER_GUIDE.html"))).toBe(true);
     expect(existsSync(join(root, ".cursor/agents/qa.md"))).toBe(true);
     expect(existsSync(join(root, ".cursor/skills/browser-qa/SKILL.md"))).toBe(true);
     expect(readFileSync(join(root, "USER_GUIDE.md"), "utf8")).toContain("Do not review code alone");

@@ -1,7 +1,15 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { loadCatalog } from "../catalog.js";
-import { AGENTS_DOC_SOURCE, CURSOR_RULE_FILE, PACKAGE_NAME, PACKAGE_VERSION, ROOT_DOCS, USER_GUIDE_SOURCE } from "../config/defaults.js";
+import {
+  AGENTS_DOC_SOURCE,
+  CURSOR_RULE_FILE,
+  PACKAGE_NAME,
+  PACKAGE_VERSION,
+  ROOT_DOCS,
+  USER_GUIDE_HTML_SOURCE,
+  USER_GUIDE_SOURCE
+} from "../config/defaults.js";
 import type { InstallManifest, StackProfile } from "../config/types.js";
 import { copyTextWithConflict, ensureDir, sha256, writeText } from "../utils/fs.js";
 import { findPackageRoot } from "../utils/package-root.js";
@@ -40,8 +48,10 @@ export function initProject(options: InitOptions): InitResult {
   const templateHashes: Record<string, string> = {};
   const agentsDoc = readFileSync(join(packageRoot, AGENTS_DOC_SOURCE), "utf8");
   const userGuide = readFileSync(join(packageRoot, USER_GUIDE_SOURCE), "utf8");
+  const userGuideHtml = readFileSync(join(packageRoot, USER_GUIDE_HTML_SOURCE), "utf8");
   templateHashes["AGENTS.md"] = sha256(agentsDoc);
   templateHashes["USER_GUIDE.md"] = sha256(userGuide);
+  templateHashes["USER_GUIDE.html"] = sha256(userGuideHtml);
 
   recordCopy(
     result,
@@ -53,6 +63,13 @@ export function initProject(options: InitOptions): InitResult {
   recordCopy(
     result,
     copyTextWithConflict(join(packageRoot, USER_GUIDE_SOURCE), cwd, "USER_GUIDE.md", {
+      force,
+      conflictRoot: join(cwd, ".agent-kit", "conflicts")
+    })
+  );
+  recordCopy(
+    result,
+    copyTextWithConflict(join(packageRoot, USER_GUIDE_HTML_SOURCE), cwd, "USER_GUIDE.html", {
       force,
       conflictRoot: join(cwd, ".agent-kit", "conflicts")
     })

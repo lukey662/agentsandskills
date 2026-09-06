@@ -1,4 +1,4 @@
-import { mkdtempSync, readFileSync, rmSync, writeFileSync, mkdirSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync, mkdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
@@ -38,6 +38,8 @@ describe("QA screenshot fail-closed rule", () => {
     const report = validateAdapter(root, "all");
     expect(report.summary.fail).toBe(0);
     expect(createDoctorReport(root).ok).toBe(true);
+    expect(existsSync(join(root, "USER_GUIDE.html"))).toBe(true);
+    expect(readFileSync(join(root, "USER_GUIDE.html"), "utf8")).toContain("Ask one specialist");
   });
 
   it("doctor fails if USER_GUIDE loses the screenshot rule", () => {

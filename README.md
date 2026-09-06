@@ -10,7 +10,7 @@ QA does not review user-visible work from code alone. A change is not done until
 npx --yes @appsforgood/next-supabase-kit init --activate all
 ```
 
-Then read **[USER_GUIDE.md](USER_GUIDE.md)**. That guide is how you use the pack.
+Then open **[USER_GUIDE.html](USER_GUIDE.html)** (markdown twin: [USER_GUIDE.md](USER_GUIDE.md)). That guide is how you use the pack.
 
 ## What you get
 

@@ -53,6 +53,19 @@ export function createDoctorReport(cwd: string): DoctorReport {
     findings.push({ level: "pass", area: "docs", message: "USER_GUIDE.md includes the screenshot fail-closed rule." });
   }
 
+  const htmlGuide = read(cwd, "USER_GUIDE.html");
+  if (!htmlGuide) {
+    findings.push({ level: "fail", area: "docs", message: "USER_GUIDE.html is missing. Run agent-kit init." });
+  } else if (!htmlGuide.includes("Do not review code alone") || !htmlGuide.includes('data-view="user-guide"')) {
+    findings.push({
+      level: "fail",
+      area: "docs",
+      message: "USER_GUIDE.html dropped the screenshot fail-closed rule or assignment-desk layout."
+    });
+  } else {
+    findings.push({ level: "pass", area: "docs", message: "USER_GUIDE.html is the visual field guide." });
+  }
+
   const qaSkill = read(cwd, ".cursor/skills/browser-qa/SKILL.md") ?? read(cwd, "skills/browser-qa/SKILL.md");
   if (!qaSkill) {
     findings.push({ level: "fail", area: "skills", message: "browser-qa skill is missing." });

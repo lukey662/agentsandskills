@@ -2,7 +2,7 @@
 
 This file is the persistent visual identity and content-direction contract for coding agents, design agents, and human reviewers.
 
-This repo ships a CLI and markdown/JSON assets, so its user-facing surfaces are terminal output, `README.md`, rendered session markdown, and the static Agent Studio HTML export (`src/studio/export.ts`). Design decisions below target those surfaces.
+This repo ships a CLI, markdown/JSON assets, and a self-contained **`USER_GUIDE.html`** field guide. User-facing surfaces are the HTML guide, terminal output, `README.md`, and leftover studio export. The HTML guide is the visual identity to judge.
 
 ## Brand And Content Inputs
 
