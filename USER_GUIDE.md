@@ -1,6 +1,6 @@
 # User Guide
 
-How to use the agents and skills in this repo.
+How to use the agents and skills in this repo. Open **[USER_GUIDE.html](USER_GUIDE.html)** to read this as a designed page — that is the copy and layout to judge.
 
 **Agent** = who you ask. **Skill** = the workflow they follow. **Tool** = what they must use. For QA and UI, that tool is a **live browser plus screenshots**, not a file diff.
 

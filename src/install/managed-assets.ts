@@ -1,5 +1,5 @@
 import { join } from "node:path";
-import { AGENTS_DOC_SOURCE, CURSOR_RULE_FILE, USER_GUIDE_SOURCE } from "../config/defaults.js";
+import { AGENTS_DOC_SOURCE, CURSOR_RULE_FILE, USER_GUIDE_HTML_SOURCE, USER_GUIDE_SOURCE } from "../config/defaults.js";
 import type { IdeTarget } from "./ide-activate.js";
 
 export type ManagedAssetCategory = "root-doc" | "adapter" | "generated";
@@ -15,6 +15,7 @@ export function listManagedAssets(packageRoot: string, options: { activated?: Id
   const assets: ManagedAsset[] = [
     { target: "AGENTS.md", sourcePath: join(packageRoot, AGENTS_DOC_SOURCE), category: "root-doc" },
     { target: "USER_GUIDE.md", sourcePath: join(packageRoot, USER_GUIDE_SOURCE), category: "root-doc" },
+    { target: "USER_GUIDE.html", sourcePath: join(packageRoot, USER_GUIDE_HTML_SOURCE), category: "root-doc" },
     { target: CURSOR_RULE_FILE.target, sourcePath: join(packageRoot, CURSOR_RULE_FILE.source), category: "adapter" }
   ];
 

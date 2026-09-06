@@ -2,7 +2,7 @@
 
 This file is the persistent positioning, value proposition, voice, and copy-evidence contract for agents and reviewers.
 
-Use it before writing or changing public-facing pages, onboarding, empty states, pricing, upgrade prompts, CTAs, lifecycle emails, notifications, or conversion-critical UX copy. For this repo, the public surfaces are `README.md`, npm package metadata, CLI help/output text, and GitHub repository copy.
+Use it before writing or changing public-facing pages, onboarding, empty states, pricing, upgrade prompts, CTAs, lifecycle emails, notifications, or conversion-critical UX copy. For this repo, the public surfaces are `USER_GUIDE.html`, `README.md`, npm package metadata, CLI help/output text, and GitHub repository copy.
 
 ## Discovery Questions
 
@@ -23,11 +23,11 @@ Answer these before final copy is accepted. If an answer is unknown, mark it as 
 
 One-sentence positioning statement:
 
-> For engineers shipping Next.js + Supabase products with AI coding agents who need auditable, repeatable delivery quality, this product is an installable agent operating system that turns agent roles, security review, design discipline, and living docs into one command plus a CI-gateable audit, unlike hand-maintained prompt files that drift and cannot be verified.
+> For engineers shipping Next.js + Supabase products with AI coding agents, this product is a small pack of named specialists and skills you install in one command. QA of a screen is two screenshots, not a file diff.
 
 Primary value proposition:
 
-- Install a complete, auditable agent operating system into a Next.js + Supabase repo with one command, and keep it upgradeable without losing local customizations.
+- Name the specialist. Prove the screen. Six agents, eleven skills, five IDEs.
 
 Secondary value propositions:
 

@@ -158,7 +158,7 @@ export function updateProject(options: UpdateOptions): UpdateResult {
       packageVersion: PACKAGE_VERSION,
       schemaVersion: 3,
       updatedAt: new Date().toISOString(),
-      docs: ["AGENTS.md", "USER_GUIDE.md"],
+      docs: ["AGENTS.md", "USER_GUIDE.md", "USER_GUIDE.html"],
       assetHashes: nextHashes
     };
     writeText(join(cwd, ".agent-kit", "manifest.json"), `${JSON.stringify(next, null, 2)}\n`);

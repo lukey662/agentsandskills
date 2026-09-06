@@ -29,7 +29,7 @@ export const DEFAULT_CONFIG: AgentKitConfig = {
   }
 };
 
-export const ROOT_DOCS = ["AGENTS.md", "USER_GUIDE.md"] as const;
+export const ROOT_DOCS = ["AGENTS.md", "USER_GUIDE.md", "USER_GUIDE.html"] as const;
 
 export const CURSOR_RULE_FILE = {
   source: "assistant-adapters/cursor-agent-kit.mdc",
@@ -38,6 +38,7 @@ export const CURSOR_RULE_FILE = {
 
 export const CLAUDE_TEMPLATE = "templates/next-supabase/CLAUDE.md";
 export const USER_GUIDE_SOURCE = "USER_GUIDE.md";
+export const USER_GUIDE_HTML_SOURCE = "USER_GUIDE.html";
 export const AGENTS_DOC_SOURCE = "templates/next-supabase/AGENTS.md";
 
 export const COPILOT_INSTRUCTION_TARGET = ".github/copilot-instructions.md";

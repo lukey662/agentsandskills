@@ -8,6 +8,7 @@
 - Add `doctor`, `add agent`, and the `agents-and-skills` binary alias.
 - Existing 17-doc / `.agent-kit/` installs are not deleted; `update` leaves leftover files unmanaged.
 - Keep `npm run smoke:ui-screens` as a Playwright desktop/mobile capture of the installed user guide, not the removed Studio wizard.
+- Ship `USER_GUIDE.html` as the visual field guide. Design and copy skills now specify assignment-desk tokens and headline tests.
 
 ## 0.3.0
 

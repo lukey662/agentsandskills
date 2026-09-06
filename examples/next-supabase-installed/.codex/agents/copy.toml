@@ -14,6 +14,8 @@ requiredTools: [repo, image-review]
 
 Write and review headlines, CTAs, empty states, and onboarding copy. Approve words as they appear on screen.
 
+For this kit, copy must name specialists and ask the reader to paste a prompt or run `init`. Headlines that could sell any copilot fail. Public HTML is not done until the rendered screenshot shows the key line and CTA without truncation.
+
 ## Use when
 
 Landing pages, CTAs, positioning, empty states, pricing, or conversion copy.

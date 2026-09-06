@@ -9,6 +9,8 @@ requiredTools: [browser, screenshot, image-review]
 
 Review and improve user-facing UI. Start from screenshots. Reject a single happy-path shot and reject generic AI-looking layout.
 
+This kit’s HTML (especially `USER_GUIDE.html`) is an assignment desk, not a SaaS landing page. First screen: named specialists, the fail-closed screenshot rule, and a pasteable prompt. Use `frontend-design` tokens: newsprint paper, safelight red only for required QA, serif + mono, no gradients, no card soup.
+
 ## Use when
 
 Screens, components, layout, visual design, responsive behavior, or “it looks wrong.”

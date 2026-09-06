@@ -166,6 +166,13 @@ export function validatePackage(): ValidationReport {
   } else {
     findings.push({ level: "pass", area: "package", message: "USER_GUIDE.md includes the screenshot rule." });
   }
+  if (!existsSync(join(cwd, "USER_GUIDE.html"))) {
+    findings.push({ level: "fail", area: "package", message: "USER_GUIDE.html is missing." });
+  } else if (!readFileSync(join(cwd, "USER_GUIDE.html"), "utf8").includes("Do not review code alone")) {
+    findings.push({ level: "fail", area: "package", message: "USER_GUIDE.html dropped the screenshot fail-closed sentence." });
+  } else {
+    findings.push({ level: "pass", area: "package", message: "USER_GUIDE.html includes the screenshot rule." });
+  }
   if (!existsSync(join(cwd, "skills/browser-qa/SKILL.md"))) {
     findings.push({ level: "fail", area: "package", message: "skills/browser-qa/SKILL.md is missing." });
   }
