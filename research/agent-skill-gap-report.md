@@ -124,5 +124,10 @@ Skills **kept despite being uncommon** in generic zoos:
 **Agents:** planner, app-engineer, security, design, qa, copy  
 **Optional agents:** lead-architect, docs, deploy, research  
 
-**Skills:** planning, nextjs-app-router, supabase-auth-rls, postgres-migrations, owasp-security-review, frontend-design, accessibility-wcag, browser-qa, testing-qa, product-copy, ship  
-**Optional skills:** ui-polish, docs, upgrade, debug  
+**Skills:** planning, nextjs-app-router, supabase-auth-rls, postgres-migrations, owasp-security-review, frontend-design, accessibility-wcag, browser-qa, testing-qa, product-copy, deslop, ship  
+**Optional skills:** ui-polish, docs, upgrade, debug
+
+### 2026-09-06 follow-up
+
+- Added `deslop` as a default skill. Copy’s end run is always `product-copy` then `deslop` (second pass on the rewrite). Patterns from `conorbronsdon/avoid-ai-writing` and `funboy322/avoid-ai-design` — catalogs not copied.
+- Uplifted `frontend-design` against Anthropic `frontend-design` (2026-06), `educlopez/ui-craft`, `superdesigndev/superdesign-skill`. Kit HTML keeps charcoal desk tokens. Downstream apps write 4–6 product tokens. Cream-editorial, neon-on-black decoration, SaaS card kits, and broadsheet newsprint are treated as 2026 defaults.  

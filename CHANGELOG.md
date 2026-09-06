@@ -9,6 +9,8 @@
 - Existing 17-doc / `.agent-kit/` installs are not deleted; `update` leaves leftover files unmanaged.
 - Keep `npm run smoke:ui-screens` as a Playwright desktop/mobile capture of the installed user guide, not the removed Studio wizard.
 - Ship `USER_GUIDE.html` as the visual field guide. Design and copy skills now specify assignment-desk tokens and headline tests.
+- Add default `deslop` skill. Copy always runs it last after `product-copy`.
+- Uplift `frontend-design`: 4-token palettes, kit vs product tokens, and 2026 default-cluster rejects from current public skill packs.
 
 ## 0.3.0
 

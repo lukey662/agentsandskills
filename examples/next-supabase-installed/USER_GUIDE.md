@@ -87,11 +87,12 @@ Do not ask one chat to be all six.
 | `supabase-auth-rls` | Auth, RLS, service role |
 | `postgres-migrations` | Schema and migrations |
 | `owasp-security-review` | Mutations, uploads, secrets |
-| `frontend-design` | Layout, hierarchy, anti-generic UI |
+| `frontend-design` | Layout, simple palette, anti-generic UI |
 | `accessibility-wcag` | Keyboard, contrast, labels |
 | `browser-qa` | Any screen. Required for QA of UI |
 | `testing-qa` | Unit / regression / smoke only |
 | `product-copy` | Headlines and CTAs |
+| `deslop` | Last copy pass. Copy always runs this |
 | `ship` | Release, env, rollback |
 
 QA of a screen always uses `browser-qa`, not `testing-qa` alone.
@@ -118,7 +119,7 @@ Design + `frontend-design` + `browser-qa`. Desktop and mobile required. One happ
 
 ### Copy pass
 
-Copy agent reviews **rendered** screenshots, not just strings in TSX.
+Copy reviews **rendered** screenshots, not just strings in TSX. Run `product-copy`, then **`deslop` last**. Do not hand off after the first draft.
 
 ## QA screenshot loop
 

@@ -14,4 +14,4 @@ Planner, App engineer, Security, Design, QA, Copy. See `agents/<id>/agent.md` an
 
 ## Default skills
 
-See `skills/<id>/SKILL.md`. QA of a screen always uses `browser-qa`.
+See `skills/<id>/SKILL.md`. QA of a screen always uses `browser-qa`. Copy finishes public words with `deslop`.

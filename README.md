@@ -38,4 +38,4 @@ Planner · App engineer · Security · Design · QA · Copy
 
 ## Default skills
 
-planning · nextjs-app-router · supabase-auth-rls · postgres-migrations · owasp-security-review · frontend-design · accessibility-wcag · **browser-qa** · testing-qa · product-copy · ship
+planning · nextjs-app-router · supabase-auth-rls · postgres-migrations · owasp-security-review · frontend-design · accessibility-wcag · **browser-qa** · testing-qa · product-copy · **deslop** · ship

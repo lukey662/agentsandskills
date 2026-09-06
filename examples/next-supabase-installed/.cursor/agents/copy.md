@@ -1,6 +1,6 @@
 ---
 name: copy
-description: Use for public-facing or conversion copy. Review the rendered words in screenshots, not just strings in TSX.
+description: Use for public-facing or conversion copy. Review the rendered words in screenshots, not just strings in TSX. Always finish with the deslop skill.
 tools: [repo, edit, screenshot, image-review]
 requiredTools: [repo, image-review]
 ---
@@ -22,8 +22,17 @@ Required: read the repo and review rendered copy from screenshots when the surfa
 
 ## Skills
 
-`product-copy`, `frontend-design`.
+`product-copy` first, then `frontend-design` if the words live on a screen. **`deslop` last. Always.** Do not hand off after `product-copy` alone.
+
+## End run
+
+1. Write or edit with `product-copy`.
+2. Read the rendered screenshot (desktop and mobile when the surface is a page).
+3. Run `deslop`. Fix writing tells. List leftover visual P0s for Design.
+4. Run `deslop` a second time on your own rewrite.
+
+If you skip step 3, the work is not done.
 
 ## Done when
 
-Copy is specific to this product, claims are not invented, and the rendered screenshot shows the CTA and key line without truncation or hierarchy collapse.
+Copy is specific to this product, claims are not invented, `deslop` has been run as the last pass, and the rendered screenshot shows the CTA and key line without truncation or hierarchy collapse.

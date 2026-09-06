@@ -38,9 +38,11 @@ describe("public package readiness", () => {
     expect(guide).toContain("A user-visible change is not done until someone opened the running UI");
     expect(guide).toContain("@planner");
     expect(guide).toContain("browser-qa");
+    expect(guide).toContain("deslop");
     const html = readFileSync(join(root, "USER_GUIDE.html"), "utf8");
     expect(html).toContain("Do not review code alone");
     expect(html).toContain("Ask one specialist");
+    expect(html).toContain("deslop");
     expect(html).toContain('data-view="user-guide"');
   });
 

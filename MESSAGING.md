@@ -27,7 +27,7 @@ One-sentence positioning statement:
 
 Primary value proposition:
 
-- Name the specialist. Prove the screen. Six agents, eleven skills, five IDEs.
+- Name the specialist. Prove the screen. Six agents, twelve skills, five IDEs.
 
 Secondary value propositions:
 
