@@ -6,7 +6,10 @@ import { resolveInside, sha256, writeConflictProposal, writeText } from "../util
 import { findPackageRoot } from "../utils/package-root.js";
 import { planFileUpdate, type PlannedUpdateAction } from "./file-update-plan.js";
 import { initProject, readManifest } from "./install.js";
+import { activateIdeTargets } from "./ide-activate.js";
 import { listManagedAssets } from "./managed-assets.js";
+import { generatePortableSkills } from "./roster-adapters.js";
+import type { CopyCollector } from "./copy-asset.js";
 import type { IdeTarget } from "./ide-activate.js";
 
 export type UpdateAction = PlannedUpdateAction;
@@ -41,6 +44,29 @@ function summarize(files: UpdateFileResult[]): Record<UpdateAction, number> {
     conflict: files.filter((file) => file.action === "conflict").length,
     overwritten: files.filter((file) => file.action === "overwritten").length
   };
+}
+
+function activationToUpdateFiles(collector: CopyCollector): UpdateFileResult[] {
+  const files: UpdateFileResult[] = [];
+  for (const target of collector.copied) {
+    files.push({ target, action: "created", reason: "Refreshed generated IDE or skill file." });
+  }
+  for (const target of collector.unchanged) {
+    files.push({ target, action: "unchanged", reason: "Generated file already matched the package asset." });
+  }
+  for (const target of collector.overwritten) {
+    files.push({ target, action: "overwritten", reason: "Overwritten generated IDE or skill file." });
+  }
+  for (const entry of collector.conflicts) {
+    const [target, conflictPath] = entry.split(" -> ");
+    files.push({
+      target: target ?? entry,
+      action: "conflict",
+      reason: "Generated file changed while the local target is customized.",
+      ...(conflictPath ? { conflictPath } : {})
+    });
+  }
+  return files;
 }
 
 export function updateProject(options: UpdateOptions): UpdateResult {
@@ -115,9 +141,17 @@ export function updateProject(options: UpdateOptions): UpdateResult {
   }
 
   if (!dryRun) {
+    const activation = activateIdeTargets({ cwd, targets: activated, force });
+    generatePortableSkills(cwd, force, activation);
+    files.push(...activationToUpdateFiles(activation));
+
     const nextHashes = { ...manifest.assetHashes };
     for (const asset of assets) {
       if (existsSync(asset.sourcePath)) nextHashes[asset.target] = sha256(readFileSync(asset.sourcePath, "utf8"));
+    }
+    for (const relative of [...activation.copied, ...activation.unchanged, ...activation.overwritten]) {
+      const path = join(cwd, relative);
+      if (existsSync(path)) nextHashes[relative] = sha256(readFileSync(path, "utf8"));
     }
     const next: InstallManifest = {
       ...manifest,
@@ -128,6 +162,12 @@ export function updateProject(options: UpdateOptions): UpdateResult {
       assetHashes: nextHashes
     };
     writeText(join(cwd, ".agent-kit", "manifest.json"), `${JSON.stringify(next, null, 2)}\n`);
+  } else {
+    files.push({
+      target: ".cursor/agents/",
+      action: "updated",
+      reason: "Would refresh activated IDE agents, skills, and portable skills/ copies."
+    });
   }
 
   return {

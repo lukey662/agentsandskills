@@ -8,6 +8,7 @@ import { findPackageRoot } from "../utils/package-root.js";
 import { emptyCollector, recordCopy, type CopyCollector } from "./copy-asset.js";
 import { activateIdeTargets, parseActivateTargets, type ActivateIdeResult, type IdeTarget } from "./ide-activate.js";
 import { listManagedAssets } from "./managed-assets.js";
+import { generatePortableSkills } from "./roster-adapters.js";
 
 export interface InitOptions {
   cwd: string;
@@ -76,6 +77,7 @@ export function initProject(options: InitOptions): InitResult {
   const activateTargets = parseActivateTargets(options.activate);
   const targets: IdeTarget[] = activateTargets.length > 0 ? activateTargets : ["cursor"];
   result.activation = activateIdeTargets({ cwd, targets, force });
+  generatePortableSkills(cwd, force, result.activation);
   result.copied.push(...result.activation.copied.filter((path) => !result.copied.includes(path)));
   result.unchanged.push(...result.activation.unchanged.filter((path) => !result.unchanged.includes(path)));
   result.conflicts.push(...result.activation.conflicts.filter((path) => !result.conflicts.includes(path)));

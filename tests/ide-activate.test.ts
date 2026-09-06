@@ -3,7 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { initProject } from "../src/install/install.js";
-import { activateIdeTargets } from "../src/install/ide-activate.js";
+import { activateIdeTargets, InvalidActivateTargetError, parseActivateTargets } from "../src/install/ide-activate.js";
 
 let root: string;
 
@@ -39,5 +39,14 @@ describe("IDE activation", () => {
     const result = activateIdeTargets({ cwd: root, targets: ["claude"] });
     expect(result.activated).toEqual(["claude"]);
     expect(existsSync(join(root, ".claude/agents/qa.md"))).toBe(true);
+  });
+
+  it("installs portable repo-root skills during init", () => {
+    initProject({ cwd: root });
+    expect(existsSync(join(root, "skills/browser-qa/SKILL.md"))).toBe(true);
+  });
+
+  it("rejects unknown activate targets", () => {
+    expect(() => parseActivateTargets(["not-an-ide"])).toThrow(InvalidActivateTargetError);
   });
 });

@@ -21,7 +21,7 @@ function makeTempProject(): string {
   return root;
 }
 
-function runCli(args: string[], cwd: string): { stdout: string; exitCode: number } {
+function runCli(args: string[], cwd: string): { stdout: string; stderr: string; exitCode: number } {
   try {
     const stdout = execFileSync(process.execPath, [tsxCli, cliEntry, ...args], {
       cwd,
@@ -29,10 +29,14 @@ function runCli(args: string[], cwd: string): { stdout: string; exitCode: number
       stdio: ["ignore", "pipe", "pipe"],
       timeout: 60_000
     });
-    return { stdout, exitCode: 0 };
+    return { stdout, stderr: "", exitCode: 0 };
   } catch (error) {
-    const failure = error as { status?: number; stdout?: string };
-    return { stdout: failure.stdout ?? "", exitCode: failure.status ?? 1 };
+    const failure = error as { status?: number; stdout?: string | Buffer; stderr?: string | Buffer };
+    return {
+      stdout: String(failure.stdout ?? ""),
+      stderr: String(failure.stderr ?? ""),
+      exitCode: failure.status ?? 1
+    };
   }
 }
 
@@ -65,5 +69,12 @@ describe("agent-kit CLI", () => {
     expect(result.exitCode).toBe(0);
     const report = JSON.parse(result.stdout) as { ok: boolean };
     expect(report.ok).toBe(true);
+  });
+
+  it("rejects unknown --activate targets", () => {
+    const root = makeTempProject();
+    const result = runCli(["init", "--activate", "not-an-ide"], root);
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stdout + result.stderr).toMatch(/Unknown --activate target/i);
   });
 });
