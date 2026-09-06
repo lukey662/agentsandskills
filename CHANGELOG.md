@@ -11,6 +11,7 @@
 - Ship `USER_GUIDE.html` as the visual field guide. Design and copy skills now specify assignment-desk tokens and headline tests.
 - Add default `deslop` skill. Copy always runs it last after `product-copy`.
 - Uplift `frontend-design`: 4-token palettes, kit vs product tokens, and 2026 default-cluster rejects from current public skill packs.
+- Planner uses the `planning` skill and names owners; it does not run the other agents. Every agent file points at `catalog.json` and the USER_GUIDE skill table for the full list.
 
 ## 0.3.0
 

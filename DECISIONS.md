@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-09-06 - Planner Routes, Agents See The Catalog
+
+### Context
+
+Planner named owners but not the `planning` skill. Specialists only listed their own skills, so they could miss `ship`, `deslop`, or another default skill the job needed.
+
+### Decision
+
+Planner runs `planning` and names the next specialist; it does not orchestrate or spawn the others. Every agent file (default and optional) includes the same catalog pointer: `catalog.json` and the USER_GUIDE skill table. Role skills stay first.
+
+### Consequences
+
+The human or IDE still `@`s the next agent. A specialist can reach for any listed skill without a hidden roster.
+
 ## 2026-09-06 - Deslop Last And Frontend Token Split
 
 ### Context

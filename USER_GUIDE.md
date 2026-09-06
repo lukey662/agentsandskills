@@ -76,7 +76,7 @@ Files: `.antigravity/agent-kit/commands/*.toml`, `.antigravity/runtime-skills/*/
 | Is this done? | QA |
 | Landing / CTA words | Copy |
 
-Do not ask one chat to be all six.
+Do not ask one chat to be all six. Planner names the next specialist. It does not run the other agents.
 
 ## Which skill do I use?
 
@@ -95,7 +95,7 @@ Do not ask one chat to be all six.
 | `deslop` | Last copy pass. Copy always runs this |
 | `ship` | Release, env, rollback |
 
-QA of a screen always uses `browser-qa`, not `testing-qa` alone.
+QA of a screen always uses `browser-qa`, not `testing-qa` alone. Each agent file names the skills it must run, then points at `catalog.json` for the rest.
 
 ## Standard workflows
 

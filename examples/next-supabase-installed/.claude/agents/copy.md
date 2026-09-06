@@ -24,6 +24,8 @@ Required: read the repo and review rendered copy from screenshots when the surfa
 
 `product-copy` first, then `frontend-design` if the words live on a screen. **`deslop` last. Always.** Do not hand off after `product-copy` alone.
 
+Available skills: `catalog.json` and the skill table in `USER_GUIDE.md`. Start with the skills named above. Use another listed skill when this job needs it.
+
 ## End run
 
 1. Write or edit with `product-copy`.

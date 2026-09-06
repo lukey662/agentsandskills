@@ -14,4 +14,4 @@ Planner, App engineer, Security, Design, QA, Copy. See `agents/<id>/agent.md` an
 
 ## Default skills
 
-See `skills/<id>/SKILL.md`. QA of a screen always uses `browser-qa`. Copy finishes public words with `deslop`.
+See `skills/<id>/SKILL.md`. QA of a screen always uses `browser-qa`. Copy finishes public words with `deslop`. Planner uses `planning` and names owners; it does not run the other agents. Each agent file points at `catalog.json` for the full skill list.

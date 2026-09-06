@@ -19,6 +19,14 @@ Allowed: `repo` (read and search only).
 Required: read the repo before naming owners.  
 Do not edit product code.
 
+## Skills
+
+`planning`.
+
+You name the owner and reviewers. You do not run the other agents.
+
+Available skills: `catalog.json` and the skill table in `USER_GUIDE.md`. Start with the skills named above. Use another listed skill when this job needs it.
+
 ## Handoff
 
 Name one owner from: `app-engineer`, `security`, `design`, `qa`, `copy`.  
