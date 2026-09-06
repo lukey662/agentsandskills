@@ -10,16 +10,17 @@
     />
     <style>
       :root {
-        --paper: #efe6d4;
-        --ink: #1b1713;
-        --muted: #5c5348;
-        --frame: #161310;
-        --safelight: #d24a22;
-        --pass: #2f5d45;
-        --line: #c9bba3;
-        --ticket: #f7f1e4;
-        --display: "Iowan Old Style", Palatino, "Palatino Linotype", Georgia, serif;
-        --mono: ui-monospace, "IBM Plex Mono", Menlo, Consolas, monospace;
+        color-scheme: dark;
+        --paper: #10100e;
+        --ink: #eceae4;
+        --muted: #9b968c;
+        --frame: #070706;
+        --safelight: #ff5a2a;
+        --pass: #5ea37a;
+        --line: #2a2823;
+        --ticket: #181714;
+        --display: "Helvetica Neue", Helvetica, Arial, ui-sans-serif, system-ui, sans-serif;
+        --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
       }
 
       * {
@@ -35,8 +36,14 @@
         background: var(--paper);
         color: var(--ink);
         font-family: var(--display);
-        font-size: 1.0625rem;
+        font-size: 1.05rem;
         line-height: 1.5;
+        letter-spacing: -0.011em;
+      }
+
+      code {
+        font-family: var(--mono);
+        font-size: 0.88em;
       }
 
       a {
@@ -54,7 +61,7 @@
         left: 0.75rem;
         top: 0.75rem;
         padding: 0.4rem 0.7rem;
-        background: var(--frame);
+        background: var(--ink);
         color: var(--paper);
         text-decoration: none;
         transform: translateY(-140%);
@@ -67,7 +74,7 @@
 
       .mast {
         background: var(--frame);
-        color: var(--paper);
+        color: var(--ink);
         padding: 0.85rem 1.25rem;
         display: flex;
         flex-wrap: wrap;
@@ -77,8 +84,9 @@
       }
 
       .wordmark {
-        font-size: 0.95rem;
-        letter-spacing: 0.04em;
+        font-family: var(--mono);
+        font-size: 0.78rem;
+        letter-spacing: 0.08em;
         text-transform: uppercase;
       }
 
@@ -91,7 +99,7 @@
       }
 
       .mast a {
-        color: var(--paper);
+        color: var(--ink);
         text-decoration: none;
         border-bottom: 1px solid transparent;
       }
@@ -155,9 +163,10 @@
       }
 
       h1 {
-        font-size: clamp(2.1rem, 5vw, 3.4rem);
-        line-height: 1.05;
-        font-weight: 600;
+        font-size: clamp(2.15rem, 5vw, 3.35rem);
+        line-height: 1.02;
+        font-weight: 700;
+        letter-spacing: -0.038em;
         margin: 0 0 0.85rem;
       }
 
@@ -175,7 +184,7 @@
 
       .frame {
         background: var(--frame);
-        color: var(--paper);
+        color: var(--ink);
         padding: 0.55rem 0.55rem 0.75rem;
         min-height: 9.5rem;
       }
@@ -186,7 +195,7 @@
         font-size: 0.68rem;
         letter-spacing: 0.08em;
         margin-bottom: 0.55rem;
-        color: #d8c9b0;
+        color: #b8b2a6;
       }
 
       .frame p {
@@ -195,7 +204,9 @@
       }
 
       h2 {
-        font-size: 1.65rem;
+        font-size: 1.55rem;
+        letter-spacing: -0.03em;
+        font-weight: 700;
         margin: 2.4rem 0 0.85rem;
       }
 
@@ -211,7 +222,7 @@
       .rule {
         border-left: 4px solid var(--safelight);
         padding: 0.7rem 0.9rem;
-        background: #f7efe0;
+        background: #1a1814;
         margin: 0 0 1.4rem;
       }
 
@@ -223,7 +234,7 @@
 
       .ticket {
         background: var(--ticket);
-        border: 1px solid var(--ink);
+        border: 1px solid var(--line);
         padding: 0.85rem 0.95rem;
       }
 
@@ -248,7 +259,7 @@
         margin: 0;
         padding: 0.75rem;
         background: var(--frame);
-        color: var(--paper);
+        color: var(--ink);
         font-family: var(--mono);
         font-size: 0.82rem;
         line-height: 1.45;
@@ -265,7 +276,7 @@
       button.copy {
         font-family: var(--mono);
         font-size: 0.75rem;
-        background: var(--paper);
+        background: transparent;
         color: var(--ink);
         border: 1px solid var(--ink);
         padding: 0.4rem 0.65rem;
@@ -275,7 +286,7 @@
 
       button.copy[data-copied="true"] {
         background: var(--pass);
-        color: #f4f0e6;
+        color: #08140d;
         border-color: var(--pass);
       }
 
@@ -313,7 +324,7 @@
       }
 
       .ide {
-        border-top: 2px solid var(--ink);
+        border-top: 2px solid var(--line);
         padding-top: 0.55rem;
       }
 
@@ -343,7 +354,7 @@
       }
 
       .verdict {
-        border: 1px solid var(--ink);
+        border: 1px solid var(--line);
         padding: 0.8rem;
       }
 

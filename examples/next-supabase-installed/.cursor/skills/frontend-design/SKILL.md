@@ -19,13 +19,13 @@ Do not ship a marketing landing page.
 
 | Token | Value | Why |
 | --- | --- | --- |
-| Paper | `#efe6d4` | Newsprint / darkroom sleeve, not white SaaS |
-| Ink | `#1b1713` | Warm black |
-| Frame | `#161310` | Contact-sheet border |
-| Safelight | `#d24a22` | Required / fail-closed only |
-| Pass | `#2f5d45` | Verdicts, not decoration |
-| Type display | `Iowan Old Style, Palatino, Georgia, serif` | Editorial, not Inter |
-| Type mono | `ui-monospace, "IBM Plex Mono", Menlo, monospace` | Commands and prompts |
+| Paper | `#10100e` | Charcoal desk, not dingy cream or SaaS white |
+| Ink | `#eceae4` | Warm type on dark |
+| Frame | `#070706` | Contact-sheet well |
+| Safelight | `#ff5a2a` | Required / fail-closed only |
+| Pass | `#5ea37a` | Verdicts, not decoration |
+| Type display | `"Helvetica Neue", Helvetica, Arial, ui-sans-serif` | Tight grotesque, not Palatino |
+| Type mono | `ui-monospace, Menlo, Consolas` | Commands and prompts |
 | Radius | `2px` | Tickets, not pills |
 | Shadow | none | Borders only |
 | Motion | none except `:focus-visible` |
