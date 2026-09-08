@@ -4,7 +4,7 @@
 
 This is a breaking simplify. `init` now writes `AGENTS.md`, `USER_GUIDE.md`, and native IDE agents/skills. It does not install the 17-doc operating system, Studio, or orchestrator files.
 
-`update` never deletes your existing files. Old `SPEC.md`, `QUALITY_GATES.md`, and `.agent-kit/` trees stay as unmanaged leftovers.
+`update` never deletes your existing files. Old `SPEC.md`, `QUALITY_GATES.md`, and `.agent-kit/` trees stay as unmanaged leftovers. `doctor` warns when those 0.3 council files are still present; that warning is not a failure.
 
 ```bash
 npx @appsforgood/next-supabase-kit@latest init --activate all

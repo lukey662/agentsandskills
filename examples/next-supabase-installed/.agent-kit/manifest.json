@@ -22,7 +22,7 @@
   },
   "assetHashes": {
     "AGENTS.md": "d5b570847e7e283a4603055445d6b8cf87dd6e041305c6a3909fa7cde327db81",
-    "USER_GUIDE.md": "1680a1097fe2cb16b50f3e3c38a7ee7d839852ba23617cba3f28f42c53b5aaa4",
+    "USER_GUIDE.md": "68b025fb9610e9ac40c324e755ce1260fd680e9937e32848ab9d4ba43835c3eb",
     ".cursor/rules/cursor-agent-kit.mdc": "850026beea86067d95925eea15eb447365d6a956e0f7f475ebd7fef89043d44b",
     "CLAUDE.md": "d5095edff182babe5c13717bb16cadcd95569d9e4abd37ceb307bb1448b65557",
     ".cursor/agents/planner.md": "90676313078391848072fd3a4dc24d8479a7911aa8e7f68a38f46b73074aa6d4",
@@ -85,7 +85,7 @@
     "skills/testing-qa/SKILL.md": "1e92f7c33e29747c51548c0d1f58507de53768aa9e9748c3be2809d88bf1dc1f",
     "skills/product-copy/SKILL.md": "2f1982ac949ed32690046f516dfefa1ca85bfb51318b403822696bd12bb982c4",
     "skills/ship/SKILL.md": "ac426092a1868dd1deb01689dc2f5591dbe40acb2fceec559adce41602bb8d6f",
-    "USER_GUIDE.html": "787ce347da939d5ae14bc4aa1faf9a2923b84ee6a85d400eb5b3784e4f3dfe4d",
+    "USER_GUIDE.html": "3ed6388909be27ecbcce1b65499cb7416228ff629fd39c982d8fe382ecc942c6",
     ".cursor/skills/deslop/SKILL.md": "ca328ee5d66335639d608059ea9aabef17f70188931d46077dde11583969dea0",
     ".antigravity/runtime-skills/deslop/SKILL.md": "ca328ee5d66335639d608059ea9aabef17f70188931d46077dde11583969dea0",
     "skills/deslop/SKILL.md": "ca328ee5d66335639d608059ea9aabef17f70188931d46077dde11583969dea0"

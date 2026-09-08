@@ -16,6 +16,17 @@ export interface DoctorReport {
   ok: boolean;
 }
 
+/** Unique 0.3 council-OS files. Product SECURITY.md / DESIGN.md are not listed. */
+export const LEGACY_LEFTOVER_PATHS = [
+  "AGENT_ROSTER.md",
+  "COUNCIL.md",
+  "SKILLS.md",
+  "QUALITY_GATES.md",
+  "ASSISTANT_ADAPTERS.md",
+  ".agent-kit/agent-roster.json",
+  ".agent-kit/orchestrator.json"
+] as const;
+
 function summarize(findings: DoctorFinding[]): Record<DoctorLevel, number> {
   return {
     pass: findings.filter((item) => item.level === "pass").length,
@@ -27,6 +38,10 @@ function summarize(findings: DoctorFinding[]): Record<DoctorLevel, number> {
 function read(cwd: string, relative: string): string | null {
   const path = join(cwd, relative);
   return existsSync(path) ? readFileSync(path, "utf8") : null;
+}
+
+export function listLegacyLeftovers(cwd: string): string[] {
+  return LEGACY_LEFTOVER_PATHS.filter((relative) => existsSync(join(cwd, relative)));
 }
 
 export function createDoctorReport(cwd: string): DoctorReport {
@@ -87,6 +102,23 @@ export function createDoctorReport(cwd: string): DoctorReport {
     } else {
       findings.push({ level: "pass", area: "agents", message: `${id} declares tools.` });
     }
+  }
+
+  const leftovers = listLegacyLeftovers(cwd);
+  if (leftovers.length > 0) {
+    const preview = leftovers.slice(0, 6).join(", ");
+    const extra = leftovers.length > 6 ? `, +${leftovers.length - 6} more` : "";
+    findings.push({
+      level: "warn",
+      area: "legacy",
+      message: `0.3 leftover files are still here: ${preview}${extra}. 0.4 uses AGENTS.md + USER_GUIDE. update never deletes these.`
+    });
+  } else {
+    findings.push({
+      level: "pass",
+      area: "legacy",
+      message: "No 0.3 council leftover files detected."
+    });
   }
 
   return {
