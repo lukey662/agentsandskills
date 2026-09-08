@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-09-08 - Publish 0.4.1 After npm 0.4.0
+
+### Context
+
+npm already has `@appsforgood/next-supabase-kit@0.4.0` (6 Sep), which is the #25 simplify. Later merges (`deslop`, frontend-design, catalog pointer, leftover `doctor`) cannot overwrite that version. A leftover major changeset would have bumped 0.4.0 to 1.0.0.
+
+### Decision
+
+Ship **0.4.1**. Delete the stale `simplify-agents-skills` major changeset. Merging this version bump on `main` triggers the Release workflow.
+
+### Consequences
+
+`npx @appsforgood/next-supabase-kit@latest` will get the current kit after the workflow publishes. Runtime stays 0.1.3.
+
 ## 2026-09-08 - Doctor Warns On 0.3 Leftovers
 
 ### Context

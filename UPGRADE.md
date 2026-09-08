@@ -1,10 +1,21 @@
 # Upgrade Guide
 
+## 0.4.1
+
+npm `0.4.0` was the simplify cut. `0.4.1` adds `deslop`, the 4-token `frontend-design` skill, catalog pointers on agents, and leftover-0.3 `doctor` warnings. Those leftover warnings are not a failure. `update` still never deletes old council docs.
+
+```bash
+npx @appsforgood/next-supabase-kit@0.4.1 update
+npx @appsforgood/next-supabase-kit@0.4.1 doctor
+```
+
+Do not re-init.
+
 ## 0.4.0
 
 This is a breaking simplify. `init` now writes `AGENTS.md`, `USER_GUIDE.md`, and native IDE agents/skills. It does not install the 17-doc operating system, Studio, or orchestrator files.
 
-`update` never deletes your existing files. Old `SPEC.md`, `QUALITY_GATES.md`, and `.agent-kit/` trees stay as unmanaged leftovers. `doctor` warns when those 0.3 council files are still present; that warning is not a failure.
+`update` never deletes your existing files. Old `SPEC.md`, `QUALITY_GATES.md`, and `.agent-kit/` trees stay as unmanaged leftovers.
 
 ```bash
 npx @appsforgood/next-supabase-kit@latest init --activate all

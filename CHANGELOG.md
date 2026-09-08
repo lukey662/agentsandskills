@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.1
+
+- Catch-up release: npm `0.4.0` was the simplify cut; later GitHub work (`deslop`, frontend-design, catalog pointers, leftover `doctor`, HTML user guide) was not on npm.
+- Add default `deslop`. Copy always runs it last after `product-copy`.
+- Uplift `frontend-design`: 4-token palettes, kit vs product tokens, and 2026 default-cluster rejects.
+- Planner uses the `planning` skill and names owners; every agent points at `catalog.json` and the USER_GUIDE skill table.
+- `doctor` warns when 0.3 council leftovers (`QUALITY_GATES.md`, `COUNCIL.md`, roster JSON, …) are still present. That is not a failure. `update` still never deletes them.
+- Ship `USER_GUIDE.html` as the charcoal assignment-desk field guide, with desktop and mobile screenshot evidence.
+
 ## 0.4.0
 
 - Simplify the pack to agents, skills, and a user guide. `init` writes `AGENTS.md`, `USER_GUIDE.md`, and native IDE files only.
@@ -8,11 +17,6 @@
 - Add `doctor`, `add agent`, and the `agents-and-skills` binary alias.
 - Existing 17-doc / `.agent-kit/` installs are not deleted; `update` leaves leftover files unmanaged.
 - Keep `npm run smoke:ui-screens` as a Playwright desktop/mobile capture of the installed user guide, not the removed Studio wizard.
-- Ship `USER_GUIDE.html` as the visual field guide. Design and copy skills now specify assignment-desk tokens and headline tests.
-- Add default `deslop` skill. Copy always runs it last after `product-copy`.
-- Uplift `frontend-design`: 4-token palettes, kit vs product tokens, and 2026 default-cluster rejects from current public skill packs.
-- Planner uses the `planning` skill and names owners; it does not run the other agents. Every agent file points at `catalog.json` and the USER_GUIDE skill table for the full list.
-- `doctor` warns when 0.3 council leftovers (`QUALITY_GATES.md`, `COUNCIL.md`, roster JSON, …) are still present. That is not a failure. `update` still never deletes them.
 
 ## 0.3.0
 
