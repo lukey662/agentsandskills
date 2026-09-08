@@ -180,3 +180,4 @@ Pristine files refresh. Local edits win or land in `.agent-kit/conflicts/`. Do n
 | No browser in Copilot / Codex | Use the Playwright commands in `browser-qa`. |
 | QA finished from the diff | Reject it. Re-run with the good QA prompt above. |
 | `doctor` fails USER_GUIDE | The screenshot fail-closed sentence must stay in this file. |
+| Still have `QUALITY_GATES.md` / `COUNCIL.md` | Expected. `update` does not delete them. `doctor` lists leftovers. |

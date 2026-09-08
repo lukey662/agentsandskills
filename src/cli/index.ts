@@ -66,6 +66,9 @@ program
     line(
       `created ${result.summary.created}, updated ${result.summary.updated}, kept-local ${result.summary["kept-local"]}, conflicts ${result.summary.conflict}`
     );
+    if (result.leftoverDocs.length > 0) {
+      detail(`Left in place (not deleted): ${result.leftoverDocs.join(", ")}. Run doctor for the 0.4 layout.`);
+    }
   });
 
 const add = program.command("add").description("Add an optional agent or skill.");
@@ -104,7 +107,7 @@ add
 
 program
   .command("doctor")
-  .description("Check that agents, skills, and the screenshot QA rule are present.")
+  .description("Check agents, skills, the screenshot QA rule, and leftover 0.3 council files.")
   .option("--json", "Machine-readable output")
   .action((options: { json?: boolean }) => {
     const report = createDoctorReport(process.cwd());

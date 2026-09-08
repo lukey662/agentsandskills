@@ -9,6 +9,7 @@ import { initProject, readManifest } from "./install.js";
 import { activateIdeTargets } from "./ide-activate.js";
 import { listManagedAssets } from "./managed-assets.js";
 import { generatePortableSkills } from "./roster-adapters.js";
+import { listLegacyLeftovers } from "./doctor.js";
 import type { CopyCollector } from "./copy-asset.js";
 import type { IdeTarget } from "./ide-activate.js";
 
@@ -27,6 +28,7 @@ export interface UpdateResult {
   libraryFoldersRefreshed: string[];
   manifestPath: string;
   summary: Record<UpdateAction, number>;
+  leftoverDocs: string[];
 }
 
 export interface UpdateOptions {
@@ -99,7 +101,8 @@ export function updateProject(options: UpdateOptions): UpdateResult {
       files,
       libraryFoldersRefreshed: [],
       manifestPath: ".agent-kit/manifest.json",
-      summary: summarize(files)
+      summary: summarize(files),
+      leftoverDocs: listLegacyLeftovers(cwd)
     };
   }
 
@@ -175,6 +178,7 @@ export function updateProject(options: UpdateOptions): UpdateResult {
     files,
     libraryFoldersRefreshed: [],
     manifestPath: ".agent-kit/manifest.json",
-    summary: summarize(files)
+    summary: summarize(files),
+    leftoverDocs: listLegacyLeftovers(cwd)
   };
 }

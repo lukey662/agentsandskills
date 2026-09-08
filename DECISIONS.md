@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-09-08 - Doctor Warns On 0.3 Leftovers
+
+### Context
+
+0.4.0 is a breaking simplify, but `update` never deletes old council docs. A 0.3 install that ran `update` looked the same as a fresh 0.4 tree unless someone knew which files were leftovers.
+
+### Decision
+
+`doctor` warns (does not fail) when unique 0.3 files such as `QUALITY_GATES.md`, `COUNCIL.md`, and `.agent-kit/agent-roster.json` remain. `update --json` lists them as `leftoverDocs`. Product files like `SECURITY.md` are not treated as kit leftovers.
+
+### Consequences
+
+A 0.3 project can keep its old docs. `doctor` names the 0.4 layout. Fresh inits stay warning-free for this check.
+
 ## 2026-09-06 - Planner Routes, Agents See The Catalog
 
 ### Context
