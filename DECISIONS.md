@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-09-08 - Patch Vitest Before Publishing 0.4.1
+
+### Context
+
+PR #29 merged 0.4.1 onto `main`. The Release workflow then failed in `npm run release:check` on `npm audit --audit-level=moderate`: GHSA-82fw-gwwq-j7x9 / CVE-2026-84373 (`@vitest/mocker` 2.1.0–4.1.10). npm still has only 0.4.0. Jumping to vitest 5 would be a major for a publish unblock.
+
+### Decision
+
+Stay on kit version **0.4.1**. Upgrade `vitest` and `@vitest/coverage-v8` to **4.1.11** (patched 4.1 line). Override `vite` at **6.4.3** so npm 11 does not pull Vite 8 / Rolldown as a side effect. Do not add a changeset that would bump to 0.4.2.
+
+### Consequences
+
+Merging the lockfile onto `main` retriggers Release because it watches `package-lock.json`. The published tarball still omits vitest. Runtime stays 0.1.3.
+
 ## 2026-09-08 - Publish 0.4.1 After npm 0.4.0
 
 ### Context

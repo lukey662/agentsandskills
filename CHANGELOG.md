@@ -3,6 +3,7 @@
 ## 0.4.1
 
 - Catch-up release: npm `0.4.0` was the simplify cut; later GitHub work (`deslop`, frontend-design, catalog pointers, leftover `doctor`, HTML user guide) was not on npm.
+- Upgrade `vitest` and `@vitest/coverage-v8` to 4.1.11 so `npm audit --audit-level=moderate` clears GHSA-82fw-gwwq-j7x9. Pin `vite` at 6.4.3 so the bump does not pull Vite 8. This is a devDependency-only gate; the published kit tarball still does not include vitest.
 - Add default `deslop`. Copy always runs it last after `product-copy`.
 - Uplift `frontend-design`: 4-token palettes, kit vs product tokens, and 2026 default-cluster rejects.
 - Planner uses the `planning` skill and names owners; every agent points at `catalog.json` and the USER_GUIDE skill table.
