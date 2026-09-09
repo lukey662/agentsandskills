@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-09-09 - This Repository Is The Kit Only
+
+### Context
+
+This pack is installed into other Next.js + Supabase projects. Putting a product application in this repository would mix the npm package with an unrelated app and document that app as if it belonged to the kit.
+
+### Decision
+
+This repository stays the agent kit: CLI, agents, skills, and the user guide. Do not add product applications here. Do not mention them in kit README, SPEC, CI, or the published pack. Dogfood by running `init` in a separate repo.
+
+### Consequences
+
+Future work that needs a real Next.js app happens outside this repository.
+
 ## 2026-09-09 - Uplift Next.js And Supabase Domain Skills
 
 ### Context
