@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-09-09 - Post-Publish Verify Matches The 0.4 CLI
+
+### Context
+
+npm published `@appsforgood/next-supabase-kit@0.4.1`, then Release failed in `post-publish-verify.mjs`. That script still ran `doctor` on an empty temp project, then `audit` and `orchestrate validate`. Those are 0.3 commands. GitHub `v0.4.1` was skipped. `v0.4.0` is missing for the same reason.
+
+### Decision
+
+Verify a published kit with `init --stack next-supabase --activate all`, then `doctor` and `adapter validate all`. Do not call `audit` or `orchestrate`. Keep kit version at 0.4.1 so merge retriggers Release, skips npm publish, and creates `v0.4.1`.
+
+### Consequences
+
+`npm run publish:verify` matches `smoke:install` / `smoke:audit-gate`. Future publishes can mint the GitHub tag after registry verification.
+
 ## 2026-09-08 - Patch Vitest Before Publishing 0.4.1
 
 ### Context

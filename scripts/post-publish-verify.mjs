@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -98,29 +98,27 @@ try {
     stdio: "inherit"
   });
 
+  console.log("running published init in clean temp project");
+  runInstalledAgentKit(["init", "--stack", "next-supabase", "--activate", "all"], { cwd: tempRoot, stdio: "inherit" });
+
   console.log("running published doctor");
   runInstalledAgentKit(["doctor"], { cwd: tempRoot, stdio: "inherit" });
 
-  console.log("running published init in clean temp project");
-  runInstalledAgentKit(["init", "--stack", "next-supabase"], { cwd: tempRoot, stdio: "inherit" });
+  console.log("running published adapter validate");
+  runInstalledAgentKit(["adapter", "validate", "all"], { cwd: tempRoot, stdio: "inherit" });
 
-  console.log("running published audit");
-  const auditOutput = runInstalledAgentKit(["audit", "--json", "--min-readiness", "baseline-setup"], { cwd: tempRoot });
-  const auditReport = JSON.parse(auditOutput);
-  if (auditReport.summary?.fail !== 0) {
-    throw new Error(`Expected published install audit to have 0 failures, got ${auditReport.summary?.fail}.\n${auditOutput}`);
+  const guide = readFileSync(join(tempRoot, "USER_GUIDE.md"), "utf8");
+  if (!guide.includes("Do not review code alone")) {
+    throw new Error("Published init dropped the screenshot fail-closed sentence.");
+  }
+  if (!existsSync(join(tempRoot, ".cursor", "skills", "browser-qa", "SKILL.md"))) {
+    throw new Error("Expected published init to install browser-qa.");
+  }
+  if (!existsSync(join(tempRoot, ".cursor", "agents", "qa.md"))) {
+    throw new Error("Expected published init to install the QA agent.");
   }
 
-  if (runtimeSpec) {
-    console.log("validating published orchestrator integration");
-    const orchestratorOutput = runInstalledAgentKit(["orchestrate", "validate", "--json"], { cwd: tempRoot });
-    const orchestrator = JSON.parse(orchestratorOutput);
-    if (orchestrator.valid !== true) throw new Error(`Published orchestrator validation failed.\n${orchestratorOutput}`);
-  }
-
-  console.log(
-    `published package verification passed: ${auditReport.summary.pass} pass / ${auditReport.summary.warn} warn / ${auditReport.summary.fail} fail / readiness ${auditReport.readiness?.level ?? "unknown"}`
-  );
+  console.log("published package verification passed");
 } finally {
   rmSync(tempRoot, { recursive: true, force: true });
   if (tempCacheRoot) rmSync(tempCacheRoot, { recursive: true, force: true });

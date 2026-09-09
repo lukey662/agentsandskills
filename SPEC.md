@@ -268,7 +268,7 @@ Release workflow requirements:
 - Publish trigger: version metadata pushed to `main` or manual workflow dispatch with `dry_run=false`
 - Publish authentication: npm Trusted Publishing through GitHub Actions OIDC
 - Publish command: create and attest separate root/runtime tarballs and SBOMs, publish runtime then root through OIDC with inherited token state scrubbed, and verify both registry packages
-- Public install verification: import the runtime native package, run root `doctor`, `init`, `audit`, and `orchestrate validate`, then create the GitHub release
+- Public install verification: import the runtime native package; for the root kit, `init --activate all`, then `doctor` and `adapter validate all`; then create the GitHub release
 
 The release workflow must run typecheck, tests, build, dependency audit, SBOM check, install smoke, and package dry run before publishing.
 

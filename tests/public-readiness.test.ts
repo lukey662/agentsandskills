@@ -53,4 +53,15 @@ describe("public package readiness", () => {
     expect(existsSync(join(root, "skills/browser-qa/SKILL.md"))).toBe(true);
     expect(readFileSync(join(root, "skills/browser-qa/SKILL.md"), "utf8")).toContain("Do not review code alone");
   });
+
+  it("post-publish verify uses the 0.4 CLI, not audit or orchestrate", () => {
+    const source = readFileSync(join(root, "scripts/post-publish-verify.mjs"), "utf8");
+    expect(source).toContain('init", "--stack", "next-supabase", "--activate", "all"');
+    expect(source).toContain('["doctor"]');
+    expect(source).toContain('adapter", "validate", "all"');
+    expect(source.indexOf("running published init")).toBeLessThan(source.indexOf("running published doctor"));
+    expect(source).not.toContain("orchestrate");
+    expect(source).not.toContain("min-readiness");
+    expect(source).not.toContain("audit --json");
+  });
 });
