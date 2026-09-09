@@ -23,7 +23,7 @@ Before publishing a new version:
 2. Run `npm run release:check` locally (typecheck, tests, build, smoke install/studio/audit, example check, SBOM check, pack dry run).
 3. Merge to `main` after the local release gate passes. Confirm hosted CI too only when this repository has deliberately enabled it as a required gate.
 4. The release workflow packs and attests both packages, publishes runtime before root when needed, verifies both from the public registry, then creates the root-version GitHub release.
-5. Confirm public runtime import plus root `doctor`, `init`, `audit`, and `orchestrate validate` verification passed.
+5. Confirm public runtime import plus root `init`, `doctor`, and `adapter validate all` verification passed.
 
 ## Observability
 

@@ -31,7 +31,7 @@ After publish:
 - `npm view @appsforgood/next-supabase-kit@<version> version`
 - `npm view @appsforgood/agent-kit-runtime@<version> version`
 - Clean install and import of `@appsforgood/agent-kit-runtime`
-- Clean install of both packages followed by root `doctor`, `init`, `audit --json` with zero failures, and `orchestrate validate --json`
+- Clean install of both packages followed by root `init --activate all`, `doctor`, and `adapter validate all`
 
 The release workflow and `npm run publish:verify` both use `scripts/post-publish-verify.mjs` for this post-publish verification path.
 

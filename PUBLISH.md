@@ -48,7 +48,7 @@ Requires an interactive npm login with publish rights and current OTP. Use only 
 - Registry visibility for `@appsforgood/next-supabase-kit@<version>`
 - Registry visibility and clean import for `@appsforgood/agent-kit-runtime@<version>`
 - Clean temp install of both packages
-- Root `doctor`, `init --stack next-supabase`, `audit --json --min-readiness baseline-setup`, and `orchestrate validate --json`
+- Root `init --stack next-supabase --activate all`, then `doctor` and `adapter validate all`
 
 ## After Publish
 
