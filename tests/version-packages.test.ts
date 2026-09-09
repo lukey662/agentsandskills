@@ -2,7 +2,7 @@ import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { applyRootChangelog, incrementVersion, parseChangeset, synchronizeWorkspaceLock } from "../scripts/version-packages.mjs";
+import { applyRootChangelog, escapeRegExp, incrementVersion, parseChangeset, synchronizeWorkspaceLock } from "../scripts/version-packages.mjs";
 
 const roots: string[] = [];
 
@@ -56,6 +56,11 @@ describe("root and workspace version driver", () => {
 
   it("rejects a changelog that does not start with the H1", () => {
     expect(() => applyRootChangelog("## 0.4.2\n", "0.4.3", ["Ship the fix."])).toThrow(/must start with '# Changelog'/);
+  });
+
+  it("escapes regex metacharacters including backslashes", () => {
+    expect(escapeRegExp("0.4.3")).toBe("0\\.4\\.3");
+    expect(escapeRegExp("a\\b")).toBe("a\\\\b");
   });
 
   it("synchronizes workspace versions into package-lock records", () => {
