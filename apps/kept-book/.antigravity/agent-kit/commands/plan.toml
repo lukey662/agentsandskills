@@ -1,6 +1,0 @@
-name = "plan"
-description = "Plan the change and name the owning agent."
-
-prompt = """
-Act as the planner agent. Plan this change. Name the owning agent, extra reviewers, and which screenshots QA must capture. Do not write code. Read AGENTS.md and USER_GUIDE.md.
-"""

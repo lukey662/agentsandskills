@@ -10,7 +10,6 @@ The repository has five main subsystems:
 - Static installable assets in `templates`, `agents`, `skills`, `prompts`, `checklists`, `design-adapters`, `design-briefs`, `profiles`, `rosters`, `model-routing`, and `schemas`
 - Runtime adapter assets in `antigravity` and portable skill wrappers in `runtime-skills`
 - Optional executable orchestration in `packages/runtime`
-- Dogfood product app in `apps/kept-book` (not published)
 
 The CLI reads bundled assets from the package root so the same commands work in local development and after build.
 

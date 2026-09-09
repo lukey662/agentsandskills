@@ -39,13 +39,3 @@ Planner · App engineer · Security · Design · QA · Copy
 ## Default skills
 
 planning · nextjs-app-router · supabase-auth-rls · postgres-migrations · owasp-security-review · frontend-design · accessibility-wcag · **browser-qa** · testing-qa · product-copy · **deslop** · ship
-
-## Dogfood app
-
-`apps/kept-book` is a private household cookbook: recipe cards, invite-only kitchen, print PDF. Gelato is documented and key-gated. It is not published on npm.
-
-```bash
-cd apps/kept-book
-npm install
-npm run dev
-```

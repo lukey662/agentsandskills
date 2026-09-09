@@ -1,15 +1,10 @@
 node_modules/
 dist/
-apps/kept-book/.data/
-apps/kept-book/.next/
-apps/kept-book/coverage/
 coverage/
 .cursor/*
 !.cursor/rules/
 !examples/next-supabase-installed/.cursor/
 !examples/next-supabase-installed/.cursor/**
-!apps/kept-book/.cursor/
-!apps/kept-book/.cursor/**
 release-artifacts/
 artifacts/
 sbom.cdx.json
@@ -18,7 +13,6 @@ sbom.cdx.json
 .env.*
 .npmrc
 !.env.example
-!apps/kept-book/.env.example
 research/workdir/
 !.gitkeep
 # Root dogfood install: ignore .agent-kit copies of library assets, keep evidence files
