@@ -8,6 +8,7 @@
 - `agent-kit guide` prints the local `USER_GUIDE.html` path. GitHub shows that file as source; open it in a browser.
 - `planning` and `testing-qa` name the domain skills they must not replace.
 - Visual P0s: reject left accent bars on selected rows and status wells. Selection is radio/check + tint. Same family as accent-border cards / glow rails, not a second prompt. `USER_GUIDE.html` fail-closed well is a flat tint, not a left stroke.
+- Version Packages keeps a drafted next-version `CHANGELOG.md` heading instead of failing when `package.json` is still on the previous version.
 
 ## 0.4.2
 

@@ -304,7 +304,7 @@ Refresh after local audit or activation: `POST /api/agentic-level/refresh` while
 - ESLint flat config (`eslint.config.js`, typescript-eslint recommended-type-checked) via `npm run lint` / `npm run lint:fix`.
 - Prettier (`.prettierrc.json`, markdown and template assets excluded via `.prettierignore`) via `npm run format` / `npm run format:check`.
 - Vitest coverage gate (`vitest.config.ts`, v8 provider, thresholds 70/70/70/65) via `npm run test:coverage`.
-- Versioning uses changesets: run `npx changeset` with each user-visible change; the `Version` workflow opens a "Version Packages" PR. See `.changeset/README.md`.
+- Versioning uses changesets: run `npx changeset` with each user-visible change; the `Version` workflow opens a "Version Packages" PR. A drafted next-version heading in `CHANGELOG.md` is kept. See `.changeset/README.md`.
 
 ## CI
 

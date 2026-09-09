@@ -2,7 +2,7 @@ import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { incrementVersion, parseChangeset, synchronizeWorkspaceLock } from "../scripts/version-packages.mjs";
+import { applyRootChangelog, incrementVersion, parseChangeset, synchronizeWorkspaceLock } from "../scripts/version-packages.mjs";
 
 const roots: string[] = [];
 
@@ -37,6 +37,25 @@ describe("root and workspace version driver", () => {
     expect(incrementVersion("0.1.9", "minor")).toBe("0.2.0");
     expect(incrementVersion("0.1.9", "major")).toBe("1.0.0");
     expect(() => incrementVersion("0.2.0-beta.1", "patch")).toThrow(/Unsupported package version/);
+  });
+
+  it("prepends a changelog section when the next version is not drafted", () => {
+    const changelog = "# Changelog\n\n## 0.4.2\n\n- Previous.\n";
+    expect(applyRootChangelog(changelog, "0.4.3", ["Ship the fix."])).toBe("# Changelog\n\n## 0.4.3\n\n- Ship the fix.\n\n## 0.4.2\n\n- Previous.\n");
+  });
+
+  it("keeps a drafted next-version section that already has bullets", () => {
+    const changelog = "# Changelog\n\n## 0.4.3\n\n- Doctor fails closed.\n\n## 0.4.2\n\n- Previous.\n";
+    expect(applyRootChangelog(changelog, "0.4.3", ["Fail closed on required screenshot tools."])).toBe(changelog);
+  });
+
+  it("fills an empty drafted next-version heading from changeset notes", () => {
+    const changelog = "# Changelog\n\n## 0.4.3\n\n## 0.4.2\n\n- Previous.\n";
+    expect(applyRootChangelog(changelog, "0.4.3", ["Ship the fix."])).toBe("# Changelog\n\n## 0.4.3\n\n- Ship the fix.\n\n## 0.4.2\n\n- Previous.\n");
+  });
+
+  it("rejects a changelog that does not start with the H1", () => {
+    expect(() => applyRootChangelog("## 0.4.2\n", "0.4.3", ["Ship the fix."])).toThrow(/must start with '# Changelog'/);
   });
 
   it("synchronizes workspace versions into package-lock records", () => {

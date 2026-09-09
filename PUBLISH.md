@@ -16,7 +16,7 @@ If publishing fails with a Trusted Publishing or OIDC error, fix the npm Trusted
 ### Option A: Merge the Changesets version PR (preferred)
 
 1. Merge release-ready changes and their changeset to `main`.
-2. The version workflow opens or updates the `Version Packages` PR.
+2. The version workflow opens or updates the `Version Packages` PR. A drafted next-version heading in `CHANGELOG.md` is kept; the job still bumps `package.json`.
 3. Confirm CI is green, including `npm run smoke:audit-gate`, then merge the version PR.
 4. The [Release workflow](.github/workflows/release.yml) inspects both versions, runs `npm run release:check`, publishes runtime before root, verifies both exact packages, then creates `vX.Y.Z` and its GitHub release.
 
