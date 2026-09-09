@@ -65,11 +65,15 @@ export function incrementVersion(version, type) {
   return `${major}.${minor}.${patch}`;
 }
 
+export function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 export function applyRootChangelog(changelog, nextVersion, notes) {
   const heading = "# Changelog\n";
   if (!changelog.startsWith(heading)) throw new Error("CHANGELOG.md must start with '# Changelog'.");
   const bullets = notes.map((note) => `- ${note}`).join("\n");
-  const headingMatch = changelog.match(new RegExp(`^## ${nextVersion.replace(/\./g, "\\.")}$`, "m"));
+  const headingMatch = changelog.match(new RegExp(`^## ${escapeRegExp(nextVersion)}$`, "m"));
   if (!headingMatch || headingMatch.index === undefined) {
     return `${heading}\n## ${nextVersion}\n\n${bullets}\n\n${changelog.slice(heading.length).replace(/^\n+/, "")}`;
   }
