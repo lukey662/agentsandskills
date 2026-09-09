@@ -65,6 +65,24 @@ export function incrementVersion(version, type) {
   return `${major}.${minor}.${patch}`;
 }
 
+export function applyRootChangelog(changelog, nextVersion, notes) {
+  const heading = "# Changelog\n";
+  if (!changelog.startsWith(heading)) throw new Error("CHANGELOG.md must start with '# Changelog'.");
+  const bullets = notes.map((note) => `- ${note}`).join("\n");
+  const headingMatch = changelog.match(new RegExp(`^## ${nextVersion.replace(/\./g, "\\.")}$`, "m"));
+  if (!headingMatch || headingMatch.index === undefined) {
+    return `${heading}\n## ${nextVersion}\n\n${bullets}\n\n${changelog.slice(heading.length).replace(/^\n+/, "")}`;
+  }
+  const afterHeadingLine = changelog.indexOf("\n", headingMatch.index);
+  const bodyStart = afterHeadingLine === -1 ? changelog.length : afterHeadingLine + 1;
+  const rest = changelog.slice(bodyStart);
+  const nextHeadingRel = rest.search(/^## /m);
+  const sectionBody = nextHeadingRel === -1 ? rest : rest.slice(0, nextHeadingRel);
+  if (notes.length === 0 || /^\s*-\s+/m.test(sectionBody)) return changelog;
+  const insertAt = nextHeadingRel === -1 ? changelog.length : bodyStart + nextHeadingRel;
+  return `${changelog.slice(0, insertAt).replace(/\s*$/, "\n\n")}${bullets}\n\n${changelog.slice(insertAt)}`;
+}
+
 function listChangesets() {
   return readdirSync(changesetDirectory)
     .filter((name) => name.endsWith(".md") && name !== "README.md")
@@ -96,13 +114,8 @@ function versionRootPackage(rootChangesets, rootPackage) {
     throw new Error(`src/config/defaults.ts does not declare PACKAGE_VERSION ${rootPackage.version}.`);
   }
   const changelog = readFileSync(changelogPath, "utf8");
-  if (new RegExp(`^## ${nextVersion.replace(/\./g, "\\.")}$`, "m").test(changelog)) {
-    throw new Error(`CHANGELOG.md already contains version ${nextVersion}.`);
-  }
-  const heading = "# Changelog\n";
-  if (!changelog.startsWith(heading)) throw new Error("CHANGELOG.md must start with '# Changelog'.");
-  const notes = rootChangesets.map((changeset) => `- ${changeset.summary}`).join("\n");
-  const nextChangelog = `${heading}\n## ${nextVersion}\n\n${notes}\n\n${changelog.slice(heading.length).replace(/^\n+/, "")}`;
+  const notes = rootChangesets.map((changeset) => changeset.summary);
+  const nextChangelog = applyRootChangelog(changelog, nextVersion, notes);
   rootPackage.version = nextVersion;
   lock.version = nextVersion;
   lock.packages[""].version = nextVersion;

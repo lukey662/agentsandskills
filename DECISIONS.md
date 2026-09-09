@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-09-09 - Version Packages Keeps A Drafted Changelog Heading
+
+### Context
+
+Feature PRs sometimes write `## <next version>` into `CHANGELOG.md` while `package.json` stays on the current version, and they still add a changeset. `scripts/version-packages.mjs` treated that heading as an error, so the Version workflow on `main` failed instead of opening the Version Packages PR.
+
+### Decision
+
+If `CHANGELOG.md` already has the next version heading with bullets, keep that section and still bump `package.json`, the lockfile, and `PACKAGE_VERSION`. Fill an empty drafted heading from changeset summaries. Only prepend a new section when the heading is missing.
+
+### Consequences
+
+Agents can draft release notes in the feature PR. They must still add a changeset, or Version Packages will not run. `npm run version:check` still requires the current package version to have a changelog section.
+
 ## 2026-09-09 - Left Accent Bars Are The Same Chrome Cluster
 
 ### Context
