@@ -49,7 +49,7 @@ Prefer:
 
 Do not use generic AI-slop treatments as a substitute for product design. If a mature brand system intentionally uses one of these patterns, record the exception and rationale in `DESIGN.md` or `.agent-kit/overrides.json`.
 
-- No accent-border cards. Replace thick, high-contrast, one-sided colored borders, glow rails, neon strokes, and gradient borders on cards, callouts, alerts, panels, or status messages with restrained 1px full-border surfaces, subtle background tint when needed, clear labels, icons, and semantic state text.
+- No accent-border cards or left rails. Replace thick, high-contrast, one-sided colored borders (especially a left-edge stroke on selected rows, list items, cards, or success/error/warn wells), glow rails, neon strokes, and gradient borders with radio/check + light row tint, typography/weight, restrained 1px full-border surfaces, or a flat tint fill. Keep one accent for the primary CTA, not as a row edge.
 - No gradient-as-design. Replace generic purple-blue gradient heroes, gradient text, and gradient blobs with product-specific imagery, workflow screenshots, object-focused media, real content, or a quiet tokenized background.
 - No card soup. Replace large grids of decorative cards with task-first layouts: tables, lists, timelines, forms, split panes, dashboards with real hierarchy, or workflow-specific grouped sections.
 - No fake dashboard proof. Replace invented metrics, placeholder charts, and claims like "98% faster" with real product data, honest sample labels, empty states, or "connect data to view this" states.

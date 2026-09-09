@@ -47,6 +47,10 @@ describe("public package readiness", () => {
     expect(html).toContain("deslop");
     expect(html).toContain("catalog.json");
     expect(html).toContain('data-view="user-guide"');
+    expect(html).not.toMatch(/border-left\s*:/);
+    const distinct = readFileSync(join(root, "checklists/frontend-distinctiveness.md"), "utf8");
+    expect(distinct).toContain("left selection rail");
+    expect(distinct).toContain("thick left border");
   });
 
   it("canonical QA files exist", () => {

@@ -60,7 +60,7 @@ Use this deterministic checklist for UI audit, polish, layout cleanup, responsiv
 | Detector | Blocker Signal | Major Signal |
 | --- | --- | --- |
 | Generic SaaS styling | First screen could fit another product by changing logo and headline | Visual direction relies on common cards, gradients, fake dashboards, or vague claims |
-| Accent-border card styling | Cards, callouts, alerts, panels, or status messages rely on thick, high-contrast, one-sided colored borders, glow rails, neon strokes, or gradient borders as the main state cue | Accent borders add decoration where restrained 1px full-border surfaces, subtle background tint, clear labels, icons, and semantic state text would communicate better |
+| Accent-border card styling | Cards, callouts, alerts, panels, selected rows, or status messages rely on thick, high-contrast, one-sided colored borders (especially a left-edge stroke), glow rails, neon strokes, or gradient borders as the main state cue | Accent borders add decoration where radio/check + light tint, typography/weight, restrained 1px full-border surfaces, flat tint fills, labels, icons, and semantic state text would communicate better |
 | Gradient-as-design | Gradient hero, gradient text, abstract blobs, or glow backgrounds substitute for a product-specific first screen | Gradients are present without a tokenized role, brand rationale, or product-specific content support |
 | Card soup | The screen is mostly decorative cards and the primary workflow is unclear | Repeated cards could become a table, list, timeline, form, split pane, or workflow-specific grouped section |
 | Missing content fingerprint | UI hides missing product decisions behind placeholders | Real nouns, records, actions, or edge cases are too sparse |

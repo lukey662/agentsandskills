@@ -20,6 +20,8 @@ Review:
 - Do assets have clear source, generation, license, or placeholder constraints?
 - Which loading, empty, error, disabled, success, permission, and focus states still need proof?
 - Would this screen still look valid for another product in the same category after only changing the logo or headline?
+- After product nouns are swapped, do left-edge selection rails or thick left-border status wells remain? That is a chrome fingerprint fail.
+- Anti-references to reject: Linear/Notion-style left selection rail as generic “selected row” chrome; success/error/warn callouts whose cue is a thick left border.
 
 Return:
 
@@ -28,5 +30,5 @@ Return:
 - Content fingerprint: missing, adequate, or strong.
 - Reference benchmark: missing, adequate, or strong.
 - Asset/source-safety risks.
-- Generic-AI-site risk.
+- Generic-AI-site risk, including left-edge bars after a noun swap.
 - Required changes before acceptance.
