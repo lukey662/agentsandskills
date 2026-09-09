@@ -1,7 +1,8 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { loadCatalog } from "../catalog.js";
-import type { IdeTarget } from "./ide-activate.js";
+import { IDE_TARGETS, isIdeTarget, type IdeTarget } from "./ide-activate.js";
+import { readManifest } from "./install.js";
 
 export type ValidationLevel = "pass" | "warn" | "fail";
 export type AdapterValidationTarget = IdeTarget | "all";
@@ -15,6 +16,7 @@ export interface ValidationFinding {
 
 export interface ValidationReport {
   target: string;
+  validated: IdeTarget[];
   summary: Record<ValidationLevel, number>;
   findings: ValidationFinding[];
 }
@@ -27,8 +29,8 @@ function summary(findings: ValidationFinding[]): Record<ValidationLevel, number>
   };
 }
 
-function report(target: string, findings: ValidationFinding[]): ValidationReport {
-  return { target, summary: summary(findings), findings };
+function report(target: string, findings: ValidationFinding[], validated: IdeTarget[]): ValidationReport {
+  return { target, validated, summary: summary(findings), findings };
 }
 
 function has(cwd: string, relative: string): boolean {
@@ -141,14 +143,25 @@ function validateAntigravity(cwd: string): ValidationFinding[] {
   return findings;
 }
 
-export function validateAdapter(cwd: string, target: AdapterValidationTarget): ValidationReport {
-  if (target === "cursor") return report("cursor", validateCursor(cwd));
-  if (target === "claude") return report("claude", validateClaude(cwd));
-  if (target === "codex") return report("codex", validateCodex(cwd));
-  if (target === "copilot") return report("copilot", validateCopilot(cwd));
-  if (target === "antigravity") return report("antigravity", validateAntigravity(cwd));
+const validators: Record<IdeTarget, (cwd: string) => ValidationFinding[]> = {
+  cursor: validateCursor,
+  claude: validateClaude,
+  codex: validateCodex,
+  copilot: validateCopilot,
+  antigravity: validateAntigravity
+};
 
-  return report("all", [...validateCursor(cwd), ...validateClaude(cwd), ...validateCodex(cwd), ...validateCopilot(cwd), ...validateAntigravity(cwd)]);
+export function resolveAdapterTargets(cwd: string, target: AdapterValidationTarget): IdeTarget[] {
+  if (target !== "all") return [target];
+  const activated = (readManifest(cwd)?.activated ?? []).filter(isIdeTarget);
+  return activated.length > 0 ? activated : [...IDE_TARGETS];
+}
+
+export function validateAdapter(cwd: string, target: AdapterValidationTarget): ValidationReport {
+  const validated = resolveAdapterTargets(cwd, target);
+  const findings = validated.flatMap((ide) => validators[ide](cwd));
+  const label = target === "all" && validated.length < IDE_TARGETS.length ? `all (${validated.join(", ")})` : target;
+  return report(label, findings, validated);
 }
 
 export function validatePackage(): ValidationReport {
@@ -176,5 +189,5 @@ export function validatePackage(): ValidationReport {
   if (!existsSync(join(cwd, "skills/browser-qa/SKILL.md"))) {
     findings.push({ level: "fail", area: "package", message: "skills/browser-qa/SKILL.md is missing." });
   }
-  return report("package", findings);
+  return report("package", findings, []);
 }

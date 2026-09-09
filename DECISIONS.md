@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-09-09 - Fail Closed On Usage Feedback
+
+### Context
+
+Using the 0.4 kit showed three holes in the advertised contract: GitHub displays `USER_GUIDE.html` as source, so people never see the layout; `adapter validate all` after `init --activate cursor` fails on missing Claude/Codex files; `doctor` accepted agents that dropped `requiredTools`, so screenshot QA could be deleted and still pass.
+
+### Decision
+
+`adapter validate all` follows `manifest.activated`. `doctor` compares installed `requiredTools` to the packaged agent files and fails on drops. `agent-kit guide` prints the HTML path. Catalog loads cache per package root.
+
+### Consequences
+
+Cursor-only installs can run `adapter validate all`. Screenshot tools are fail-closed. The HTML guide is still not hosted; open the file locally.
+
 ## 2026-09-09 - This Repository Is The Kit Only
 
 ### Context

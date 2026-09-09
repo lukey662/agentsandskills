@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { loadCatalog, parseFrontmatter } from "../catalog.js";
+import { agentSourcePath, loadCatalog, parseFrontmatter } from "../catalog.js";
+import { findPackageRoot } from "../utils/package-root.js";
 
 export type DoctorLevel = "pass" | "warn" | "fail";
 
@@ -99,9 +100,36 @@ export function createDoctorReport(cwd: string): DoctorReport {
     const meta = parseFrontmatter(content);
     if (!meta.tools || meta.tools.length === 0) {
       findings.push({ level: "fail", area: "agents", message: `${id} is missing a tools list.` });
-    } else {
-      findings.push({ level: "pass", area: "agents", message: `${id} declares tools.` });
+      continue;
     }
+
+    const expectedRequired = packagedRequiredTools(id);
+    const actualRequired = meta.requiredTools ?? [];
+    const missingRequired = expectedRequired.filter((tool) => !actualRequired.includes(tool));
+    if (missingRequired.length > 0) {
+      findings.push({
+        level: "fail",
+        area: "agents",
+        message: `${id} dropped requiredTools: ${missingRequired.join(", ")}.`
+      });
+      continue;
+    }
+
+    const requiredNotAllowed = actualRequired.filter((tool) => !meta.tools?.includes(tool));
+    if (requiredNotAllowed.length > 0) {
+      findings.push({
+        level: "fail",
+        area: "agents",
+        message: `${id} lists required tools that are not in tools: ${requiredNotAllowed.join(", ")}.`
+      });
+      continue;
+    }
+
+    findings.push({
+      level: "pass",
+      area: "agents",
+      message: expectedRequired.length > 0 ? `${id} keeps required tools.` : `${id} declares tools.`
+    });
   }
 
   const leftovers = listLegacyLeftovers(cwd);
@@ -126,4 +154,13 @@ export function createDoctorReport(cwd: string): DoctorReport {
     summary: summarize(findings),
     ok: findings.every((item) => item.level !== "fail")
   };
+}
+
+function packagedRequiredTools(id: string): string[] {
+  try {
+    const source = readFileSync(agentSourcePath(findPackageRoot(), id), "utf8");
+    return parseFrontmatter(source).requiredTools ?? [];
+  } catch {
+    return [];
+  }
 }

@@ -1,5 +1,17 @@
 # Upgrade Guide
 
+## 0.4.3
+
+`0.4.3` does not change installed agent files unless you stripped `requiredTools`. `doctor` now fails that. `adapter validate all` on a Cursor-only install checks Cursor only.
+
+```bash
+npx @appsforgood/next-supabase-kit@0.4.3 update
+npx @appsforgood/next-supabase-kit@0.4.3 doctor
+npx @appsforgood/next-supabase-kit@0.4.3 guide
+```
+
+Open `USER_GUIDE.html` in a browser. GitHub shows it as source.
+
 ## 0.4.2
 
 `0.4.1` is the published simplify catch-up. `0.4.2` rewrites the Next.js and Supabase domain skills. `update` refreshes pristine skill files; local edits win or land in conflicts.

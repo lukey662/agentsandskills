@@ -56,6 +56,13 @@ describe("domain skill uplifts", () => {
     const skill = readSkill("planning");
     expect(skill).toContain("nextjs-app-router");
     expect(skill).toContain("Skipping `supabase-auth-rls`");
+    expect(skill).toContain("Skipping `nextjs-app-router`");
+  });
+
+  it("testing-qa does not replace domain skills or browser-qa", () => {
+    const skill = readSkill("testing-qa");
+    expect(skill).toContain("supabase-auth-rls");
+    expect(skill).toContain("browser-qa");
   });
 
   it("init installs the uplifted domain skills", () => {

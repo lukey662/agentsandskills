@@ -18,6 +18,8 @@ Adding or reviewing tests, smoke checks, or regression coverage.
 - Network failure, empty, and error behavior is covered.
 - Gaps are named when infrastructure is missing.
 
+If the change is App Router, Auth/RLS, or a migration, tests must cover those contracts. This skill does not replace `nextjs-app-router`, `supabase-auth-rls`, `postgres-migrations`, or `owasp-security-review`. Visual proof of a screen still uses `browser-qa`.
+
 ## Visual proof
 
 User-visible screens also require `browser-qa`. This skill does not replace screenshots. Passing `toBeVisible` is not image review.

@@ -28,4 +28,4 @@ Owner, extra reviewers, required skills, preserved behavior, and required screen
 
 ## Reject
 
-Implementing in the planning pass. Asking one chat to play every role. Skipping `supabase-auth-rls` because “it’s just a table.”
+Implementing in the planning pass. Asking one chat to play every role. Skipping `supabase-auth-rls` because “it’s just a table.” Skipping `nextjs-app-router` because the route is small.

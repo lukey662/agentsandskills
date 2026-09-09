@@ -25,4 +25,24 @@ describe("adapter validate", () => {
     const report = validatePackage();
     expect(report.summary.fail).toBe(0);
   });
+
+  it("adapter validate all follows manifest.activated after a Cursor-only init", () => {
+    const root = mkdtempSync(join(tmpdir(), "agent-kit-adapter-"));
+    roots.push(root);
+    initProject({ cwd: root, activate: ["cursor"] });
+    const report = validateAdapter(root, "all");
+    expect(report.validated).toEqual(["cursor"]);
+    expect(report.target).toBe("all (cursor)");
+    expect(report.summary.fail).toBe(0);
+    expect(report.findings.some((finding) => finding.area === "claude")).toBe(false);
+  });
+
+  it("adapter validate claude still fails on a Cursor-only install", () => {
+    const root = mkdtempSync(join(tmpdir(), "agent-kit-adapter-"));
+    roots.push(root);
+    initProject({ cwd: root, activate: ["cursor"] });
+    const report = validateAdapter(root, "claude");
+    expect(report.validated).toEqual(["claude"]);
+    expect(report.summary.fail).toBeGreaterThan(0);
+  });
 });
