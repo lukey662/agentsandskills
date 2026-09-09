@@ -127,6 +127,10 @@ Skills **kept despite being uncommon** in generic zoos:
 **Skills:** planning, nextjs-app-router, supabase-auth-rls, postgres-migrations, owasp-security-review, frontend-design, accessibility-wcag, browser-qa, testing-qa, product-copy, deslop, ship  
 **Optional skills:** ui-polish, docs, upgrade, debug
 
+### 2026-09-09 follow-up
+
+- Uplifted `nextjs-app-router`, `supabase-auth-rls`, `postgres-migrations`, and `owasp-security-review` from checklists to playbooks. Structure from Next.js 16 App Router / `proxy.ts` / async request APIs and Supabase SSR+RLS docs. No third-party skill bodies. This pack’s auth stays Supabase (not Clerk/Auth0/NextAuth as the default).
+
 ### 2026-09-06 follow-up
 
 - Added `deslop` as a default skill. Copy’s end run is always `product-copy` then `deslop` (second pass on the rewrite). Patterns from `conorbronsdon/avoid-ai-writing` and `funboy322/avoid-ai-design` — catalogs not copied.

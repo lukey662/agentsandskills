@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.2
+
+- Uplift default domain skills so they are playbooks, not checklists: `nextjs-app-router` (App Router, async request APIs, `proxy.ts`), `supabase-auth-rls` (SSR clients, `getUser()`, service role, RLS), `postgres-migrations` (RLS in the same change), `owasp-security-review` (Top 10 mapped onto Actions/RLS/SSRF).
+- Planner’s `planning` skill names which of those skills the owner must run. App engineer must not skip them for a “small” route.
+
 ## 0.4.1
 
 - Catch-up release: npm `0.4.0` was the simplify cut; later GitHub work (`deslop`, frontend-design, catalog pointers, leftover `doctor`, HTML user guide) was not on npm.

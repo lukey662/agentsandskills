@@ -23,6 +23,8 @@ Code-only “it should work” is incomplete for anything the user can see or cl
 
 `nextjs-app-router`, `supabase-auth-rls`, `postgres-migrations`.
 
+Run those skills. Do not treat a small route, form, or table as exempt.
+
 Available skills: `catalog.json` and the skill table in `USER_GUIDE.md`. Start with the skills named above. Use another listed skill when this job needs it.
 
 ## Handoff

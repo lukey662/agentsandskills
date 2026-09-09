@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-09-09 - Uplift Next.js And Supabase Domain Skills
+
+### Context
+
+`frontend-design`, `deslop`, and `browser-qa` were playbooks. `nextjs-app-router`, `supabase-auth-rls`, `postgres-migrations`, and `owasp-security-review` were still short checklists, so app-engineer work guessed App Router and RLS.
+
+### Decision
+
+Rewrite those four skills with Use / Do / Checks / Reject / Done-when. Scan Next.js 16 and Supabase SSR/RLS docs for **structure** only — no third-party skill bodies. Keep Supabase as this pack’s auth; reject swapping in Clerk/Auth0/NextAuth as the default. Planner names the skill the owner must run.
+
+### Consequences
+
+Ship as **0.4.2**. `update` refreshes pristine skills. Screenshot QA stays in `browser-qa`. No orchestrator.
+
 ## 2026-09-09 - Post-Publish Verify Matches The 0.4 CLI
 
 ### Context

@@ -1,5 +1,16 @@
 # Upgrade Guide
 
+## 0.4.2
+
+`0.4.1` is the published simplify catch-up. `0.4.2` rewrites the Next.js and Supabase domain skills. `update` refreshes pristine skill files; local edits win or land in conflicts.
+
+```bash
+npx @appsforgood/next-supabase-kit@0.4.2 update
+npx @appsforgood/next-supabase-kit@0.4.2 doctor
+```
+
+Do not re-init. `update` still never deletes leftover 0.3 council docs.
+
 ## 0.4.1
 
 npm `0.4.0` was the simplify cut. `0.4.1` adds `deslop`, the 4-token `frontend-design` skill, catalog pointers on agents, and leftover-0.3 `doctor` warnings. Those leftover warnings are not a failure. `update` still never deletes old council docs.
