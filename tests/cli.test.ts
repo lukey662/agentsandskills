@@ -46,6 +46,7 @@ describe("agent-kit CLI", () => {
     expect(result.exitCode).toBe(0);
     expect(result.stdout).toContain("init");
     expect(result.stdout).toContain("doctor");
+    expect(result.stdout).toContain("guide");
     expect(result.stdout).toContain("update");
     expect(result.stdout).not.toContain("orchestrate");
     expect(result.stdout).not.toMatch(/^\s+audit\b/m);
@@ -70,6 +71,17 @@ describe("agent-kit CLI", () => {
     expect(result.exitCode).toBe(0);
     const report = JSON.parse(result.stdout) as { ok: boolean };
     expect(report.ok).toBe(true);
+  });
+
+  it("guide prints the installed USER_GUIDE.html path", () => {
+    const root = makeTempProject();
+    runCli(["init", "--activate", "cursor"], root);
+    const result = runCli(["guide", "--json"], root);
+    expect(result.exitCode).toBe(0);
+    const payload = JSON.parse(result.stdout) as { path: string; source: string };
+    expect(payload.source).toBe("cwd");
+    expect(payload.path).toContain("USER_GUIDE.html");
+    expect(existsSync(payload.path)).toBe(true);
   });
 
   it("rejects unknown --activate targets", () => {

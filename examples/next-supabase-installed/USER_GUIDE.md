@@ -179,5 +179,6 @@ Pristine files refresh. Local edits win or land in `.agent-kit/conflicts/`. Do n
 | Skill not triggering | Mention the skill name (`browser-qa`) or `@` it in Cursor. |
 | No browser in Copilot / Codex | Use the Playwright commands in `browser-qa`. |
 | QA finished from the diff | Reject it. Re-run with the good QA prompt above. |
+| GitHub shows `USER_GUIDE.html` as code | Open the file in a browser. Run `npx agent-kit guide` to print the path. GitHub does not render the layout. |
 | `doctor` fails USER_GUIDE | The screenshot fail-closed sentence must stay in this file. |
 | Still have `QUALITY_GATES.md` / `COUNCIL.md` | Expected. `update` does not delete them. `doctor` lists leftovers. |

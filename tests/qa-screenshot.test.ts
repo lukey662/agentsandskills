@@ -42,6 +42,17 @@ describe("QA screenshot fail-closed rule", () => {
     expect(readFileSync(join(root, "USER_GUIDE.html"), "utf8")).toContain("Ask one specialist");
   });
 
+  it("doctor fails if QA drops required screenshot tools", () => {
+    const root = temp();
+    initProject({ cwd: root });
+    const qaPath = join(root, ".cursor/agents/qa.md");
+    const original = readFileSync(qaPath, "utf8");
+    writeFileSync(qaPath, original.replace("requiredTools: [browser, screenshot, image-review]", "requiredTools: [repo]"));
+    const report = createDoctorReport(root);
+    expect(report.ok).toBe(false);
+    expect(report.findings.some((finding) => finding.message.includes("dropped requiredTools"))).toBe(true);
+  });
+
   it("doctor fails if USER_GUIDE loses the screenshot rule", () => {
     const root = temp();
     initProject({ cwd: root });

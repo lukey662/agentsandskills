@@ -36,7 +36,7 @@ agent-kit init --activate all       # all of the above (Cursor rules remain on e
 - **Tier B — native specialists:** `init --activate cursor|claude|codex` generates IDE-specific council subagents/custom agents from `.agent-kit/agent-roster.json`.
 - **Tier C — programmatic orchestration:** optional `@appsforgood/agent-kit-runtime` and `agent-kit orchestrate`, with SQLite checkpoints, approvals, provider/MCP adapters, isolated worktrees, and redacted evidence.
 
-Validate activation with `agent-kit adapter validate cursor|codex|claude|all`.
+Validate activation with `agent-kit adapter validate cursor|codex|claude|all`. `all` checks the IDEs in `.agent-kit/manifest.json` `activated`, not every IDE the kit supports.
 
 Existing files are never overwritten by default. Conflicting template updates are written to `.agent-kit/conflicts/`.
 

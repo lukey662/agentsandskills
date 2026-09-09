@@ -2,7 +2,7 @@
 
 ## Package Purpose
 
-`@appsforgood/next-supabase-kit` is a public pack of agents, skills, and a user guide for Next.js and Supabase projects. `init` writes `AGENTS.md`, `USER_GUIDE.md`, `USER_GUIDE.html`, and native Cursor/Claude/Codex/Copilot/Antigravity files. QA of user-visible work requires desktop and mobile screenshots. Default domain skills (`nextjs-app-router`, `supabase-auth-rls`, `postgres-migrations`, `owasp-security-review`) are playbooks with Reject and Done-when, not one-line checklists. The default CLI is `init`, `add`, `update`, `doctor`, and `adapter validate`.
+`@appsforgood/next-supabase-kit` is a public pack of agents, skills, and a user guide for Next.js and Supabase projects. `init` writes `AGENTS.md`, `USER_GUIDE.md`, `USER_GUIDE.html`, and native Cursor/Claude/Codex/Copilot/Antigravity files. QA of user-visible work requires desktop and mobile screenshots. Default domain skills (`nextjs-app-router`, `supabase-auth-rls`, `postgres-migrations`, `owasp-security-review`) are playbooks with Reject and Done-when, not one-line checklists. The default CLI is `init`, `add`, `update`, `doctor`, `guide`, and `adapter validate`.
 
 ## CLI Surface
 
@@ -88,6 +88,12 @@ Downstream projects should record adapter activation evidence in `ASSISTANT_ADAP
 - `.antigravity/agent-kit/README.md`
 
 The Antigravity command layer exposes `/setup`, `/audit`, `/plan`, `/handoff`, `/frontend`, `/security`, `/copy`, `/ship`, and `/upgrade`. It also exposes focused UI improvement commands: `/ui-audit`, `/ui-polish`, `/layout-cleanup`, `/responsive-cleanup`, `/accessibility-pass`, `/distinctiveness-pass`, `/screenshot-critique`, and `/browser-qa`. These command files must wrap the existing council/session contracts and must not fork role definitions, security policy, quality gates, frontend detector policy, or model-routing policy.
+
+`agent-kit adapter validate all` validates the IDEs recorded in `.agent-kit/manifest.json` `activated`. A Cursor-only install must not fail because Claude files are absent. Pass a named target (`cursor`, `claude`, `codex`, `copilot`, `antigravity`) to check that surface only. If no manifest `activated` list exists, `all` still checks every IDE.
+
+`agent-kit doctor` fails when a default agent drops the packaged `requiredTools` list (QA and Design must keep `browser`, `screenshot`, and `image-review`). Missing `.cursor/agents/` is still a warning.
+
+`agent-kit guide` prints the absolute path to `USER_GUIDE.html`. Open that file in a browser. GitHub shows HTML as source and is not the layout.
 
 `agent-kit adapter validate antigravity` validates the Antigravity manifest, command files, portable `SKILL.md` wrappers, source-of-truth references, package allowlist, and secret-safety. Native Antigravity CLI validation is optional because the package must remain usable where `agy` is not installed.
 

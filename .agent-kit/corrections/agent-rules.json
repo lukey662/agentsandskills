@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "rules": [
+    {
+      "id": "judge-user-guide-in-browser",
+      "scope": "agent",
+      "status": "active",
+      "appliesToAgents": ["design", "copy", "qa"],
+      "text": "Judge USER_GUIDE.html in a real browser, not the GitHub source view or the markdown twin. Capture desktop and mobile screenshots.",
+      "createdAt": "2026-09-09T21:20:00.000Z",
+      "reason": "Human: the HTML page is how copy and design are judged."
+    }
+  ]
+}

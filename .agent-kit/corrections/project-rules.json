@@ -5,9 +5,17 @@
       "id": "kit-repo-only",
       "scope": "project",
       "status": "active",
-      "text": "This repository is the agent kit only. Do not add product applications here, and do not mention them in kit README, SPEC, CI, or the npm pack. Dogfood by running init in a separate repo.",
+      "text": "This repository is the agent kit only. Do not add product applications here, and do not mention them in kit README, SPEC, CI, or the npm pack. Prove the kit by running init in a separate repo.",
       "createdAt": "2026-09-09T10:00:00.000Z",
       "reason": "Human correction: product apps do not belong in the kit repository."
+    },
+    {
+      "id": "html-guide-in-browser",
+      "scope": "project",
+      "status": "active",
+      "text": "USER_GUIDE.html is judged in a browser. GitHub shows it as source. doctor and adapter validate must fail closed on the screenshot contract; adapter validate all only checks IDEs listed in the install manifest.",
+      "createdAt": "2026-09-09T21:20:00.000Z",
+      "reason": "Usage feedback: GitHub source view, Cursor-only installs failing adapter validate all, and QA requiredTools that doctor never checked."
     }
   ]
 }

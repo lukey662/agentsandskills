@@ -39,6 +39,7 @@ describe("public package readiness", () => {
     expect(guide).toContain("@planner");
     expect(guide).toContain("browser-qa");
     expect(guide).toContain("deslop");
+    expect(guide).toContain("npx agent-kit guide");
     expect(guide).toContain("catalog.json");
     const html = readFileSync(join(root, "USER_GUIDE.html"), "utf8");
     expect(html).toContain("Do not review code alone");

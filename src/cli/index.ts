@@ -3,6 +3,7 @@ import { addAgent, listAgents } from "../install/add-agent.js";
 import { addSkill, listSkills } from "../install/add-skill.js";
 import { validateAdapter, validatePackage, type AdapterValidationTarget } from "../install/adapter-validate.js";
 import { createDoctorReport } from "../install/doctor.js";
+import { resolveUserGuideHtml } from "../install/guide.js";
 import { initProject } from "../install/install.js";
 import { updateProject } from "../install/update.js";
 import { PACKAGE_VERSION } from "../config/defaults.js";
@@ -107,7 +108,7 @@ add
 
 program
   .command("doctor")
-  .description("Check agents, skills, the screenshot QA rule, and leftover 0.3 council files.")
+  .description("Check agents, required tools, the screenshot QA rule, and leftover 0.3 council files.")
   .option("--json", "Machine-readable output")
   .action((options: { json?: boolean }) => {
     const report = createDoctorReport(process.cwd());
@@ -123,13 +124,30 @@ program
     if (!report.ok) {
       fail("doctor found failures");
       process.exitCode = 1;
+    } else {
+      detail("Open USER_GUIDE.html in a browser. GitHub shows source, not the layout. Run agent-kit guide for the path.");
     }
+  });
+
+program
+  .command("guide")
+  .description("Print the path to USER_GUIDE.html. Open it in a browser; GitHub shows source.")
+  .option("--json", "Machine-readable output")
+  .action((options: { json?: boolean }) => {
+    const location = resolveUserGuideHtml(process.cwd());
+    if (options.json) {
+      printJson(location);
+      return;
+    }
+    heading("user guide");
+    line(location.path);
+    detail("Open that file in a browser. GitHub shows HTML as source, not the layout.");
   });
 
 const adapter = program.command("adapter").description("Validate IDE adapter files.");
 adapter
   .command("validate [target]")
-  .description("Validate cursor, claude, codex, copilot, antigravity, or all")
+  .description("Validate activated IDEs, or one of cursor, claude, codex, copilot, antigravity")
   .option("--json", "Machine-readable output")
   .action((rawTarget: string | undefined, options: { json?: boolean }) => {
     const target = rawTarget ?? "all";

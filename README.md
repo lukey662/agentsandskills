@@ -10,7 +10,7 @@ QA does not review user-visible work from code alone. A change is not done until
 npx --yes @appsforgood/next-supabase-kit init --activate all
 ```
 
-Then open **[USER_GUIDE.html](USER_GUIDE.html)** (markdown twin: [USER_GUIDE.md](USER_GUIDE.md)). That guide is how you use the pack.
+Then open **[USER_GUIDE.html](USER_GUIDE.html)** in a browser (markdown twin: [USER_GUIDE.md](USER_GUIDE.md)). GitHub shows the HTML as source; `npx agent-kit guide` prints the local path. That guide is how you use the pack.
 
 ## What you get
 
@@ -23,6 +23,7 @@ Then open **[USER_GUIDE.html](USER_GUIDE.html)** (markdown twin: [USER_GUIDE.md]
 
 ```bash
 npx agent-kit init --activate all
+npx agent-kit guide
 npx agent-kit doctor
 npx agent-kit add skill debug
 npx agent-kit add agent lead-architect

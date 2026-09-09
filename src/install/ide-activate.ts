@@ -10,7 +10,8 @@ import {
   generateCursorSkills
 } from "./roster-adapters.js";
 
-export type IdeTarget = "cursor" | "claude" | "codex" | "copilot" | "antigravity";
+export const IDE_TARGETS = ["cursor", "claude", "codex", "copilot", "antigravity"] as const;
+export type IdeTarget = (typeof IDE_TARGETS)[number];
 
 export interface ActivateIdeOptions {
   cwd: string;
@@ -22,7 +23,11 @@ export interface ActivateIdeResult extends CopyCollector {
   activated: IdeTarget[];
 }
 
-const ALLOWED = new Set<IdeTarget>(["cursor", "claude", "codex", "copilot", "antigravity"]);
+const ALLOWED = new Set<IdeTarget>(IDE_TARGETS);
+
+export function isIdeTarget(value: string): value is IdeTarget {
+  return ALLOWED.has(value as IdeTarget);
+}
 
 export class InvalidActivateTargetError extends Error {
   constructor(public readonly invalid: string[]) {
@@ -46,8 +51,8 @@ function normalizeTargets(targets: string[]): IdeTarget[] {
       for (const item of ALLOWED) normalized.add(item);
       continue;
     }
-    if (ALLOWED.has(value as IdeTarget)) {
-      normalized.add(value as IdeTarget);
+    if (isIdeTarget(value)) {
+      normalized.add(value);
     } else {
       invalid.push(target.trim());
     }

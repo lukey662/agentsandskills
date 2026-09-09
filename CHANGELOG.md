@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.3
+
+- `doctor` fails if a default agent drops packaged `requiredTools` (QA/Design can no longer drop screenshot tools and still pass).
+- `adapter validate all` validates the IDEs in `.agent-kit/manifest.json` `activated`, not every IDE the kit supports. Named targets still check that one IDE.
+- `loadCatalog` caches per package root so tests and nested installs do not reuse the wrong catalog.
+- `agent-kit guide` prints the local `USER_GUIDE.html` path. GitHub shows that file as source; open it in a browser.
+- `planning` and `testing-qa` name the domain skills they must not replace.
+
 ## 0.4.2
 
 - Uplift default domain skills so they are playbooks, not checklists: `nextjs-app-router` (App Router, async request APIs, `proxy.ts`), `supabase-auth-rls` (SSR clients, `getUser()`, service role, RLS), `postgres-migrations` (RLS in the same change), `owasp-security-review` (Top 10 mapped onto Actions/RLS/SSRF).

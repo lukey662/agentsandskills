@@ -11,17 +11,18 @@ export interface Catalog {
   screenshotFailClosed: string;
 }
 
-let cached: Catalog | null = null;
+const catalogByRoot = new Map<string, Catalog>();
 
 export function loadCatalog(packageRoot = findPackageRoot()): Catalog {
-  if (cached && packageRoot === findPackageRoot()) return cached;
+  const existing = catalogByRoot.get(packageRoot);
+  if (existing) return existing;
   const parsed = JSON.parse(readFileSync(join(packageRoot, "catalog.json"), "utf8")) as Catalog;
-  cached = parsed;
+  catalogByRoot.set(packageRoot, parsed);
   return parsed;
 }
 
 export function resetCatalogCache(): void {
-  cached = null;
+  catalogByRoot.clear();
 }
 
 export function agentSourcePath(packageRoot: string, id: string): string {
