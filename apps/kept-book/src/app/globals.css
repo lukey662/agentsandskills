@@ -1,0 +1,402 @@
+@import "tailwindcss";
+
+:root {
+  --field: #e7d3a8;
+  --ink: #1f160e;
+  --accent: #6e1c28;
+  --line: #b08950;
+  --well: #f3e6c4;
+  --tab: #8a2430;
+  --focus: #1f160e;
+}
+
+@theme inline {
+  --font-display: var(--font-fraunces);
+  --font-ui: var(--font-plex);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--field);
+}
+
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--field);
+  color: var(--ink);
+  font-family: var(--font-ui), "IBM Plex Sans", ui-sans-serif, sans-serif;
+  line-height: 1.45;
+}
+
+a {
+  color: inherit;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  left: 0.75rem;
+  top: -3rem;
+  background: var(--ink);
+  color: var(--well);
+  padding: 0.4rem 0.7rem;
+  z-index: 20;
+}
+
+.skip-link:focus {
+  top: 0.75rem;
+}
+
+.shell {
+  width: min(72rem, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 1.25rem 0 3rem;
+}
+
+.kitchen-bar {
+  display: grid;
+  gap: 0.5rem 1rem;
+  padding: 1rem 0 1.25rem;
+  border-bottom: 2px solid var(--ink);
+  margin-bottom: 1.5rem;
+}
+
+.kitchen-name {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.7rem;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.kitchen-name a {
+  text-decoration: none;
+}
+
+.kitchen-member {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.kitchen-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  font-weight: 600;
+}
+
+.invite-copy,
+.text-btn,
+.btn-primary,
+.btn-quiet {
+  font: inherit;
+  cursor: pointer;
+}
+
+.invite-copy {
+  justify-self: start;
+  background: var(--well);
+  border: 1px solid var(--ink);
+  padding: 0.35rem 0.6rem;
+  display: inline-flex;
+  gap: 0.6rem;
+  align-items: baseline;
+}
+
+.invite-copy-hint {
+  color: var(--accent);
+  font-size: 0.85rem;
+}
+
+.text-btn {
+  background: none;
+  border: 0;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #f8efe2;
+  border: 0;
+  padding: 0.7rem 1.1rem;
+  font-weight: 650;
+}
+
+.btn-primary:disabled {
+  opacity: 0.65;
+}
+
+.btn-quiet {
+  background: transparent;
+  border: 1px solid var(--ink);
+  padding: 0.65rem 1rem;
+}
+
+.banner {
+  background: var(--ink);
+  color: var(--well);
+  padding: 0.7rem 0.85rem;
+  margin: 0 0 1rem;
+}
+
+.home-grid {
+  display: grid;
+  gap: 2rem;
+}
+
+@media (min-width: 880px) {
+  .home-grid {
+    grid-template-columns: 1.2fr 0.8fr;
+    align-items: start;
+  }
+
+  .kitchen-bar {
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+  }
+
+  .kitchen-nav {
+    grid-column: 1;
+  }
+}
+
+.mast {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(2.4rem, 6vw, 4.2rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  margin: 0 0 0.75rem;
+}
+
+.lede {
+  font-size: 1.15rem;
+  max-width: 36rem;
+  margin: 0 0 1.5rem;
+}
+
+.door {
+  background: var(--well);
+  border: 1px solid var(--ink);
+  padding: 1rem;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.door h2 {
+  margin: 0;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.4rem;
+}
+
+label,
+legend {
+  display: grid;
+  gap: 0.3rem;
+  font-weight: 600;
+}
+
+input,
+textarea,
+select {
+  font: inherit;
+  color: var(--ink);
+  background: var(--field);
+  border: 1px solid var(--ink);
+  padding: 0.5rem 0.6rem;
+  width: 100%;
+}
+
+.course-picks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.85rem;
+}
+
+.choice {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 500;
+}
+
+.choice input {
+  width: auto;
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0 0 1.25rem;
+}
+
+.tabs a {
+  background: var(--tab);
+  color: #f8efe2;
+  text-decoration: none;
+  padding: 0.35rem 0.7rem 0.25rem;
+  font-size: 0.9rem;
+}
+
+.tabs a[aria-current="page"] {
+  background: var(--ink);
+}
+
+.card-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 720px) {
+  .card-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.index-card {
+  background: var(--well);
+  border: 1px solid var(--ink);
+  padding: 1rem 1rem 1.1rem;
+  min-height: 10rem;
+}
+
+.index-card h2 {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.55rem;
+  margin: 0.2rem 0 0.35rem;
+}
+
+.index-card h2 a {
+  text-decoration: none;
+}
+
+.tab {
+  display: inline-block;
+  background: var(--tab);
+  color: #f8efe2;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  padding: 0.15rem 0.45rem;
+  margin: 0;
+}
+
+.from,
+.story {
+  margin: 0.25rem 0 0;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin: 0 0 1.25rem;
+}
+
+.recipe-sheet {
+  background: var(--well);
+  border: 1px solid var(--ink);
+  padding: 1.25rem;
+}
+
+.recipe-sheet h1 {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  margin: 0.2rem 0 0.4rem;
+}
+
+.card-form {
+  display: grid;
+  gap: 0.9rem;
+  max-width: 40rem;
+}
+
+.recipe-body {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 800px) {
+  .recipe-body {
+    grid-template-columns: 16rem 1fr;
+  }
+}
+
+.recipe-body h2 {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.2rem;
+  margin: 0 0 0.4rem;
+}
+
+.recipe-body ul,
+.recipe-body ol {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.empty {
+  border: 1px dashed var(--ink);
+  padding: 1.25rem;
+}
+
+.book-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin: 1rem 0 1.5rem;
+}
+
+.print-page {
+  background: #f7efe0;
+  color: #1f160e;
+}
+
+.print-sheet {
+  width: min(44rem, 100%);
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.print-cover {
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-bottom: 2px solid #1f160e;
+  margin-bottom: 2rem;
+}
+
+.print-recipe {
+  break-inside: avoid;
+  page-break-after: always;
+  padding: 1.5rem 0;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body,
+  html,
+  .print-page {
+    background: white;
+  }
+
+  .print-recipe {
+    page-break-after: always;
+  }
+}

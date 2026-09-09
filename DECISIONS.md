@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-09-09 - Kept Book In-Tree For Kit Dogfood
+
+### Context
+
+0.4.2 is published. This repo is the kit, not a product app. Mixbook, ReciScan, and Heirloom Recipe Box already cover family cookbooks. None are a Next.js household box we can run this pack against. The GitHub token for this environment cannot create a second repository.
+
+### Decision
+
+Add `apps/kept-book`: private kitchen, recipe cards, print PDF, Gelato documented and key-gated. Install the kit there. Persist to JSON until a Supabase project exists. Do not publish `apps/` on npm.
+
+### Consequences
+
+Kit eslint/prettier ignore `apps/`. CI runs Kept Book tests and build as a separate job. File-store data is not an heirloom. Moving to Supabase means applying `apps/kept-book/supabase/migrations/` and replacing the store.
+
 ## 2026-09-09 - Uplift Next.js And Supabase Domain Skills
 
 ### Context

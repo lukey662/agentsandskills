@@ -2,7 +2,7 @@
 
 ## Package Purpose
 
-`@appsforgood/next-supabase-kit` is a public pack of agents, skills, and a user guide for Next.js and Supabase projects. `init` writes `AGENTS.md`, `USER_GUIDE.md`, `USER_GUIDE.html`, and native Cursor/Claude/Codex/Copilot/Antigravity files. QA of user-visible work requires desktop and mobile screenshots. Default domain skills (`nextjs-app-router`, `supabase-auth-rls`, `postgres-migrations`, `owasp-security-review`) are playbooks with Reject and Done-when, not one-line checklists. The default CLI is `init`, `add`, `update`, `doctor`, and `adapter validate`.
+`@appsforgood/next-supabase-kit` is a public pack of agents, skills, and a user guide for Next.js and Supabase projects. `init` writes `AGENTS.md`, `USER_GUIDE.md`, `USER_GUIDE.html`, and native Cursor/Claude/Codex/Copilot/Antigravity files. QA of user-visible work requires desktop and mobile screenshots. Default domain skills (`nextjs-app-router`, `supabase-auth-rls`, `postgres-migrations`, `owasp-security-review`) are playbooks with Reject and Done-when, not one-line checklists. The default CLI is `init`, `add`, `update`, `doctor`, and `adapter validate`. `apps/kept-book` is an in-repo dogfood Next.js app (household recipes + print PDF); it is not part of the npm pack.
 
 ## CLI Surface
 

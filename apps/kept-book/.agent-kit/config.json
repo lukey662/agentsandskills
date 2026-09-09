@@ -1,0 +1,27 @@
+{
+  "stack": "next-supabase",
+  "catalog": {
+    "defaultAgents": [
+      "planner",
+      "app-engineer",
+      "security",
+      "design",
+      "qa",
+      "copy"
+    ],
+    "defaultSkills": [
+      "planning",
+      "nextjs-app-router",
+      "supabase-auth-rls",
+      "postgres-migrations",
+      "owasp-security-review",
+      "frontend-design",
+      "accessibility-wcag",
+      "browser-qa",
+      "testing-qa",
+      "product-copy",
+      "deslop",
+      "ship"
+    ]
+  }
+}

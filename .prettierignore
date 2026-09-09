@@ -5,6 +5,7 @@ release-artifacts/
 .agent-kit/
 research/
 examples/
+apps/
 templates/
 agents/
 skills/

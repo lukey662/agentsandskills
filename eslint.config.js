@@ -14,6 +14,7 @@ export default tseslint.config(
       ".agent-kit/",
       "research/workdir/",
       "examples/",
+      "apps/",
       "src/studio/**/assets/**"
     ]
   },
