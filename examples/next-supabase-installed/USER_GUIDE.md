@@ -82,11 +82,11 @@ Do not ask one chat to be all six. Planner names the next specialist. It does no
 
 | Skill | Use when |
 | --- | --- |
-| `planning` | Ambiguous work; pick an owner |
-| `nextjs-app-router` | Routes, Server Components, actions |
-| `supabase-auth-rls` | Auth, RLS, service role |
-| `postgres-migrations` | Schema and migrations |
-| `owasp-security-review` | Mutations, uploads, secrets |
+| `planning` | Ambiguous work; pick an owner and which skill they run |
+| `nextjs-app-router` | App Router, Server vs Client, actions, `proxy.ts` |
+| `supabase-auth-rls` | Auth, RLS, service role, Storage |
+| `postgres-migrations` | Schema, constraints, RLS in the same change |
+| `owasp-security-review` | Mutations, uploads, SSRF, secrets |
 | `frontend-design` | Layout, simple palette, anti-generic UI |
 | `accessibility-wcag` | Keyboard, contrast, labels |
 | `browser-qa` | Any screen. Required for QA of UI |
