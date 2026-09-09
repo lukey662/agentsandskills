@@ -77,7 +77,9 @@ One family, or two that are obviously different (display vs mono). Inter + syste
 - Mobile (~390): the primary CTA still fits above the fold.
 - Hierarchy from size, weight, and space — not from cards.
 - Landing and marketing pages take a full direction. App chrome (settings, tables) stays quiet and dense.
-- Reject: centered hero + two pills + three icon cards; glass navbar; four-column empty footer; fake metrics; broadsheet hairlines + dense newsprint columns (that look is itself a 2026 default).
+- Do not mark selection or severity with a left edge stroke. That pattern reads as default AI/SaaS chrome even on flat full-bleed sheets.
+- Prefer: radio + tint, check + tint, or typography/weight. Keep one accent for the primary CTA, not as a row edge.
+- Reject: centered hero + two pills + three icon cards; glass navbar; four-column empty footer; fake metrics; broadsheet hairlines + dense newsprint columns (that look is itself a 2026 default); left selection rails; callouts whose only cue is a thick left border.
 
 ## Motion
 

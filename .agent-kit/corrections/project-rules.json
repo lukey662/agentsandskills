@@ -16,6 +16,14 @@
       "text": "USER_GUIDE.html is judged in a browser. GitHub shows it as source. doctor and adapter validate must fail closed on the screenshot contract; adapter validate all only checks IDEs listed in the install manifest.",
       "createdAt": "2026-09-09T21:20:00.000Z",
       "reason": "Usage feedback: GitHub source view, Cursor-only installs failing adapter validate all, and QA requiredTools that doctor never checked."
+    },
+    {
+      "id": "no-left-accent-rails",
+      "scope": "project",
+      "status": "active",
+      "text": "Do not mark selection or severity with a left edge stroke. Selected rows use radio/checkbox plus light tint or weight. Status wells use a flat tint fill. One visual P0 list with accent-border cards and glow rails. A pick-list row or verified well with a colored left stroke fails deslop.",
+      "createdAt": "2026-09-09T22:10:00.000Z",
+      "reason": "Usage feedback: left accent bars on selected rows and status wells read as default AI/SaaS chrome."
     }
   ]
 }

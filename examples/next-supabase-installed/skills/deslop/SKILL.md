@@ -38,7 +38,7 @@ Second pass: re-read the rewrite. If the same tell remains, rewrite the paragrap
 
 ## Visual P0s — fail if still on screen
 
-These are the 2026 convergence cluster. One is a smell. Two or more is a reject.
+These are the 2026 flat AI/SaaS chrome cluster (same family as accent-border cards, glow rails, and card soup). One is a smell. Two or more is a reject. A pick-list row or status well with a left stroke is already a fail.
 
 - Purple-to-blue (or indigo) gradient hero, or gradient-clipped headline type
 - Inter / Roboto / default shadcn zinc as the whole identity
@@ -48,6 +48,12 @@ These are the 2026 convergence cluster. One is a smell. Two or more is a reject.
 - Acid green or neon vermilion on near-black used as decoration, not meaning
 - Lucide Sparkles / Zap as the product metaphor
 - Fake dashboard metrics or DiceBear avatars
+- Left accent bars / left-hand borderlines on selected rows, list items, cards, or success/error/warn wells (the “colored stroke on the left edge” pattern)
+- Thick one-sided colored borders, glow rails, neon strokes, or gradient borders used as the main state cue
+
+Selection must use radio/checkbox + light row tint (or weight/space) only. Status wells may use a flat tint fill. No `border-left` accent, no inset bar, no vertical rail as decoration. Keep one accent for the primary CTA, not as a row edge.
+
+**Acceptance fixture:** a pick-list row and a “verified” well must pass with **zero** left border accents. If screenshots show a blue/green/amber left stroke, deslop fails.
 
 Copy does not restyle the page. It lists the P0s from the screenshot and sends them to Design.
 

@@ -54,6 +54,12 @@ describe("deslop last and frontend-design install", () => {
     const frontend = readFileSync(join(root, ".cursor/skills/frontend-design/SKILL.md"), "utf8");
     expect(frontend).toContain("#10100e");
     expect(frontend).toContain("One field, one ink, one accent, one line");
+    expect(frontend).toContain("Do not mark selection or severity with a left edge stroke");
     expect(frontend).not.toContain("newsprint paper");
+
+    const deslop = readFileSync(join(root, ".cursor/skills/deslop/SKILL.md"), "utf8");
+    expect(deslop).toContain("Left accent bars");
+    expect(deslop).toContain("pick-list row");
+    expect(deslop).toContain("border-left");
   });
 });

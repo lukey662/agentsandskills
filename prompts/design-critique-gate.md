@@ -19,7 +19,7 @@ Return:
 - First-screen critique: whether the actual product, object, task, workflow, or content is immediately visible.
 - Distinctiveness verdict: `weak`, `adequate`, or `strong`.
 - Product-quality scorecard: user/task fit, content specificity, visual identity, information architecture, component states, accessibility and interaction, source safety, and total score.
-- AI-slop risks: generic gradients, vague SaaS copy, card soup, fake metrics, stock-like imagery, one-note palette, or placeholder content.
+- AI-slop risks: generic gradients, vague SaaS copy, card soup, fake metrics, stock-like imagery, one-note palette, placeholder content, left selection rails, or status wells whose cue is a thick left border.
 - UX risks: unclear primary action, weak information hierarchy, poor density, missing states, or mobile compromise.
 - Accessibility risks: semantic structure, keyboard path, focus, contrast, motion, labels, and error feedback.
 - Required changes before acceptance.

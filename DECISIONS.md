@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-09-09 - Left Accent Bars Are The Same Chrome Cluster
+
+### Context
+
+Usage asked to reject left-edge selection rails and thick left-border status wells, and to merge that with the earlier flat AI/SaaS chrome prompt (accent-border cards, glow rails, card soup).
+
+### Decision
+
+One visual P0 list. `deslop`, `frontend-design`, distinctiveness anti-refs, `STYLE_GUIDE` anti-slop, and UI detectors share it. Selection is radio/check + light tint. Status wells use a flat tint fill. No `border-left` accent. The kit HTML fail-closed well follows that. Do not name downstream product apps in the kit.
+
+### Consequences
+
+A pick-list row or “verified” well with a blue/green/amber left stroke fails deslop. Distinctiveness fails if left-edge bars remain after product nouns are swapped.
+
 ## 2026-09-09 - Fail Closed On Usage Feedback
 
 ### Context
