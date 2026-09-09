@@ -1,4 +1,4 @@
-import { randomBytes, randomUUID } from "node:crypto";
+import { randomInt, randomUUID } from "node:crypto";
 
 const INVITE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
@@ -7,14 +7,14 @@ export function newId(): string {
 }
 
 export function newInviteCode(): string {
-  const bytes = randomBytes(8);
   let out = "";
   for (let i = 0; i < 8; i += 1) {
-    const byte = bytes[i];
-    if (byte === undefined) {
+    const index = randomInt(INVITE_ALPHABET.length);
+    const char = INVITE_ALPHABET[index];
+    if (!char) {
       throw new Error("invite code entropy failed");
     }
-    out += INVITE_ALPHABET[byte % INVITE_ALPHABET.length];
+    out += char;
   }
   return out;
 }

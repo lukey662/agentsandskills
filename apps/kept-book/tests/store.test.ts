@@ -3,6 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { createHousehold, createRecipe, getRecipe, joinHousehold, listRecipes } from "../src/lib/store";
+import { newInviteCode } from "../src/lib/ids";
 import { signSession, verifySessionToken } from "../src/lib/session-token";
 import { renderCookbookPdf } from "../src/lib/pdf";
 import { parseInviteCode, parseRecipeFields } from "../src/lib/validation";
@@ -46,6 +47,11 @@ describe("household isolation", () => {
 
   it("rejects a guessed invite", async () => {
     await expect(joinHousehold("ZZZZZZZZ", "Sam")).rejects.toMatchObject({ code: "invalid-invite" });
+  });
+
+  it("issues eight-character invite codes from the alphabet", () => {
+    const code = newInviteCode();
+    expect(code).toMatch(/^[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{8}$/);
   });
 });
 
