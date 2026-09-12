@@ -1,6 +1,7 @@
 # Frontend Quality Checklist
 
 - First screen shows the actual product or task.
+- `frontend-design` named `build`, `review`, or `detect` and a surface before CSS.
 - `DESIGN.md` includes product category, audience, user needs, content inventory, brand constraints, and creative direction.
 - Brand/content intake was completed before visual implementation.
 - At least two creative directions were considered.

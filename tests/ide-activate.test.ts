@@ -32,6 +32,7 @@ describe("IDE activation", () => {
     expect(readFileSync(join(root, ".codex/agents/qa.toml"), "utf8")).toContain("Do not review");
     expect(readFileSync(join(root, ".github/copilot-instructions.md"), "utf8")).toContain("Do not review user-visible work from code alone");
     expect(existsSync(join(root, ".antigravity/agent-kit/commands/browser-qa.toml"))).toBe(true);
+    expect(readFileSync(join(root, ".antigravity/agent-kit/commands/frontend.toml"), "utf8")).toContain("Name the mode (build, review, or detect)");
   });
 
   it("activate can add Claude after a Cursor-only init", () => {

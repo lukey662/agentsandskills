@@ -55,6 +55,9 @@ describe("deslop last and frontend-design install", () => {
     expect(frontend).toContain("#10100e");
     expect(frontend).toContain("One field, one ink, one accent, one line");
     expect(frontend).toContain("Do not mark selection or severity with a left edge stroke");
+    expect(frontend).toContain("| `build` |");
+    expect(frontend).toContain("| `detect` |");
+    expect(frontend).toContain("inside-design-system");
     expect(frontend).not.toContain("newsprint paper");
 
     const deslop = readFileSync(join(root, ".cursor/skills/deslop/SKILL.md"), "utf8");

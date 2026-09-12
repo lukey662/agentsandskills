@@ -87,7 +87,7 @@ Do not ask one chat to be all six. Planner names the next specialist. It does no
 | `supabase-auth-rls` | Auth, RLS, service role, Storage |
 | `postgres-migrations` | Schema, constraints, RLS in the same change |
 | `owasp-security-review` | Mutations, uploads, SSRF, secrets |
-| `frontend-design` | Layout, simple palette, anti-generic UI |
+| `frontend-design` | Build, review, or detect UI. Tokens first. Anti-generic |
 | `accessibility-wcag` | Keyboard, contrast, labels |
 | `browser-qa` | Any screen. Required for QA of UI |
 | `testing-qa` | Unit / regression / smoke only |
@@ -104,7 +104,7 @@ QA of a screen always uses `browser-qa`, not `testing-qa` alone. Each agent file
 1. **Planner** — paste: `Plan this change. Name the owning agent, extra reviewers, and which screenshots QA must capture. Do not write code.`
 2. **App engineer** — paste: `Implement the plan. Smoke the changed route in the browser before you hand off.`
 3. **Security** if data/auth/secrets changed.
-4. **Design** if the UI changed — paste: `Review the running UI from screenshots first. Desktop and mobile. Reject generic AI-looking layout.`
+4. **Design** if the UI changed — paste: `Act as design. Name the mode (build, review, or detect). Review the running UI from screenshots first. Desktop and mobile. Reject generic AI-looking layout.`
 5. **QA** — paste: `Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.`
 
 Done when QA attaches `qa-evidence/<date>-<slug>/desktop.png` and `mobile.png` plus a verdict.
@@ -115,7 +115,7 @@ Planner → App engineer → Security → QA. QA must open login/logout/denied i
 
 ### UI polish
 
-Design + `frontend-design` + `browser-qa`. Desktop and mobile required. One happy-path shot is a fail.
+Design + `frontend-design` + `browser-qa`. Name build, review, or detect. Desktop and mobile required. One happy-path shot is a fail.
 
 ### Copy pass
 

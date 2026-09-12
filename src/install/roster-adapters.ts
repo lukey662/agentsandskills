@@ -108,7 +108,8 @@ export function generateAntigravityCommands(cwd: string, force: boolean, collect
     {
       name: "frontend",
       description: "UI review from screenshots first.",
-      prompt: "Act as the design agent. Review the running UI from screenshots first. Desktop and mobile. Reject generic AI-looking layout."
+      prompt:
+        "Act as the design agent. Name the mode (build, review, or detect) and the surface. Use the frontend-design skill. Review the running UI from screenshots first. Desktop and mobile. Reject generic AI-looking layout. Detect means audit only — no edits."
     },
     {
       name: "copy",

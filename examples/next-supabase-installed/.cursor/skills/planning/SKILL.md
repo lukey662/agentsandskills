@@ -16,7 +16,7 @@ Planning, roadmaps, “what should we do,” or any request that needs an owner.
 3. Name the skill that owner must run first:
    - App engineer: `nextjs-app-router` and, if data/auth, `supabase-auth-rls` / `postgres-migrations`
    - Security: `owasp-security-review` + `supabase-auth-rls`
-   - Design: `frontend-design`
+   - Design: `frontend-design` (name build, review, or detect)
    - QA: `browser-qa` (screens) and `testing-qa` (commands)
    - Copy: `product-copy` then `deslop` last
 4. Add extra reviewers: Security for auth/data/secrets, Design for UI, QA for behavior/UI, Copy for public words.

@@ -1,21 +1,44 @@
 ---
 name: frontend-design
-description: Use when building or reviewing user-facing UI. Commit one simple palette and type pairing. Reject default AI layouts, timid color spreads, and decoration that is not the task.
+description: Use when building, reviewing, or auditing user-facing UI. Name the mode (build, review, or detect), commit 4–6 tokens, match the existing stack, and reject default AI layouts.
 ---
 
 # Frontend Design
 
 Build or review a screen as if a stranger must name the product from the first viewport. Simple and specific beats decorated.
 
-Scan 2026-09-06 (structure only, no bodies copied): Anthropic `frontend-design` (updated 2026-06), addyosmani `frontend-ui-engineering`, `educlopez/ui-craft`, `funboy322/avoid-ai-design`, `superdesigndev/superdesign-skill`.
+Scan 2026-09-12 (structure only, no bodies copied): Anthropic `frontend-design` (2026-06), addyosmani `frontend-ui-engineering`, `educlopez/ui-craft`, `funboy322/avoid-ai-design`, `superdesigndev/superdesign-skill`, `google-labs-code/design.md`. Do not install their CLIs, canvases, MCP servers, or slash-command catalogs.
 
 ## Use when
 
 Any user-facing layout, component, HTML page, or “it looks generic.” Required for `USER_GUIDE.html` and for app screens.
 
+## Mode
+
+Name the mode before CSS. Default is `review` when the UI already exists, `build` when it does not.
+
+| Mode | Do |
+| --- | --- |
+| `build` | Write tokens and one layout idea, then CSS. Screenshot after. |
+| `review` | Screenshot first. Findings table, then fix P0s. |
+| `detect` | Audit only. No edits. Use when asked to scan, flag, or not change code. |
+
+## Surface
+
+Pick one profile and stay at that depth.
+
+| Profile | Depth |
+| --- | --- |
+| `landing` / standalone artifact | Full direction. Spend boldness once. |
+| `app-chrome` | Quiet and dense. Loading, empty, error, and success before decoration. |
+| `inside-design-system` | Surgical. Keep tokens and primitives. Swap tells; do not invent a second brand. |
+| `kit-html` | This pack’s charcoal assignment desk. Not a SaaS landing page. |
+
 ## Ground in the subject
 
-Name the product, the user, and this screen’s job before CSS. Tokens come from the domain (materials, time of day, one real object) — not from a theme pack. A toy store and a ledger cannot share a palette.
+Name the product, the user, and this screen’s job before CSS. Read `DESIGN.md` when it exists — tokens there are normative; prose is how to apply them. Tokens come from the domain (materials, time of day, one real object) — not from a theme pack. A toy store and a ledger cannot share a palette.
+
+Match the project’s stack (CSS variables, Tailwind, existing component library). Do not mix a second styling approach.
 
 **This kit’s HTML** (`USER_GUIDE.html`): charcoal assignment desk.
 
@@ -40,7 +63,7 @@ One field, one ink, one accent, one line. That is enough.
 
 1. **Dominant field** (~80%): the page. Flat. Not a gradient, not a mesh.
 2. **Ink** (~15%): body text. Contrast ≥ 4.5:1 (3:1 for large type).
-3. **Accent** (~5%): one action or one required state. Recolor-as-decoration fails.
+3. **Accent** (~5%): one action or one required state. A few placements in the first viewport (primary CTA, one required/fail). Recolor-as-decoration fails.
 4. **Line / well**: borders and code wells, one step off the field.
 
 Recipes (pick one that fits the product, then stop):
@@ -87,18 +110,42 @@ None, or one moment that answers a click. Fade-and-slide on every section is gen
 
 ## Process
 
-1. Name the product, the user, and the job of this screen.
-2. Write the 4–6 tokens and one-sentence layout idea.
-3. Check the plan is not a 2026 default (cream editorial, neon-on-black decoration, SaaS card kit, newsprint desk, last week’s “tasteful” swap). If it is, change one axis: field, accent, or structure.
-4. Build. Spend boldness once. Remove one accessory.
-5. Screenshot desktop (~1280) and mobile (~390). Fix from pixels. Ask: would a stranger believe a person chose this?
+1. Name the mode, the surface profile, the product, the user, and the job of this screen.
+2. Read `DESIGN.md` and existing tokens if they exist. If the brief names a look, follow it — including when it asks for a 2026 default.
+3. Write the 4–6 tokens and one-sentence layout idea (build), or skip to screenshots (review/detect).
+4. Check the plan is not a 2026 default (cream editorial, neon-on-black decoration, SaaS card kit, newsprint desk, last week’s “tasteful” swap). If it is and the brief did not ask, change one axis: field, accent, or structure.
+5. Build or rewrite at the profile’s depth. Spend boldness once. Remove one accessory.
+6. Screenshot desktop (~1280) and mobile (~390). Fix from pixels. Ask: would a stranger believe a person chose this?
+7. If you cannot render, mark visual findings **inferred** and say so. Code-level tells (literal `from-indigo-500`, Inter, untouched shadcn zinc) stay **code-certain**.
 
 ## Checks
 
 - A stranger can name the product from the first screen.
-- Loading, empty, error, disabled, success exist where the flow has them.
-- Focus visible, tap targets usable.
+- Loading, empty, error, disabled, success exist where the flow has them. Color is not the only state signal.
+- Focus visible, tap targets usable. Keyboard order matches visual order.
 - Copy on the screen is real. If words are public-facing, Copy runs `deslop` last.
+
+## Review output
+
+For `review` and `detect`, use a table. Do not approve from a vibe.
+
+| Severity | Finding | Where | Confidence |
+| --- | --- | --- | --- |
+| P0 | Layperson would call it AI-made, or it blocks use | screenshot or file | code-certain / inferred |
+| P1 | A designer would notice | screenshot or file | code-certain / inferred |
+| P2 | Craft gap | screenshot or file | code-certain / inferred |
+
+P0 list lives in `deslop`. A clean catalog pass is necessary but not enough: the result must still look chosen for this product.
+
+## Reject
+
+- Approving UI from TSX or HTML alone.
+- Pasting this kit’s charcoal desk onto a downstream product.
+- Installing a design MCP, canvas CLI, or slash-command pack to “do design.”
+- Detect-mode edits.
+- A full rebuild inside an existing design system when a surgical pass would do.
+- Mesh gradients, noise overlays, and decorative atmosphere as the default “bold” move (older `frontend-design` forks). The brief can ask; the model must not invent it.
+- “We’ll make it distinctive later.” Use the product’s tokens now.
 
 ## Tools
 
@@ -106,4 +153,4 @@ None, or one moment that answers a click. Fade-and-slide on every section is gen
 
 ## Done when
 
-Desktop and mobile images were read. Token list is in the change or in `DESIGN.md`. No P0 slop from `deslop` remains unless Design names it as an accepted exception.
+Mode and surface were named. Desktop and mobile images were read (or detect listed what could not be rendered). Token list is in the change or in `DESIGN.md`. No P0 slop from `deslop` remains unless Design names it as an accepted exception. Detect ends with the table and no file edits.

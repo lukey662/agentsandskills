@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-09-12 - Frontend-design Playbook Modes
+
+### Context
+
+`frontend-design` already had kit vs product tokens and 2026 default-cluster rejects, but GitHub packs had pulled ahead on *how* the skill runs. A 2026-09-12 scan of Anthropic `frontend-design`, addyosmani `frontend-ui-engineering`, `educlopez/ui-craft`, `funboy322/avoid-ai-design`, `superdesigndev/superdesign-skill`, and `google-labs-code/design.md` showed shared structure: named modes (build vs review vs detect), surface depth (landing vs app chrome vs design-system surgical), `DESIGN.md` as token source of truth, code-certain vs inferred findings, and a severity table. Those packs also ship CLIs, MCP servers, and slash-command catalogs this kit already rejected.
+
+### Decision
+
+Uplift `frontend-design` and the Design agent to the same Use / Mode / Reject / Done-when playbook shape as the 2026-09-09 domain skills. Keep one skill. Extract structure only. Do not install Superdesign, ui-craft MCP, or a second design OS. Kit HTML keeps charcoal desk tokens. Downstream apps write 4–6 product tokens. Detect is read-only. Older `frontend-design` forks that default to mesh gradients and decorative atmosphere stay anti-references.
+
+### Consequences
+
+Design names `build`, `review`, or `detect` and a surface profile before CSS. `update` refreshes pristine skill and agent files. Screenshot QA stays in `browser-qa`. Visual P0 list stays in `deslop`.
+
 ## 2026-09-09 - Version Packages Keeps A Drafted Changelog Heading
 
 ### Context
