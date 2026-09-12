@@ -16,6 +16,20 @@ Uplift `frontend-design` and the Design agent to the same Use / Mode / Reject / 
 
 Design names `build`, `review`, or `detect` and a surface profile before CSS. `update` refreshes pristine skill and agent files. Screenshot QA stays in `browser-qa`. Visual P0 list stays in `deslop`.
 
+## 2026-09-12 - Design Setup On New Repos
+
+### Context
+
+After the playbook modes landed, first-run Design still jumped to CSS or a wall of intake questions. `init` does not install `DESIGN.md` (legacy docs only). Downstream installs were missing a compact setup: what is the product, what is the architecture, and what principles should the style guide encode.
+
+### Decision
+
+Add a `setup` mode to `frontend-design` and the Design agent. Scan the repo first. Ask five compact questions (product/audience, first-screen job, personality/density, brand vs invent, motion). Recommend 4–6 principles, a token recipe or surgical pass, and two directions. Then write a short product `DESIGN.md` and append frontend rules to `STYLE_GUIDE.md` with the user. Do not overwrite a mature style guide. Do not paste kit charcoal tokens onto the product. Planner sends Design to `setup` when `DESIGN.md` is missing. Setup may skip screenshots when nothing can render; Design still keeps `requiredTools`.
+
+### Consequences
+
+First UI work in a fresh install starts with a collaborative style guide, not a theme pack. `USER_GUIDE` ships a pasteable setup prompt. Antigravity `/frontend` names setup. The 17-doc council `DESIGN.md` template stays off the default `init`.
+
 ## 2026-09-09 - Version Packages Keeps A Drafted Changelog Heading
 
 ### Context

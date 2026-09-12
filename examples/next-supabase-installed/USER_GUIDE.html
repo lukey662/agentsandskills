@@ -509,6 +509,14 @@
                 <button class="copy" type="button" data-copy-from="plan-prompt">Copy Planner prompt</button>
               </div>
             </article>
+            <article class="ticket">
+              <header><span>New repo with no DESIGN.md — paste this to Design first</span></header>
+              <pre id="design-setup-prompt">
+Act as design. This is a new repo. Scan the architecture, then ask me about the product, audience, and first-screen job. Recommend principles and a token recipe. Write DESIGN.md and STYLE_GUIDE.md with me before any CSS.</pre>
+              <div class="copy-row">
+                <button class="copy" type="button" data-copy-from="design-setup-prompt">Copy Design setup prompt</button>
+              </div>
+            </article>
           </div>
           <p>
             You should get a named owner (<code>app-engineer</code>, <code>security</code>, <code>design</code>, <code>qa</code>, or <code>copy</code>) and, if
@@ -543,6 +551,10 @@
             <tr>
               <td>It looks wrong</td>
               <td>Design</td>
+            </tr>
+            <tr>
+              <td>Style guide / first UI / no DESIGN.md</td>
+              <td>Design (<code>setup</code>)</td>
             </tr>
             <tr>
               <td>Is this done?</td>
@@ -586,7 +598,7 @@
             </tr>
             <tr>
               <td><code>frontend-design</code></td>
-              <td>Build, review, or detect UI. Tokens first. Anti-generic</td>
+              <td>Setup, build, review, or detect UI. Tokens first. Anti-generic</td>
             </tr>
             <tr>
               <td><code>accessibility-wcag</code></td>
@@ -683,9 +695,10 @@ Act as the QA agent. Use the browser-qa skill. Do not review code alone. Open th
           <li>
             Design if the UI changed —
             <code
-              >Act as design. Name the mode (build, review, or detect). Review the running UI from screenshots first. Desktop and mobile. Reject generic
+              >Act as design. Name the mode (setup, build, review, or detect). Review the running UI from screenshots first. Desktop and mobile. Reject generic
               AI-looking layout.</code
             >
+            If <code>DESIGN.md</code> is missing, run setup first.
           </li>
           <li>QA — paste the good prompt below.</li>
         </ol>
@@ -695,9 +708,21 @@ Act as the QA agent. Use the browser-qa skill. Do not review code alone. Open th
           Planner → App engineer → Security → QA. QA must open login, logout, and denied in the browser. Screenshots still required when the finding is
           user-visible.
         </p>
+        <h3>New repo design setup</h3>
+        <p>After <code>init</code>, before the first product CSS, paste to Design:</p>
+        <pre id="design-setup-flow">
+Act as design. This is a new repo. Scan the architecture, then ask me about the product, audience, and first-screen job. Recommend principles and a token recipe. Write DESIGN.md and STYLE_GUIDE.md with me before any CSS.</pre>
+        <div class="copy-row">
+          <button class="copy" type="button" data-copy-from="design-setup-flow">Copy Design setup prompt</button>
+        </div>
+        <p>
+          Design scans the stack, asks a compact intake, recommends principles, then writes a short product <code>DESIGN.md</code> and frontend
+          <code>STYLE_GUIDE.md</code> rules. It does not paste this kit’s charcoal desk onto the app. Screenshots wait until there is a screen to capture.
+        </p>
         <h3>UI polish</h3>
         <p>
-          Design + <code>frontend-design</code> + <code>browser-qa</code>. Name build, review, or detect. Desktop and mobile. One happy-path shot is a fail.
+          Design + <code>frontend-design</code> + <code>browser-qa</code>. Name setup, build, review, or detect. Desktop and mobile once a screen exists. One
+          happy-path shot is a fail.
         </p>
         <h3>Copy pass</h3>
         <p>Copy reviews the <em>rendered</em> words in screenshots, not strings in TSX. Run <code>product-copy</code>, then <code>deslop</code> last.</p>

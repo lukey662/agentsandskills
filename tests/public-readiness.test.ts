@@ -41,11 +41,13 @@ describe("public package readiness", () => {
     expect(guide).toContain("deslop");
     expect(guide).toContain("npx agent-kit guide");
     expect(guide).toContain("catalog.json");
+    expect(guide).toContain("Write DESIGN.md and STYLE_GUIDE.md with me before any CSS");
     const html = readFileSync(join(root, "USER_GUIDE.html"), "utf8");
     expect(html).toContain("Do not review code alone");
     expect(html).toContain("Ask one specialist");
     expect(html).toContain("deslop");
     expect(html).toContain("catalog.json");
+    expect(html).toContain("Write DESIGN.md and STYLE_GUIDE.md with me before any CSS");
     expect(html).toContain('data-view="user-guide"');
     expect(html).not.toMatch(/border-left\s*:/);
     const distinct = readFileSync(join(root, "checklists/frontend-distinctiveness.md"), "utf8");

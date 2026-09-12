@@ -1,6 +1,6 @@
 ---
 name: frontend-design
-description: Use when building, reviewing, or auditing user-facing UI. Name the mode (build, review, or detect), commit 4–6 tokens, match the existing stack, and reject default AI layouts.
+description: Use when setting up design on a new repo, or building, reviewing, or auditing UI. Name the mode (setup, build, review, or detect). Setup writes DESIGN.md and style-guide rules with the user before CSS.
 ---
 
 # Frontend Design
@@ -11,21 +11,22 @@ Scan 2026-09-12 (structure only, no bodies copied): Anthropic `frontend-design` 
 
 ## Use when
 
-Any user-facing layout, component, HTML page, or “it looks generic.” Required for `USER_GUIDE.html` and for app screens.
+Any user-facing layout, component, HTML page, or “it looks generic.” Required for `USER_GUIDE.html` and for app screens. Also required on a **new repo** or first UI job when `DESIGN.md` is missing or TBD — run `setup` before CSS.
 
 ## Mode
 
-Name the mode before CSS. Default is `review` when the UI already exists, `build` when it does not.
+Name the mode before CSS. Default is `setup` when `DESIGN.md` is missing or TBD, `review` when the UI already exists, `build` when it does not.
 
 | Mode | Do |
 | --- | --- |
+| `setup` | New repo or missing/TBD `DESIGN.md`. Scan architecture, ask compact questions, recommend principles, write `DESIGN.md` + `STYLE_GUIDE.md` with the user. No CSS unless they then ask to build. |
 | `build` | Write tokens and one layout idea, then CSS. Screenshot after. |
 | `review` | Screenshot first. Findings table, then fix P0s. |
 | `detect` | Audit only. No edits. Use when asked to scan, flag, or not change code. |
 
 ## Surface
 
-Pick one profile and stay at that depth.
+Pick one profile and stay at that depth. Setup names a likely surface after the scan; it does not require one before questions.
 
 | Profile | Depth |
 | --- | --- |
@@ -33,6 +34,72 @@ Pick one profile and stay at that depth.
 | `app-chrome` | Quiet and dense. Loading, empty, error, and success before decoration. |
 | `inside-design-system` | Surgical. Keep tokens and primitives. Swap tells; do not invent a second brand. |
 | `kit-html` | This pack’s charcoal assignment desk. Not a SaaS landing page. |
+
+## Setup (new repo)
+
+Run this when any of these is true: `DESIGN.md` is missing; it is still TBD / `[product]` / “your product”; the user asked to set up design, a style guide, or principles; this is first UI work after `init`.
+
+Do **not** dump a 17-doc council template. Do **not** paste this kit’s charcoal desk onto the product. `init` does not install `DESIGN.md`; you write a short product file with the user.
+
+### 1. Scan first — do not re-ask what you can read
+
+Read enough to name:
+
+- Product name and one-line job from README / `package.json`
+- Router: App Router (`app/`) vs Pages (`pages/`)
+- Styling: Tailwind, CSS modules, CSS variables, shadcn/ui, Radix, other component library
+- Fonts: `next/font`, self-hosted, or unset
+- Auth or first useful screens (login, invite, empty app)
+- Existing tokens in `globals.css`, Tailwind theme, or a mature `STYLE_GUIDE.md`
+
+Report the architecture in a short list. If a real visual system already exists, stay surgical (`inside-design-system`) and offer to record it rather than invent a second brand.
+
+### 2. One compact ask
+
+Ask once. Skip any item the scan already answered.
+
+1. Product name and who it is for.
+2. First-screen job — what the user *does* on the first useful screen.
+3. Three personality traits and density (quiet/dense vs marketing/bold).
+4. Existing brand (logo, hex, type) vs invent from the domain.
+5. Motion: none / hover only / one moment.
+
+Do not open with a 20-question intake. Public words still belong to Copy.
+
+### 3. Recommend best practices, then pause
+
+Always recommend before writing files. Include:
+
+- **Principles (4–6):** first screen = the work; one field, one ink, one accent, one line; states before decoration; WCAG 2.1 AA contrast (4.5:1 text); match the existing stack; no left-edge selection rails.
+- **Token recipe:** pick one scheme from Color below that fits *this* domain, or stay surgical if shadcn/existing tokens already exist. Downstream apps never copy kit charcoal `#10100e`.
+- **Two directions:** one sentence each. Pick one and say why.
+- **Anti-references** for this product (cream editorial, neon-on-black decoration, SaaS card kit, newsprint, kit charcoal desk — keep only those that apply).
+- **QA gate:** any later user-visible CSS still needs desktop (~1280) and mobile (~390) screenshots.
+- **Ownership:** Copy finishes public words with `deslop`. Design restyles leftover visual P0s. QA owns accept / reject.
+
+Pause for confirm. If the session is non-interactive, or the user said to proceed, **state assumptions** and continue.
+
+### 4. Write short docs — no CSS yet
+
+Write a **short** product `DESIGN.md` (not the 160-line kit template):
+
+```markdown
+# DESIGN.md
+
+## Product
+## Audience
+## First-screen job
+## Architecture found
+## Principles
+## Tokens
+| Token | Value | Use |
+| --- | --- | --- |
+## Anti-references
+```
+
+`STYLE_GUIDE.md`: if missing, write a short **Frontend (product)** section (tokens live in `DESIGN.md`, states, stack, anti-slop). If a mature guide already exists, **append** that section — do not overwrite.
+
+Then stop. If they asked to build a screen, switch to `build`. Setup does **not** require screenshots when nothing can render yet. Do not drop `requiredTools` on the Design agent.
 
 ## Ground in the subject
 
@@ -110,6 +177,8 @@ None, or one moment that answers a click. Fade-and-slide on every section is gen
 
 ## Process
 
+If mode is `setup`, follow **Setup** instead of this list.
+
 1. Name the mode, the surface profile, the product, the user, and the job of this screen.
 2. Read `DESIGN.md` and existing tokens if they exist. If the brief names a look, follow it — including when it asks for a 2026 default.
 3. Write the 4–6 tokens and one-sentence layout idea (build), or skip to screenshots (review/detect).
@@ -140,6 +209,8 @@ P0 list lives in `deslop`. A clean catalog pass is necessary but not enough: the
 ## Reject
 
 - Approving UI from TSX or HTML alone.
+- Starting CSS on a new product before `setup` when `DESIGN.md` is missing or TBD.
+- Overwriting a mature `STYLE_GUIDE.md`.
 - Pasting this kit’s charcoal desk onto a downstream product.
 - Installing a design MCP, canvas CLI, or slash-command pack to “do design.”
 - Detect-mode edits.
@@ -149,8 +220,10 @@ P0 list lives in `deslop`. A clean catalog pass is necessary but not enough: the
 
 ## Tools
 
-`browser` + `screenshot` + `image-review` first. Do not approve UI from TSX or HTML alone.
+`browser` + `screenshot` + `image-review` first for `build`, `review`, and `detect`. Do not approve UI from TSX or HTML alone. Setup may skip capture when nothing can render yet.
 
 ## Done when
 
-Mode and surface were named. Desktop and mobile images were read (or detect listed what could not be rendered). Token list is in the change or in `DESIGN.md`. No P0 slop from `deslop` remains unless Design names it as an accepted exception. Detect ends with the table and no file edits.
+**Setup:** architecture was reported, questions were asked or assumptions stated, principles and a token recipe were recommended, a short product `DESIGN.md` exists, and `STYLE_GUIDE.md` was created or appended. No unsolicited CSS. Screenshots are not required if nothing can render.
+
+**Build / review / detect:** Mode and surface were named. Desktop and mobile images were read (or detect listed what could not be rendered). Token list is in the change or in `DESIGN.md`. No P0 slop from `deslop` remains unless Design names it as an accepted exception. Detect ends with the table and no file edits.

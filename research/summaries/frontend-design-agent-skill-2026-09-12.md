@@ -20,7 +20,8 @@ The installed `frontend-design` skill already had kit vs product tokens and 2026
 
 ## Repeated patterns adopted
 
-- Name the job (`build` / `review` / `detect`) before CSS.
+- Name the job (`setup` / `build` / `review` / `detect`) before CSS. `setup` is first-run on a new repo: scan, compact questions, recommended principles, then a short product `DESIGN.md`.
+- Pick surface depth: landing vs app chrome vs inside a design system vs this kit’s HTML.
 - Pick surface depth: landing vs app chrome vs inside a design system vs this kit’s HTML.
 - Read existing `DESIGN.md` / tokens; stay surgical inside a system.
 - Tag findings as code-certain (source) or inferred (pixels or no render).
@@ -36,9 +37,9 @@ The installed `frontend-design` skill already had kit vs product tokens and 2026
 
 ## Promoted updates
 
-- `skills/frontend-design/SKILL.md` playbook: Mode, Surface, Reject, review table, Done-when.
-- `agents/design/agent.md`: name mode and surface; detect is audit-only.
-- Antigravity `/frontend` prompt names the same mode contract.
+- `skills/frontend-design/SKILL.md` playbook: Mode (including `setup`), Surface, Reject, review table, Done-when.
+- `agents/design/agent.md`: name mode and surface; detect is audit-only; setup writes `DESIGN.md` + style-guide rules with the user before CSS.
+- Antigravity `/frontend` prompt names the same mode contract, including setup on a new repo.
 - Tests lock the new contract on init.
 
 Do not copy source code, design files, or skill bodies from reviewed repositories.

@@ -13,7 +13,7 @@ The repository has five main subsystems:
 
 The CLI reads bundled assets from the package root so the same commands work in local development and after build.
 
-Package-level research decisions are recorded in `DECISIONS.md`. Default pack skills live in `skills/<id>/SKILL.md`. `frontend-design` is a playbook with `build` / `review` / `detect` modes; the 2026-09-12 GitHub scan is in `research/summaries/frontend-design-agent-skill-2026-09-12.md`.
+Package-level research decisions are recorded in `DECISIONS.md`. Default pack skills live in `skills/<id>/SKILL.md`. `frontend-design` is a playbook with `setup` / `build` / `review` / `detect` modes; the 2026-09-12 GitHub scan is in `research/summaries/frontend-design-agent-skill-2026-09-12.md`.
 
 ## Install Behavior
 

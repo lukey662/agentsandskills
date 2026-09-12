@@ -52,8 +52,9 @@ describe("domain skill uplifts", () => {
     expect(skill).toContain("user_id");
   });
 
-  it("frontend-design names modes, surfaces, and DESIGN.md before CSS", () => {
+  it("frontend-design names modes, surfaces, setup intake, and DESIGN.md before CSS", () => {
     const skill = readSkill("frontend-design");
+    expect(skill).toContain("| `setup` |");
     expect(skill).toContain("| `build` |");
     expect(skill).toContain("| `review` |");
     expect(skill).toContain("| `detect` |");
@@ -64,10 +65,16 @@ describe("domain skill uplifts", () => {
     expect(skill).toContain("Installing a design MCP");
     expect(skill).toContain("#10100e");
     expect(skill).toContain("Do not mark selection or severity with a left edge stroke");
+    expect(skill).toContain("Scan first");
+    expect(skill).toContain("First-screen job");
+    expect(skill).toContain("Write a **short** product `DESIGN.md`");
+    expect(skill).toContain("STYLE_GUIDE.md");
+    expect(skill).toContain("do not overwrite");
     const design = readFileSync(join(process.cwd(), "agents/design/agent.md"), "utf8");
-    expect(design).toContain("`build`, `review`, or `detect`");
+    expect(design).toContain("`setup`, `build`, `review`, or `detect`");
     expect(design).toContain("Detect means audit only");
     expect(design).toContain("requiredTools: [browser, screenshot, image-review]");
+    expect(design).toContain("Setup may skip capture");
   });
 
   it("planning names which domain skill the owner must run", () => {
@@ -75,7 +82,8 @@ describe("domain skill uplifts", () => {
     expect(skill).toContain("nextjs-app-router");
     expect(skill).toContain("Skipping `supabase-auth-rls`");
     expect(skill).toContain("Skipping `nextjs-app-router`");
-    expect(skill).toContain("name build, review, or detect");
+    expect(skill).toContain("name setup, build, review, or detect");
+    expect(skill).toContain("Skipping Design `setup`");
   });
 
   it("testing-qa does not replace domain skills or browser-qa", () => {
@@ -96,5 +104,8 @@ describe("domain skill uplifts", () => {
     const design = readFileSync(join(root, ".cursor/agents/design.md"), "utf8");
     expect(design).toContain("Detect means audit only");
     expect(design).toContain("requiredTools: [browser, screenshot, image-review]");
+    expect(design).toContain("`setup`, `build`, `review`, or `detect`");
+    const guide = readFileSync(join(root, "USER_GUIDE.md"), "utf8");
+    expect(guide).toContain("Write DESIGN.md and STYLE_GUIDE.md with me before any CSS");
   });
 });

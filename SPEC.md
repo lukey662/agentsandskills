@@ -2,7 +2,7 @@
 
 ## Package Purpose
 
-`@appsforgood/next-supabase-kit` is a public pack of agents, skills, and a user guide for Next.js and Supabase projects. `init` writes `AGENTS.md`, `USER_GUIDE.md`, `USER_GUIDE.html`, and native Cursor/Claude/Codex/Copilot/Antigravity files. QA of user-visible work requires desktop and mobile screenshots. Default domain skills (`nextjs-app-router`, `supabase-auth-rls`, `postgres-migrations`, `owasp-security-review`) are playbooks with Reject and Done-when, not one-line checklists. `frontend-design` is the same shape: name `build`, `review`, or `detect`, commit 4–6 tokens, match the existing stack, and screenshot before accepting UI. The default CLI is `init`, `add`, `update`, `doctor`, `guide`, and `adapter validate`.
+`@appsforgood/next-supabase-kit` is a public pack of agents, skills, and a user guide for Next.js and Supabase projects. `init` writes `AGENTS.md`, `USER_GUIDE.md`, `USER_GUIDE.html`, and native Cursor/Claude/Codex/Copilot/Antigravity files. QA of user-visible work requires desktop and mobile screenshots. Default domain skills (`nextjs-app-router`, `supabase-auth-rls`, `postgres-migrations`, `owasp-security-review`) are playbooks with Reject and Done-when, not one-line checklists. `frontend-design` is the same shape: name `setup`, `build`, `review`, or `detect`, commit 4–6 tokens, match the existing stack, and screenshot before accepting UI. `setup` is the new-repo path: scan architecture, ask compact product questions, recommend principles, and write a short product `DESIGN.md` plus frontend `STYLE_GUIDE.md` rules before CSS. `init` does not install `DESIGN.md` by default. The default CLI is `init`, `add`, `update`, `doctor`, `guide`, and `adapter validate`.
 
 ## CLI Surface
 
