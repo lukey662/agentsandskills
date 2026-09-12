@@ -66,10 +66,13 @@ describe("domain skill uplifts", () => {
     expect(skill).toContain("#10100e");
     expect(skill).toContain("Do not mark selection or severity with a left edge stroke");
     expect(skill).toContain("Scan first");
-    expect(skill).toContain("First-screen job");
-    expect(skill).toContain("Write a **short** product `DESIGN.md`");
+    expect(skill).toContain("Ask what they need");
+    expect(skill).toContain("Who has to succeed");
+    expect(skill).toContain("what do you need from this pass");
+    expect(skill).toContain("a **short** product `DESIGN.md`");
     expect(skill).toContain("STYLE_GUIDE.md");
     expect(skill).toContain("do not overwrite");
+    expect(skill).toContain("Quizzing them on hex");
     const design = readFileSync(join(process.cwd(), "agents/design/agent.md"), "utf8");
     expect(design).toContain("`setup`, `build`, `review`, or `detect`");
     expect(design).toContain("Detect means audit only");
@@ -106,6 +109,6 @@ describe("domain skill uplifts", () => {
     expect(design).toContain("requiredTools: [browser, screenshot, image-review]");
     expect(design).toContain("`setup`, `build`, `review`, or `detect`");
     const guide = readFileSync(join(root, "USER_GUIDE.md"), "utf8");
-    expect(guide).toContain("Write DESIGN.md and STYLE_GUIDE.md with me before any CSS");
+    expect(guide).toContain("ask me what we need to set up");
   });
 });

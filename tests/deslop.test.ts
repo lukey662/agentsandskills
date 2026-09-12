@@ -59,7 +59,7 @@ describe("deslop last and frontend-design install", () => {
     expect(frontend).toContain("| `build` |");
     expect(frontend).toContain("| `detect` |");
     expect(frontend).toContain("inside-design-system");
-    expect(frontend).toContain("Write a **short** product `DESIGN.md`");
+    expect(frontend).toContain("a **short** product `DESIGN.md`");
     expect(frontend).not.toContain("newsprint paper");
 
     const deslop = readFileSync(join(root, ".cursor/skills/deslop/SKILL.md"), "utf8");

@@ -2,7 +2,7 @@
 
 Review this UI for product-specific quality and accessibility.
 
-Name the mode (`setup`, `build`, `review`, or `detect`) and the surface (`landing`, `app-chrome`, `inside-design-system`, or `kit-html`). Setup writes `DESIGN.md` and style-guide rules with the user before CSS. Detect means findings only — no edits. Tag each finding as code-certain or inferred.
+Name the mode (`setup`, `build`, `review`, or `detect`) and the surface (`landing`, `app-chrome`, `inside-design-system`, or `kit-html`). Setup asks what they need, then records style-guide rules before CSS. Detect means findings only — no edits. Tag each finding as code-certain or inferred.
 
 Reject:
 

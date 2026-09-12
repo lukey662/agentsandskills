@@ -109,7 +109,7 @@ export function generateAntigravityCommands(cwd: string, force: boolean, collect
       name: "frontend",
       description: "UI review from screenshots first.",
       prompt:
-        "Act as the design agent. Name the mode (setup, build, review, or detect) and the surface. Use the frontend-design skill. If DESIGN.md is missing or this is a new repo, run setup: scan architecture, ask compact product questions, recommend principles, write DESIGN.md and STYLE_GUIDE.md before CSS. Otherwise review the running UI from screenshots first. Desktop and mobile. Reject generic AI-looking layout. Detect means audit only — no edits."
+        "Act as the design agent. Name the mode (setup, build, review, or detect) and the surface. Use the frontend-design skill. If DESIGN.md is missing or this is a new repo, run setup: scan what is here, then ask what they need (who it is for, what they must get done, what this pass should produce). Recommend from the answers. Write style guide and principles only after that, and before CSS. Otherwise review the running UI from screenshots first. Desktop and mobile. Reject generic AI-looking layout. Detect means audit only — no edits."
     },
     {
       name: "copy",

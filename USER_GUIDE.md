@@ -26,7 +26,7 @@ You should get a named owner (`app-engineer`, `security`, `design`, `qa`, or `co
 If this repo has no product `DESIGN.md` yet, also paste to Design:
 
 ```text
-Act as design. This is a new repo. Scan the architecture, then ask me about the product, audience, and first-screen job. Recommend principles and a token recipe. Write DESIGN.md and STYLE_GUIDE.md with me before any CSS.
+Act as design. This is a new repo. Scan what is already here, then ask me what we need to set up: who it is for, what they must get done, and what you should produce. Recommend from my answers. Write the style guide and principles with me before any CSS.
 ```
 
 ## How to invoke in each IDE
@@ -125,10 +125,10 @@ Planner → App engineer → Security → QA. QA must open login/logout/denied i
 After `init`, before the first product CSS, paste to Design:
 
 ```text
-Act as design. This is a new repo. Scan the architecture, then ask me about the product, audience, and first-screen job. Recommend principles and a token recipe. Write DESIGN.md and STYLE_GUIDE.md with me before any CSS.
+Act as design. This is a new repo. Scan what is already here, then ask me what we need to set up: who it is for, what they must get done, and what you should produce. Recommend from my answers. Write the style guide and principles with me before any CSS.
 ```
 
-Design scans the stack, asks a compact intake, recommends principles, then writes a short product `DESIGN.md` and frontend `STYLE_GUIDE.md` rules. It does not paste this kit’s charcoal desk onto the app. Screenshots wait until there is a screen to capture.
+Design scans the stack, then asks what you need. Recommendations come from those answers. It writes a short product `DESIGN.md` and frontend `STYLE_GUIDE.md` rules only after that. It does not paste this kit’s charcoal desk onto the app. Screenshots wait until there is a screen to capture.
 
 ### UI polish
 

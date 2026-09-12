@@ -4,20 +4,22 @@ Use during Design `setup`, or before designing or changing a user-facing surface
 
 Scan the repo first. Do not re-ask architecture you can read (`app/` vs `pages/`, Tailwind, shadcn, existing tokens).
 
-Ask once for the smallest useful set:
+Setup is an interview. Ask what they need, in their language, then follow up if the answer is vague.
 
-1. Product name and who it is for.
-2. First-screen job — what the user does on the first useful screen.
-3. Three personality traits and density (quiet/dense vs marketing/bold).
-4. Existing brand (logo, hex, type) vs invent from the domain.
-5. Motion: none / hover only / one moment.
+1. What are we setting up, and what do you need from this pass — principles, a style guide, a first-screen direction, or all of it?
+2. Who has to succeed, and what are they trying to finish?
+3. On the first useful screen, what must they be able to do?
+4. What is already decided (brand, components, constraints), and what must it not look like?
+5. When this works, what is in front of them? When it fails, what did we get wrong?
 
-Then recommend, before CSS:
+Do not quiz them on hex, fonts, or motion until the need is clear. Do not open with a 20-question intake.
 
-1. 4–6 principles (first screen = the work; one field / ink / accent / line; states before decoration; WCAG 2.1 AA; match the stack).
-2. A token recipe, or a surgical pass if a design system already exists.
-3. Two one-sentence directions and a pick.
-4. Anti-references that apply to this product.
-5. Missing inputs that still block high-quality design.
+Then recommend from the answers, before CSS:
 
-Write a short product `DESIGN.md` and append frontend rules to `STYLE_GUIDE.md`. Do not overwrite a mature style guide. Do not paste this kit’s charcoal desk onto the app. Do not write vague value propositions. Use concrete domain language from the product.
+1. The need you heard, in one sentence.
+2. 4–6 principles that serve that need.
+3. A visual direction only if they asked for one (token recipe, or surgical if a system already exists).
+4. Anti-references in their words.
+5. What you will write vs what can wait.
+
+Write only the files this pass called for (usually a short product `DESIGN.md` and frontend `STYLE_GUIDE.md` rules). Do not overwrite a mature style guide. Do not paste this kit’s charcoal desk onto the app. Do not write vague value propositions. Use concrete domain language from the product.

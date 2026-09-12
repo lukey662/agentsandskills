@@ -510,9 +510,9 @@
               </div>
             </article>
             <article class="ticket">
-              <header><span>New repo with no DESIGN.md — paste this to Design first</span></header>
+              <header><span>New repo — paste this to Design so it asks what you need</span></header>
               <pre id="design-setup-prompt">
-Act as design. This is a new repo. Scan the architecture, then ask me about the product, audience, and first-screen job. Recommend principles and a token recipe. Write DESIGN.md and STYLE_GUIDE.md with me before any CSS.</pre>
+Act as design. This is a new repo. Scan what is already here, then ask me what we need to set up: who it is for, what they must get done, and what you should produce. Recommend from my answers. Write the style guide and principles with me before any CSS.</pre>
               <div class="copy-row">
                 <button class="copy" type="button" data-copy-from="design-setup-prompt">Copy Design setup prompt</button>
               </div>
@@ -711,13 +711,14 @@ Act as the QA agent. Use the browser-qa skill. Do not review code alone. Open th
         <h3>New repo design setup</h3>
         <p>After <code>init</code>, before the first product CSS, paste to Design:</p>
         <pre id="design-setup-flow">
-Act as design. This is a new repo. Scan the architecture, then ask me about the product, audience, and first-screen job. Recommend principles and a token recipe. Write DESIGN.md and STYLE_GUIDE.md with me before any CSS.</pre>
+Act as design. This is a new repo. Scan what is already here, then ask me what we need to set up: who it is for, what they must get done, and what you should produce. Recommend from my answers. Write the style guide and principles with me before any CSS.</pre>
         <div class="copy-row">
           <button class="copy" type="button" data-copy-from="design-setup-flow">Copy Design setup prompt</button>
         </div>
         <p>
-          Design scans the stack, asks a compact intake, recommends principles, then writes a short product <code>DESIGN.md</code> and frontend
-          <code>STYLE_GUIDE.md</code> rules. It does not paste this kit’s charcoal desk onto the app. Screenshots wait until there is a screen to capture.
+          Design scans the stack, then asks what you need. Recommendations come from those answers. It writes a short product <code>DESIGN.md</code> and
+          frontend <code>STYLE_GUIDE.md</code> rules only after that. It does not paste this kit’s charcoal desk onto the app. Screenshots wait until there is a
+          screen to capture.
         </p>
         <h3>UI polish</h3>
         <p>
