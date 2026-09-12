@@ -41,11 +41,17 @@ describe("public package readiness", () => {
     expect(guide).toContain("deslop");
     expect(guide).toContain("npx agent-kit guide");
     expect(guide).toContain("catalog.json");
+    expect(guide).toContain("ask me what we need to set up");
+    expect(guide).toContain("Run accessibility-wcag");
+    expect(guide).toContain("Do not accept contrast from the screenshot alone");
     const html = readFileSync(join(root, "USER_GUIDE.html"), "utf8");
     expect(html).toContain("Do not review code alone");
     expect(html).toContain("Ask one specialist");
     expect(html).toContain("deslop");
     expect(html).toContain("catalog.json");
+    expect(html).toContain("ask me what we need to set up");
+    expect(html).toContain("Run accessibility-wcag");
+    expect(html).toContain("Do not accept contrast from the screenshot alone");
     expect(html).toContain('data-view="user-guide"');
     expect(html).not.toMatch(/border-left\s*:/);
     const distinct = readFileSync(join(root, "checklists/frontend-distinctiveness.md"), "utf8");
@@ -57,6 +63,15 @@ describe("public package readiness", () => {
     expect(existsSync(join(root, "agents/qa/agent.md"))).toBe(true);
     expect(existsSync(join(root, "skills/browser-qa/SKILL.md"))).toBe(true);
     expect(readFileSync(join(root, "skills/browser-qa/SKILL.md"), "utf8")).toContain("Do not review code alone");
+  });
+
+  it("ROADMAP Phase 10 is the working queue", () => {
+    const roadmap = readFileSync(join(root, "ROADMAP.md"), "utf8");
+    expect(roadmap).toContain("## Phase 10:");
+    expect(roadmap).toContain("#### 10.1 `accessibility-wcag` playbook");
+    expect(roadmap).toContain("Do not restore session, Studio, research, or `orchestrate` as the default install.");
+    expect(roadmap).toContain("## Current Next Actions");
+    expect(roadmap.indexOf("## Phase 10:")).toBeLessThan(roadmap.indexOf("## Phase 1:"));
   });
 
   it("post-publish verify uses the 0.4 CLI, not audit or orchestrate", () => {

@@ -54,6 +54,7 @@ Use the host browser when it exists. Playwright is required text for Claude, Cod
 - Playwright `toBeVisible` with no image.
 - Updating screenshot baselines without saying what changed in the picture.
 - Skipping mobile, or skipping auth/empty/error when those states exist.
+- “Contrast looks fine in the screenshot” with no keyboard-only pass (`accessibility-wcag`).
 
 ## Screenshot critique
 

@@ -98,7 +98,7 @@ export function generateAntigravityCommands(cwd: string, force: boolean, collect
       name: "browser-qa",
       description: "Live browser QA with desktop and mobile screenshots.",
       prompt:
-        "Act as the QA agent. Use the browser-qa skill. Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject."
+        "Act as the QA agent. Use the browser-qa skill. Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject. For screens, also run accessibility-wcag: keyboard-only pass. Do not accept contrast from the screenshot alone."
     },
     {
       name: "security",
@@ -108,7 +108,8 @@ export function generateAntigravityCommands(cwd: string, force: boolean, collect
     {
       name: "frontend",
       description: "UI review from screenshots first.",
-      prompt: "Act as the design agent. Review the running UI from screenshots first. Desktop and mobile. Reject generic AI-looking layout."
+      prompt:
+        "Act as the design agent. Name the mode (setup, build, review, or detect) and the surface. Use the frontend-design skill. If DESIGN.md is missing or this is a new repo, run setup: scan what is here, then ask what they need (who it is for, what they must get done, what this pass should produce). Recommend from the answers. Write style guide and principles only after that, and before CSS. Otherwise review the running UI from screenshots first. Desktop and mobile. Reject generic AI-looking layout. Detect means audit only — no edits."
     },
     {
       name: "copy",
@@ -118,7 +119,8 @@ export function generateAntigravityCommands(cwd: string, force: boolean, collect
     {
       name: "test",
       description: "Run tests, then browser-qa for UI.",
-      prompt: "Act as the QA agent. Run applicable tests, then use browser-qa for any user-visible change."
+      prompt:
+        "Act as the QA agent. Run applicable tests, then use browser-qa for any user-visible change. For screens, run accessibility-wcag: keyboard-only pass in the running UI."
     },
     {
       name: "ship",

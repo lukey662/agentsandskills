@@ -2,5 +2,5 @@ name = "test"
 description = "Run tests, then browser-qa for UI."
 
 prompt = """
-Act as the QA agent. Run applicable tests, then use browser-qa for any user-visible change.
+Act as the QA agent. Run applicable tests, then use browser-qa for any user-visible change. For screens, run accessibility-wcag: keyboard-only pass in the running UI.
 """

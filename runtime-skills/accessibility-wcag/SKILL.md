@@ -1,8 +1,8 @@
 ---
 name: accessibility-wcag
-description: Use for WCAG 2.1 AA review of forms, navigation, modals, menus, tables, dashboards, and custom interactions.
+description: Use when the user can't tab, a screen reader misses a control, contrast fails, a modal traps focus, or you need a WCAG 2.1 AA pass. Keyboard in the running browser, not a screenshot guess.
 ---
 
-Canonical workflow: read `skills/accessibility-wcag.md` or `.agent-kit/skills/accessibility-wcag.md`.
+Canonical workflow: read `skills/accessibility-wcag/SKILL.md` or `.cursor/skills/accessibility-wcag/SKILL.md`.
 
-Apply semantic HTML first, ARIA only when needed, keyboard navigation, focus states, and WCAG 2.1 AA color contrast. Record accessibility evidence with `agent-kit session output` when the work changes user-facing UI.
+WCAG 2.1 AA. Keyboard-only pass in the running UI. Do not accept contrast from a screenshot alone. Pair visual proof with `browser-qa`. Do not install axe as the pass.

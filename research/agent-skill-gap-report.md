@@ -127,6 +127,10 @@ Skills **kept despite being uncommon** in generic zoos:
 **Skills:** planning, nextjs-app-router, supabase-auth-rls, postgres-migrations, owasp-security-review, frontend-design, accessibility-wcag, browser-qa, testing-qa, product-copy, deslop, ship  
 **Optional skills:** ui-polish, docs, upgrade, debug
 
+### 2026-09-12 follow-up
+
+- Uplifted `frontend-design` and the Design agent against a fresh GitHub scan (structure only, no bodies copied): Anthropic `frontend-design` (2026-06 process still current), addyosmani `frontend-ui-engineering`, `educlopez/ui-craft`, `funboy322/avoid-ai-design`, `superdesigndev/superdesign-skill`, `google-labs-code/design.md`. Added named modes (`setup` / `build` / `review` / `detect`), surface profiles, `DESIGN.md` as token source of truth, and code-certain vs inferred findings. `setup` asks what the user needs, then recommends principles and records a short product `DESIGN.md` + `STYLE_GUIDE.md`. Did **not** import ui-craft MCP, Superdesign canvas/CLI, or older `frontend-design` forks that default to mesh gradients and decorative atmosphere.
+
 ### 2026-09-09 follow-up
 
 - Uplifted `nextjs-app-router`, `supabase-auth-rls`, `postgres-migrations`, and `owasp-security-review` from checklists to playbooks. Structure from Next.js 16 App Router / `proxy.ts` / async request APIs and Supabase SSR+RLS docs. No third-party skill bodies. This pack’s auth stays Supabase (not Clerk/Auth0/NextAuth as the default).

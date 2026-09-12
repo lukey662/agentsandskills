@@ -44,6 +44,9 @@ async function captureScreenshots() {
       if (!bodyText.includes("Ask one specialist")) {
         throw new Error("Rendered USER_GUIDE.html dropped the assignment-desk headline.");
       }
+      if (!bodyText.includes("Run accessibility-wcag") || !bodyText.includes("Do not accept contrast from the screenshot alone")) {
+        throw new Error("Rendered USER_GUIDE.html dropped the accessibility-wcag keyboard prompt.");
+      }
       await page.screenshot({ path: join(outputDir, `${shot.name}.png`), fullPage: true });
       await page.close();
     }
@@ -74,6 +77,9 @@ try {
   const html = readFileSync(htmlPath, "utf8");
   if (!html.includes(failClosed) || !html.includes("Do not review code alone")) {
     throw new Error("Installed USER_GUIDE.html dropped the screenshot fail-closed rule.");
+  }
+  if (!html.includes("Run accessibility-wcag") || !html.includes("Do not accept contrast from the screenshot alone")) {
+    throw new Error("Installed USER_GUIDE.html dropped the accessibility-wcag keyboard prompt.");
   }
 
   server = await startServer(html);

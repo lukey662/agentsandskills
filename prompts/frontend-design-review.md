@@ -2,6 +2,8 @@
 
 Review this UI for product-specific quality and accessibility.
 
+Name the mode (`setup`, `build`, `review`, or `detect`) and the surface (`landing`, `app-chrome`, `inside-design-system`, or `kit-html`). Setup asks what they need, then records style-guide rules before CSS. Detect means findings only — no edits. Tag each finding as code-certain or inferred.
+
 Reject:
 
 - Missing brand/content intake or `DESIGN.md` context

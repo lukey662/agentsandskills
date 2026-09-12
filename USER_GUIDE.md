@@ -23,6 +23,12 @@ Plan this change. Name the owning agent, extra reviewers, and which screenshots 
 
 You should get a named owner (`app-engineer`, `security`, `design`, `qa`, or `copy`) and, if the work is user-visible, a desktop + mobile screenshot list.
 
+If this repo has no product `DESIGN.md` yet, also paste to Design:
+
+```text
+Act as design. This is a new repo. Scan what is already here, then ask me what we need to set up: who it is for, what they must get done, and what you should produce. Recommend from my answers. Write the style guide and principles with me before any CSS.
+```
+
 ## How to invoke in each IDE
 
 ### Cursor
@@ -73,6 +79,7 @@ Files: `.antigravity/agent-kit/commands/*.toml`, `.antigravity/runtime-skills/*/
 | Implementation | App engineer |
 | Auth / RLS / secrets | Security |
 | It looks wrong | Design |
+| Style guide / first UI / no DESIGN.md | Design (`setup`) |
 | Is this done? | QA |
 | Landing / CTA words | Copy |
 
@@ -87,15 +94,15 @@ Do not ask one chat to be all six. Planner names the next specialist. It does no
 | `supabase-auth-rls` | Auth, RLS, service role, Storage |
 | `postgres-migrations` | Schema, constraints, RLS in the same change |
 | `owasp-security-review` | Mutations, uploads, SSRF, secrets |
-| `frontend-design` | Layout, simple palette, anti-generic UI |
-| `accessibility-wcag` | Keyboard, contrast, labels |
+| `frontend-design` | Setup, build, review, or detect UI. Tokens first. Anti-generic |
+| `accessibility-wcag` | Keyboard pass in the running browser. Contrast, labels. Not a screenshot guess |
 | `browser-qa` | Any screen. Required for QA of UI |
 | `testing-qa` | Unit / regression / smoke only |
 | `product-copy` | Headlines and CTAs |
 | `deslop` | Last copy pass. Copy always runs this |
 | `ship` | Release, env, rollback |
 
-QA of a screen always uses `browser-qa`, not `testing-qa` alone. Each agent file names the skills it must run, then points at `catalog.json` for the rest.
+QA of a screen always uses `browser-qa`, not `testing-qa` alone. User-facing screens also run `accessibility-wcag` (keyboard in the browser, not a contrast guess from the screenshot). Each agent file names the skills it must run, then points at `catalog.json` for the rest.
 
 ## Standard workflows
 
@@ -104,18 +111,36 @@ QA of a screen always uses `browser-qa`, not `testing-qa` alone. Each agent file
 1. **Planner** — paste: `Plan this change. Name the owning agent, extra reviewers, and which screenshots QA must capture. Do not write code.`
 2. **App engineer** — paste: `Implement the plan. Smoke the changed route in the browser before you hand off.`
 3. **Security** if data/auth/secrets changed.
-4. **Design** if the UI changed — paste: `Review the running UI from screenshots first. Desktop and mobile. Reject generic AI-looking layout.`
-5. **QA** — paste: `Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.`
+4. **Design** if the UI changed — paste: `Act as design. Name the mode (setup, build, review, or detect). Review the running UI from screenshots first. Desktop and mobile. Reject generic AI-looking layout.` If `DESIGN.md` is missing, run setup first.
+5. **QA** — paste: `Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.` For screens, also run `accessibility-wcag`.
 
-Done when QA attaches `qa-evidence/<date>-<slug>/desktop.png` and `mobile.png` plus a verdict.
+Done when QA attaches `qa-evidence/<date>-<slug>/desktop.png` and `mobile.png` plus a verdict, and the changed flow passed a keyboard-only check.
 
 ### Auth / RLS change
 
 Planner → App engineer → Security → QA. QA must open login/logout/denied in the browser and still run tests. Screenshots required when the finding is user-visible.
 
+### New repo design setup
+
+After `init`, before the first product CSS, paste to Design:
+
+```text
+Act as design. This is a new repo. Scan what is already here, then ask me what we need to set up: who it is for, what they must get done, and what you should produce. Recommend from my answers. Write the style guide and principles with me before any CSS.
+```
+
+Design scans the stack, then asks what you need. Recommendations come from those answers. It writes a short product `DESIGN.md` and frontend `STYLE_GUIDE.md` rules only after that. It does not paste this kit’s charcoal desk onto the app. Screenshots wait until there is a screen to capture.
+
 ### UI polish
 
-Design + `frontend-design` + `browser-qa`. Desktop and mobile required. One happy-path shot is a fail.
+Design + `frontend-design` + `accessibility-wcag` + `browser-qa`. Name setup, build, review, or detect. Desktop and mobile required once a screen exists. One happy-path shot is a fail. A contrast guess from the screenshot is a fail.
+
+### Accessibility pass
+
+On any user-facing screen, paste to Design or QA:
+
+```text
+Run accessibility-wcag. Open the changed flow. Keyboard-only pass. Do not accept contrast from the screenshot alone.
+```
 
 ### Copy pass
 
@@ -141,8 +166,9 @@ Steps the QA agent must follow:
 2. Open the changed route with the real auth/role/data state.
 3. Capture desktop (~1280) and mobile (~390) into `qa-evidence/<yyyy-mm-dd>-<slug>/`.
 4. **Read the images.** List blockers from what is on screen.
-5. Run applicable tests.
-6. Write `notes.md` with route, viewports, auth state, verdict.
+5. Keyboard-only the changed flow (`accessibility-wcag`). Do not accept contrast from the screenshot alone.
+6. Run applicable tests.
+7. Write `notes.md` with route, viewports, auth state, keyboard result, verdict.
 
 Cursor: use the built-in browser first. Claude / Codex / Copilot / Antigravity: use the host browser if present, otherwise Playwright:
 
