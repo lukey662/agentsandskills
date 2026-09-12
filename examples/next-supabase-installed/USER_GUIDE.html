@@ -602,7 +602,7 @@ Act as design. This is a new repo. Scan what is already here, then ask me what w
             </tr>
             <tr>
               <td><code>accessibility-wcag</code></td>
-              <td>Keyboard, contrast, labels</td>
+              <td>Keyboard pass in the running browser. Contrast, labels. Not a screenshot guess</td>
             </tr>
             <tr>
               <td><code>browser-qa</code></td>
@@ -627,8 +627,9 @@ Act as design. This is a new repo. Scan what is already here, then ask me what w
           </tbody>
         </table>
         <p>
-          QA of a screen always uses <code>browser-qa</code>, not <code>testing-qa</code> alone. Each agent file names the skills it must run, then points at
-          <code>catalog.json</code> for the rest.
+          QA of a screen always uses <code>browser-qa</code>, not <code>testing-qa</code> alone. User-facing screens also run
+          <code>accessibility-wcag</code> (keyboard in the browser, not a contrast guess from the screenshot). Each agent file names the skills it must run,
+          then points at <code>catalog.json</code> for the rest.
         </p>
       </section>
 
@@ -700,9 +701,9 @@ Act as the QA agent. Use the browser-qa skill. Do not review code alone. Open th
             >
             If <code>DESIGN.md</code> is missing, run setup first.
           </li>
-          <li>QA — paste the good prompt below.</li>
+          <li>QA — paste the good prompt below. For screens, also run <code>accessibility-wcag</code>.</li>
         </ol>
-        <p>Done when QA attaches both frames plus a verdict.</p>
+        <p>Done when QA attaches both frames plus a verdict, and the changed flow passed a keyboard-only check.</p>
         <h3>Auth / RLS</h3>
         <p>
           Planner → App engineer → Security → QA. QA must open login, logout, and denied in the browser. Screenshots still required when the finding is
@@ -722,9 +723,15 @@ Act as design. This is a new repo. Scan what is already here, then ask me what w
         </p>
         <h3>UI polish</h3>
         <p>
-          Design + <code>frontend-design</code> + <code>browser-qa</code>. Name setup, build, review, or detect. Desktop and mobile once a screen exists. One
-          happy-path shot is a fail.
+          Design + <code>frontend-design</code> + <code>accessibility-wcag</code> + <code>browser-qa</code>. Name setup, build, review, or detect. Desktop and
+          mobile once a screen exists. One happy-path shot is a fail. A contrast guess from the screenshot is a fail.
         </p>
+        <h3>Accessibility pass</h3>
+        <p>On any user-facing screen, paste to Design or QA:</p>
+        <pre id="a11y-prompt">Run accessibility-wcag. Open the changed flow. Keyboard-only pass. Do not accept contrast from the screenshot alone.</pre>
+        <div class="copy-row">
+          <button class="copy" type="button" data-copy-from="a11y-prompt">Copy accessibility prompt</button>
+        </div>
         <h3>Copy pass</h3>
         <p>Copy reviews the <em>rendered</em> words in screenshots, not strings in TSX. Run <code>product-copy</code>, then <code>deslop</code> last.</p>
       </section>
@@ -750,8 +757,9 @@ Do not review code alone. Open the app, capture desktop and mobile screenshots, 
           <li>Open the changed route with the real auth, role, and data.</li>
           <li>Capture desktop (~1280) and mobile (~390) into <code>qa-evidence/&lt;yyyy-mm-dd&gt;-&lt;slug&gt;/</code>.</li>
           <li><strong>Read the images.</strong> List blockers from what is on screen.</li>
+          <li>Keyboard-only the changed flow (<code>accessibility-wcag</code>). Do not accept contrast from the screenshot alone.</li>
           <li>Run applicable tests. <code>toBeVisible</code> is not a screenshot.</li>
-          <li>Write <code>notes.md</code> with route, viewports, auth state, verdict.</li>
+          <li>Write <code>notes.md</code> with route, viewports, auth state, keyboard result, verdict.</li>
         </ol>
         <p>Cursor: built-in browser first. Claude, Codex, Copilot, Antigravity: host browser if present, otherwise:</p>
         <pre id="pw-cmd">

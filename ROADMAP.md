@@ -15,7 +15,7 @@ How to use this file:
 3. Every skill uplift uses the same bar: YAML `name` + `description`, Use when, Do/Checks, Reject, Done when. Tests lock the contract on `init`. Planner names who runs it.
 4. Default `init` stays agents + skills + user guide. Do not restore session, Studio, research, or `orchestrate` as the default install.
 
-Playbook bar (what “top class” means here): `nextjs-app-router`, `supabase-auth-rls`, `postgres-migrations`, `owasp-security-review`, `frontend-design`, `browser-qa`, and `deslop` already meet it. Thin skills do not.
+Playbook bar (what “top class” means here): `nextjs-app-router`, `supabase-auth-rls`, `postgres-migrations`, `owasp-security-review`, `frontend-design`, `accessibility-wcag`, `browser-qa`, and `deslop` already meet it. Thin skills do not.
 
 ## Phase 10: 0.4 Kit Quality — Playbooks, Skill Use, Paste Handoff
 
@@ -33,11 +33,11 @@ Keep:
 
 Owner: this branch / PR #38. Merge before starting Wave 1.
 
-- `[~]` Publish `frontend-design` modes (`setup` / `build` / `review` / `detect`) and the new-repo **setup interview** (ask what they need, then principles). Files: `skills/frontend-design/SKILL.md`, `agents/design/agent.md`, `USER_GUIDE.md` / `USER_GUIDE.html`, tests, examples.
+- `[~]` Publish `frontend-design` modes (`setup` / `build` / `review` / `detect`), the new-repo **setup interview**, and the `accessibility-wcag` playbook (10.1). Files: `skills/frontend-design/SKILL.md`, `skills/accessibility-wcag/SKILL.md`, `agents/design/agent.md`, `agents/qa/agent.md`, `USER_GUIDE.md` / `USER_GUIDE.html`, tests, examples.
 - `[ ]` Cut npm **0.4.4** after #38 merges (`changeset`, Version Packages, `npm run release:check`).
 - `[x]` Rewrite this roadmap so remaining work is ticket-shaped (this change).
 
-Acceptance: #38 merged, changelog 0.4.4 on npm, setup paste prompt in the user guide.
+Acceptance: #38 merged, changelog 0.4.4 on npm, setup paste prompt in the user guide, `accessibility-wcag` playbook installed by `init`.
 
 ### Wave 1 — Playbook parity for remaining default skills
 
@@ -49,8 +49,8 @@ Do these in order. Same shape as the 2026-09-09 domain-skill uplift. Structure f
 - **Why:** 27-line checklist. Keyboard and contrast are named, but there is no Reject list, no Done-when that fails closed, and no mapping onto App Router forms / dialogs.
 - **Do:** Use / Checks / Reject / Done-when. Name WCAG 2.1 AA. Require a keyboard pass in the running browser. Reject “contrast looks fine in the screenshot” without a keyboard pass. Point at `browser-qa` for visual proof.
 - **Files:** `skills/accessibility-wcag/SKILL.md`, `agents/qa/agent.md`, `agents/design/agent.md`, `skills/planning/SKILL.md`, `tests/domain-skills.test.ts`, `checklists/` if the existing a11y checklist should match
-- **Depends:** Wave 0
-- **Status:** `[ ]`
+- **Depends:** Wave 0 (landed on the same in-flight PR)
+- **Status:** `[x]`
 
 Acceptance: init installs the playbook; tests lock Reject + keyboard-in-browser; QA and Design still name the skill.
 
@@ -522,11 +522,10 @@ Acceptance:
 
 Work Phase 10 in order. First open `[ ]` after this PR:
 
-1. Merge PR #38 (frontend-design modes + setup interview), then cut npm 0.4.4.
-2. **10.1** Uplift `accessibility-wcag` to the playbook bar.
-3. **10.2** Uplift `testing-qa`.
-4. **10.3** Uplift `ship`.
-5. Then Wave 2 optional skills, then Wave 3 paste-ready handoff. Do not start Wave 4 (orchestrator decision) until then.
+1. Merge PR #38 (frontend-design modes + setup interview + `accessibility-wcag` playbook), then cut npm 0.4.4.
+2. **10.2** Uplift `testing-qa`.
+3. **10.3** Uplift `ship`.
+4. Then Wave 2 optional skills, then Wave 3 paste-ready handoff. Do not start Wave 4 (orchestrator decision) until then.
 
 Historical next-actions below (Trusted Publisher, orchestrate dogfood, 0.3 council) are **not** the 0.4 default queue. See Wave 5 and Phase 6 evidence if you are cutting a release.
 

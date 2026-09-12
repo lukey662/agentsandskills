@@ -87,6 +87,27 @@ describe("domain skill uplifts", () => {
     expect(skill).toContain("Skipping `nextjs-app-router`");
     expect(skill).toContain("name setup, build, review, or detect");
     expect(skill).toContain("Skipping Design `setup`");
+    expect(skill).toContain("Skipping `accessibility-wcag`");
+    expect(skill).toContain("contrast looks fine in the screenshot");
+  });
+
+  it("accessibility-wcag requires a keyboard pass in the running UI and rejects screenshot-only contrast", () => {
+    const skill = readSkill("accessibility-wcag");
+    expect(skill).toContain("WCAG 2.1 AA");
+    expect(skill).toContain("keyboard-only pass works on the changed flow in the running UI");
+    expect(skill).toContain("Contrast looks fine in the screenshot");
+    expect(skill).toContain("htmlFor");
+    expect(skill).toContain("Installing axe");
+    expect(skill).toContain("browser-qa");
+    expect(skill).toContain("supabase-auth-rls");
+    expect(skill).not.toContain("requiredTools: [axe]");
+    const qa = readFileSync(join(process.cwd(), "agents/qa/agent.md"), "utf8");
+    expect(qa).toContain("accessibility-wcag");
+    expect(qa).toContain("Contrast looks fine in the screenshot");
+    expect(qa).toContain("keyboard-only pass on the changed flow");
+    const design = readFileSync(join(process.cwd(), "agents/design/agent.md"), "utf8");
+    expect(design).toContain("accessibility-wcag");
+    expect(design).toContain("frontend-design` does not replace it");
   });
 
   it("testing-qa does not replace domain skills or browser-qa", () => {
@@ -110,5 +131,11 @@ describe("domain skill uplifts", () => {
     expect(design).toContain("`setup`, `build`, `review`, or `detect`");
     const guide = readFileSync(join(root, "USER_GUIDE.md"), "utf8");
     expect(guide).toContain("ask me what we need to set up");
+    const a11y = readFileSync(join(root, ".cursor/skills/accessibility-wcag/SKILL.md"), "utf8");
+    expect(a11y).toContain("Contrast looks fine in the screenshot");
+    expect(a11y).toContain("keyboard-only pass works on the changed flow in the running UI");
+    const qa = readFileSync(join(root, ".cursor/agents/qa.md"), "utf8");
+    expect(qa).toContain("accessibility-wcag");
+    expect(qa).toContain("keyboard-only pass on the changed flow");
   });
 });

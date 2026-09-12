@@ -1,16 +1,19 @@
 name = "accessibility-pass"
-description = "Run a WCAG 2.1 AA-oriented UI pass for semantics, keyboard flow, focus, labels, contrast, and motion."
+description = "WCAG 2.1 AA pass: keyboard in the running UI, then contrast, labels, and semantics. Screenshots are not a keyboard pass."
 
 prompt = """
-Run the accessibility pass workflow.
+Run the accessibility-wcag playbook.
 
-Canonical sources: DESIGN.md, STYLE_GUIDE.md, TESTING.md, QUALITY_GATES.md, .agent-kit/agent-roster.json, .agent-kit/skills/ui-improvement-harness.md, .agent-kit/skills/accessibility-wcag.md, .agent-kit/checklists/ui-detectors.md, .agent-kit/checklists/ui-acceptance-rubric.md, and .agent-kit/prompts/ui-command-index.md.
+Canonical source: skills/accessibility-wcag/SKILL.md (or .cursor/skills/accessibility-wcag/SKILL.md). Visual proof: browser-qa. Authorization: supabase-auth-rls.
 
 Workflow:
-1. Check semantics, headings, landmarks, forms, labels, tables, buttons, and ARIA use.
-2. Check keyboard navigation, visible focus, tab order, escape/close behavior, and skip path when applicable.
-3. Check contrast, reduced motion, error association, touch targets, and status announcements.
-4. Keep accessibility checks separate from visual-only approval.
+1. Open the running changed flow. Name the route and what the user must finish.
+2. Keyboard-only pass: Tab, Shift+Tab, Enter, Space, Escape. Tab order matches visual order. Focus is visible. No unexpected trap.
+3. Check forms (labels, announced errors), dialogs (focus in/out, Escape), images (alt), landmarks/skip, reduced motion, and contrast (4.5:1 text).
+4. Capture desktop and mobile for browser-qa. Do not accept contrast from the screenshot alone.
+5. Return P0/P1/P2 findings with code-certain vs inferred. Name remaining gaps.
 
-Required outputs: accessibility findings by severity, fixes made or proposed, skipped checks, test evidence, remaining risks.
+Reject: "contrast looks fine in the screenshot" without a keyboard pass; approving from TSX; installing axe as the required tool.
+
+Required outputs: findings by severity, keyboard result, screenshot paths, remaining risks.
 """

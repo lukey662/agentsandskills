@@ -13,7 +13,7 @@ The repository has five main subsystems:
 
 The CLI reads bundled assets from the package root so the same commands work in local development and after build.
 
-Package-level research decisions are recorded in `DECISIONS.md`. Default pack skills live in `skills/<id>/SKILL.md`. `frontend-design` is a playbook with `setup` / `build` / `review` / `detect` modes; the 2026-09-12 GitHub scan is in `research/summaries/frontend-design-agent-skill-2026-09-12.md`. Remaining kit-quality work is Phase 10 in `ROADMAP.md` (playbook parity, paste-ready handoff). Do not treat Phases 1–9 as the current queue.
+Package-level research decisions are recorded in `DECISIONS.md`. Default pack skills live in `skills/<id>/SKILL.md`. `frontend-design` is a playbook with `setup` / `build` / `review` / `detect` modes; the 2026-09-12 GitHub scan is in `research/summaries/frontend-design-agent-skill-2026-09-12.md`. `accessibility-wcag` is a WCAG 2.1 AA playbook (keyboard in the running browser); scan notes are in `research/summaries/accessibility-wcag-skill-2026-09-12.md`. Remaining kit-quality work is Phase 10 in `ROADMAP.md` (playbook parity, paste-ready handoff). Do not treat Phases 1–9 as the current queue.
 
 ## Install Behavior
 

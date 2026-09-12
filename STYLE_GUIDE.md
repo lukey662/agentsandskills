@@ -88,4 +88,4 @@ Do not use generic AI-slop treatments as a substitute for product design. If a m
 - No oversized rounded glass panels. Replace translucent blur cards, frosted panels, and soft-glow shells with normal surfaces, clear section boundaries, practical density, and brand-appropriate depth.
 - No ornamental icon walls. Replace generic floating icons with functional icons attached to commands, states, navigation, feature rows, or concrete workflow steps.
 - No layout filler sections. Replace generic "features", "benefits", or "how it works" sections when the user asked for an app or tool with the actual usable workflow as the first screen.
-- No inaccessible decorative state styling. Replace color-only alerts, low-contrast tints, and vague status panels with semantic text, icons, ARIA-compatible state, WCAG AA contrast, and recovery actions.
+- No inaccessible decorative state styling. Replace color-only alerts, low-contrast tints, and vague status panels with semantic text, icons, ARIA-compatible state, WCAG AA contrast, and recovery actions. User-facing screens also need a keyboard-only pass (`accessibility-wcag`); do not sign off contrast from a screenshot.

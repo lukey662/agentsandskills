@@ -16,6 +16,7 @@
 - Mobile layout is designed, not incidental.
 - Component spacing, type, and density are consistent.
 - Forms are accessible and provide useful feedback.
+- A keyboard-only pass on the changed flow (`accessibility-wcag`); contrast is not signed off from a screenshot.
 - Design tokens cover color, typography, spacing, radius, motion, depth, state color, and focus treatment.
 - A product-specific design brief has been used for SaaS, admin, marketplace, content, tool, ecommerce, portfolio/venue, education, community/social, or AI workflow surfaces.
 - Desktop and mobile screenshots have been reviewed with `prompts/screenshot-review.md`.

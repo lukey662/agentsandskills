@@ -42,12 +42,16 @@ describe("public package readiness", () => {
     expect(guide).toContain("npx agent-kit guide");
     expect(guide).toContain("catalog.json");
     expect(guide).toContain("ask me what we need to set up");
+    expect(guide).toContain("Run accessibility-wcag");
+    expect(guide).toContain("Do not accept contrast from the screenshot alone");
     const html = readFileSync(join(root, "USER_GUIDE.html"), "utf8");
     expect(html).toContain("Do not review code alone");
     expect(html).toContain("Ask one specialist");
     expect(html).toContain("deslop");
     expect(html).toContain("catalog.json");
     expect(html).toContain("ask me what we need to set up");
+    expect(html).toContain("Run accessibility-wcag");
+    expect(html).toContain("Do not accept contrast from the screenshot alone");
     expect(html).toContain('data-view="user-guide"');
     expect(html).not.toMatch(/border-left\s*:/);
     const distinct = readFileSync(join(root, "checklists/frontend-distinctiveness.md"), "utf8");
