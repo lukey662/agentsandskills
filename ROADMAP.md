@@ -1,12 +1,191 @@
 # Roadmap And Delivery Tracker
 
-This file tracks the phased work needed to turn the kit into a maintained open-source project standard.
+This file is the source of truth for what to do next. Phases 1–9 are the historical record (package bootstrap through the 0.3 council OS and the 0.4 simplify). **Active work is Phase 10.**
 
 Status legend:
 
 - `[x]` Done
 - `[ ]` Not started
 - `[~]` In progress or partially complete
+
+How to use this file:
+
+1. Pick the first `[ ]` item in the current wave. Do not skip ahead to orchestration.
+2. One item per PR when the change is a skill or agent playbook. Docs-only items can share a PR.
+3. Every skill uplift uses the same bar: YAML `name` + `description`, Use when, Do/Checks, Reject, Done when. Tests lock the contract on `init`. Planner names who runs it.
+4. Default `init` stays agents + skills + user guide. Do not restore session, Studio, research, or `orchestrate` as the default install.
+
+Playbook bar (what “top class” means here): `nextjs-app-router`, `supabase-auth-rls`, `postgres-migrations`, `owasp-security-review`, `frontend-design`, `browser-qa`, and `deslop` already meet it. Thin skills do not.
+
+## Phase 10: 0.4 Kit Quality — Playbooks, Skill Use, Paste Handoff
+
+Goal: the default pack is even. Every default skill is a playbook. Agents name the skill they must run. Workflows stay a **human-run relay** (Planner names the next specialist; you paste). Agents do not spawn each other.
+
+Keep:
+
+- Six default agents, twelve default skills, optional add-ons
+- Screenshot fail-closed QA
+- Kit charcoal desk off product apps
+- One `frontend-design` skill, no design MCP/canvas OS
+- Planner does not run the other agents
+
+### Wave 0 — Finish what is in flight
+
+Owner: this branch / PR #38. Merge before starting Wave 1.
+
+- `[~]` Publish `frontend-design` modes (`setup` / `build` / `review` / `detect`) and the new-repo **setup interview** (ask what they need, then principles). Files: `skills/frontend-design/SKILL.md`, `agents/design/agent.md`, `USER_GUIDE.md` / `USER_GUIDE.html`, tests, examples.
+- `[ ]` Cut npm **0.4.4** after #38 merges (`changeset`, Version Packages, `npm run release:check`).
+- `[x]` Rewrite this roadmap so remaining work is ticket-shaped (this change).
+
+Acceptance: #38 merged, changelog 0.4.4 on npm, setup paste prompt in the user guide.
+
+### Wave 1 — Playbook parity for remaining default skills
+
+Do these in order. Same shape as the 2026-09-09 domain-skill uplift. Structure from public docs and GitHub skill scans; **no third-party skill bodies**.
+
+#### 10.1 `accessibility-wcag` playbook
+
+- **Owner:** Design (writes), QA (must run on screens)
+- **Why:** 27-line checklist. Keyboard and contrast are named, but there is no Reject list, no Done-when that fails closed, and no mapping onto App Router forms / dialogs.
+- **Do:** Use / Checks / Reject / Done-when. Name WCAG 2.1 AA. Require a keyboard pass in the running browser. Reject “contrast looks fine in the screenshot” without a keyboard pass. Point at `browser-qa` for visual proof.
+- **Files:** `skills/accessibility-wcag/SKILL.md`, `agents/qa/agent.md`, `agents/design/agent.md`, `skills/planning/SKILL.md`, `tests/domain-skills.test.ts`, `checklists/` if the existing a11y checklist should match
+- **Depends:** Wave 0
+- **Status:** `[ ]`
+
+Acceptance: init installs the playbook; tests lock Reject + keyboard-in-browser; QA and Design still name the skill.
+
+#### 10.2 `testing-qa` playbook
+
+- **Owner:** QA
+- **Why:** 29-line checklist. It already says it does not replace domain skills or `browser-qa`. It still lacks Reject, a required command shape, and RLS/auth fail-closed examples.
+- **Do:** Use / Checks / Reject / Done-when. Name unit vs regression vs smoke. Reject `toBeVisible` as visual proof. Require auth/RLS tests to fail when another user can read the row. List commands actually run.
+- **Files:** `skills/testing-qa/SKILL.md`, `agents/qa/agent.md`, `tests/domain-skills.test.ts`
+- **Depends:** 10.1 can land in parallel; do not merge both without a shared test file rebase
+- **Status:** `[ ]`
+
+Acceptance: tests lock “does not replace `browser-qa` / `supabase-auth-rls`” and a Reject line; QA agent still requires `testing-qa` plus `browser-qa`.
+
+#### 10.3 `ship` playbook
+
+- **Owner:** QA names it; App engineer / Security contribute env and RLS checks
+- **Why:** 22-line checklist. No Reject, no rollback template, no “user-visible needs `browser-qa` evidence” as a fail.
+- **Do:** Use / Checks / Reject / Done-when. Go/no-go. Name env, migration order, rollback, secrets, screenshot evidence. Reject “LGTM, ship it” without commands or screenshot paths for UI.
+- **Files:** `skills/ship/SKILL.md`, `src/install/roster-adapters.ts` (`/ship`), `USER_GUIDE.md` skill table, `tests/`
+- **Depends:** 10.2 (ship should point at the uplifted testing-qa language)
+- **Status:** `[ ]`
+
+Acceptance: `/ship` and the skill agree; tests lock rollback + `browser-qa` evidence.
+
+Wave 1 done when: every **default** skill has Use / Reject / Done-when. `wc -l` is not the bar; Reject + Done-when + an init test is.
+
+### Wave 2 — Optional skills: honest playbooks or stay stubs
+
+Optional skills are 10–11 lines. Either uplift or say so in the YAML description (“stub: add only when you have a repeating job”).
+
+#### 10.4 `debug`
+
+- **Owner:** App engineer
+- **Do:** Reproduce → localize → reduce → fix → guard. User-visible bugs require before/after `browser-qa`. Reject guessing from the stack trace alone.
+- **Files:** `skills/optional/debug/SKILL.md`, `USER_GUIDE.md` “Adding more”
+- **Status:** `[ ]`
+
+#### 10.5 `docs`
+
+- **Owner:** optional Docs agent
+- **Do:** Update only `USER_GUIDE`, `CHANGELOG`, and the living file the change actually moved. Reject restoring the 17-doc OS.
+- **Files:** `skills/optional/docs/SKILL.md`, `agents/optional/docs/agent.md`
+- **Status:** `[ ]`
+
+#### 10.6 `upgrade`
+
+- **Owner:** optional
+- **Do:** `agent-kit update` on a branch; local edits win; never delete user files. Point at `UPGRADE.md`. Reject `init --force` as the upgrade path.
+- **Files:** `skills/optional/upgrade/SKILL.md`, `UPGRADE.md` (link only)
+- **Status:** `[ ]`
+
+#### 10.7 `ui-polish`
+
+- **Owner:** Design
+- **Do:** After `frontend-design`, not instead of it. If `DESIGN.md` is missing, send Design to `setup` first. Still desktop + mobile.
+- **Files:** `skills/optional/ui-polish/SKILL.md`
+- **Status:** `[ ]` (partial language already exists; finish Reject / Done-when)
+
+Wave 2 done when: `agent-kit add skill <id>` installs a playbook, not a three-line reminder.
+
+### Wave 3 — Agents know which skill to run, and the relay is paste-ready
+
+This is the “talk to each other” work **without** an orchestrator. Handoff stays: specialist A finishes → user pastes Planner’s prompt into specialist B.
+
+#### 10.8 Planner emits a paste-ready handoff
+
+- **Owner:** Planner
+- **Why:** Planner names an owner but does not give the user the prompt to paste. USER_GUIDE has prompts; the agent does not print them.
+- **Do:** `planning` Done-when includes a fenced prompt for the owning agent (and extra reviewers). Example: if owner is Design and `DESIGN.md` is missing, print the setup prompt. If owner is QA, print the screenshot prompt.
+- **Files:** `skills/planning/SKILL.md`, `agents/planner/agent.md`, `USER_GUIDE.md` (keep prompts in one place; planning copies them)
+- **Status:** `[ ]`
+
+Acceptance: a plan reply always contains a copy-paste block the next specialist can run.
+
+#### 10.9 Each agent’s Handoff section names the next paste
+
+- **Owner:** each default agent
+- **Do:** After Done-when, say who gets the work next and which USER_GUIDE prompt to paste. App engineer → Security (if auth/data) and QA. Design → Copy (public words) and QA. Copy → Design (visual P0s) then QA. Security → QA.
+- **Files:** `agents/*/agent.md`
+- **Status:** `[ ]`
+
+Acceptance: no default agent ends with “you do not run the others” without a next paste.
+
+#### 10.10 Skill YAML descriptions that actually trigger
+
+- **Owner:** docs + tests
+- **Why:** Cursor matches skills from `description`. Weak descriptions (`Use for…`) lose to a generic chat.
+- **Do:** Every default skill description includes the trigger phrases a user would type (`RLS`, “looks generic”, “is this done”, “ship”, “empty state”). Add a test that descriptions are unique and contain Use-when nouns.
+- **Files:** each `skills/<id>/SKILL.md` frontmatter, `tests/agent-catalog.test.ts` or a new `tests/skill-frontmatter.test.ts`
+- **Status:** `[ ]`
+
+#### 10.11 Copilot role prompts for every specialist
+
+- **Owner:** Copilot adapter
+- **Why:** Copilot has no `@agent` picker. Today the generated instructions only paste a QA prompt.
+- **Do:** `.github/copilot-instructions.md` (from `roster-adapters.ts`) includes one paste block per default agent, matching USER_GUIDE.
+- **Files:** `src/install/roster-adapters.ts`, `tests/ide-activate.test.ts`
+- **Status:** `[ ]`
+
+#### 10.12 USER_GUIDE workflow as one sequence
+
+- **Owner:** Copy + Design (kit HTML)
+- **Do:** Keep the charcoal desk. Make “New feature” show the relay: Plan → implement → Security if needed → Design if UI → Copy if public words → QA. Each step already has a paste; do not add a fourth ticket to the first viewport unless it is the next user action.
+- **Files:** `USER_GUIDE.md`, `USER_GUIDE.html`, `npm run smoke:ui-screens`
+- **Status:** `[ ]`
+
+Wave 3 done when: a new user can run a feature without inventing prompts, and Copilot can play any specialist from the generated file.
+
+### Wave 4 — Decision gate: stay a relay, or add optional auto-handoff
+
+Do **not** start until Waves 1–3 are done. This is a product decision, not a default.
+
+- `[ ]` **Decide and record in `DECISIONS.md`:** stay paste-relay (recommended) **or** ship optional auto-handoff.
+- If paste-relay: stop. Wave 3 is the coordination model.
+- If auto-handoff: optional only (`agent-kit add` or activate flag). Must not run on plain `init`. Must not restore Studio, session ledger, or LangGraph as the default. A thin runner that prints “now paste this to @qa” is in scope; spawning six subagents in one chat is out of scope unless a later decision says otherwise.
+
+### Wave 5 — Later (after 10.1–10.11)
+
+- `[ ]` Re-scan GitHub for `product-copy` / ship / a11y skill structure (structure only).
+- `[ ]` Dogfood Wave 1–3 on one real Next.js + Supabase app: Planner → App engineer → Design setup or review → QA. Record where the model still skipped a named skill.
+- `[ ]` Promote those skips into Reject lines or stronger descriptions.
+- `[ ]` Keep npm Trusted Publisher records current; run `release:check` on the 0.4.4 cut.
+
+### Not doing (unless Wave 4 says otherwise)
+
+- Restoring 17 living docs, `QUALITY_GATES.md`, or `COUNCIL.md` on default `init`
+- A design MCP, canvas CLI, or slash-command marketplace
+- Splitting `frontend-design` back into six critique skills
+- Making Planner implement, or making one chat play all six roles
+- Treating `agent-kit orchestrate` as required for a “good kit”
+
+## Historical record (Phases 1–9)
+
+These phases built the package, the council OS, research, Studio, and the 0.4 simplify. They stay for traceability. Do not reopen them as current work.
 
 ## Phase 1: Bootstrap Package Repo
 
@@ -341,12 +520,15 @@ Acceptance:
 
 ## Current Next Actions
 
-1. Keep npm Trusted Publisher records current for both `@appsforgood/agent-kit-runtime` and `@appsforgood/next-supabase-kit` against `release.yml` and the `npm-publish` environment.
-2. Run `npm run release:check`, then let the push-triggered release workflow publish runtime before root and verify both registry installs.
-3. Dogfood one read-only planning run and one mutation-capable worktree run in a real project, recording approval, cancellation, evidence, and scoped-commit behavior.
-4. Add provider conformance fixtures as providers evolve; do not infer model capability from marketing names.
-5. Review generated install conflicts and promote only intentional template updates.
-6. Continue applying reference-led design and browser QA gates to real frontend work.
+Work Phase 10 in order. First open `[ ]` after this PR:
+
+1. Merge PR #38 (frontend-design modes + setup interview), then cut npm 0.4.4.
+2. **10.1** Uplift `accessibility-wcag` to the playbook bar.
+3. **10.2** Uplift `testing-qa`.
+4. **10.3** Uplift `ship`.
+5. Then Wave 2 optional skills, then Wave 3 paste-ready handoff. Do not start Wave 4 (orchestrator decision) until then.
+
+Historical next-actions below (Trusted Publisher, orchestrate dogfood, 0.3 council) are **not** the 0.4 default queue. See Wave 5 and Phase 6 evidence if you are cutting a release.
 
 Latest release evidence:
 

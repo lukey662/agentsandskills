@@ -30,6 +30,20 @@ Add a `setup` mode to `frontend-design` and the Design agent. The job is asking 
 
 First UI work in a fresh install starts with questions about need, then a collaborative style guide. `USER_GUIDE` ships a pasteable setup prompt. Antigravity `/frontend` names setup. The 17-doc council `DESIGN.md` template stays off the default `init`.
 
+## 2026-09-12 - Post-0.4 Kit Quality Roadmap
+
+### Context
+
+After the 0.4 simplify and the frontend-design setup interview, the remaining gap was not more agents. Default skills were uneven (`accessibility-wcag`, `testing-qa`, `ship` still checklists; optional skills were stubs). Agents named skills on paper but did not emit paste-ready handoffs. The old ROADMAP “Current Next Actions” still pointed at Trusted Publisher and orchestrate dogfood, which is not the 0.4 working queue.
+
+### Decision
+
+Track remaining work as Phase 10 in `ROADMAP.md`: playbook parity first, then optional skills, then paste-ready relay, then an explicit decision gate before any auto-handoff. Do not restore session/Studio/`orchestrate` as default `init`. One playbook item per PR.
+
+### Consequences
+
+The next implementation ticket is `accessibility-wcag` (10.1), after PR #38 merges and 0.4.4 is cut. Orchestration stays a Wave 4 decision.
+
 ## 2026-09-09 - Version Packages Keeps A Drafted Changelog Heading
 
 ### Context

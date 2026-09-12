@@ -13,7 +13,7 @@ The repository has five main subsystems:
 
 The CLI reads bundled assets from the package root so the same commands work in local development and after build.
 
-Package-level research decisions are recorded in `DECISIONS.md`. Default pack skills live in `skills/<id>/SKILL.md`. `frontend-design` is a playbook with `setup` / `build` / `review` / `detect` modes; the 2026-09-12 GitHub scan is in `research/summaries/frontend-design-agent-skill-2026-09-12.md`.
+Package-level research decisions are recorded in `DECISIONS.md`. Default pack skills live in `skills/<id>/SKILL.md`. `frontend-design` is a playbook with `setup` / `build` / `review` / `detect` modes; the 2026-09-12 GitHub scan is in `research/summaries/frontend-design-agent-skill-2026-09-12.md`. Remaining kit-quality work is Phase 10 in `ROADMAP.md` (playbook parity, paste-ready handoff). Do not treat Phases 1–9 as the current queue.
 
 ## Install Behavior
 
@@ -345,7 +345,7 @@ Dependency Review requires GitHub dependency graph support for the repository. I
 
 ## Delivery Tracking
 
-Use `ROADMAP.md` as the source of truth for phased implementation status and next actions.
+Use `ROADMAP.md` as the source of truth for phased implementation status and next actions. Active work is **Phase 10** (playbook parity and paste-ready handoff). Phases 1–9 are historical.
 
 ## Release Notes
 

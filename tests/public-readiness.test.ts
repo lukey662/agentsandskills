@@ -61,6 +61,15 @@ describe("public package readiness", () => {
     expect(readFileSync(join(root, "skills/browser-qa/SKILL.md"), "utf8")).toContain("Do not review code alone");
   });
 
+  it("ROADMAP Phase 10 is the working queue", () => {
+    const roadmap = readFileSync(join(root, "ROADMAP.md"), "utf8");
+    expect(roadmap).toContain("## Phase 10:");
+    expect(roadmap).toContain("#### 10.1 `accessibility-wcag` playbook");
+    expect(roadmap).toContain("Do not restore session, Studio, research, or `orchestrate` as the default install.");
+    expect(roadmap).toContain("## Current Next Actions");
+    expect(roadmap.indexOf("## Phase 10:")).toBeLessThan(roadmap.indexOf("## Phase 1:"));
+  });
+
   it("post-publish verify uses the 0.4 CLI, not audit or orchestrate", () => {
     const source = readFileSync(join(root, "scripts/post-publish-verify.mjs"), "utf8");
     expect(source).toContain('init", "--stack", "next-supabase", "--activate", "all"');
