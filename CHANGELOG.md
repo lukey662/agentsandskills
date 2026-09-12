@@ -3,7 +3,7 @@
 ## 0.4.4
 
 - Uplift `frontend-design` and the Design agent from a 2026-09-12 GitHub scan (structure only): name `build` / `review` / `detect`, pick a surface profile, read `DESIGN.md` tokens, tag findings as code-certain or inferred. Do not install a design MCP or canvas CLI. Kit charcoal tokens stay off downstream apps.
-- Add Design `setup` for new repos: scan architecture, ask compact product/audience/first-screen questions, recommend principles and a token recipe, then write a short product `DESIGN.md` and frontend `STYLE_GUIDE.md` rules with the user before CSS. `init` still does not install `DESIGN.md`. Setup may skip screenshots when nothing can render; Design keeps `requiredTools`.
+- Add Design `setup` for new repos: scan, then ask what the user needs (who it is for, what they must get done, what this pass should produce). Recommend from the answers, then write style-guide and principles files they asked for. `init` still does not install `DESIGN.md`. Setup may skip screenshots when nothing can render; Design keeps `requiredTools`.
 
 ## 0.4.3
 

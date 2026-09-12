@@ -1,6 +1,6 @@
 ---
 name: frontend-design
-description: Use when setting up design on a new repo, or building, reviewing, or auditing UI. Name the mode (setup, build, review, or detect). Setup writes DESIGN.md and style-guide rules with the user before CSS.
+description: Use when setting up design on a new repo, or building, reviewing, or auditing UI. Name the mode (setup, build, review, or detect). Setup asks what the user needs, then recommends principles before CSS.
 ---
 
 # Frontend Design
@@ -19,7 +19,7 @@ Name the mode before CSS. Default is `setup` when `DESIGN.md` is missing or TBD,
 
 | Mode | Do |
 | --- | --- |
-| `setup` | New repo or missing/TBD `DESIGN.md`. Scan architecture, ask compact questions, recommend principles, write `DESIGN.md` + `STYLE_GUIDE.md` with the user. No CSS unless they then ask to build. |
+| `setup` | New repo or missing/TBD `DESIGN.md`. Scan, then ask what they need. Recommend from the answers. Record principles and style-guide rules only after that. No CSS unless they then ask to build. |
 | `build` | Write tokens and one layout idea, then CSS. Screenshot after. |
 | `review` | Screenshot first. Findings table, then fix P0s. |
 | `detect` | Audit only. No edits. Use when asked to scan, flag, or not change code. |
@@ -39,7 +39,7 @@ Pick one profile and stay at that depth. Setup names a likely surface after the 
 
 Run this when any of these is true: `DESIGN.md` is missing; it is still TBD / `[product]` / “your product”; the user asked to set up design, a style guide, or principles; this is first UI work after `init`.
 
-Do **not** dump a 17-doc council template. Do **not** paste this kit’s charcoal desk onto the product. `init` does not install `DESIGN.md`; you write a short product file with the user.
+The job is **asking good questions so you know what they need**. Docs and tokens are the record of that conversation. Do **not** dump a 17-doc council template. Do **not** paste this kit’s charcoal desk onto the product. `init` does not install `DESIGN.md`.
 
 ### 1. Scan first — do not re-ask what you can read
 
@@ -52,42 +52,52 @@ Read enough to name:
 - Auth or first useful screens (login, invite, empty app)
 - Existing tokens in `globals.css`, Tailwind theme, or a mature `STYLE_GUIDE.md`
 
-Report the architecture in a short list. If a real visual system already exists, stay surgical (`inside-design-system`) and offer to record it rather than invent a second brand.
+Report the architecture in a short list, then ask. If a real visual system already exists, stay surgical (`inside-design-system`) and offer to record it rather than invent a second brand.
 
-### 2. One compact ask
+### 2. Ask what they need
 
-Ask once. Skip any item the scan already answered.
+Setup is an interview. Use the scan as context, not as a quiz.
 
-1. Product name and who it is for.
-2. First-screen job — what the user *does* on the first useful screen.
-3. Three personality traits and density (quiet/dense vs marketing/bold).
-4. Existing brand (logo, hex, type) vs invent from the domain.
-5. Motion: none / hover only / one moment.
+**How to ask**
 
-Do not open with a 20-question intake. Public words still belong to Copy.
+- One message, in their language (the work, the person), not ours (hex, motion budget, “three personality traits”).
+- Skip anything they already answered or the scan already settled.
+- If an answer is vague (“make it modern,” “make it pop”), ask one follow-up: *what should a stranger see, and what would be the wrong product?*
+- Do not ask them to pick a hex, a font, or a motion budget until you know the need.
+- Public words still belong to Copy.
 
-### 3. Recommend best practices, then pause
+**Need questions** (ask these; drop any they already covered)
 
-Always recommend before writing files. Include:
+1. What are we setting up, and what do you need from this pass — principles, a style guide, a first-screen direction, or all of it?
+2. Who has to succeed, and what are they trying to finish?
+3. On the first useful screen, what must they be able to do?
+4. What is already decided — brand, components, legal, accessibility — and what must it *not* look like?
+5. When this works, what is in front of them? When it fails, what did we get wrong?
 
-- **Principles (4–6):** first screen = the work; one field, one ink, one accent, one line; states before decoration; WCAG 2.1 AA contrast (4.5:1 text); match the existing stack; no left-edge selection rails.
-- **Token recipe:** pick one scheme from Color below that fits *this* domain, or stay surgical if shadcn/existing tokens already exist. Downstream apps never copy kit charcoal `#10100e`.
-- **Two directions:** one sentence each. Pick one and say why.
-- **Anti-references** for this product (cream editorial, neon-on-black decoration, SaaS card kit, newsprint, kit charcoal desk — keep only those that apply).
-- **QA gate:** any later user-visible CSS still needs desktop (~1280) and mobile (~390) screenshots.
-- **Ownership:** Copy finishes public words with `deslop`. Design restyles leftover visual P0s. QA owns accept / reject.
+Listen. Follow up once if needed. Then recommend.
+
+### 3. Recommend from the answers, then pause
+
+Best practices are tailored, not a canned list. Always include:
+
+- The **need** you heard, in one sentence.
+- **Principles (4–6)** that serve that need. Default bar unless they overrode it: first screen = the work; one field, one ink, one accent, one line; states before decoration; WCAG 2.1 AA contrast (4.5:1 text); match the existing stack; no left-edge selection rails.
+- **Visual direction** only if they asked for one: a token recipe from Color below that fits *this* domain, or a surgical pass if shadcn/existing tokens already exist. Downstream apps never copy kit charcoal `#10100e`. Two one-sentence options and a pick.
+- **Anti-references** in their words, plus any 2026 defaults that would make this the wrong product.
+- What you will write vs what can wait.
 
 Pause for confirm. If the session is non-interactive, or the user said to proceed, **state assumptions** and continue.
 
-### 4. Write short docs — no CSS yet
+### 4. Record what they need — no CSS yet
 
-Write a **short** product `DESIGN.md` (not the 160-line kit template):
+Write only the files this pass called for. Default, when they want a style guide and principles, is a **short** product `DESIGN.md` (not the 160-line kit template):
 
 ```markdown
 # DESIGN.md
 
+## Need
 ## Product
-## Audience
+## Who it is for
 ## First-screen job
 ## Architecture found
 ## Principles
@@ -210,6 +220,8 @@ P0 list lives in `deslop`. A clean catalog pass is necessary but not enough: the
 
 - Approving UI from TSX or HTML alone.
 - Starting CSS on a new product before `setup` when `DESIGN.md` is missing or TBD.
+- Quizzing them on hex, fonts, or motion before you know what they need.
+- Writing `DESIGN.md` from a template without asking what this setup is for.
 - Overwriting a mature `STYLE_GUIDE.md`.
 - Pasting this kit’s charcoal desk onto a downstream product.
 - Installing a design MCP, canvas CLI, or slash-command pack to “do design.”
@@ -224,6 +236,6 @@ P0 list lives in `deslop`. A clean catalog pass is necessary but not enough: the
 
 ## Done when
 
-**Setup:** architecture was reported, questions were asked or assumptions stated, principles and a token recipe were recommended, a short product `DESIGN.md` exists, and `STYLE_GUIDE.md` was created or appended. No unsolicited CSS. Screenshots are not required if nothing can render.
+**Setup:** architecture was reported, need questions were asked (and followed up if vague) or assumptions stated, recommendations match what they need, and the files this pass called for were written. No unsolicited CSS. Screenshots are not required if nothing can render.
 
 **Build / review / detect:** Mode and surface were named. Desktop and mobile images were read (or detect listed what could not be rendered). Token list is in the change or in `DESIGN.md`. No P0 slop from `deslop` remains unless Design names it as an accepted exception. Detect ends with the table and no file edits.

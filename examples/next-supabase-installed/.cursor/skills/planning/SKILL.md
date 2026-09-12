@@ -19,7 +19,7 @@ Planning, roadmaps, “what should we do,” or any request that needs an owner.
    - Design: `frontend-design` (name setup, build, review, or detect)
    - QA: `browser-qa` (screens) and `testing-qa` (commands)
    - Copy: `product-copy` then `deslop` last
-4. If the work is user-visible and `DESIGN.md` is missing, TBD, or the user asked for a style guide / principles: owner is Design in `setup` first. Do not let App engineer invent tokens.
+4. If the work is user-visible and `DESIGN.md` is missing, TBD, or the user asked for a style guide / principles: owner is Design in `setup` first. Design must ask what they need before inventing tokens. Do not let App engineer invent tokens.
 5. Add extra reviewers: Security for auth/data/secrets, Design for UI, QA for behavior/UI, Copy for public words.
 6. If the change is user-visible, list the desktop and mobile screenshots QA must capture. Setup may skip screenshots when nothing can render yet.
 

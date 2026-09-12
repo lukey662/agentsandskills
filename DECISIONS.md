@@ -24,11 +24,11 @@ After the playbook modes landed, first-run Design still jumped to CSS or a wall 
 
 ### Decision
 
-Add a `setup` mode to `frontend-design` and the Design agent. Scan the repo first. Ask five compact questions (product/audience, first-screen job, personality/density, brand vs invent, motion). Recommend 4–6 principles, a token recipe or surgical pass, and two directions. Then write a short product `DESIGN.md` and append frontend rules to `STYLE_GUIDE.md` with the user. Do not overwrite a mature style guide. Do not paste kit charcoal tokens onto the product. Planner sends Design to `setup` when `DESIGN.md` is missing. Setup may skip screenshots when nothing can render; Design still keeps `requiredTools`.
+Add a `setup` mode to `frontend-design` and the Design agent. The job is asking good questions so the agent knows what the user needs — not filling a token form. Scan the repo first. Ask: what this pass should produce; who must succeed and what they are finishing; what the first screen must let them do; what is already decided and what it must not look like. Follow up if answers are vague. Do not quiz hex, fonts, or motion first. Recommend principles from those answers, then write only the files they asked for. Do not overwrite a mature style guide. Do not paste kit charcoal tokens onto the product. Planner sends Design to `setup` when `DESIGN.md` is missing. Setup may skip screenshots when nothing can render; Design still keeps `requiredTools`.
 
 ### Consequences
 
-First UI work in a fresh install starts with a collaborative style guide, not a theme pack. `USER_GUIDE` ships a pasteable setup prompt. Antigravity `/frontend` names setup. The 17-doc council `DESIGN.md` template stays off the default `init`.
+First UI work in a fresh install starts with questions about need, then a collaborative style guide. `USER_GUIDE` ships a pasteable setup prompt. Antigravity `/frontend` names setup. The 17-doc council `DESIGN.md` template stays off the default `init`.
 
 ## 2026-09-09 - Version Packages Keeps A Drafted Changelog Heading
 

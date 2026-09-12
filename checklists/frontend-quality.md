@@ -1,7 +1,7 @@
 # Frontend Quality Checklist
 
 - First screen shows the actual product or task.
-- `frontend-design` named `setup`, `build`, `review`, or `detect` and a surface before CSS. New repos run `setup` (scan, compact questions, principles, short `DESIGN.md`) before CSS.
+- `frontend-design` named `setup`, `build`, `review`, or `detect` and a surface before CSS. New repos run `setup`: ask what the user needs, then record principles.
 - `DESIGN.md` includes product category, audience, user needs, content inventory, brand constraints, and creative direction.
 - Brand/content intake was completed before visual implementation.
 - At least two creative directions were considered.
