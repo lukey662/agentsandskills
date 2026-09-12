@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.4
+
+- Uplift `frontend-design` and the Design agent from a 2026-09-12 GitHub scan (structure only): name `build` / `review` / `detect`, pick a surface profile, read `DESIGN.md` tokens, tag findings as code-certain or inferred. Do not install a design MCP or canvas CLI. Kit charcoal tokens stay off downstream apps.
+
 ## 0.4.3
 
 - `doctor` fails if a default agent drops packaged `requiredTools` (QA/Design can no longer drop screenshot tools and still pass).

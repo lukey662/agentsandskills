@@ -44,6 +44,8 @@ Canonical source of truth:
 - Treat exact model names as June 2026 recommendations that must be reviewed when IDE or provider docs change.
 - Do not claim per-agent model enforcement in tools where model selection is controlled by a user picker, organization policy, or hosted agent setting.
 
+Recorded 2026-09-12 (owner: cloud agent on `lukey662/agentsandskills`): this frontend-design uplift used Cursor Grok 4.6 (xhigh). `MODEL_ROUTING.md` maps Frontend Design Lead to `creative-vision-large-context`. Cursor enforcement remains advisory (user/team model picker). Limitation: this session cannot pin the user’s picker; the skill/agent files are the durable contract.
+
 ## Adapter Rules
 
 - Keep `AGENTS.md`, `AGENT_ROSTER.md`, and `.agent-kit/agent-roster.json` as the source of truth.

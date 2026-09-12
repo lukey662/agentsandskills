@@ -586,7 +586,7 @@
             </tr>
             <tr>
               <td><code>frontend-design</code></td>
-              <td>Layout, simple palette, anti-generic UI</td>
+              <td>Build, review, or detect UI. Tokens first. Anti-generic</td>
             </tr>
             <tr>
               <td><code>accessibility-wcag</code></td>
@@ -680,7 +680,13 @@ Act as the QA agent. Use the browser-qa skill. Do not review code alone. Open th
           <li>Planner — paste the prompt on ticket 03.</li>
           <li>App engineer — <code>Implement the plan. Smoke the changed route in the browser before you hand off.</code></li>
           <li>Security if data, auth, or secrets changed.</li>
-          <li>Design if the UI changed — <code>Review the running UI from screenshots first. Desktop and mobile. Reject generic AI-looking layout.</code></li>
+          <li>
+            Design if the UI changed —
+            <code
+              >Act as design. Name the mode (build, review, or detect). Review the running UI from screenshots first. Desktop and mobile. Reject generic
+              AI-looking layout.</code
+            >
+          </li>
           <li>QA — paste the good prompt below.</li>
         </ol>
         <p>Done when QA attaches both frames plus a verdict.</p>
@@ -690,7 +696,9 @@ Act as the QA agent. Use the browser-qa skill. Do not review code alone. Open th
           user-visible.
         </p>
         <h3>UI polish</h3>
-        <p>Design + <code>frontend-design</code> + <code>browser-qa</code>. Desktop and mobile. One happy-path shot is a fail.</p>
+        <p>
+          Design + <code>frontend-design</code> + <code>browser-qa</code>. Name build, review, or detect. Desktop and mobile. One happy-path shot is a fail.
+        </p>
         <h3>Copy pass</h3>
         <p>Copy reviews the <em>rendered</em> words in screenshots, not strings in TSX. Run <code>product-copy</code>, then <code>deslop</code> last.</p>
       </section>

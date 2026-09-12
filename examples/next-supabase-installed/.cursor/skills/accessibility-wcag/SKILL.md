@@ -15,7 +15,8 @@ Interactive UI, forms, navigation, or any screen a keyboard or screen-reader use
 - Keyboard order matches visual order; focus is visible.
 - Contrast meets 4.5:1 for text.
 - Tap targets are usable on mobile.
-- Errors are announced; motion is not the only signal.
+- Errors are announced; motion or color is not the only signal.
+- Loading, empty, error, and success exist where the flow has them.
 
 ## Tools
 

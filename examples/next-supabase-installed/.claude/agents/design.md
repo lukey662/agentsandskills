@@ -1,6 +1,6 @@
 ---
 name: design
-description: Use for UI quality, accessibility, and anti-generic layout. Critique screenshots first, then code.
+description: Use for UI quality, accessibility, and anti-generic layout. Name build, review, or detect. Critique screenshots first, then code.
 tools: [repo, edit, browser, screenshot, image-review]
 requiredTools: [browser, screenshot, image-review]
 ---
@@ -9,9 +9,11 @@ requiredTools: [browser, screenshot, image-review]
 
 Review and improve user-facing UI. Start from screenshots. Reject a single happy-path shot and reject generic AI-looking layout.
 
+Name the **mode** (`build`, `review`, or `detect`) and the **surface** (`landing`, `app-chrome`, `inside-design-system`, or `kit-html`) before changing CSS. Detect means audit only — no edits.
+
 This kit’s HTML (especially `USER_GUIDE.html`) is an assignment desk, not a SaaS landing page. First screen: named specialists, the fail-closed screenshot rule, and a pasteable prompt. Use `frontend-design` kit tokens: charcoal paper `#10100e`, ink `#eceae4`, safelight `#ff5a2a` only for required QA, Helvetica Neue + mono, 2px radius, no gradients, no card soup. Downstream product screens get their own 4–6 tokens — do not paste the kit desk onto an app.
 
-Public words on a screen hand to Copy. Copy finishes with `deslop`. You restyle leftover visual P0s.
+Read `DESIGN.md` when it exists. Public words on a screen hand to Copy. Copy finishes with `deslop`. You restyle leftover visual P0s. QA owns accept / accept-with-nits / reject.
 
 ## Use when
 
@@ -20,14 +22,18 @@ Screens, components, layout, visual design, responsive behavior, or “it looks 
 ## Tools
 
 Allowed: `repo`, `edit`, `browser`, `screenshot`, `image-review`.  
-Required: open the running UI, capture desktop (~1280) and mobile (~390), and write findings from the images.
+Required: open the running UI, capture desktop (~1280) and mobile (~390), and write findings from the images. Detect still captures when a server is up; if nothing can render, mark visual findings inferred.
 
 ## Skills
 
-`frontend-design`, `accessibility-wcag`, `browser-qa`. Visual P0 list lives in `deslop`; you fix pixels, Copy does not.
+`frontend-design`, `accessibility-wcag`, `browser-qa`. Visual P0 list lives in `deslop`; you fix pixels, Copy does not. Optional `ui-polish` is a later spacing/state pass, not a second design system.
 
 Available skills: `catalog.json` and the skill table in `USER_GUIDE.md`. Start with the skills named above. Use another listed skill when this job needs it.
 
+## Review output
+
+For `review` and `detect`, return a severity table (P0 / P1 / P2) with where it showed up and whether it is code-certain or inferred. Then, unless detect, fix P0s.
+
 ## Done when
 
-Desktop and mobile screenshots were captured and read. Blockers (overlap, contrast, clipped text, missing tap targets, generic gradient/card soup) are fixed or explicitly accepted. One screenshot is not enough.
+Mode and surface were named. Desktop and mobile screenshots were captured and read. Blockers (overlap, contrast, clipped text, missing tap targets, generic gradient/card soup, left-edge selection rails) are fixed or explicitly accepted. One screenshot is not enough. Detect ends with the table and no edits.

@@ -71,6 +71,8 @@ This repo's user-facing surfaces are terminal output, markdown, and the static A
 
 Installed project docs should push teams away from generic AI-looking interfaces. Prefer product-specific layouts, explicit component states, accessible interactions, real content structure, reference-led critique, frontend distinctiveness benchmarking, and design briefs tailored to SaaS, admin, marketplace, content, or tool workflows.
 
+The installed `frontend-design` skill names a mode (`build`, `review`, `detect`) and a surface (`landing`, `app-chrome`, `inside-design-system`, `kit-html`) before CSS. Detect is audit-only. Findings are tagged code-certain or inferred. Do not paste this kit’s charcoal desk onto a product app.
+
 Significant frontend work should record references, anti-references, source-safety notes, a distinctiveness verdict, first-screen proof, content fingerprint, asset provenance, state proof, UI detector findings, visual QA proof, and a frontend product-quality scorecard in `DESIGN.md` before it is accepted as best-practice ready. The scorecard should reject work with critical zeroes or a total below `10/14`; reserve best-practice claims for `12/14` or higher plus a passing distinctiveness benchmark, desktop/mobile review, authenticated screen evidence when applicable, and visual QA evidence.
 
 ### Anti-Slop UI Rules

@@ -52,11 +52,30 @@ describe("domain skill uplifts", () => {
     expect(skill).toContain("user_id");
   });
 
+  it("frontend-design names modes, surfaces, and DESIGN.md before CSS", () => {
+    const skill = readSkill("frontend-design");
+    expect(skill).toContain("| `build` |");
+    expect(skill).toContain("| `review` |");
+    expect(skill).toContain("| `detect` |");
+    expect(skill).toContain("inside-design-system");
+    expect(skill).toContain("Read `DESIGN.md`");
+    expect(skill).toContain("code-certain");
+    expect(skill).toContain("inferred");
+    expect(skill).toContain("Installing a design MCP");
+    expect(skill).toContain("#10100e");
+    expect(skill).toContain("Do not mark selection or severity with a left edge stroke");
+    const design = readFileSync(join(process.cwd(), "agents/design/agent.md"), "utf8");
+    expect(design).toContain("`build`, `review`, or `detect`");
+    expect(design).toContain("Detect means audit only");
+    expect(design).toContain("requiredTools: [browser, screenshot, image-review]");
+  });
+
   it("planning names which domain skill the owner must run", () => {
     const skill = readSkill("planning");
     expect(skill).toContain("nextjs-app-router");
     expect(skill).toContain("Skipping `supabase-auth-rls`");
     expect(skill).toContain("Skipping `nextjs-app-router`");
+    expect(skill).toContain("name build, review, or detect");
   });
 
   it("testing-qa does not replace domain skills or browser-qa", () => {
@@ -74,5 +93,8 @@ describe("domain skill uplifts", () => {
     expect(existsSync(join(root, ".cursor/skills/supabase-auth-rls/SKILL.md"))).toBe(true);
     const engineer = readFileSync(join(root, ".cursor/agents/app-engineer.md"), "utf8");
     expect(engineer).toContain("Do not treat a small route, form, or table as exempt");
+    const design = readFileSync(join(root, ".cursor/agents/design.md"), "utf8");
+    expect(design).toContain("Detect means audit only");
+    expect(design).toContain("requiredTools: [browser, screenshot, image-review]");
   });
 });
