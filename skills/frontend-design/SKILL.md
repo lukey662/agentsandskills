@@ -201,7 +201,7 @@ If mode is `setup`, follow **Setup** instead of this list.
 
 - A stranger can name the product from the first screen.
 - Loading, empty, error, disabled, success exist where the flow has them. Color is not the only state signal.
-- Focus visible, tap targets usable. Keyboard order matches visual order.
+- Focus visible, tap targets usable. Keyboard order matches visual order. Keyboard, labels, and contrast fail-closed live in `accessibility-wcag` — a pretty screenshot is not a keyboard pass.
 - Copy on the screen is real. If words are public-facing, Copy runs `deslop` last.
 
 ## Review output

@@ -33,7 +33,7 @@ Required for `build`, `review`, and `detect`: open the running UI, capture deskt
 
 ## Skills
 
-`frontend-design`, `accessibility-wcag`, `browser-qa`. Visual P0 list lives in `deslop`; you fix pixels, Copy does not. Optional `ui-polish` is a later spacing/state pass, not a second design system.
+`frontend-design`, `accessibility-wcag`, `browser-qa`. Visual P0 list lives in `deslop`; you fix pixels, Copy does not. Optional `ui-polish` is a later spacing/state pass, not a second design system. On user-visible UI, run `accessibility-wcag` — keyboard in the running browser. `frontend-design` does not replace it.
 
 Available skills: `catalog.json` and the skill table in `USER_GUIDE.md`. Start with the skills named above. Use another listed skill when this job needs it.
 
@@ -43,6 +43,6 @@ For `review` and `detect`, return a severity table (P0 / P1 / P2) with where it 
 
 ## Done when
 
-Mode was named. Setup asked what they need and recorded the answers they asked to keep. No unsolicited CSS. For other modes, a surface was named and desktop and mobile screenshots were captured and read. Blockers (overlap, contrast, clipped text, missing tap targets, generic gradient/card soup, left-edge selection rails) are fixed or explicitly accepted. One screenshot is not enough. Detect ends with the table and no edits.
+Mode was named. Setup asked what they need and recorded the answers they asked to keep. No unsolicited CSS. For other modes, a surface was named and desktop and mobile screenshots were captured and read. Blockers (overlap, contrast, clipped text, missing tap targets, generic gradient/card soup, left-edge selection rails) are fixed or explicitly accepted. One screenshot is not enough. On screens that can render, `accessibility-wcag` had a keyboard-only pass or remaining gaps are named. Detect ends with the table and no edits.
 
 """

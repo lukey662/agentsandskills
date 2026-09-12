@@ -98,7 +98,7 @@ export function generateAntigravityCommands(cwd: string, force: boolean, collect
       name: "browser-qa",
       description: "Live browser QA with desktop and mobile screenshots.",
       prompt:
-        "Act as the QA agent. Use the browser-qa skill. Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject."
+        "Act as the QA agent. Use the browser-qa skill. Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject. For screens, also run accessibility-wcag: keyboard-only pass. Do not accept contrast from the screenshot alone."
     },
     {
       name: "security",
@@ -119,7 +119,8 @@ export function generateAntigravityCommands(cwd: string, force: boolean, collect
     {
       name: "test",
       description: "Run tests, then browser-qa for UI.",
-      prompt: "Act as the QA agent. Run applicable tests, then use browser-qa for any user-visible change."
+      prompt:
+        "Act as the QA agent. Run applicable tests, then use browser-qa for any user-visible change. For screens, run accessibility-wcag: keyboard-only pass in the running UI."
     },
     {
       name: "ship",

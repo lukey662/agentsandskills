@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-09-12 - Accessibility-wcag Playbook
+
+### Context
+
+`accessibility-wcag` was a 27-line checklist. Keyboard and contrast were named, but there was no Reject list, no fail-closed Done-when, and no mapping onto App Router forms or dialogs. Agents could accept a screen because the screenshot looked fine. A 2026-09-12 structure scan of WCAG 2.1 AA and public accessibility skill packs showed the same split this kit already uses for OWASP: map the standard onto *this* stack, require evidence in the running product, and do not copy third-party skill bodies or stand up a specialist swarm.
+
+### Decision
+
+Uplift `accessibility-wcag` to the Use / Checks / Reject / Done-when playbook bar. Conformance bar is WCAG 2.1 AA. A keyboard-only pass in the running UI is required. “Contrast looks fine in the screenshot” is a Reject. Visual proof stays in `browser-qa`. Authorization stays in `supabase-auth-rls`. Do not require axe, Pa11y, or an a11y MCP. Planner names the skill for user-facing screens; QA and Design must run it. Keep one skill.
+
+### Consequences
+
+`init` installs the playbook. Tests lock Reject + keyboard-in-browser. Design `review`/`build` still captures screenshots; they do not replace Tab. Next playbook tickets are `testing-qa` (10.2) and `ship` (10.3).
+
 ## 2026-09-12 - Frontend-design Playbook Modes
 
 ### Context
@@ -34,15 +48,15 @@ First UI work in a fresh install starts with questions about need, then a collab
 
 ### Context
 
-After the 0.4 simplify and the frontend-design setup interview, the remaining gap was not more agents. Default skills were uneven (`accessibility-wcag`, `testing-qa`, `ship` still checklists; optional skills were stubs). Agents named skills on paper but did not emit paste-ready handoffs. The old ROADMAP “Current Next Actions” still pointed at Trusted Publisher and orchestrate dogfood, which is not the 0.4 working queue.
+After the 0.4 simplify and the frontend-design setup interview, the remaining gap was not more agents. Default skills were uneven (`accessibility-wcag`, `testing-qa`, `ship` still checklists at the time; optional skills were stubs). Agents named skills on paper but did not emit paste-ready handoffs. The old ROADMAP “Current Next Actions” still pointed at Trusted Publisher and orchestrate dogfood, which is not the 0.4 working queue.
 
 ### Decision
 
-Track remaining work as Phase 10 in `ROADMAP.md`: playbook parity first, then optional skills, then paste-ready relay, then an explicit decision gate before any auto-handoff. Do not restore session/Studio/`orchestrate` as default `init`. One playbook item per PR.
+Track remaining work as Phase 10 in `ROADMAP.md`: playbook parity first, then optional skills, then paste-ready relay, then an explicit decision gate before any auto-handoff. Do not restore session/Studio/`orchestrate` as default `init`. One playbook item per PR after the in-flight Wave 0 PR. `accessibility-wcag` (10.1) landed on that PR because it was the highest-value open ticket and Wave 0 was not merged yet.
 
 ### Consequences
 
-The next implementation ticket is `accessibility-wcag` (10.1), after PR #38 merges and 0.4.4 is cut. Orchestration stays a Wave 4 decision.
+The next implementation ticket is `testing-qa` (10.2), after this PR merges and 0.4.4 is cut. Orchestration stays a Wave 4 decision.
 
 ## 2026-09-09 - Version Packages Keeps A Drafted Changelog Heading
 

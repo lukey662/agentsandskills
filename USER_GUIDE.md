@@ -95,14 +95,14 @@ Do not ask one chat to be all six. Planner names the next specialist. It does no
 | `postgres-migrations` | Schema, constraints, RLS in the same change |
 | `owasp-security-review` | Mutations, uploads, SSRF, secrets |
 | `frontend-design` | Setup, build, review, or detect UI. Tokens first. Anti-generic |
-| `accessibility-wcag` | Keyboard, contrast, labels |
+| `accessibility-wcag` | Keyboard pass in the running browser. Contrast, labels. Not a screenshot guess |
 | `browser-qa` | Any screen. Required for QA of UI |
 | `testing-qa` | Unit / regression / smoke only |
 | `product-copy` | Headlines and CTAs |
 | `deslop` | Last copy pass. Copy always runs this |
 | `ship` | Release, env, rollback |
 
-QA of a screen always uses `browser-qa`, not `testing-qa` alone. Each agent file names the skills it must run, then points at `catalog.json` for the rest.
+QA of a screen always uses `browser-qa`, not `testing-qa` alone. User-facing screens also run `accessibility-wcag` (keyboard in the browser, not a contrast guess from the screenshot). Each agent file names the skills it must run, then points at `catalog.json` for the rest.
 
 ## Standard workflows
 
@@ -112,9 +112,9 @@ QA of a screen always uses `browser-qa`, not `testing-qa` alone. Each agent file
 2. **App engineer** — paste: `Implement the plan. Smoke the changed route in the browser before you hand off.`
 3. **Security** if data/auth/secrets changed.
 4. **Design** if the UI changed — paste: `Act as design. Name the mode (setup, build, review, or detect). Review the running UI from screenshots first. Desktop and mobile. Reject generic AI-looking layout.` If `DESIGN.md` is missing, run setup first.
-5. **QA** — paste: `Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.`
+5. **QA** — paste: `Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.` For screens, also run `accessibility-wcag`.
 
-Done when QA attaches `qa-evidence/<date>-<slug>/desktop.png` and `mobile.png` plus a verdict.
+Done when QA attaches `qa-evidence/<date>-<slug>/desktop.png` and `mobile.png` plus a verdict, and the changed flow passed a keyboard-only check.
 
 ### Auth / RLS change
 
@@ -132,7 +132,15 @@ Design scans the stack, then asks what you need. Recommendations come from those
 
 ### UI polish
 
-Design + `frontend-design` + `browser-qa`. Name setup, build, review, or detect. Desktop and mobile required once a screen exists. One happy-path shot is a fail.
+Design + `frontend-design` + `accessibility-wcag` + `browser-qa`. Name setup, build, review, or detect. Desktop and mobile required once a screen exists. One happy-path shot is a fail. A contrast guess from the screenshot is a fail.
+
+### Accessibility pass
+
+On any user-facing screen, paste to Design or QA:
+
+```text
+Run accessibility-wcag. Open the changed flow. Keyboard-only pass. Do not accept contrast from the screenshot alone.
+```
 
 ### Copy pass
 
@@ -158,8 +166,9 @@ Steps the QA agent must follow:
 2. Open the changed route with the real auth/role/data state.
 3. Capture desktop (~1280) and mobile (~390) into `qa-evidence/<yyyy-mm-dd>-<slug>/`.
 4. **Read the images.** List blockers from what is on screen.
-5. Run applicable tests.
-6. Write `notes.md` with route, viewports, auth state, verdict.
+5. Keyboard-only the changed flow (`accessibility-wcag`). Do not accept contrast from the screenshot alone.
+6. Run applicable tests.
+7. Write `notes.md` with route, viewports, auth state, keyboard result, verdict.
 
 Cursor: use the built-in browser first. Claude / Codex / Copilot / Antigravity: use the host browser if present, otherwise Playwright:
 
