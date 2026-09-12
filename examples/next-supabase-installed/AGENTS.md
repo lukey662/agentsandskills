@@ -16,6 +16,7 @@ A user-visible change is not done until someone opened the running UI, captured 
 | Implement Next.js or Supabase | `@app-engineer` |
 | Auth, RLS, secrets, OWASP | `@security` |
 | UI looks wrong / generic | `@design` |
+| Style guide / first UI / no DESIGN.md | `@design` (setup) |
 | Is this done? | `@qa` |
 | Headlines, CTAs, empty states | `@copy` |
 
@@ -23,7 +24,7 @@ Do not ask one chat to be all six.
 
 ## Handoff
 
-Planner names the owner. Security joins auth/data/secret work. Design joins user-facing screens. QA joins any behavior or UI change and **must use the browser**. Copy joins public/conversion copy. Stop there.
+Planner names the owner. Security joins auth/data/secret work. Design joins user-facing screens and first-run style-guide setup. QA joins any behavior or UI change and **must use the browser**. Copy joins public/conversion copy. Stop there.
 
 ## Skills
 
