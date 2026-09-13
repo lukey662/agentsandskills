@@ -201,6 +201,8 @@ Do not add them unless you have a repeating job for that specialist.
 
 Add `debug` when the same failure keeps coming back. Reproduce → localize → reduce → fix → guard. User-visible bugs need before/after `browser-qa`. Reject guessing from the stack trace alone. Not on default `init`.
 
+Add `docs` when `USER_GUIDE`, `CHANGELOG`, or the living file this change moved needs an update. Reject restoring the 17-doc OS.
+
 ## Updating
 
 ```bash

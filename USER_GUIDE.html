@@ -798,6 +798,10 @@ npx agent-kit update</pre>
           Add <code>debug</code> when the same failure keeps coming back. Reproduce → localize → reduce → fix → guard. User-visible bugs need before/after
           <code>browser-qa</code>. Reject guessing from the stack trace alone. Not on default <code>init</code>.
         </p>
+        <p>
+          Add <code>docs</code> when <code>USER_GUIDE</code>, <code>CHANGELOG</code>, or the living file this change moved needs an update. Reject restoring the
+          17-doc OS.
+        </p>
         <p><code>update</code> refreshes pristine files. Local edits win or land in <code>.agent-kit/conflicts/</code>. It never deletes your old docs.</p>
         <table>
           <thead>

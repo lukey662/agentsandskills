@@ -44,6 +44,8 @@ Canonical source of truth:
 - Treat exact model names as June 2026 recommendations that must be reviewed when IDE or provider docs change.
 - Do not claim per-agent model enforcement in tools where model selection is controlled by a user picker, organization policy, or hosted agent setting.
 
+Recorded 2026-09-13 (owner: cloud agent on `lukey662/agentsandskills`): optional `docs` playbook used Cursor Grok 4.6. `MODEL_ROUTING.md` maps Documentation Maintainer to `fast-targeted`. Cursor enforcement remains advisory (user/team model picker). Limitation: this session cannot pin the user’s picker; the skill/agent files are the durable contract.
+
 Recorded 2026-09-13 (owner: cloud agent on `lukey662/agentsandskills`): optional `debug` playbook used Cursor Grok 4.6. `MODEL_ROUTING.md` maps Next.js Engineer to `coding-large-context`. Cursor enforcement remains advisory (user/team model picker). Limitation: this session cannot pin the user’s picker; the skill/agent files are the durable contract.
 
 Recorded 2026-09-13 (owner: cloud agent on `lukey662/agentsandskills`): `ship` playbook used Cursor Grok 4.6. `MODEL_ROUTING.md` maps QA Engineer to `balanced-reasoning`. Cursor enforcement remains advisory (user/team model picker). Limitation: this session cannot pin the user’s picker; the skill/agent files are the durable contract.

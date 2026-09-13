@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-09-13 - Docs Optional Playbook
+
+### Context
+
+Optional `docs` was an 11-line stub: update docs users need, do not restore the 17-doc OS. `add skill docs` installed a reminder. The optional Docs agent named USER_GUIDE and AGENTS.md but did not name CHANGELOG, Reject, or Done-when.
+
+### Decision
+
+Uplift optional `docs` (skill + agent) to the Use / Checks / Reject / Done-when playbook bar. Update only USER_GUIDE, CHANGELOG, and the living file this change actually moved. Reject restoring `QUALITY_GATES.md`, `COUNCIL.md`, session/Studio templates, or the 17-doc OS as default `init` output. Keep it off default `init`. Do not add it to Planner’s required-skill list.
+
+### Consequences
+
+Tests lock the playbook on `add skill docs` and prove `init` does not install it. Next Wave 2 tickets are `upgrade` and `ui-polish`.
+
 ## 2026-09-13 - Debug Optional Playbook
 
 ### Context
@@ -14,7 +28,7 @@ Uplift optional `debug` to the Use / Checks / Reject / Done-when playbook bar. R
 
 ### Consequences
 
-Tests lock the playbook on `add skill debug` and prove `init` does not install it. Next Wave 2 tickets are `docs`, `upgrade`, and `ui-polish`. npm 0.4.7 is the changeset on this PR.
+Tests lock the playbook on `add skill debug` and prove `init` does not install it. Next Wave 2 tickets after this were `docs`, `upgrade`, and `ui-polish`. npm 0.4.7 is the changeset on this PR.
 
 ## 2026-09-13 - Ship Playbook
 
