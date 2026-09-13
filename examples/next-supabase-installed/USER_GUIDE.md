@@ -203,6 +203,8 @@ Add `debug` when the same failure keeps coming back. Reproduce → localize → 
 
 Add `docs` when `USER_GUIDE`, `CHANGELOG`, or the living file this change moved needs an update. Reject restoring the 17-doc OS.
 
+Add `upgrade` when bumping this pack or frameworks. Run `agent-kit update` on a branch. Read `UPGRADE.md`. Reject `init --force` as the upgrade path.
+
 ## Updating
 
 ```bash

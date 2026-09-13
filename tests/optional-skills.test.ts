@@ -77,4 +77,26 @@ describe("optional skill playbooks", () => {
     expect(["created", "unchanged"]).toContain(agentResult.action);
     expect(readFileSync(join(root, ".cursor/agents/docs.md"), "utf8")).toContain("17-doc OS");
   });
+
+  it("upgrade requires agent-kit update, rejects init --force, and stays off init", () => {
+    const skill = readOptionalSkill("upgrade");
+    expect(skill).toContain("## Use when");
+    expect(skill).toContain("## Reject");
+    expect(skill).toContain("## Done when");
+    expect(skill).toContain("UPGRADE.md");
+    expect(skill).toContain("agent-kit update");
+    expect(skill).toContain("init --force");
+    expect(skill).toContain("agent-kit add skill upgrade");
+    expect(skill).toContain("Never delete user files");
+
+    const root = temp();
+    initProject({ cwd: root, activate: ["cursor"] });
+    expect(existsSync(join(root, ".cursor/skills/upgrade/SKILL.md"))).toBe(false);
+
+    const result = addSkill(root, "upgrade");
+    expect(result.action).toBe("created");
+    const installed = readFileSync(join(root, ".cursor/skills/upgrade/SKILL.md"), "utf8");
+    expect(installed).toContain("`init --force` (or re-init) as the upgrade path");
+    expect(installed).toContain("## Done when");
+  });
 });
