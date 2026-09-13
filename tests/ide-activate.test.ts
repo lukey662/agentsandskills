@@ -39,6 +39,12 @@ describe("IDE activation", () => {
     expect(readFileSync(join(root, ".antigravity/agent-kit/commands/ship.toml"), "utf8")).toContain("LGTM, ship it");
     expect(readFileSync(join(root, ".antigravity/runtime-skills/ship/SKILL.md"), "utf8")).toContain("LGTM, ship it");
     expect(readFileSync(join(root, ".antigravity/agent-kit/commands/frontend.toml"), "utf8")).toContain("Name the mode (setup, build, review, or detect)");
+    const nativePlugin = JSON.parse(readFileSync(join(process.cwd(), "antigravity/plugin.json"), "utf8")) as {
+      commands: Array<{ name: string }>;
+      skills: Array<{ name: string; path: string }>;
+    };
+    expect(nativePlugin.commands.some((item) => item.name === "ship")).toBe(true);
+    expect(nativePlugin.skills.some((item) => item.name === "ship" && item.path === "../runtime-skills/ship/SKILL.md")).toBe(true);
   });
 
   it("activate can add Claude after a Cursor-only init", () => {

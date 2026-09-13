@@ -59,6 +59,7 @@
     { "name": "product-voice-tone", "path": "../runtime-skills/product-voice-tone/SKILL.md" },
     { "name": "reference-led-design-critique", "path": "../runtime-skills/reference-led-design-critique/SKILL.md" },
     { "name": "supabase-auth-rls", "path": "../runtime-skills/supabase-auth-rls/SKILL.md" },
+    { "name": "ship", "path": "../runtime-skills/ship/SKILL.md" },
     { "name": "testing-qa", "path": "../runtime-skills/testing-qa/SKILL.md" },
     { "name": "upgrade-maintenance", "path": "../runtime-skills/upgrade-maintenance/SKILL.md" },
     { "name": "visual-regression-qa", "path": "../runtime-skills/visual-regression-qa/SKILL.md" }
