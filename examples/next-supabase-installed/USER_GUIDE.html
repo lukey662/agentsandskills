@@ -794,6 +794,10 @@ npx agent-kit update</pre>
           Optional agents: <code>lead-architect</code>, <code>docs</code>, <code>deploy</code>, <code>research</code>. Optional skills: <code>ui-polish</code>,
           <code>docs</code>, <code>upgrade</code>, <code>debug</code>. Do not add them unless that specialist has a repeating job.
         </p>
+        <p>
+          Add <code>debug</code> when the same failure keeps coming back. Reproduce → localize → reduce → fix → guard. User-visible bugs need before/after
+          <code>browser-qa</code>. Reject guessing from the stack trace alone. Not on default <code>init</code>.
+        </p>
         <p><code>update</code> refreshes pristine files. Local edits win or land in <code>.agent-kit/conflicts/</code>. It never deletes your old docs.</p>
         <table>
           <thead>

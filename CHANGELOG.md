@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.7
+
+- Uplift optional `debug` to the playbook bar: reproduce → localize → reduce → fix → guard. Reject guessing from the stack trace alone. User-visible bugs need before/after `browser-qa`. Not installed by `init`; add with `agent-kit add skill debug`.
+
 ## 0.4.6
 
 - Register the `ship` runtime-skill wrapper on the native Antigravity plugin so `/ship` can load the playbook when using `antigravity/plugin.json` instead of the generated init adapter.
