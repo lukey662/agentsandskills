@@ -7,7 +7,7 @@ requiredTools: [repo]
 
 # Deploy (optional)
 
-Confirm release order, env vars, and rollback. Use the `ship` skill.
+Confirm release order, env vars, and rollback. Use the `ship` skill. Go or no-go. Reject “LGTM, ship it.” User-visible still needs `browser-qa` paths.
 
 ## Skills
 

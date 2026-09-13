@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-09-13 - Ship Playbook
+
+### Context
+
+`ship` was a 22-line checklist: env, migrations, smoke, rollback, screenshots. It had no Reject list, no rollback template, and no fail for “LGTM, ship it” without commands or `browser-qa` paths. Antigravity `/ship` still pointed at council `QUALITY_GATES` and `agent-kit session verify`.
+
+### Decision
+
+Uplift `ship` to the Use / Checks / Reject / Done-when playbook bar. Go or no-go is explicit. Env names (not values), migration order, rollback, and `testing-qa` commands are required. User-visible releases without screenshot paths are a no-go. QA names the verdict; App engineer names env and app rollback; Security names secrets and RLS. Do not replace `testing-qa`, `browser-qa`, `postgres-migrations`, `supabase-auth-rls`, or `owasp-security-review`. `/ship` (roster adapter, Antigravity command, lifecycle index) uses the same Reject line.
+
+### Consequences
+
+`init` installs the playbook. Tests lock rollback + `browser-qa` + “LGTM, ship it.” Next playbook tickets are Wave 2 optional skills (`debug` first). npm 0.4.5 is the changeset on this PR.
+
 ## 2026-09-13 - Testing-qa Playbook
 
 ### Context
@@ -14,7 +28,7 @@ Uplift `testing-qa` to the Use / Checks / Reject / Done-when playbook bar. Comma
 
 ### Consequences
 
-QA lists commands in the verdict. Next playbook ticket is `ship` (10.3). npm 0.4.4 still waits on PR #38 merge.
+QA lists commands in the verdict. `ship` (10.3) is the next playbook. npm 0.4.4 published after #38 and #39.
 
 ## 2026-09-12 - Accessibility-wcag Playbook
 
@@ -70,7 +84,7 @@ Track remaining work as Phase 10 in `ROADMAP.md`: playbook parity first, then op
 
 ### Consequences
 
-The next implementation ticket is `ship` (10.3), after `testing-qa` (10.2) lands. Orchestration stays a Wave 4 decision.
+The next implementation ticket is Wave 2 `debug` (10.4), after `ship` (10.3) lands. Orchestration stays a Wave 4 decision.
 
 ## 2026-09-09 - Version Packages Keeps A Drafted Changelog Heading
 

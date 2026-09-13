@@ -100,7 +100,7 @@ Do not ask one chat to be all six. Planner names the next specialist. It does no
 | `testing-qa` | Unit / regression / smoke. List commands run. Not screenshots |
 | `product-copy` | Headlines and CTAs |
 | `deslop` | Last copy pass. Copy always runs this |
-| `ship` | Release, env, rollback |
+| `ship` | Go / no-go. Env, rollback, commands. UI needs screenshot paths |
 
 QA of a screen always uses `browser-qa`, not `testing-qa` alone. User-facing screens also run `accessibility-wcag` (keyboard in the browser, not a contrast guess from the screenshot). Each agent file names the skills it must run, then points at `catalog.json` for the rest.
 
@@ -145,6 +145,16 @@ Run accessibility-wcag. Open the changed flow. Keyboard-only pass. Do not accept
 ### Copy pass
 
 Copy reviews **rendered** screenshots, not just strings in TSX. Run `product-copy`, then **`deslop` last**. Do not hand off after the first draft.
+
+### Release / ship
+
+Before you promote or deploy, paste to QA:
+
+```text
+Run ship. Go or no-go. Name env, migration order, rollback, commands run. User-visible needs browser-qa screenshot paths. Reject LGTM, ship it.
+```
+
+QA names the verdict. App engineer names env and the app rollback. Security names secrets and RLS. Missing screenshot paths on a user-visible release is a no-go.
 
 ## QA screenshot loop
 

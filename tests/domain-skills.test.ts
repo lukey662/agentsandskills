@@ -131,6 +131,26 @@ describe("domain skill uplifts", () => {
     expect(qa).toContain("browser-qa");
     expect(qa).toContain("Tests pass");
     expect(qa).toContain("listed the commands");
+    expect(qa).toContain("LGTM, ship it");
+  });
+
+  it("ship requires go/no-go, rollback, and browser-qa paths for UI", () => {
+    const skill = readSkill("ship");
+    expect(skill).toContain("verdict: go | no-go");
+    expect(skill).toContain("rollback:");
+    expect(skill).toContain("browser-qa");
+    expect(skill).toContain("LGTM, ship it");
+    expect(skill).toContain("testing-qa");
+    expect(skill).toContain("postgres-migrations");
+    expect(skill).toContain("SUPABASE_SERVICE_ROLE_KEY");
+    expect(skill).toContain("We’ll set env in the dashboard later");
+    expect(skill).toContain("does not replace");
+    const qa = readFileSync(join(process.cwd(), "agents/qa/agent.md"), "utf8");
+    expect(qa).toContain("ship");
+    expect(qa).toContain("LGTM, ship it");
+    const planning = readSkill("planning");
+    expect(planning).toContain("Skipping `ship`");
+    expect(planning).toContain("LGTM, ship it");
   });
 
   it("init installs the uplifted domain skills", () => {
@@ -159,5 +179,10 @@ describe("domain skill uplifts", () => {
     expect(testing).toContain("Tests pass");
     expect(testing).toContain("fail closed when another user or anon can read the row");
     expect(testing).toContain("does not replace");
+    const ship = readFileSync(join(root, ".cursor/skills/ship/SKILL.md"), "utf8");
+    expect(ship).toContain("LGTM, ship it");
+    expect(ship).toContain("rollback");
+    expect(ship).toContain("browser-qa");
+    expect(qa).toContain("LGTM, ship it");
   });
 });
