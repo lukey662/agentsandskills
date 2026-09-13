@@ -154,17 +154,18 @@ Required outputs: discovery answers, value proposition, proof status, voice/tone
 
 ## `/ship`
 
-Make a GO/NO-GO release call from council, security, QA, docs, deployment, and rollback evidence.
+Make a go / no-go release call. Canonical playbook: `skills/ship/SKILL.md`.
 
 Required steps:
 
-1. Confirm implementation scope and preserved behavior.
-2. Require code review, Security Reviewer signoff, QA/test evidence, accessibility evidence when UI changed, docs evidence, deployment review, and rollback plan.
-3. Run the project release gate, normally `npm run release:check` for this package or the project-specific equivalent.
-4. Record verification with `agent-kit session verify`.
-5. Return GO only when required outputs are complete or explicitly not applicable.
+1. Name the target (preview / production) and what is going out.
+2. List production-critical env var **names** (not values). Service role is not `NEXT_PUBLIC`.
+3. Name migration order and rollback (or expand/contract reverse).
+4. List `testing-qa` commands actually run. Smoke the primary path.
+5. User-visible changes need `browser-qa` desktop and mobile screenshot paths.
+6. Return **go** or **no-go**. Reject “LGTM, ship it” without those artifacts.
 
-Required outputs: code review, security review, QA/test review, accessibility/doc/deployment checks, rollback plan, release command, GO/NO-GO verdict.
+Required outputs: verdict, target, commands, env names, rollback, `browser-qa` paths if UI, gaps. Do not record `agent-kit session verify` as the gate.
 
 ## `/upgrade`
 

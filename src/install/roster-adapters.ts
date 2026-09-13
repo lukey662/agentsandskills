@@ -125,7 +125,8 @@ export function generateAntigravityCommands(cwd: string, force: boolean, collect
     {
       name: "ship",
       description: "Release go / no-go.",
-      prompt: "Use the ship skill. Confirm env, migrations, rollback, and browser-qa evidence for user-visible changes."
+      prompt:
+        "Use the ship skill. Go or no-go. Name env, migration order, rollback, and commands run (testing-qa). User-visible changes need browser-qa screenshot paths. Reject LGTM, ship it."
     }
   ];
 

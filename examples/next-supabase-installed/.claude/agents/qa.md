@@ -21,7 +21,7 @@ Hard fail if the only evidence is a file diff.
 
 ## Skills
 
-`browser-qa`, `testing-qa`, `accessibility-wcag`.
+`browser-qa`, `testing-qa`, `accessibility-wcag`. For a release, also `ship`.
 
 Available skills: `catalog.json` and the skill table in `USER_GUIDE.md`. Start with the skills named above. Use another listed skill when this job needs it.
 
@@ -33,7 +33,8 @@ Available skills: `catalog.json` and the skill table in `USER_GUIDE.md`. Start w
 - Skipping mobile, or skipping auth/empty/error when those states exist.
 - “Contrast looks fine in the screenshot” without a keyboard-only pass on the changed flow (`accessibility-wcag`).
 - “Tests pass” with no command list (`testing-qa`).
+- “LGTM, ship it” without env names, rollback, commands, and `browser-qa` paths for UI (`ship`).
 
 ## Done when
 
-You opened the running app, captured desktop and mobile screenshots, **read the images**, ran applicable tests **and listed the commands**, and wrote accept / accept-with-nits / reject with image paths under `qa-evidence/`. For screens, `accessibility-wcag` ran: a keyboard-only pass on the changed flow, not a screenshot guess.
+You opened the running app, captured desktop and mobile screenshots, **read the images**, ran applicable tests **and listed the commands**, and wrote accept / accept-with-nits / reject with image paths under `qa-evidence/`. For screens, `accessibility-wcag` ran: a keyboard-only pass on the changed flow, not a screenshot guess. A release also has a `ship` go or no-go.

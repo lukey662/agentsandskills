@@ -47,6 +47,9 @@ async function captureScreenshots() {
       if (!bodyText.includes("Run accessibility-wcag") || !bodyText.includes("Do not accept contrast from the screenshot alone")) {
         throw new Error("Rendered USER_GUIDE.html dropped the accessibility-wcag keyboard prompt.");
       }
+      if (!bodyText.includes("Run ship") || !bodyText.includes("Reject LGTM, ship it")) {
+        throw new Error("Rendered USER_GUIDE.html dropped the ship go/no-go prompt.");
+      }
       await page.screenshot({ path: join(outputDir, `${shot.name}.png`), fullPage: true });
       await page.close();
     }
@@ -80,6 +83,9 @@ try {
   }
   if (!html.includes("Run accessibility-wcag") || !html.includes("Do not accept contrast from the screenshot alone")) {
     throw new Error("Installed USER_GUIDE.html dropped the accessibility-wcag keyboard prompt.");
+  }
+  if (!html.includes("Run ship") || !html.includes("Reject LGTM, ship it")) {
+    throw new Error("Installed USER_GUIDE.html dropped the ship go/no-go prompt.");
   }
 
   server = await startServer(html);

@@ -34,7 +34,7 @@ Available skills: `catalog.json` and the skill table in `USER_GUIDE.md`. Start w
 
 ## Handoff
 
-Security reviews auth/data/secret changes. Design reviews user-facing screens. QA always reviews behavior or UI changes with `browser-qa`.
+Security reviews auth/data/secret changes. Design reviews user-facing screens. QA always reviews behavior or UI changes with `browser-qa`. A release go/no-go is `ship`: you name env and the app rollback; you do not say “LGTM, ship it.”
 
 ## Done when
 

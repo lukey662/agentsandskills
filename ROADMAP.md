@@ -15,7 +15,7 @@ How to use this file:
 3. Every skill uplift uses the same bar: YAML `name` + `description`, Use when, Do/Checks, Reject, Done when. Tests lock the contract on `init`. Planner names who runs it.
 4. Default `init` stays agents + skills + user guide. Do not restore session, Studio, research, or `orchestrate` as the default install.
 
-Playbook bar (what “top class” means here): `nextjs-app-router`, `supabase-auth-rls`, `postgres-migrations`, `owasp-security-review`, `frontend-design`, `accessibility-wcag`, `testing-qa`, `browser-qa`, and `deslop` already meet it. Thin skills do not.
+Playbook bar (what “top class” means here): `nextjs-app-router`, `supabase-auth-rls`, `postgres-migrations`, `owasp-security-review`, `frontend-design`, `accessibility-wcag`, `testing-qa`, `ship`, `browser-qa`, and `deslop` already meet it. Thin skills do not.
 
 ## Phase 10: 0.4 Kit Quality — Playbooks, Skill Use, Paste Handoff
 
@@ -33,8 +33,8 @@ Keep:
 
 Owner: this branch / PR #38. Merge before starting Wave 1.
 
-- `[~]` Publish `frontend-design` modes (`setup` / `build` / `review` / `detect`), the new-repo **setup interview**, and the `accessibility-wcag` playbook (10.1). Files: `skills/frontend-design/SKILL.md`, `skills/accessibility-wcag/SKILL.md`, `agents/design/agent.md`, `agents/qa/agent.md`, `USER_GUIDE.md` / `USER_GUIDE.html`, tests, examples.
-- `[ ]` Cut npm **0.4.4** after #38 merges (`changeset`, Version Packages, `npm run release:check`).
+- `[x]` Publish `frontend-design` modes (`setup` / `build` / `review` / `detect`), the new-repo **setup interview**, and the `accessibility-wcag` playbook (10.1). Files: `skills/frontend-design/SKILL.md`, `skills/accessibility-wcag/SKILL.md`, `agents/design/agent.md`, `agents/qa/agent.md`, `USER_GUIDE.md` / `USER_GUIDE.html`, tests, examples.
+- `[x]` Cut npm **0.4.4** after #38 merges (`changeset`, Version Packages, `npm run release:check`).
 - `[x]` Rewrite this roadmap so remaining work is ticket-shaped (this change).
 
 Acceptance: #38 merged, changelog 0.4.4 on npm, setup paste prompt in the user guide, `accessibility-wcag` playbook installed by `init`.
@@ -72,7 +72,7 @@ Acceptance: tests lock “does not replace `browser-qa` / `supabase-auth-rls`”
 - **Do:** Use / Checks / Reject / Done-when. Go/no-go. Name env, migration order, rollback, secrets, screenshot evidence. Reject “LGTM, ship it” without commands or screenshot paths for UI.
 - **Files:** `skills/ship/SKILL.md`, `src/install/roster-adapters.ts` (`/ship`), `USER_GUIDE.md` skill table, `tests/`
 - **Depends:** 10.2 (ship should point at the uplifted testing-qa language)
-- **Status:** `[ ]`
+- **Status:** `[x]`
 
 Acceptance: `/ship` and the skill agree; tests lock rollback + `browser-qa` evidence.
 
@@ -522,10 +522,8 @@ Acceptance:
 
 Work Phase 10 in order. First open `[ ]` after this PR:
 
-1. Merge PR #38 (frontend-design modes + setup interview + `accessibility-wcag` playbook), then cut npm 0.4.4.
-2. **10.2** `testing-qa` playbook (this change).
-3. **10.3** Uplift `ship`.
-4. Then Wave 2 optional skills, then Wave 3 paste-ready handoff. Do not start Wave 4 (orchestrator decision) until then.
+1. **10.4** `debug` optional playbook (Wave 2). Then `docs` / `upgrade` / `ui-polish`.
+2. Wave 3 paste-ready Planner handoff. Do not start Wave 4 (orchestrator decision) until then.
 
 Historical next-actions below (Trusted Publisher, orchestrate dogfood, 0.3 council) are **not** the 0.4 default queue. See Wave 5 and Phase 6 evidence if you are cutting a release.
 

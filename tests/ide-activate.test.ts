@@ -36,6 +36,8 @@ describe("IDE activation", () => {
     expect(readFileSync(join(root, ".antigravity/runtime-skills/accessibility-wcag/SKILL.md"), "utf8")).toContain("Contrast looks fine in the screenshot");
     expect(readFileSync(join(root, ".antigravity/agent-kit/commands/test.toml"), "utf8")).toContain("testing-qa");
     expect(readFileSync(join(root, ".antigravity/runtime-skills/testing-qa/SKILL.md"), "utf8")).toContain("Tests pass");
+    expect(readFileSync(join(root, ".antigravity/agent-kit/commands/ship.toml"), "utf8")).toContain("LGTM, ship it");
+    expect(readFileSync(join(root, ".antigravity/runtime-skills/ship/SKILL.md"), "utf8")).toContain("LGTM, ship it");
     expect(readFileSync(join(root, ".antigravity/agent-kit/commands/frontend.toml"), "utf8")).toContain("Name the mode (setup, build, review, or detect)");
   });
 

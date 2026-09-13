@@ -32,6 +32,6 @@ Available skills: `catalog.json` and the skill table in `USER_GUIDE.md`. Start w
 
 ## Done when
 
-Access control is enforced in Postgres or the server, not only in the UI. Login, redirect, and denied states were checked in the browser when they exist. Secrets stay server-only.
+Access control is enforced in Postgres or the server, not only in the UI. Login, redirect, and denied states were checked in the browser when they exist. Secrets stay server-only. For a release, contribute env and RLS checks to `ship`; do not treat “LGTM, ship it” as a go.
 
 """

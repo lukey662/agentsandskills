@@ -622,7 +622,7 @@ Act as design. This is a new repo. Scan what is already here, then ask me what w
             </tr>
             <tr>
               <td><code>ship</code></td>
-              <td>Release, env, rollback</td>
+              <td>Go / no-go. Env, rollback, commands. UI needs screenshot paths</td>
             </tr>
           </tbody>
         </table>
@@ -734,6 +734,17 @@ Act as design. This is a new repo. Scan what is already here, then ask me what w
         </div>
         <h3>Copy pass</h3>
         <p>Copy reviews the <em>rendered</em> words in screenshots, not strings in TSX. Run <code>product-copy</code>, then <code>deslop</code> last.</p>
+        <h3>Release / ship</h3>
+        <p>Before you promote or deploy, paste to QA:</p>
+        <pre id="ship-prompt">
+Run ship. Go or no-go. Name env, migration order, rollback, commands run. User-visible needs browser-qa screenshot paths. Reject LGTM, ship it.</pre>
+        <div class="copy-row">
+          <button class="copy" type="button" data-copy-from="ship-prompt">Copy ship prompt</button>
+        </div>
+        <p>
+          QA names the verdict. App engineer names env and the app rollback. Security names secrets and RLS. Missing screenshot paths on a user-visible release
+          is a no-go.
+        </p>
       </section>
 
       <section id="qa">
