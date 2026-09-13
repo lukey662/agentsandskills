@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.6
+
+- Register the `ship` runtime-skill wrapper on the native Antigravity plugin so `/ship` can load the playbook when using `antigravity/plugin.json` instead of the generated init adapter.
+
 ## 0.4.5
 
 - Uplift `ship` to the playbook bar: go / no-go, named env, migration order, rollback, commands run (`testing-qa`). Reject “LGTM, ship it.” User-visible still needs `browser-qa` screenshot paths. `/ship` agrees with the skill.
