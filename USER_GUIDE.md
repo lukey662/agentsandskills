@@ -205,6 +205,8 @@ Add `docs` when `USER_GUIDE`, `CHANGELOG`, or the living file this change moved 
 
 Add `upgrade` when bumping this pack or frameworks. Run `agent-kit update` on a branch. Read `UPGRADE.md`. Reject `init --force` as the upgrade path.
 
+Add `ui-polish` after the main `frontend-design` pass, not instead of it. If `DESIGN.md` is missing, Design `setup` first. Still desktop + mobile. Reject using polish as a second design system.
+
 ## Updating
 
 ```bash

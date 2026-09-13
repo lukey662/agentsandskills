@@ -99,4 +99,33 @@ describe("optional skill playbooks", () => {
     expect(installed).toContain("`init --force` (or re-init) as the upgrade path");
     expect(installed).toContain("## Done when");
   });
+
+  it("ui-polish runs after frontend-design, rejects a second design system, and stays off init", () => {
+    const skill = readOptionalSkill("ui-polish");
+    expect(skill).toContain("## Use when");
+    expect(skill).toContain("## Reject");
+    expect(skill).toContain("## Done when");
+    expect(skill).toContain("frontend-design");
+    expect(skill).toContain("DESIGN.md");
+    expect(skill).toContain("setup");
+    expect(skill).toContain("browser-qa");
+    expect(skill).toContain("inside-design-system");
+    expect(skill).toContain("agent-kit add skill ui-polish");
+    expect(skill).toContain("second design system");
+
+    const design = readFileSync(join(process.cwd(), "agents/design/agent.md"), "utf8");
+    expect(design).toContain("Optional `ui-polish`");
+    expect(design).not.toMatch(/^`frontend-design`, `accessibility-wcag`, `browser-qa`, `ui-polish`/m);
+
+    const root = temp();
+    initProject({ cwd: root, activate: ["cursor"] });
+    expect(existsSync(join(root, ".cursor/skills/ui-polish/SKILL.md"))).toBe(false);
+
+    const result = addSkill(root, "ui-polish");
+    expect(result.action).toBe("created");
+    const installed = readFileSync(join(root, ".cursor/skills/ui-polish/SKILL.md"), "utf8");
+    expect(installed).toContain("Using polish as a second design system");
+    expect(installed).toContain("One viewport only");
+    expect(installed).toContain("## Done when");
+  });
 });

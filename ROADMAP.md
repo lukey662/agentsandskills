@@ -15,7 +15,7 @@ How to use this file:
 3. Every skill uplift uses the same bar: YAML `name` + `description`, Use when, Do/Checks, Reject, Done when. Tests lock the contract on `init`. Planner names who runs it.
 4. Default `init` stays agents + skills + user guide. Do not restore session, Studio, research, or `orchestrate` as the default install.
 
-Playbook bar (what “top class” means here): `nextjs-app-router`, `supabase-auth-rls`, `postgres-migrations`, `owasp-security-review`, `frontend-design`, `accessibility-wcag`, `testing-qa`, `ship`, `browser-qa`, and `deslop` already meet it. Optional `debug`, `docs`, and `upgrade` meet it when added. Thin skills do not.
+Playbook bar (what “top class” means here): `nextjs-app-router`, `supabase-auth-rls`, `postgres-migrations`, `owasp-security-review`, `frontend-design`, `accessibility-wcag`, `testing-qa`, `ship`, `browser-qa`, and `deslop` already meet it. Optional `debug`, `docs`, `upgrade`, and `ui-polish` meet it when added.
 
 ## Phase 10: 0.4 Kit Quality — Playbooks, Skill Use, Paste Handoff
 
@@ -80,7 +80,7 @@ Wave 1 done when: every **default** skill has Use / Reject / Done-when. `wc -l` 
 
 ### Wave 2 — Optional skills: honest playbooks or stay stubs
 
-Optional skills are 10–11 lines. Either uplift or say so in the YAML description (“stub: add only when you have a repeating job”).
+Optional skills start as stubs. Uplift to the playbook bar or stay stubs. `agent-kit add skill <id>` must install a playbook, not a three-line reminder.
 
 #### 10.4 `debug`
 
@@ -108,9 +108,9 @@ Optional skills are 10–11 lines. Either uplift or say so in the YAML descripti
 - **Owner:** Design
 - **Do:** After `frontend-design`, not instead of it. If `DESIGN.md` is missing, send Design to `setup` first. Still desktop + mobile.
 - **Files:** `skills/optional/ui-polish/SKILL.md`
-- **Status:** `[ ]` (partial language already exists; finish Reject / Done-when)
+- **Status:** `[x]`
 
-Wave 2 done when: `agent-kit add skill <id>` installs a playbook, not a three-line reminder.
+Wave 2 done when: `agent-kit add skill <id>` installs a playbook, not a three-line reminder. **Done.** `debug`, `docs`, `upgrade`, and `ui-polish` are playbooks.
 
 ### Wave 3 — Agents know which skill to run, and the relay is paste-ready
 
@@ -522,8 +522,8 @@ Acceptance:
 
 Work Phase 10 in order. First open `[ ]` after this PR:
 
-1. **10.7** `ui-polish` optional playbook (Wave 2).
-2. Wave 3 paste-ready Planner handoff. Do not start Wave 4 (orchestrator decision) until then.
+1. **10.8** Planner emits a paste-ready handoff (Wave 3). Then 10.9–10.12.
+2. Do not start Wave 4 (orchestrator decision) until Wave 3 is done.
 
 Historical next-actions below (Trusted Publisher, orchestrate dogfood, 0.3 council) are **not** the 0.4 default queue. See Wave 5 and Phase 6 evidence if you are cutting a release.
 

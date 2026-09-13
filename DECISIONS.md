@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-09-13 - UI-polish Optional Playbook
+
+### Context
+
+Optional `ui-polish` already said “after `frontend-design`, not instead” and required desktop + mobile, but it had no Reject list or Done-when. Agents could treat polish as a second design system or skip Design `setup` when `DESIGN.md` was missing.
+
+### Decision
+
+Finish optional `ui-polish` to the Use / Checks / Reject / Done-when playbook bar. Run after `frontend-design`, not instead. If `DESIGN.md` is missing, Design `setup` first. Stay surgical (`inside-design-system`). Still desktop + mobile via `browser-qa`. Reject using polish as a second design system or one viewport only. Keep it off default `init`. Do not make it required on the Design agent. Do not register it on the native Antigravity plugin (existing `/ui-polish` council command is a different adapter).
+
+### Consequences
+
+Wave 2 is complete: `debug`, `docs`, `upgrade`, and `ui-polish` are playbooks. Next work is Wave 3 paste-ready Planner handoff. Do not start Wave 4.
+
 ## 2026-09-13 - Upgrade Optional Playbook
 
 ### Context

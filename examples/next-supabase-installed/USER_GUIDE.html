@@ -806,6 +806,10 @@ npx agent-kit update</pre>
           Add <code>upgrade</code> when bumping this pack or frameworks. Run <code>agent-kit update</code> on a branch. Read <code>UPGRADE.md</code>. Reject
           <code>init --force</code> as the upgrade path.
         </p>
+        <p>
+          Add <code>ui-polish</code> after the main <code>frontend-design</code> pass, not instead of it. If <code>DESIGN.md</code> is missing, Design
+          <code>setup</code> first. Still desktop + mobile. Reject using polish as a second design system.
+        </p>
         <p><code>update</code> refreshes pristine files. Local edits win or land in <code>.agent-kit/conflicts/</code>. It never deletes your old docs.</p>
         <table>
           <thead>

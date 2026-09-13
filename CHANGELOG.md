@@ -5,6 +5,7 @@
 - Uplift optional `debug` to the playbook bar: reproduce → localize → reduce → fix → guard. Reject guessing from the stack trace alone. User-visible bugs need before/after `browser-qa`. Not installed by `init`; add with `agent-kit add skill debug`.
 - Uplift optional `docs` (skill + Docs agent) to the playbook bar: update USER_GUIDE, CHANGELOG, and the living file that moved. Reject restoring the 17-doc OS. Not on default `init`.
 - Uplift optional `upgrade` to the playbook bar: `agent-kit update` on a branch, local edits win, never delete user files. Point at `UPGRADE.md`. Reject `init --force` as the upgrade path. Not on default `init`.
+- Uplift optional `ui-polish` to the playbook bar: after `frontend-design`, not instead. Design `setup` if `DESIGN.md` is missing. Desktop + mobile. Reject using polish as a second design system. Not on default `init`.
 
 ## 0.4.6
 

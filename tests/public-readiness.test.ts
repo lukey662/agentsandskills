@@ -50,6 +50,7 @@ describe("public package readiness", () => {
     expect(guide).toContain("Reject guessing from the stack trace alone");
     expect(guide).toContain("Reject restoring the 17-doc OS");
     expect(guide).toContain("Reject `init --force` as the upgrade path");
+    expect(guide).toContain("Reject using polish as a second design system");
     const html = readFileSync(join(root, "USER_GUIDE.html"), "utf8");
     expect(html).toContain("Do not review code alone");
     expect(html).toContain("Ask one specialist");
@@ -64,6 +65,7 @@ describe("public package readiness", () => {
     expect(html).toContain("Reject guessing from the stack trace alone");
     expect(html).toMatch(/Reject restoring the\s+17-doc OS/);
     expect(html).toMatch(/Reject\s+<code>init --force<\/code>\s+as the upgrade path/);
+    expect(html).toMatch(/Reject using polish as a second design system/);
     expect(html).toContain('data-view="user-guide"');
     expect(html).not.toMatch(/border-left\s*:/);
     const distinct = readFileSync(join(root, "checklists/frontend-distinctiveness.md"), "utf8");
