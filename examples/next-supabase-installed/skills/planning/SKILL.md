@@ -29,4 +29,4 @@ Owner, extra reviewers, required skills, preserved behavior, and required screen
 
 ## Reject
 
-Implementing in the planning pass. Asking one chat to play every role. Skipping `supabase-auth-rls` because “it’s just a table.” Skipping `nextjs-app-router` because the route is small. Skipping Design `setup` on a new product UI because “we’ll pick colors in CSS.” Skipping `accessibility-wcag` because “contrast looks fine in the screenshot.”
+Implementing in the planning pass. Asking one chat to play every role. Skipping `supabase-auth-rls` because “it’s just a table.” Skipping `nextjs-app-router` because the route is small. Skipping Design `setup` on a new product UI because “we’ll pick colors in CSS.” Skipping `accessibility-wcag` because “contrast looks fine in the screenshot.” Skipping `testing-qa` because “we’ll add tests later” on auth/RLS.

@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-09-13 - Testing-qa Playbook
+
+### Context
+
+`testing-qa` named unit / regression / smoke and said it does not replace domain skills or `browser-qa`, but it had no Reject list, no required command shape, and no concrete other-user RLS example. Agents could say “tests pass” without saying what ran, or treat `toBeVisible` as visual proof.
+
+### Decision
+
+Uplift `testing-qa` to the Use / Checks / Reject / Done-when playbook bar. Commands actually run must be listed. Auth/RLS coverage is a negative that fails when another user or anon can read the row (`supabase-auth-rls` still owns the policy). `toBeVisible` is not `browser-qa`. Do not add Playwright as a required kit install. Planner rejects skipping this skill on auth/RLS because “we’ll add tests later.”
+
+### Consequences
+
+QA lists commands in the verdict. Next playbook ticket is `ship` (10.3). npm 0.4.4 still waits on PR #38 merge.
+
 ## 2026-09-12 - Accessibility-wcag Playbook
 
 ### Context
@@ -14,7 +28,7 @@ Uplift `accessibility-wcag` to the Use / Checks / Reject / Done-when playbook ba
 
 ### Consequences
 
-`init` installs the playbook. Tests lock Reject + keyboard-in-browser. Design `review`/`build` still captures screenshots; they do not replace Tab. Next playbook tickets are `testing-qa` (10.2) and `ship` (10.3).
+`init` installs the playbook. Tests lock Reject + keyboard-in-browser. Design `review`/`build` still captures screenshots; they do not replace Tab. Next playbook tickets after 10.1 were `testing-qa` (10.2) and `ship` (10.3).
 
 ## 2026-09-12 - Frontend-design Playbook Modes
 
@@ -56,7 +70,7 @@ Track remaining work as Phase 10 in `ROADMAP.md`: playbook parity first, then op
 
 ### Consequences
 
-The next implementation ticket is `testing-qa` (10.2), after this PR merges and 0.4.4 is cut. Orchestration stays a Wave 4 decision.
+The next implementation ticket is `ship` (10.3), after `testing-qa` (10.2) lands. Orchestration stays a Wave 4 decision.
 
 ## 2026-09-09 - Version Packages Keeps A Drafted Changelog Heading
 

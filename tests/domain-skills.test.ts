@@ -89,6 +89,8 @@ describe("domain skill uplifts", () => {
     expect(skill).toContain("Skipping Design `setup`");
     expect(skill).toContain("Skipping `accessibility-wcag`");
     expect(skill).toContain("contrast looks fine in the screenshot");
+    expect(skill).toContain("Skipping `testing-qa`");
+    expect(skill).toContain("we’ll add tests later");
   });
 
   it("accessibility-wcag requires a keyboard pass in the running UI and rejects screenshot-only contrast", () => {
@@ -110,10 +112,25 @@ describe("domain skill uplifts", () => {
     expect(design).toContain("frontend-design` does not replace it");
   });
 
-  it("testing-qa does not replace domain skills or browser-qa", () => {
+  it("testing-qa requires commands-run, RLS fail-closed, and does not replace browser-qa", () => {
     const skill = readSkill("testing-qa");
     expect(skill).toContain("supabase-auth-rls");
     expect(skill).toContain("browser-qa");
+    expect(skill).toContain("accessibility-wcag");
+    expect(skill).toContain("toBeVisible");
+    expect(skill).toContain("Tests pass");
+    expect(skill).toContain("it’s just a table");
+    expect(skill).toContain("fail closed when another user or anon can read the row");
+    expect(skill).toContain("commands:");
+    expect(skill).toContain("| Unit |");
+    expect(skill).toContain("| Regression |");
+    expect(skill).toContain("| Smoke |");
+    expect(skill).toContain("Adding Playwright as a required install of this kit");
+    const qa = readFileSync(join(process.cwd(), "agents/qa/agent.md"), "utf8");
+    expect(qa).toContain("testing-qa");
+    expect(qa).toContain("browser-qa");
+    expect(qa).toContain("Tests pass");
+    expect(qa).toContain("listed the commands");
   });
 
   it("init installs the uplifted domain skills", () => {
@@ -137,5 +154,10 @@ describe("domain skill uplifts", () => {
     const qa = readFileSync(join(root, ".cursor/agents/qa.md"), "utf8");
     expect(qa).toContain("accessibility-wcag");
     expect(qa).toContain("keyboard-only pass on the changed flow");
+    expect(qa).toContain("Tests pass");
+    const testing = readFileSync(join(root, ".cursor/skills/testing-qa/SKILL.md"), "utf8");
+    expect(testing).toContain("Tests pass");
+    expect(testing).toContain("fail closed when another user or anon can read the row");
+    expect(testing).toContain("does not replace");
   });
 });

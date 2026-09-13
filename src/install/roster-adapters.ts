@@ -120,7 +120,7 @@ export function generateAntigravityCommands(cwd: string, force: boolean, collect
       name: "test",
       description: "Run tests, then browser-qa for UI.",
       prompt:
-        "Act as the QA agent. Run applicable tests, then use browser-qa for any user-visible change. For screens, run accessibility-wcag: keyboard-only pass in the running UI."
+        "Act as the QA agent. Use the testing-qa skill: run applicable tests and list the commands. Then use browser-qa for any user-visible change. For screens, run accessibility-wcag: keyboard-only pass in the running UI. Do not treat toBeVisible as a screenshot."
     },
     {
       name: "ship",
