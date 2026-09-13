@@ -15,7 +15,7 @@ How to use this file:
 3. Every skill uplift uses the same bar: YAML `name` + `description`, Use when, Do/Checks, Reject, Done when. Tests lock the contract on `init`. Planner names who runs it.
 4. Default `init` stays agents + skills + user guide. Do not restore session, Studio, research, or `orchestrate` as the default install.
 
-Playbook bar (what “top class” means here): `nextjs-app-router`, `supabase-auth-rls`, `postgres-migrations`, `owasp-security-review`, `frontend-design`, `accessibility-wcag`, `testing-qa`, `ship`, `browser-qa`, and `deslop` already meet it. Thin skills do not.
+Playbook bar (what “top class” means here): `nextjs-app-router`, `supabase-auth-rls`, `postgres-migrations`, `owasp-security-review`, `frontend-design`, `accessibility-wcag`, `testing-qa`, `ship`, `browser-qa`, and `deslop` already meet it. Optional `debug` meets it when added. Thin skills do not.
 
 ## Phase 10: 0.4 Kit Quality — Playbooks, Skill Use, Paste Handoff
 
@@ -87,7 +87,7 @@ Optional skills are 10–11 lines. Either uplift or say so in the YAML descripti
 - **Owner:** App engineer
 - **Do:** Reproduce → localize → reduce → fix → guard. User-visible bugs require before/after `browser-qa`. Reject guessing from the stack trace alone.
 - **Files:** `skills/optional/debug/SKILL.md`, `USER_GUIDE.md` “Adding more”
-- **Status:** `[ ]`
+- **Status:** `[x]`
 
 #### 10.5 `docs`
 
@@ -522,7 +522,7 @@ Acceptance:
 
 Work Phase 10 in order. First open `[ ]` after this PR:
 
-1. **10.4** `debug` optional playbook (Wave 2). Then `docs` / `upgrade` / `ui-polish`.
+1. **10.5** `docs` optional playbook (Wave 2). Then `upgrade` / `ui-polish`.
 2. Wave 3 paste-ready Planner handoff. Do not start Wave 4 (orchestrator decision) until then.
 
 Historical next-actions below (Trusted Publisher, orchestrate dogfood, 0.3 council) are **not** the 0.4 default queue. See Wave 5 and Phase 6 evidence if you are cutting a release.

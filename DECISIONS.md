@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-09-13 - Debug Optional Playbook
+
+### Context
+
+`debug` was a five-step stub (reproduce / localize / reduce / fix / guard). `agent-kit add skill debug` installed a reminder, not a playbook. Agents could guess from the stack trace or call a screen bug “fixed in code” with no before/after `browser-qa`.
+
+### Decision
+
+Uplift optional `debug` to the Use / Checks / Reject / Done-when playbook bar. Reproduce before patching. User-visible bugs require before and after `browser-qa` paths. Reject guessing from the stack trace alone. Keep it off default `init`. Do not add it to App engineer required skills or Planner’s required-skill list. `add skill` still copies only to `.cursor/skills/debug/SKILL.md`.
+
+### Consequences
+
+Tests lock the playbook on `add skill debug` and prove `init` does not install it. Next Wave 2 tickets are `docs`, `upgrade`, and `ui-polish`. npm 0.4.7 is the changeset on this PR.
+
 ## 2026-09-13 - Ship Playbook
 
 ### Context

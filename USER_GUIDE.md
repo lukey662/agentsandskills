@@ -199,6 +199,8 @@ Optional skills: `ui-polish`, `docs`, `upgrade`, `debug`.
 
 Do not add them unless you have a repeating job for that specialist.
 
+Add `debug` when the same failure keeps coming back. Reproduce → localize → reduce → fix → guard. User-visible bugs need before/after `browser-qa`. Reject guessing from the stack trace alone. Not on default `init`.
+
 ## Updating
 
 ```bash

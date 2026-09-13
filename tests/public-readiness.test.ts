@@ -47,6 +47,7 @@ describe("public package readiness", () => {
     expect(guide).toContain("List commands run");
     expect(guide).toContain("Run ship");
     expect(guide).toContain("Reject LGTM, ship it");
+    expect(guide).toContain("Reject guessing from the stack trace alone");
     const html = readFileSync(join(root, "USER_GUIDE.html"), "utf8");
     expect(html).toContain("Do not review code alone");
     expect(html).toContain("Ask one specialist");
@@ -58,6 +59,7 @@ describe("public package readiness", () => {
     expect(html).toContain("List commands run");
     expect(html).toContain("Run ship");
     expect(html).toContain("Reject LGTM, ship it");
+    expect(html).toContain("Reject guessing from the stack trace alone");
     expect(html).toContain('data-view="user-guide"');
     expect(html).not.toMatch(/border-left\s*:/);
     const distinct = readFileSync(join(root, "checklists/frontend-distinctiveness.md"), "utf8");
