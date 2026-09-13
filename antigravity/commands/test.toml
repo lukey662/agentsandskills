@@ -1,17 +1,18 @@
 name = "test"
-description = "Add or run tests and produce acceptance evidence per TESTING.md and QUALITY_GATES.md."
+description = "Run unit, regression, and smoke tests. List commands. Screenshots still use browser-qa."
 
 prompt = """
-Run the test workflow.
+Run the testing-qa playbook.
 
-Canonical sources: TESTING.md, QUALITY_GATES.md, AGENTS.md, .agent-kit/agent-roster.json, .agent-kit/skills/testing-qa.md, and .agent-kit/prompts/lifecycle-command-index.md.
+Canonical source: skills/testing-qa/SKILL.md (or .cursor/skills/testing-qa/SKILL.md). Visual proof: browser-qa. Keyboard: accessibility-wcag. Policies: supabase-auth-rls.
 
 Workflow:
-1. Route through QA Engineer.
-2. Name unit, regression, smoke, and visual QA gaps for the change scope.
-3. Prioritize auth and data mutation paths.
-4. Run project test commands and capture results.
-5. Record verification with `agent-kit session verify` when a session is active.
+1. Name unit vs regression vs smoke for this change. Do not skip RLS/auth when data is involved.
+2. Run the commands that exist in this repo. List each command and the result.
+3. Auth/RLS: a negative that fails when another user or anon can read the row.
+4. User-visible work still uses browser-qa. Do not treat toBeVisible as a screenshot.
 
-Required outputs: test plan, commands run, pass/fail summary, coverage gaps, skipped-test rationale.
+Reject: "tests pass" with no command list; skipping RLS tests because "it's just a table"; replacing browser-qa with this skill.
+
+Required outputs: commands run, pass/fail, coverage gaps, skipped-test rationale.
 """

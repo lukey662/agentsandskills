@@ -1,8 +1,8 @@
 ---
 name: testing-qa
-description: Use for unit tests, regression tests, smoke checks, Playwright coverage, visual QA, and acceptance evidence.
+description: Use when adding unit, regression, or smoke tests, or when someone says tests pass without listing commands. Visual proof of a screen always also uses browser-qa. RLS tests must fail when another user can read the row.
 ---
 
-Canonical workflow: read `skills/testing-qa.md` or `.agent-kit/skills/testing-qa.md`.
+Canonical workflow: read `skills/testing-qa/SKILL.md` or `.cursor/skills/testing-qa/SKILL.md`.
 
-Cover core logic, preserved behavior, critical paths, auth/data mutations, network failures, empty/error states, and explicitly document gaps.
+Unit, regression, and smoke. List commands actually run. Do not replace `browser-qa` or `supabase-auth-rls`. `toBeVisible` is not a screenshot.

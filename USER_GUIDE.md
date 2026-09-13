@@ -97,7 +97,7 @@ Do not ask one chat to be all six. Planner names the next specialist. It does no
 | `frontend-design` | Setup, build, review, or detect UI. Tokens first. Anti-generic |
 | `accessibility-wcag` | Keyboard pass in the running browser. Contrast, labels. Not a screenshot guess |
 | `browser-qa` | Any screen. Required for QA of UI |
-| `testing-qa` | Unit / regression / smoke only |
+| `testing-qa` | Unit / regression / smoke. List commands run. Not screenshots |
 | `product-copy` | Headlines and CTAs |
 | `deslop` | Last copy pass. Copy always runs this |
 | `ship` | Release, env, rollback |
@@ -167,8 +167,8 @@ Steps the QA agent must follow:
 3. Capture desktop (~1280) and mobile (~390) into `qa-evidence/<yyyy-mm-dd>-<slug>/`.
 4. **Read the images.** List blockers from what is on screen.
 5. Keyboard-only the changed flow (`accessibility-wcag`). Do not accept contrast from the screenshot alone.
-6. Run applicable tests.
-7. Write `notes.md` with route, viewports, auth state, keyboard result, verdict.
+6. Run applicable tests (`testing-qa`). List the commands. `toBeVisible` is not a screenshot.
+7. Write `notes.md` with route, viewports, auth state, keyboard result, commands run, verdict.
 
 Cursor: use the built-in browser first. Claude / Codex / Copilot / Antigravity: use the host browser if present, otherwise Playwright:
 

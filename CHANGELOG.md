@@ -6,6 +6,7 @@
 - Add Design `setup` for new repos: scan, then ask what the user needs (who it is for, what they must get done, what this pass should produce). Recommend from the answers, then write style-guide and principles files they asked for. `init` still does not install `DESIGN.md`. Setup may skip screenshots when nothing can render; Design keeps `requiredTools`.
 - Rewrite `ROADMAP.md` Phase 10 as the working queue: playbook parity for `accessibility-wcag` / `testing-qa` / `ship`, optional-skill uplifts, paste-ready handoff. Default `init` stays a relay, not an orchestrator.
 - Uplift `accessibility-wcag` to the playbook bar: WCAG 2.1 AA mapped onto App Router forms and dialogs, keyboard-only pass in the running UI, Reject “contrast looks fine in the screenshot.” Planner, QA, and Design name the skill. Structure from a 2026-09-12 scan; no third-party skill bodies, no required axe.
+- Uplift `testing-qa` to the playbook bar: unit / regression / smoke, list commands actually run, Reject `toBeVisible` as visual proof, RLS tests fail when another user can read the row. Does not replace `browser-qa` or `supabase-auth-rls`.
 
 ## 0.4.3
 

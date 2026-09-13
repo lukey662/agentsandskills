@@ -15,7 +15,7 @@ How to use this file:
 3. Every skill uplift uses the same bar: YAML `name` + `description`, Use when, Do/Checks, Reject, Done when. Tests lock the contract on `init`. Planner names who runs it.
 4. Default `init` stays agents + skills + user guide. Do not restore session, Studio, research, or `orchestrate` as the default install.
 
-Playbook bar (what “top class” means here): `nextjs-app-router`, `supabase-auth-rls`, `postgres-migrations`, `owasp-security-review`, `frontend-design`, `accessibility-wcag`, `browser-qa`, and `deslop` already meet it. Thin skills do not.
+Playbook bar (what “top class” means here): `nextjs-app-router`, `supabase-auth-rls`, `postgres-migrations`, `owasp-security-review`, `frontend-design`, `accessibility-wcag`, `testing-qa`, `browser-qa`, and `deslop` already meet it. Thin skills do not.
 
 ## Phase 10: 0.4 Kit Quality — Playbooks, Skill Use, Paste Handoff
 
@@ -61,7 +61,7 @@ Acceptance: init installs the playbook; tests lock Reject + keyboard-in-browser;
 - **Do:** Use / Checks / Reject / Done-when. Name unit vs regression vs smoke. Reject `toBeVisible` as visual proof. Require auth/RLS tests to fail when another user can read the row. List commands actually run.
 - **Files:** `skills/testing-qa/SKILL.md`, `agents/qa/agent.md`, `tests/domain-skills.test.ts`
 - **Depends:** 10.1 can land in parallel; do not merge both without a shared test file rebase
-- **Status:** `[ ]`
+- **Status:** `[x]`
 
 Acceptance: tests lock “does not replace `browser-qa` / `supabase-auth-rls`” and a Reject line; QA agent still requires `testing-qa` plus `browser-qa`.
 
@@ -523,7 +523,7 @@ Acceptance:
 Work Phase 10 in order. First open `[ ]` after this PR:
 
 1. Merge PR #38 (frontend-design modes + setup interview + `accessibility-wcag` playbook), then cut npm 0.4.4.
-2. **10.2** Uplift `testing-qa`.
+2. **10.2** `testing-qa` playbook (this change).
 3. **10.3** Uplift `ship`.
 4. Then Wave 2 optional skills, then Wave 3 paste-ready handoff. Do not start Wave 4 (orchestrator decision) until then.
 

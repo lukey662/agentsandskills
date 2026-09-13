@@ -610,7 +610,7 @@ Act as design. This is a new repo. Scan what is already here, then ask me what w
             </tr>
             <tr>
               <td><code>testing-qa</code></td>
-              <td>Unit / regression / smoke only</td>
+              <td>Unit / regression / smoke. List commands run. Not screenshots</td>
             </tr>
             <tr>
               <td><code>product-copy</code></td>
@@ -758,8 +758,8 @@ Do not review code alone. Open the app, capture desktop and mobile screenshots, 
           <li>Capture desktop (~1280) and mobile (~390) into <code>qa-evidence/&lt;yyyy-mm-dd&gt;-&lt;slug&gt;/</code>.</li>
           <li><strong>Read the images.</strong> List blockers from what is on screen.</li>
           <li>Keyboard-only the changed flow (<code>accessibility-wcag</code>). Do not accept contrast from the screenshot alone.</li>
-          <li>Run applicable tests. <code>toBeVisible</code> is not a screenshot.</li>
-          <li>Write <code>notes.md</code> with route, viewports, auth state, keyboard result, verdict.</li>
+          <li>Run applicable tests (<code>testing-qa</code>). List the commands. <code>toBeVisible</code> is not a screenshot.</li>
+          <li>Write <code>notes.md</code> with route, viewports, auth state, keyboard result, commands run, verdict.</li>
         </ol>
         <p>Cursor: built-in browser first. Claude, Codex, Copilot, Antigravity: host browser if present, otherwise:</p>
         <pre id="pw-cmd">
