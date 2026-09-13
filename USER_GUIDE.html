@@ -802,6 +802,10 @@ npx agent-kit update</pre>
           Add <code>docs</code> when <code>USER_GUIDE</code>, <code>CHANGELOG</code>, or the living file this change moved needs an update. Reject restoring the
           17-doc OS.
         </p>
+        <p>
+          Add <code>upgrade</code> when bumping this pack or frameworks. Run <code>agent-kit update</code> on a branch. Read <code>UPGRADE.md</code>. Reject
+          <code>init --force</code> as the upgrade path.
+        </p>
         <p><code>update</code> refreshes pristine files. Local edits win or land in <code>.agent-kit/conflicts/</code>. It never deletes your old docs.</p>
         <table>
           <thead>

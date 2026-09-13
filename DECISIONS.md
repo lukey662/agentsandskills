@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-09-13 - Upgrade Optional Playbook
+
+### Context
+
+Optional `upgrade` was a three-line stub: run `agent-kit update` on a branch, local edits win, do not delete user files. It did not Reject `init --force` or point at `UPGRADE.md`.
+
+### Decision
+
+Uplift optional `upgrade` to the Use / Checks / Reject / Done-when playbook bar. Canonical command is `agent-kit update` on a branch. Version notes live in `UPGRADE.md` (link only — this PR does not rewrite version history). Reject `init --force` or re-init as the upgrade path. Never delete leftover 0.3 docs because `doctor` listed them. Keep it off default `init`. Do not register it on the native Antigravity plugin (existing `/upgrade` council adapter is out of scope).
+
+### Consequences
+
+Tests lock the playbook on `add skill upgrade` and prove `init` does not install it. Next Wave 2 ticket is `ui-polish`.
+
 ## 2026-09-13 - Docs Optional Playbook
 
 ### Context
