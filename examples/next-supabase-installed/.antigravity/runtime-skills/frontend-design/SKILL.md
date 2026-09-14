@@ -1,6 +1,6 @@
 ---
 name: frontend-design
-description: Use when setting up design on a new repo, or building, reviewing, or auditing UI. Name the mode (setup, build, review, or detect). Setup asks what the user needs, then recommends principles before CSS.
+description: Use when the UI looks generic, or when setting up design on a new repo, or building, reviewing, or auditing UI. Name the mode (setup, build, review, or detect). Setup asks what the user needs, then recommends principles before CSS.
 ---
 
 # Frontend Design
