@@ -57,7 +57,7 @@
     ".codex/agents/design.toml": "11eb4c32e78b70ee1c1b058ea2f5d3c1679ac992f51a251eae00fa451c266e0c",
     ".codex/agents/qa.toml": "17a71ad70360309632b8b61049f29da04375e7af772a80e70b308da603e9f200",
     ".codex/agents/copy.toml": "908f69a7b276ca2e89cd721c6003fed2fc726960dc22f15f748f27f6297c3cb0",
-    ".github/copilot-instructions.md": "f5d26cc16aebd5b82f5fb75b85a59e17b802ddb444e50cc25e61a37c616e738f",
+    ".github/copilot-instructions.md": "851f55371a07a9cbe13474cff20a92e1d2c29cf06e94c6384bd35fad32ccf39f",
     ".antigravity/agent-kit/plugin.json": "e2f156fdd68ca706dd289152722bfd07ebb0c29a16afadcfdf178a723ecb6a90",
     ".antigravity/agent-kit/commands/plan.toml": "72daa653835a626cf67758dd1d6aa325518524ed3afc9447b699a5a6f74a1347",
     ".antigravity/agent-kit/commands/browser-qa.toml": "aa229438dd3a36d9f139a6002a4e7ba80d7e32e541a8a17215f9f189a57d156d",

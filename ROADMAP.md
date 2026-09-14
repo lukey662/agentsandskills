@@ -149,7 +149,7 @@ Acceptance: no default agent ends with “you do not run the others” without a
 - **Why:** Copilot has no `@agent` picker. Today the generated instructions only paste a QA prompt.
 - **Do:** `.github/copilot-instructions.md` (from `roster-adapters.ts`) includes one paste block per default agent, matching USER_GUIDE.
 - **Files:** `src/install/roster-adapters.ts`, `tests/ide-activate.test.ts`
-- **Status:** `[ ]`
+- **Status:** `[x]`
 
 #### 10.12 USER_GUIDE workflow as one sequence
 
@@ -522,7 +522,7 @@ Acceptance:
 
 Work Phase 10 in order. First open `[ ]` after this PR:
 
-1. **10.11** Copilot role prompts for every specialist (Wave 3). Then 10.12.
+1. **10.12** USER_GUIDE workflow as one sequence (Wave 3). Then Wave 4 decision (do not start it).
 2. Do not start Wave 4 (orchestrator decision) until Wave 3 is done.
 
 Historical next-actions below (Trusted Publisher, orchestrate dogfood, 0.3 council) are **not** the 0.4 default queue. See Wave 5 and Phase 6 evidence if you are cutting a release.
