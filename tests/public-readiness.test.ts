@@ -54,6 +54,8 @@ describe("public package readiness", () => {
     expect(guide).toContain("The plan reply includes a fenced paste for that owner");
     expect(guide).toContain("Act as the security agent. Review auth, RLS, IDOR, and secrets");
     expect(guide).toContain("Act as the copy agent. Review the rendered words in screenshots");
+    expect(guide).toContain("**Copy** if public words changed");
+    expect(guide).toContain("Paste in this order. Skip Security, Design, or Copy");
     const html = readFileSync(join(root, "USER_GUIDE.html"), "utf8");
     expect(html).toContain("Do not review code alone");
     expect(html).toContain("Ask one specialist");
@@ -72,6 +74,14 @@ describe("public package readiness", () => {
     expect(html).toContain("The plan reply includes a fenced paste for that owner");
     expect(html).toContain("Act as the security agent. Review auth, RLS, IDOR, and secrets");
     expect(html).toContain("Act as the copy agent. Review the rendered words in screenshots");
+    expect(html).toContain("Copy if public words changed");
+    expect(html).toContain("Paste in this order. Skip Security, Design, or Copy");
+    expect(html.match(/<article class="ticket">/g)?.length).toBe(4);
+    expect(html).toContain('class="skip"');
+    expect(html).toContain("a:focus-visible");
+    expect(html).toContain("button:focus-visible");
+    expect(html.indexOf('id="flows"')).toBeGreaterThan(html.indexOf('id="start"'));
+    expect(html.indexOf("Copy if public words changed")).toBeLessThan(html.indexOf('id="qa-feature-prompt"'));
     expect(html).toContain('data-view="user-guide"');
     expect(html).not.toMatch(/border-left\s*:/);
     const distinct = readFileSync(join(root, "checklists/frontend-distinctiveness.md"), "utf8");

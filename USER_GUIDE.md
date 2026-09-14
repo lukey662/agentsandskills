@@ -57,7 +57,7 @@ Files: `.codex/agents/*.toml`, `AGENTS.md`
 
 Files: `.github/copilot-instructions.md`
 
-Copilot has no `@agent` picker. Paste a role prompt:
+Copilot has no `@agent` picker. The generated file already includes one USER_GUIDE paste per specialist. Use those, or the New feature list below. To prove a screen:
 
 ```text
 Act as the QA agent. Use the browser-qa skill. Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.
@@ -108,6 +108,8 @@ QA of a screen always uses `browser-qa`, not `testing-qa` alone. User-facing scr
 
 ### New feature
 
+Paste in this order. Skip Security, Design, or Copy when that specialist is not needed. Planner still does not run the other agents.
+
 1. **Planner** — paste: `Plan this change. Name the owning agent, extra reviewers, and which screenshots QA must capture. Do not write code.`
 2. **App engineer** — paste: `Implement the plan. Smoke the changed route in the browser before you hand off.`
 3. **Security** if data/auth/secrets changed — paste:
@@ -117,7 +119,8 @@ Act as the security agent. Review auth, RLS, IDOR, and secrets. Exercise login o
 ```
 
 4. **Design** if the UI changed — paste: `Act as design. Name the mode (setup, build, review, or detect). Review the running UI from screenshots first. Desktop and mobile. Reject generic AI-looking layout.` If `DESIGN.md` is missing, run setup first.
-5. **QA** — paste: `Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.` For screens, also run `accessibility-wcag`.
+5. **Copy** if public words changed — paste: `Act as the copy agent. Review the rendered words in screenshots, not just strings in source. Run product-copy first, then deslop last. Always.`
+6. **QA** — paste: `Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.` For screens, also run `accessibility-wcag`.
 
 Done when QA attaches `qa-evidence/<date>-<slug>/desktop.png` and `mobile.png` plus a verdict, and the changed flow passed a keyboard-only check.
 

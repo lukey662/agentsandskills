@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-09-14 - USER_GUIDE New Feature Sequence
+
+### Context
+
+New feature listed Planner → App engineer → Security → Design → QA. Copy was a separate pass. First-viewport tickets were already init, open, Planner paste, and Design setup.
+
+### Decision
+
+New feature is the full paste relay: Plan → implement → Security if needed → Design if UI → Copy if public words → QA. Canonical pastes stay in USER_GUIDE. The charcoal first viewport stays four tickets. Do not add a fourth start ticket. Wave 4 stays closed.
+
+### Consequences
+
+Wave 3 ticket 10.12 is done. Current Next Actions is the Wave 4 decision. Do not start Wave 4.
+
 ## 2026-09-14 - Copilot Specialist Pastes
 
 ### Context
@@ -14,7 +28,7 @@ Copilot has no `@agent` picker. Generated `.github/copilot-instructions.md` list
 
 ### Consequences
 
-Wave 3 ticket 10.11 is done. Next is 10.12 (USER_GUIDE New feature sequence). Do not start Wave 4.
+Wave 3 ticket 10.11 is done. Next was 10.12 (USER_GUIDE New feature sequence). Do not start Wave 4.
 
 ## 2026-09-14 - Default Skill YAML Triggers
 
