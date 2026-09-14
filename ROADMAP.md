@@ -141,7 +141,7 @@ Acceptance: no default agent ends with “you do not run the others” without a
 - **Why:** Cursor matches skills from `description`. Weak descriptions (`Use for…`) lose to a generic chat.
 - **Do:** Every default skill description includes the trigger phrases a user would type (`RLS`, “looks generic”, “is this done”, “ship”, “empty state”). Add a test that descriptions are unique and contain Use-when nouns.
 - **Files:** each `skills/<id>/SKILL.md` frontmatter, `tests/agent-catalog.test.ts` or a new `tests/skill-frontmatter.test.ts`
-- **Status:** `[ ]`
+- **Status:** `[x]`
 
 #### 10.11 Copilot role prompts for every specialist
 
@@ -522,7 +522,7 @@ Acceptance:
 
 Work Phase 10 in order. First open `[ ]` after this PR:
 
-1. **10.10** Skill YAML descriptions that actually trigger (Wave 3). Then 10.11–10.12.
+1. **10.11** Copilot role prompts for every specialist (Wave 3). Then 10.12.
 2. Do not start Wave 4 (orchestrator decision) until Wave 3 is done.
 
 Historical next-actions below (Trusted Publisher, orchestrate dogfood, 0.3 council) are **not** the 0.4 default queue. See Wave 5 and Phase 6 evidence if you are cutting a release.

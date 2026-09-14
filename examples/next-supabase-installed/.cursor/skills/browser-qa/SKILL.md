@@ -1,6 +1,6 @@
 ---
 name: browser-qa
-description: Use to verify user-visible work in a live browser. Do not review code alone. Capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.
+description: Use when someone asks is this done, or to verify user-visible work in a live browser. Do not review code alone. Capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.
 ---
 
 # Browser QA

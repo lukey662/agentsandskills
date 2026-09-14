@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-09-14 - Default Skill YAML Triggers
+
+### Context
+
+Cursor matches skills from YAML `description`. Weak “Use for…” lines lose to a generic chat. ROADMAP 10.10 asked for unique descriptions with the nouns a user would type.
+
+### Decision
+
+Every default skill description stays unique and includes a Use-when trigger (`RLS`, “looks generic”, “is this done”, “ship it”, “empty state”, “what should we do”). Tests lock uniqueness and those phrases. Optional skills stay out of this ticket. Do not copy third-party skill bodies.
+
+### Consequences
+
+Wave 3 ticket 10.10 is done. Next is 10.11 (Copilot pastes). Do not start Wave 4.
+
 ## 2026-09-14 - Specialist Handoff Pastes
 
 ### Context

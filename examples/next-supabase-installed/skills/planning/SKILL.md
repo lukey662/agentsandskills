@@ -1,6 +1,6 @@
 ---
 name: planning
-description: Classify work, pick an owner, and name the evidence QA must capture. Use when the request is ambiguous, cross-layer, or needs a specialist.
+description: Classify work, pick an owner, and name the evidence QA must capture. Use when the request is ambiguous, “what should we do,” who owns this, cross-layer, or needs a specialist.
 ---
 
 # Planning
