@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-09-14 - Kit-html Field Guide Rebuild
+
+### Context
+
+USER_GUIDE.html used the right charcoal tokens and the wrong layout: slogan-hero, two fake QA frames, and four ticket cards. The first viewport was a SaaS onboarding stack, not the work.
+
+### Decision
+
+Rebuild the whole HTML as one field guide. First viewport is init plus one Planner paste. Design setup stays under Workflows. Keep charcoal tokens, skip link, safelight `:focus-visible`, and every canonical USER_GUIDE paste. Do not invent a second brand. `frontend-design` detect uplift stays a later ticket.
+
+### Consequences
+
+The installed guide can be judged from the first screen. Wave 4 stays closed.
+
 ## 2026-09-14 - USER_GUIDE New Feature Sequence
 
 ### Context
@@ -10,7 +24,7 @@ New feature listed Planner → App engineer → Security → Design → QA. Copy
 
 ### Decision
 
-New feature is the full paste relay: Plan → implement → Security if needed → Design if UI → Copy if public words → QA. Canonical pastes stay in USER_GUIDE. The charcoal first viewport stays four tickets. Do not add a fourth start ticket. Wave 4 stays closed.
+New feature is the full paste relay: Plan → implement → Security if needed → Design if UI → Copy if public words → QA. Canonical pastes stay in USER_GUIDE. The first viewport is not a fourth start ticket. Wave 4 stays closed.
 
 ### Consequences
 

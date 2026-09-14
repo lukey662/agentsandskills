@@ -105,7 +105,7 @@ try {
       "viewport: desktop 1280 and mobile 390",
       "auth: none",
       "verdict: accept-with-nits-pending-visual-read",
-      "what the screenshots show: assignment-desk field guide with fail-closed frames and pasteable prompts.",
+      "what the screenshots show: field guide with init plus Planner paste in the first viewport.",
       "Do not review code alone."
     ].join("\n") + "\n"
   );

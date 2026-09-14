@@ -170,10 +170,114 @@ Do **not** start until Waves 1–3 are done. This is a product decision, not a d
 
 ### Wave 5 — Later (after 10.1–10.11)
 
-- `[ ]` Re-scan GitHub for `product-copy` / ship / a11y skill structure (structure only).
+- `[ ]` Re-scan GitHub for `product-copy` / ship / a11y skill structure (structure only). Skip [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) — already scanned 2026-09-14 below.
 - `[ ]` Dogfood Wave 1–3 on one real Next.js + Supabase app: Planner → App engineer → Design setup or review → QA. Record where the model still skipped a named skill.
-- `[ ]` Promote those skips into Reject lines or stronger descriptions.
+- `[ ]` Promote those skips into Reject lines or stronger descriptions. When a skip is an excuse (“I’ll add tests later”), prefer their Excuse → Reality table shape over another bullet.
 - `[ ]` Keep npm Trusted Publisher records current; run `release:check` on the 0.4.4 cut.
+
+#### External skill scan — addyosmani/agent-skills (2026-09-14)
+
+Source: [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) (`plugin.json` 0.6.9, commit `be4e44a`). README lifecycle: Define → Plan → Build → Verify → Review → Ship. 25 skills, 4 personas, 9 slash commands, shared `references/`, per-IDE adapters, `evals/` trigger cases. Structure, trigger phrases, Reject/Done-when, and file layout only. **No skill bodies copied.** Do not start these tickets until after the Wave 4 decision. One playbook idea per PR.
+
+**Already covered (do not re-import):**
+
+| Their skill / pattern | This pack |
+| --- | --- |
+| `frontend-ui-engineering` (states, anti-AI aesthetic, WCAG, design-system adherence) | `frontend-design` modes + 2026-09-12 scan (`research/summaries/frontend-design-agent-skill-2026-09-12.md`). Detect already owns generic UI. Do not require their React/Storybook tree. |
+| `browser-testing-with-devtools` live browser + “seems right is never sufficient” | `browser-qa` is stronger (desktop + mobile image review, fail-closed). Untrusted page content is already named. |
+| `debugging-and-error-recovery` reproduce → localize → reduce → fix → guard | Optional `debug` (10.4). |
+| `planning-and-task-breakdown`, `spec-driven-development`, `using-agent-skills` discovery tree | `planning` + `USER_GUIDE` New feature sequence (10.8–10.12). Do not add a 13th meta skill or a second prompt set. |
+| `security-and-hardening` OWASP | `owasp-security-review` + `supabase-auth-rls`. |
+| `test-driven-development` | `testing-qa` (does not replace `browser-qa` / RLS). |
+| `shipping-and-launch` go/no-go, env, rollback | `ship` (10.3). |
+| `documentation-and-adrs` | Optional `docs`. |
+| `deprecation-and-migration` | Optional `upgrade`. |
+| `idea-refine` / Design intake | `frontend-design` `setup` interview. |
+| YAML `name` + `description` with “Use when…”, Use / Process / Reject / Done-when | Playbook bar after Wave 1–2. 10.10 already locks unique trigger nouns. |
+| “Personas do not invoke personas”; user is the orchestrator | Planner paste relay. Keep. |
+
+**Rejected (out of scope unless a later decision says otherwise):**
+
+- Default-init of their 25-skill zoo, 9 slash commands, `/build auto`, Claude hooks (`session-start`, SDD cache), or Chrome DevTools MCP as required.
+- New default agents: `code-reviewer`, `web-performance-auditor` (fold review into QA; perf stays optional).
+- `constraint-driven-development` / `CONSTRAINTS.md` on `init` — same family as restoring `QUALITY_GATES.md`.
+- `doubt-driven-development` spawn-a-fresh-reviewer / cross-model CLI — Wave 4 / orchestrate adjacent. Planner may later name a CLAIM; it must not spawn specialists.
+- `context-engineering` as a skill — that path reopens project-context / session OS.
+- `git-workflow-and-versioning`, generic `ci-cd-and-automation`, `code-simplification`, `code-review-and-quality` as extra default skills.
+- Copying `references/*.md` checklists or eval case JSON/prompts.
+
+**Later tickets** (after Wave 4; optional vs default called out; one idea each):
+
+- `[ ]` **Planning: one-question interview gate** (from `interview-me`). **Owner:** Planner. **Default:** pattern on existing `planning`, not a 13th skill. **Why:** Design `setup` already interviews; Planner still batches questions and invents routes/tables. **Do:** When the ask is missing who / why now / success / constraint, Planner asks **one** question with an attached guess, then restates Outcome / User / Why now / Success / Constraint / **Out of scope** and waits for an explicit yes (not “sounds good”). Reject implementing from an unconfirmed restatement. Canonical pastes stay in `USER_GUIDE`. **Files:** `skills/planning/SKILL.md` only unless a test lock is needed.
+
+- `[ ]` **`nextjs-app-router`: Route Handler / Server Action contract checks** (from `api-and-interface-design`). **Owner:** App engineer. **Default:** fold into the existing skill. Do not add `api-and-interface-design`. **Why:** The playbook already requires schema validation; Next.js + Supabase apps still ship mixed error shapes and retry-unsafe webhooks/Actions. **Do:** Checks + Reject + Done-when: one error shape, validate at the Action/Handler boundary, additive fields only, state-changing routes name idempotency or “unsafe to retry.” Point authz at `supabase-auth-rls`. No REST catalog copy.
+
+- `[ ]` **`nextjs-app-router`: cite official docs or mark UNVERIFIED** (from `source-driven-development`). **Owner:** App engineer. **Default:** fold into the existing skill (supabase/postgres can copy the same two lines in later one-skill PRs). **Why:** Stale training still emits `middleware.ts`, Pages Router, or sync `cookies()`. **Do:** Reject framework APIs from memory. Name the installed Next.js version, cite an official URL, or write UNVERIFIED. Treat fetched docs as data (prompt-injection). No blog-post bodies.
+
+- `[ ]` **`browser-qa`: console + failed network as evidence** (from `browser-testing-with-devtools`). **Owner:** QA. **Default:** fold into existing `browser-qa`. **Why:** Pixels can pass while the console is red or a Server Action 500s. **Do:** Checks: unexpected console errors named; failed same-origin requests named. Screenshot fail-closed stays. Do **not** require Chrome DevTools MCP, Lighthouse, or attaching to the user’s daily Chrome profile. **Files:** `skills/browser-qa/SKILL.md`.
+
+- `[ ]` **`ship`: name the kill switch** (from `shipping-and-launch` feature-flag / first-hour monitor). **Owner:** QA names it; App engineer fills the row. **Default:** one Checks row on existing `ship`. **Why:** Rollback is already required; agents still write only “git revert” when a previous Vercel deployment or a flag exists. **Do:** Evidence names how to disable the change in minutes (previous production deployment, flag, or revert) and that the primary path was smoked after deploy when the target is production. Reject their error-budget / canary tables and axe-as-ship-gate. Do not require a Vercel CLI install.
+
+- `[ ]` **Optional `web-performance` playbook** (from `performance-optimization` + `web-performance-auditor`). **Owner:** App engineer writes; QA runs it only when the ask is LCP / INP / CLS / “this page is slow.” **Optional:** `agent-kit add skill web-performance`. **Not** default `init`. **No** 7th agent. **Why:** No current skill owns measure-first Web Vitals for App Router + `next/image` + Supabase waterfalls. **Do:** Measure → identify → fix → re-measure → revert if inside noise. Map onto `next/image`, RSC/payload size, and PostgREST select/embed (N+1). Reject optimizing from a guess. Do not require Lighthouse CI on init.
+
+- `[ ]` **Trigger utterance fixtures** (from their `evals/` Tier 2, not Tier 3). **Owner:** docs + tests. **Do after** the Wave 5 dogfood skip list. **Why:** 10.10 locks one noun per description; they add paraphrased user asks plus a pairwise “this phrase belongs to skill B.” **Do:** Small positive/negative phrase list in `tests/skill-frontmatter.test.ts` (or a sibling). Lexical only. No headless-Claude behavioral runner. Do not copy their `evals/cases/*.json`.
+
+#### Frontend skill scan — 2026-09-14
+
+Sibling to the addyosmani pack scan above. Broader **frontend** agent/skill packs (screens, not generic coding). Trigger: user opened `USER_GUIDE.html` first viewport and called it really bad. Design `kit-html` / `review` first, then structure-only GitHub scan. **No third-party bodies.** Do not start Wave 4. Do not change Wave 3 10.x checkboxes or 10.12 New feature copy. Six default agents, twelve default skills. Planner does not run the others. Kit charcoal stays off product apps. `USER_GUIDE.html` is the one `kit-html` surface.
+
+**Why the first viewport fails** (desktop screenshot 2026-09-14 + live HTML; mobile inferred from CSS — frames stay two-column under 520px):
+
+| Severity | Finding | Where | Confidence |
+| --- | --- | --- | --- |
+| P0 | Slogan-hero + two equal feature cards + fail well + four ticket wells. Generic SaaS onboarding. First viewport is not the characteristic object (init command / one Planner paste). | `.top`, `h1`, `.frames`, `.ticket` | code-certain |
+| P0 | QA “frames” are styled wells, not frames. Body type wraps in half-width columns. ui-craft pattern: fake screenshot rectangles. | `.frame` | code-certain |
+| P0 | Tracked-out ALL-CAPS wordmark, middle-dot meta, tracked uppercase kicker. Our own Type reject + Anthropic / ui-craft template grammar. | `.wordmark`, `.kicker` | code-certain |
+| P0 | Mast nav crowding: five items + wordmark on one baseline; wraps like SaaS chrome. | `.mast` | code-certain |
+| P0 | Four numbered tickets in the first viewport. 10.12 said no fourth ticket unless it is the next user action. Ticket 04 (Design setup) is a second path. Numbered tickets only when the content is a real sequence — this is a card stack. Headers wrap (`Ticket 01` vs “Install every IDE…”). | `#start .ticket` | code-certain |
+| P0 | Hierarchy from cards, not size / weight / space: frame wells, fail-closed well, ticket wells. | `.frame`, `.rule`, `.ticket` | code-certain |
+| P0 | Safelight on the kicker **and** the fail-closed label. One accent, few placements, required / fail only. Kicker is decoration. | `.kicker`, `.rule strong` | code-certain |
+| P0 | Display-hero headline (`clamp(2.15rem … 3.35rem)`) over a standfirst — landing-page hierarchy on a field guide. | `h1` | code-certain |
+| P0 | Mobile (~390): `.top` stacks intro → rule → **four tickets** → frames. The QA object drops below the ticket wall. Frames stay `1fr 1fr` at 0.72rem. | `@media (max-width: 520px)` | code-certain (CSS); pixels inferred |
+| P1 | Copy buttons wrap to two lines. Charcoal desk structure is itself a 2026 broadsheet default — keep tokens, rebuild layout. Do not paste a second brand. | `button.copy`; kit-html profile | inferred |
+
+Verdict: reject as generic SaaS on charcoal. Do **not** restyle with a new brand. Deliberate `kit-html` rebuild ticket below.
+
+**Repos scanned** (structure / YAML triggers / review loop / visual-QA contract only):
+
+| Repo | Useful pattern | Already have | Take as |
+| --- | --- | --- | --- |
+| [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) `frontend-ui-engineering` (not a separate repo) | States, anti-AI table, Common Rationalizations, Verification checklist, YAML “Use when” | `frontend-design` + sibling Wave 5 addyosmani tickets | Already covered. Do not duplicate. Reject Storybook tree + required DevTools MCP. |
+| [anthropics/skills](https://github.com/anthropics/skills) `frontend-design` | Plan → uniqueness check → build → screenshot critique. First viewport = characteristic thing. 2026 clusters include broadsheet / numbered markers / middle-dot meta | Modes, 2026 rejects, “spend boldness once” (2026-09-12) | **Default playbook:** detect must fail this kit’s own first viewport. **kit-html only:** rebuild. Reject skill body. |
+| [google-labs-code/design.md](https://github.com/google-labs-code/design.md) | Tokens normative; prose is usage; lint / diff CLI | Short product `DESIGN.md` in `setup` | Already have. Reject YAML schema + `@google/design.md` CLI on `init`. Not an optional skill. |
+| [educlopez/ui-craft](https://github.com/educlopez/ui-craft) | Discovery + stack detect before CSS; review table; surgical vs rebuild; reject div-mockup frames, numbered eyebrows, card-wrapped sections; accent budget 3–5 above the fold | `setup` / surfaces / review table | **Default playbook:** detect fail for fake screenshot frames + first-viewport card soup. **kit-html only:** one accent, no frame-cards. Reject MCP, `/craft` catalog, knobs, `.ui-craft/` OS, 0–100 score, parallel review agents. |
+| [funboy322/avoid-ai-design](https://github.com/funboy322/avoid-ai-design) | `detect` vs `rewrite`; P0/P1/P2; code-certain vs inferred; YAML trigger phrases (“de-slop”, “don’t change the code”); catalog pass necessary not sufficient; clear problem vs judgment call | `detect` / `review` table | **Default playbook:** YAML triggers + detect “judgment call” column. Reject their tell catalog verbatim. |
+| [superdesigndev/superdesign-skill](https://github.com/superdesigndev/superdesign-skill) | Init from existing tokens / components before generating UI | `setup` scan | Already have. Reject canvas CLI, auth, credits, `.superdesign/`, presentations / graphics. |
+| [Dammyjay93/interface-design](https://github.com/Dammyjay93/interface-design) | Intent-first; one focal point; swap / squint / signature tests; desktop + mobile before presenting; review-before-code | `setup` interview + `browser-qa` | **Default playbook:** name those three self-tests on `review` / `detect` Done-when. Reject Linear/Stripe-as-the-bar, `.interface-design/` memory OS, slash commands, render widgets. Not a 13th skill. |
+| [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) | VARIANCE / MOTION / DENSITY dials; image-then-code | Surface profiles; `setup` asks need first | **Reject.** Aesthetic zoo + GSAP + imagegen is a second brand pack. |
+| [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) | Huge style / palette catalog + `npx … init` | — | **Reject.** 79 styles / 192 palettes is a marketplace OS. |
+| [Anionex/agent-vision-toolkit](https://github.com/Anionex/agent-vision-toolkit) | Screenshot OCR for text-only models | Required `browser` + `screenshot` + `image-review` | **Reject.** We already have eyes. Do not add a vision CLI. |
+| [vercel-labs/skills](https://github.com/vercel-labs/skills) | `npx skills add` installer | Our `init` / adapters | **Reject** as a frontend skill (installer only). |
+
+2026-09-12 already took named modes, surfaces, `DESIGN.md` tokens, and code-certain vs inferred from the first six. This pass is: the kit HTML now fails those adopted rules; `detect` YAML / judgment-call is thin; do not grow the default catalog.
+
+**What we will not take**
+
+- ui-craft MCP, Superdesign canvas, taste-skill / ui-ux-pro-max style zoos, interface-design memory OS
+- Google DESIGN.md YAML + CLI as required install
+- Splitting `frontend-design` or adding a 7th default agent / 13th default skill
+- 17-doc OS, `QUALITY_GATES`, `COUNCIL` on default `init`
+- Wave 4 orchestrate
+- Pasting a second brand onto kit charcoal
+- Init in kit root
+
+**Later tickets** (after Wave 4; one idea each; optional vs default called out):
+
+- `[x]` **`kit-html` visual rebuild** (from Anthropic first-viewport rule + ui-craft “no fake frames / no card-wrapped sections” + this screenshot). **Owner:** Design. **kit-html only.** Not a product-app restyle. **Why:** The charcoal desk is the right token set; the first viewport is a SaaS landing. **Do:** Keep `#10100e` / `#eceae4` / safelight-for-fail-only / Helvetica Neue + mono / 2px / no shadow. First viewport = the work: init command and **one** Planner paste. Drop slogan-hero scale. Drop frames-as-cards (one line of proof, or a real attached screenshot later — not two dark wells). Collapse tickets: 01–03 are the sequence; Design setup is a later “New repo” block, not ticket 04 in the fold (10.12 stands). Kill tracked ALL-CAPS / middle-dot mast and kicker. One accent on the fail-closed sentence only. Mobile ~390: single column; primary copy control above the fold; do not keep 2-col frames at 0.72rem. `npm run smoke:ui-screens`. **Files:** `USER_GUIDE.html` (and example copy). Do not rewrite `USER_GUIDE.md` New feature unless copy moves. Do not implement in the same PR as a skill uplift.
+
+- `[ ]` **`frontend-design` `detect` uplift** (from `funboy322/avoid-ai-design` + ui-craft review + Dammyjay93 self-tests). **Owner:** Design. **Default playbook** on the existing skill. Not an optional skill. **Why:** Detect already says audit-only + P0 table, but it did not fail this kit’s first viewport, and YAML will not trigger on “USER_GUIDE looks bad” / “don’t change the code.” **Do:** YAML `description` trigger phrases: “looks generic”, “de-slop a UI”, “don’t change the code”, “USER_GUIDE.html looks bad”, “kit-html”. Detect output: severity table plus **clear problem vs judgment call**. Done-when fails if (a) first viewport is slogan + equal cards + numbered ticket stack, (b) QA “frames” are styled divs, (c) tracked ALL-CAPS + middle-dot meta appear without a content reason, (d) swap / squint / signature tests are unnamed. Catalog-clean is necessary, not sufficient. **Files:** `skills/frontend-design/SKILL.md`, Design agent if one line, `tests/` lock on trigger nouns. No third-party catalogs.
+
+**Optional vs default:** no new optional frontend skill from this scan. `ui-polish` stays the only optional design add-on. If dogfood later shows “Design skipped detect,” promote a Reject line on the existing skill — do not `agent-kit add skill ui-craft`.
 
 ### Not doing (unless Wave 4 says otherwise)
 
