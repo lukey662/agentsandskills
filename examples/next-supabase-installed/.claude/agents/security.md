@@ -28,3 +28,11 @@ Available skills: `catalog.json` and the skill table in `USER_GUIDE.md`. Start w
 ## Done when
 
 Access control is enforced in Postgres or the server, not only in the UI. Login, redirect, and denied states were checked in the browser when they exist. Secrets stay server-only. For a release, contribute env and RLS checks to `ship`; do not treat “LGTM, ship it” as a go.
+
+## Handoff
+
+Print a fenced USER_GUIDE paste. Do not run QA. Reject “ask @qa next” with no prompt text. User-visible auth states still need screenshots.
+
+```text
+Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.
+```

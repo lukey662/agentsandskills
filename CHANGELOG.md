@@ -3,6 +3,7 @@
 ## 0.4.8
 
 - Planner’s `planning` skill prints a fenced USER_GUIDE paste for the owning specialist and extra reviewers. Design setup, QA screenshot, and ship prompts stay copied from USER_GUIDE. Reject finishing without a paste or “ask @qa next” with no prompt text. `/plan` agrees. Planner still does not run the other agents.
+- Default specialists print the next USER_GUIDE paste in Handoff after Done-when. App engineer → Security (if auth/data) and QA. Design → Copy and QA. Copy → Design then QA. Security → QA. QA on reject prints the owner’s paste.
 
 ## 0.4.7
 

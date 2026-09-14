@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-09-14 - Specialist Handoff Pastes
+
+### Context
+
+Planner already printed a fenced USER_GUIDE paste. App engineer, Design, Copy, Security, and QA named the next specialist in prose (“ask QA”) without the prompt to paste.
+
+### Decision
+
+Each default specialist’s Handoff, after Done-when, prints the next USER_GUIDE fence. App engineer → Security (auth/data) and QA. Design → Copy (public words) and QA. Copy → Design (visual P0s) then QA. Security → QA. QA on reject prints the owner’s paste. Do not invent a second prompt set. Specialists still do not run each other.
+
+### Consequences
+
+Wave 3 ticket 10.9 is done. Next is 10.10 (skill YAML triggers). Do not start Wave 4.
+
 ## 2026-09-14 - Planner Paste-Ready Handoff
 
 ### Context

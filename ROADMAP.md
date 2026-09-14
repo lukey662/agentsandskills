@@ -131,7 +131,7 @@ Acceptance: a plan reply always contains a copy-paste block the next specialist 
 - **Owner:** each default agent
 - **Do:** After Done-when, say who gets the work next and which USER_GUIDE prompt to paste. App engineer → Security (if auth/data) and QA. Design → Copy (public words) and QA. Copy → Design (visual P0s) then QA. Security → QA.
 - **Files:** `agents/*/agent.md`
-- **Status:** `[ ]`
+- **Status:** `[x]`
 
 Acceptance: no default agent ends with “you do not run the others” without a next paste.
 
@@ -522,7 +522,7 @@ Acceptance:
 
 Work Phase 10 in order. First open `[ ]` after this PR:
 
-1. **10.9** Each agent’s Handoff section names the next paste (Wave 3). Then 10.10–10.12.
+1. **10.10** Skill YAML descriptions that actually trigger (Wave 3). Then 10.11–10.12.
 2. Do not start Wave 4 (orchestrator decision) until Wave 3 is done.
 
 Historical next-actions below (Trusted Publisher, orchestrate dogfood, 0.3 council) are **not** the 0.4 default queue. See Wave 5 and Phase 6 evidence if you are cutting a release.
