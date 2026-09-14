@@ -14,6 +14,10 @@ const port = 19457;
 const baseUrl = `http://127.0.0.1:${port}`;
 const failClosed = "A user-visible change is not done until someone opened the running UI, captured desktop and mobile screenshots, and reviewed those images.";
 
+function collapsed(text) {
+  return text.replace(/\s+/g, " ");
+}
+
 function startServer(html) {
   return new Promise((resolve, reject) => {
     const server = createServer((_request, response) => {
@@ -81,7 +85,7 @@ try {
   const htmlPath = join(tempRoot, "USER_GUIDE.html");
   if (!existsSync(htmlPath)) throw new Error("init did not install USER_GUIDE.html.");
   const html = readFileSync(htmlPath, "utf8");
-  if (!html.includes(failClosed) || !html.includes("Do not review code alone")) {
+  if (!collapsed(html).includes(failClosed) || !html.includes("Do not review code alone")) {
     throw new Error("Installed USER_GUIDE.html dropped the screenshot fail-closed rule.");
   }
   if (!html.includes("Run accessibility-wcag") || !html.includes("Do not accept contrast from the screenshot alone")) {
