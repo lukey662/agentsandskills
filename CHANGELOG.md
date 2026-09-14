@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.9
+
+- USER_GUIDE.html first viewport is init plus one Planner paste. Charcoal tokens stay; the four-ticket landing is gone.
+
 ## 0.4.8
 
 - Planner’s `planning` skill prints a fenced USER_GUIDE paste for the owning specialist and extra reviewers. Design setup, QA screenshot, and ship prompts stay copied from USER_GUIDE. Reject finishing without a paste or “ask @qa next” with no prompt text. `/plan` agrees. Planner still does not run the other agents.
