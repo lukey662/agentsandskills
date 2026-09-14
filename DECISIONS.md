@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-09-14 - Copilot Specialist Pastes
+
+### Context
+
+Copilot has no `@agent` picker. Generated `.github/copilot-instructions.md` listed agent ids and only a QA paste.
+
+### Decision
+
+`generateCopilotInstructions` includes one fenced USER_GUIDE paste per default agent (Planner, App engineer, Security, Design, QA, Copy). Canonical prompts stay in USER_GUIDE. Do not expand the native Antigravity command list.
+
+### Consequences
+
+Wave 3 ticket 10.11 is done. Next is 10.12 (USER_GUIDE New feature sequence). Do not start Wave 4.
+
 ## 2026-09-14 - Default Skill YAML Triggers
 
 ### Context

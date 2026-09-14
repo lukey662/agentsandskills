@@ -30,7 +30,13 @@ describe("IDE activation", () => {
     expect(claude).toContain("Do not review user-visible work from code alone");
     expect(cursor).toContain("requiredTools");
     expect(readFileSync(join(root, ".codex/agents/qa.toml"), "utf8")).toContain("Do not review");
-    expect(readFileSync(join(root, ".github/copilot-instructions.md"), "utf8")).toContain("Do not review user-visible work from code alone");
+    const copilot = readFileSync(join(root, ".github/copilot-instructions.md"), "utf8");
+    expect(copilot).toContain("Do not review user-visible work from code alone");
+    expect(copilot).toContain("Plan this change. Name the owning agent, extra reviewers, and which screenshots QA must capture. Do not write code.");
+    expect(copilot).toContain("Implement the plan. Smoke the changed route in the browser before you hand off.");
+    expect(copilot).toContain("Act as the security agent. Review auth, RLS, IDOR, and secrets");
+    expect(copilot).toContain("Act as design. Name the mode (setup, build, review, or detect)");
+    expect(copilot).toContain("Act as the copy agent. Review the rendered words in screenshots");
     expect(existsSync(join(root, ".antigravity/agent-kit/commands/browser-qa.toml"))).toBe(true);
     expect(readFileSync(join(root, ".antigravity/agent-kit/commands/browser-qa.toml"), "utf8")).toContain("accessibility-wcag");
     expect(readFileSync(join(root, ".antigravity/runtime-skills/accessibility-wcag/SKILL.md"), "utf8")).toContain("Contrast looks fine in the screenshot");
