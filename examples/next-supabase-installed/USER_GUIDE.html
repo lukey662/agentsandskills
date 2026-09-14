@@ -18,7 +18,6 @@
         --safelight: #ff5a2a;
         --pass: #5ea37a;
         --line: #2a2823;
-        --ticket: #181714;
         --display: "Helvetica Neue", Helvetica, Arial, ui-sans-serif, system-ui, sans-serif;
         --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
       }
@@ -76,27 +75,25 @@
       .mast {
         background: var(--frame);
         color: var(--ink);
-        padding: 0.85rem 1.25rem;
+        padding: 0.75rem 1.25rem;
         display: flex;
         flex-wrap: wrap;
-        gap: 0.75rem 1.5rem;
+        gap: 0.5rem 1.5rem;
         align-items: baseline;
         justify-content: space-between;
       }
 
       .wordmark {
         font-family: var(--mono);
-        font-size: 0.78rem;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
+        font-size: 0.88rem;
       }
 
       .mast nav {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.75rem 1rem;
+        gap: 0.75rem 1.1rem;
         font-family: var(--mono);
-        font-size: 0.78rem;
+        font-size: 0.88rem;
       }
 
       .mast a {
@@ -110,158 +107,63 @@
       }
 
       main {
-        max-width: 68rem;
+        max-width: 42rem;
         margin: 0 auto;
-        padding: 1.5rem 1.25rem 4rem;
-      }
-
-      .top {
-        display: grid;
-        gap: 1.15rem;
-        margin-bottom: 2.5rem;
-        grid-template-areas:
-          "intro"
-          "rule"
-          "start"
-          "frames";
-      }
-
-      .intro {
-        grid-area: intro;
-      }
-
-      .frames {
-        grid-area: frames;
-      }
-
-      .top > .rule {
-        grid-area: rule;
-        margin-bottom: 0;
-      }
-
-      .top > #start {
-        grid-area: start;
-      }
-
-      @media (min-width: 880px) {
-        .top {
-          grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-          grid-template-areas:
-            "intro frames"
-            "rule frames"
-            "start start";
-          align-items: start;
-        }
-      }
-
-      .kicker {
-        font-family: var(--mono);
-        font-size: 0.75rem;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: var(--safelight);
-        margin: 0 0 0.6rem;
+        padding: 1.35rem 1.25rem 3.5rem;
       }
 
       h1 {
-        font-size: clamp(2.15rem, 5vw, 3.35rem);
-        line-height: 1.02;
+        font-size: 1.75rem;
+        line-height: 1.2;
         font-weight: 700;
-        letter-spacing: -0.038em;
-        margin: 0 0 0.85rem;
+        letter-spacing: -0.02em;
+        margin: 0 0 0.55rem;
       }
 
-      .standfirst {
-        margin: 0;
-        max-width: 38rem;
-        font-size: 1.15rem;
-      }
-
-      .frames {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 0.65rem;
-      }
-
-      .frame {
-        background: var(--frame);
-        color: var(--ink);
-        padding: 0.55rem 0.55rem 0.75rem;
-        min-height: 9.5rem;
-      }
-
-      .frame span {
-        display: block;
-        font-family: var(--mono);
-        font-size: 0.68rem;
-        letter-spacing: 0.08em;
-        margin-bottom: 0.55rem;
-        color: #b8b2a6;
-      }
-
-      .frame p {
-        margin: 0;
-        font-size: 0.92rem;
-      }
-
-      h2 {
-        font-size: 1.55rem;
-        letter-spacing: -0.03em;
-        font-weight: 700;
-        margin: 2.4rem 0 0.85rem;
-      }
-
-      h3 {
-        font-size: 1.15rem;
-        margin: 1.6rem 0 0.5rem;
-      }
-
-      p {
-        margin: 0 0 0.85rem;
+      .lede {
+        margin: 0 0 1rem;
+        color: var(--muted);
       }
 
       .rule {
-        padding: 0.7rem 0.9rem;
-        background: #23160f;
-        margin: 0 0 1.4rem;
+        margin: 0 0 1.35rem;
       }
 
       .rule strong {
         color: var(--safelight);
       }
 
-      .steps {
-        display: grid;
-        gap: 0.85rem;
-        counter-reset: ticket;
+      h2 {
+        font-size: 1.2rem;
+        letter-spacing: -0.02em;
+        font-weight: 700;
+        margin: 2.1rem 0 0.65rem;
       }
 
-      .ticket {
-        background: var(--ticket);
-        border: 1px solid var(--line);
-        padding: 0.85rem 0.95rem;
+      h3 {
+        font-size: 1.02rem;
+        margin: 1.45rem 0 0.4rem;
       }
 
-      .ticket header {
-        display: flex;
-        justify-content: space-between;
-        gap: 1rem;
+      p {
+        margin: 0 0 0.75rem;
+      }
+
+      .paste {
+        margin: 0 0 1rem;
+      }
+
+      .paste p {
+        margin: 0 0 0.35rem;
         font-family: var(--mono);
-        font-size: 0.75rem;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-        margin-bottom: 0.45rem;
-      }
-
-      .ticket header::before {
-        counter-increment: ticket;
-        content: "Ticket " counter(ticket, decimal-leading-zero);
+        font-size: 0.82rem;
+        color: var(--muted);
       }
 
       pre,
       .prompt {
         margin: 0;
-        padding: 0.75rem;
+        padding: 0.7rem 0.75rem;
         background: var(--frame);
         color: var(--ink);
         font-family: var(--mono);
@@ -273,18 +175,19 @@
 
       .copy-row {
         display: flex;
-        justify-content: flex-end;
-        margin-top: 0.45rem;
+        justify-content: flex-start;
+        margin-top: 0.4rem;
       }
 
       button.copy {
         font-family: var(--mono);
-        font-size: 0.75rem;
+        font-size: 0.78rem;
         background: transparent;
         color: var(--ink);
         border: 1px solid var(--ink);
-        padding: 0.4rem 0.65rem;
+        padding: 0.4rem 0.7rem;
         min-height: 2.25rem;
+        white-space: nowrap;
         cursor: pointer;
       }
 
@@ -304,31 +207,31 @@
       td {
         text-align: left;
         vertical-align: top;
-        padding: 0.55rem 0.5rem 0.55rem 0;
+        padding: 0.5rem 0.5rem 0.5rem 0;
         border-top: 1px solid var(--line);
       }
 
       th {
         font-family: var(--mono);
-        font-size: 0.72rem;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
+        font-size: 0.78rem;
         color: var(--muted);
+        font-weight: 500;
       }
 
       .ides {
         display: grid;
-        gap: 0.85rem;
+        gap: 1.1rem;
       }
 
       @media (min-width: 800px) {
         .ides {
           grid-template-columns: 1fr 1fr;
+          gap: 1.1rem 1.5rem;
         }
       }
 
       .ide {
-        border-top: 2px solid var(--line);
+        border-top: 1px solid var(--line);
         padding-top: 0.55rem;
       }
 
@@ -341,7 +244,8 @@
         font-size: 0.98rem;
       }
 
-      ul {
+      ul,
+      ol {
         margin: 0 0 0.85rem;
         padding-left: 1.15rem;
       }
@@ -359,7 +263,7 @@
 
       .verdict {
         border: 1px solid var(--line);
-        padding: 0.8rem;
+        padding: 0.75rem;
       }
 
       .verdict.reject {
@@ -373,9 +277,7 @@
       .verdict strong {
         display: block;
         font-family: var(--mono);
-        font-size: 0.72rem;
-        letter-spacing: 0.07em;
-        text-transform: uppercase;
+        font-size: 0.78rem;
         margin-bottom: 0.4rem;
       }
 
@@ -388,7 +290,7 @@
       }
 
       footer {
-        max-width: 68rem;
+        max-width: 42rem;
         margin: 0 auto;
         padding: 0 1.25rem 2.5rem;
         font-family: var(--mono);
@@ -397,26 +299,12 @@
       }
 
       @media (max-width: 520px) {
+        main {
+          padding-top: 1.1rem;
+        }
+
         h1 {
-          font-size: 1.7rem;
-        }
-
-        .standfirst {
-          font-size: 1rem;
-        }
-
-        .frames {
-          grid-template-columns: 1fr 1fr;
-          gap: 0.4rem;
-        }
-
-        .frame {
-          min-height: 0;
-        }
-
-        .frame p {
-          font-size: 0.72rem;
-          line-height: 1.35;
+          font-size: 1.55rem;
         }
 
         table,
@@ -450,82 +338,53 @@
     </style>
   </head>
   <body data-view="user-guide">
-    <a class="skip" href="#start">Skip to 5-minute start</a>
+    <a class="skip" href="#start">Skip to start</a>
     <header class="mast">
-      <p class="wordmark">Agents and skills · field guide</p>
+      <p class="wordmark">Agents and skills</p>
       <nav aria-label="On this page">
         <a href="#start">Start</a>
-        <a href="#ask">Ask</a>
-        <a href="#invoke">Five IDEs</a>
         <a href="#flows">Workflows</a>
         <a href="#qa">Screenshot QA</a>
       </nav>
     </header>
 
     <main>
-      <div class="top">
-        <section class="intro" aria-labelledby="title">
-          <p class="kicker">Next.js + Supabase · six specialists</p>
-          <h1 id="title">Ask one specialist. Then open the running UI.</h1>
-          <p class="standfirst">
-            Planner names the owner. App engineer ships the route. Security owns RLS. Design and Copy read pixels. QA does not review <code>page.tsx</code>.
-          </p>
-        </section>
-        <div class="frames" aria-label="Required QA frames">
-          <figure class="frame">
-            <span>Desktop ~1280 · required</span>
-            <p>A user-visible change is not done until someone opened the running UI, captured desktop and mobile screenshots, and reviewed those images.</p>
-          </figure>
-          <figure class="frame">
-            <span>Mobile ~390 · required</span>
-            <p>Do not review code alone. One happy-path desktop shot is a fail. Attach both frames or reject the work.</p>
-          </figure>
-        </div>
+      <h1 id="title">Ask one specialist. Then open the running UI.</h1>
+      <p class="lede">
+        Planner names the owner. App engineer ships the route. Security owns RLS. Design and Copy read pixels. QA does not review <code>page.tsx</code>.
+      </p>
+      <p class="rule">
+        <strong>Fail-closed.</strong> Do not review code alone. A user-visible change is not done until someone opened the running UI, captured desktop and
+        mobile screenshots, and reviewed those images. Evidence is <code>qa-evidence/&lt;date&gt;-&lt;slug&gt;/desktop.png</code> and <code>mobile.png</code>.
+      </p>
 
-        <p class="rule">
-          <strong>Fail-closed.</strong> Do not review code alone. If the work is on a screen, the evidence is
-          <code>qa-evidence/&lt;date&gt;-&lt;slug&gt;/desktop.png</code> and <code>mobile.png</code>.
-        </p>
-
-        <section id="start">
-          <h2>Five-minute start</h2>
-          <div class="steps">
-            <article class="ticket">
-              <header><span>Install every IDE this team uses</span></header>
-              <pre id="init-cmd">npx --yes @appsforgood/next-supabase-kit init --activate all</pre>
-              <div class="copy-row">
-                <button class="copy" type="button" data-copy-from="init-cmd">Copy init command</button>
-              </div>
-            </article>
-            <article class="ticket">
-              <header><span>Open the repo in your IDE</span></header>
-              <p>
-                You should see <code>AGENTS.md</code>, this guide, and native files under <code>.cursor/</code>, <code>.claude/</code>, <code>.codex/</code>,
-                <code>.github/</code>, or <code>.antigravity/</code>.
-              </p>
-            </article>
-            <article class="ticket">
-              <header><span>Paste this to Planner — do not ask it to write code</span></header>
-              <pre id="plan-prompt">Plan this change. Name the owning agent, extra reviewers, and which screenshots QA must capture. Do not write code.</pre>
-              <div class="copy-row">
-                <button class="copy" type="button" data-copy-from="plan-prompt">Copy Planner prompt</button>
-              </div>
-            </article>
-            <article class="ticket">
-              <header><span>New repo — paste this to Design so it asks what you need</span></header>
-              <pre id="design-setup-prompt">
-Act as design. This is a new repo. Scan what is already here, then ask me what we need to set up: who it is for, what they must get done, and what you should produce. Recommend from my answers. Write the style guide and principles with me before any CSS.</pre>
-              <div class="copy-row">
-                <button class="copy" type="button" data-copy-from="design-setup-prompt">Copy Design setup prompt</button>
-              </div>
-            </article>
+      <section id="start">
+        <h2>Start</h2>
+        <p>Install the pack, open the repo, then paste to Planner.</p>
+        <div class="paste">
+          <p>Init — every IDE this team uses</p>
+          <pre id="init-cmd">npx --yes @appsforgood/next-supabase-kit init --activate all</pre>
+          <div class="copy-row">
+            <button class="copy" type="button" data-copy-from="init-cmd">Copy init command</button>
           </div>
-          <p>
-            You should get a named owner (<code>app-engineer</code>, <code>security</code>, <code>design</code>, <code>qa</code>, or <code>copy</code>) and, if
-            the work is user-visible, a desktop + mobile shot list. The plan reply includes a fenced paste for that owner.
-          </p>
-        </section>
-      </div>
+        </div>
+        <p>
+          Open the project. You should see <code>AGENTS.md</code>, this guide, and native files under <code>.cursor/</code>, <code>.claude/</code>,
+          <code>.codex/</code>, <code>.github/</code>, or <code>.antigravity/</code>.
+        </p>
+        <div class="paste">
+          <p>Planner — do not ask it to write code</p>
+          <pre id="plan-prompt">Plan this change. Name the owning agent, extra reviewers, and which screenshots QA must capture. Do not write code.</pre>
+          <div class="copy-row">
+            <button class="copy" type="button" data-copy-from="plan-prompt">Copy Planner prompt</button>
+          </div>
+        </div>
+        <p>
+          You should get a named owner (<code>app-engineer</code>, <code>security</code>, <code>design</code>, <code>qa</code>, or <code>copy</code>) and, if
+          the work is user-visible, a desktop + mobile shot list. The plan reply includes a fenced paste for that owner.
+        </p>
+        <p>New repo with no product <code>DESIGN.md</code>? The Design setup paste is under <a href="#design-setup">Workflows</a>.</p>
+      </section>
 
       <section id="ask">
         <h2>Which agent do I ask?</h2>
@@ -696,7 +555,7 @@ Act as the QA agent. Use the browser-qa skill. Do not review code alone. Open th
         <p>Paste in this order. Skip Security, Design, or Copy when that specialist is not needed. Planner still does not run the other agents.</p>
         <ol>
           <li>
-            Planner — paste the prompt on ticket 03, or:
+            Planner — paste the prompt at Start, or:
             <pre id="plan-prompt-flow">Plan this change. Name the owning agent, extra reviewers, and which screenshots QA must capture. Do not write code.</pre>
             <div class="copy-row">
               <button class="copy" type="button" data-copy-from="plan-prompt-flow">Copy Planner prompt</button>
@@ -750,7 +609,7 @@ Do not review code alone. Open the app, capture desktop and mobile screenshots, 
           Planner → App engineer → Security → QA. QA must open login, logout, and denied in the browser. Screenshots still required when the finding is
           user-visible.
         </p>
-        <h3>New repo design setup</h3>
+        <h3 id="design-setup">New repo design setup</h3>
         <p>After <code>init</code>, before the first product CSS, paste to Design:</p>
         <pre id="design-setup-flow">
 Act as design. This is a new repo. Scan what is already here, then ask me what we need to set up: who it is for, what they must get done, and what you should produce. Recommend from my answers. Write the style guide and principles with me before any CSS.</pre>

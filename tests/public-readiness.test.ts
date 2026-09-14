@@ -76,7 +76,14 @@ describe("public package readiness", () => {
     expect(html).toContain("Act as the copy agent. Review the rendered words in screenshots");
     expect(html).toContain("Copy if public words changed");
     expect(html).toContain("Paste in this order. Skip Security, Design, or Copy");
-    expect(html.match(/<article class="ticket">/g)?.length).toBe(4);
+    expect(html).not.toMatch(/<article class="ticket">/);
+    expect(html).not.toMatch(/class="frame"/);
+    expect(html).not.toMatch(/\.wordmark\s*\{[^}]*text-transform:\s*uppercase/);
+    expect(html).not.toMatch(/\.kicker\s*\{[^}]*text-transform:\s*uppercase/);
+    const start = html.slice(html.indexOf('id="start"'), html.indexOf('id="ask"'));
+    expect(start).toContain('id="init-cmd"');
+    expect(start).toContain('id="plan-prompt"');
+    expect(start).not.toContain("ask me what we need to set up");
     expect(html).toContain('class="skip"');
     expect(html).toContain("a:focus-visible");
     expect(html).toContain("button:focus-visible");

@@ -6,7 +6,8 @@
 - Default specialists print the next USER_GUIDE paste in Handoff after Done-when. App engineer → Security (if auth/data) and QA. Design → Copy and QA. Copy → Design then QA. Security → QA. QA on reject prints the owner’s paste.
 - Default skill YAML descriptions are unique and include Use-when trigger phrases (`RLS`, “looks generic”, “is this done”, “ship it”).
 - Generated Copilot instructions include one USER_GUIDE paste per default agent. Copilot still has no `@agent` picker.
-- USER_GUIDE New feature is the full paste relay: Plan → implement → Security if needed → Design if UI → Copy if public words → QA. First viewport stays four start tickets.
+- USER_GUIDE New feature is the full paste relay: Plan → implement → Security if needed → Design if UI → Copy if public words → QA.
+- USER_GUIDE.html first viewport is init plus one Planner paste. Charcoal tokens stay. Fake QA frames and the four-ticket stack are gone. Design setup lives under Workflows.
 
 ## 0.4.7
 
