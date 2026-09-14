@@ -32,7 +32,7 @@
 
 ## Agent Council Style
 
-- Planning requests start with Planner.
+- Planning requests start with Planner. The plan reply includes a fenced USER_GUIDE paste for the named owner; Planner does not run the other agents.
 - Core changes route through Lead Architect before implementation.
 - Public-facing and conversion-facing copy changes route through Marketing Copy Lead before implementation.
 - Agent-to-skill mappings live in `.agent-kit/agent-roster.json` and must stay machine-readable.

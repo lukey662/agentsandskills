@@ -122,7 +122,7 @@ This is the “talk to each other” work **without** an orchestrator. Handoff s
 - **Why:** Planner names an owner but does not give the user the prompt to paste. USER_GUIDE has prompts; the agent does not print them.
 - **Do:** `planning` Done-when includes a fenced prompt for the owning agent (and extra reviewers). Example: if owner is Design and `DESIGN.md` is missing, print the setup prompt. If owner is QA, print the screenshot prompt.
 - **Files:** `skills/planning/SKILL.md`, `agents/planner/agent.md`, `USER_GUIDE.md` (keep prompts in one place; planning copies them)
-- **Status:** `[ ]`
+- **Status:** `[x]`
 
 Acceptance: a plan reply always contains a copy-paste block the next specialist can run.
 
@@ -522,7 +522,7 @@ Acceptance:
 
 Work Phase 10 in order. First open `[ ]` after this PR:
 
-1. **10.8** Planner emits a paste-ready handoff (Wave 3). Then 10.9–10.12.
+1. **10.9** Each agent’s Handoff section names the next paste (Wave 3). Then 10.10–10.12.
 2. Do not start Wave 4 (orchestrator decision) until Wave 3 is done.
 
 Historical next-actions below (Trusted Publisher, orchestrate dogfood, 0.3 council) are **not** the 0.4 default queue. See Wave 5 and Phase 6 evidence if you are cutting a release.

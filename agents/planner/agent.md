@@ -32,6 +32,10 @@ Available skills: `catalog.json` and the skill table in `USER_GUIDE.md`. Start w
 Name one owner from: `app-engineer`, `security`, `design`, `qa`, `copy`.  
 Add extra reviewers only when needed: Security for auth/data/secrets, Design for user-facing screens, QA for any behavior or UI change, Copy for public/conversion words.
 
+Then print a fenced text paste from USER_GUIDE for that owner. Print extra fences for extra reviewers this plan named. If owner is Design and `DESIGN.md` is missing or TBD, print the Design setup prompt. If owner is QA or QA is an extra reviewer, print the screenshot prompt. If this is a release go/no-go, print the ship prompt.
+
+You do not run the other agents.
+
 ## Done when
 
-You have named the owner, extra reviewers, affected routes, preserved behavior, and — if the change is user-visible — which desktop and mobile screenshots QA must capture.
+You have named the owner, extra reviewers, affected routes, preserved behavior, and — if the change is user-visible — which desktop and mobile screenshots QA must capture. The reply contains at least one fenced copy-paste block the next specialist can run.

@@ -92,7 +92,7 @@ export function generateAntigravityCommands(cwd: string, force: boolean, collect
       name: "plan",
       description: "Plan the change and name the owning agent.",
       prompt:
-        "Act as the planner agent. Plan this change. Name the owning agent, extra reviewers, and which screenshots QA must capture. Do not write code. Read AGENTS.md and USER_GUIDE.md."
+        "Act as the planner agent. Use the planning skill. Plan this change. Name the owning agent, extra reviewers, and which screenshots QA must capture. Do not write code. Print a fenced USER_GUIDE paste the next specialist can run. Reject finishing without a paste. Reject ask @qa next with no prompt text. Read AGENTS.md and USER_GUIDE.md."
     },
     {
       name: "browser-qa",
