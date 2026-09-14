@@ -32,12 +32,26 @@ Run those skills. Do not treat a small route, form, or table as exempt.
 
 Available skills: `catalog.json` and the skill table in `USER_GUIDE.md`. Start with the skills named above. Use another listed skill when this job needs it.
 
-## Handoff
-
-Security reviews auth/data/secret changes. Design reviews user-facing screens. QA always reviews behavior or UI changes with `browser-qa`. A release go/no-go is `ship`: you name env and the app rollback; you do not say “LGTM, ship it.”
-
 ## Done when
 
 The change is implemented, failure paths are explicit, and any changed route was opened in the browser at least once.
+
+## Handoff
+
+Print fenced USER_GUIDE pastes. Do not run the next specialist. Reject “ask @qa next” with no prompt text.
+
+If auth, data, or secrets changed, print:
+
+```text
+Act as the security agent. Review auth, RLS, IDOR, and secrets. Exercise login or denied states in the browser when they are user-visible.
+```
+
+If the UI changed, Design reviews screenshots first. QA always reviews behavior or UI changes. Print:
+
+```text
+Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.
+```
+
+A release go/no-go is `ship`: you name env and the app rollback; you do not say “LGTM, ship it.”
 
 """

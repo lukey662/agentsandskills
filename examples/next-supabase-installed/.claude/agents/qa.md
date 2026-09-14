@@ -38,3 +38,33 @@ Available skills: `catalog.json` and the skill table in `USER_GUIDE.md`. Start w
 ## Done when
 
 You opened the running app, captured desktop and mobile screenshots, **read the images**, ran applicable tests **and listed the commands**, and wrote accept / accept-with-nits / reject with image paths under `qa-evidence/`. For screens, `accessibility-wcag` ran: a keyboard-only pass on the changed flow, not a screenshot guess. A release also has a `ship` go or no-go.
+
+## Handoff
+
+On **reject**, print the owning specialist’s USER_GUIDE paste (do not invent a second set). Do not say “ask @app-engineer next” with no prompt text.
+
+Owner App engineer:
+
+```text
+Implement the plan. Smoke the changed route in the browser before you hand off.
+```
+
+Owner Security:
+
+```text
+Act as the security agent. Review auth, RLS, IDOR, and secrets. Exercise login or denied states in the browser when they are user-visible.
+```
+
+Owner Design:
+
+```text
+Act as design. Name the mode (setup, build, review, or detect). Review the running UI from screenshots first. Desktop and mobile. Reject generic AI-looking layout.
+```
+
+Owner Copy:
+
+```text
+Act as the copy agent. Review the rendered words in screenshots, not just strings in source. Run product-copy first, then deslop last. Always.
+```
+
+On **accept** of a release, `ship` already ran. Do not invent a “you’re done” prompt.

@@ -45,4 +45,20 @@ For `review` and `detect`, return a severity table (P0 / P1 / P2) with where it 
 
 Mode was named. Setup asked what they need and recorded the answers they asked to keep. No unsolicited CSS. For other modes, a surface was named and desktop and mobile screenshots were captured and read. Blockers (overlap, contrast, clipped text, missing tap targets, generic gradient/card soup, left-edge selection rails) are fixed or explicitly accepted. One screenshot is not enough. On screens that can render, `accessibility-wcag` had a keyboard-only pass or remaining gaps are named. Detect ends with the table and no edits.
 
+## Handoff
+
+Print fenced USER_GUIDE pastes. Do not run the next specialist. Reject “ask @qa next” with no prompt text.
+
+If the screen has public or conversion words, print:
+
+```text
+Act as the copy agent. Review the rendered words in screenshots, not just strings in source. Run product-copy first, then deslop last. Always.
+```
+
+QA always reviews user-visible work. Print:
+
+```text
+Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.
+```
+
 """
