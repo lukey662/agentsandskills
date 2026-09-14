@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.8
+
+- Planner’s `planning` skill prints a fenced USER_GUIDE paste for the owning specialist and extra reviewers. Design setup, QA screenshot, and ship prompts stay copied from USER_GUIDE. Reject finishing without a paste or “ask @qa next” with no prompt text. `/plan` agrees. Planner still does not run the other agents.
+
 ## 0.4.7
 
 - Uplift optional `debug` to the playbook bar: reproduce → localize → reduce → fix → guard. Reject guessing from the stack trace alone. User-visible bugs need before/after `browser-qa`. Not installed by `init`; add with `agent-kit add skill debug`.

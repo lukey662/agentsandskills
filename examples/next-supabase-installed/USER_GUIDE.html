@@ -520,7 +520,7 @@ Act as design. This is a new repo. Scan what is already here, then ask me what w
           </div>
           <p>
             You should get a named owner (<code>app-engineer</code>, <code>security</code>, <code>design</code>, <code>qa</code>, or <code>copy</code>) and, if
-            the work is user-visible, a desktop + mobile shot list.
+            the work is user-visible, a desktop + mobile shot list. The plan reply includes a fenced paste for that owner.
           </p>
         </section>
       </div>
@@ -692,7 +692,14 @@ Act as the QA agent. Use the browser-qa skill. Do not review code alone. Open th
         <ol>
           <li>Planner — paste the prompt on ticket 03.</li>
           <li>App engineer — <code>Implement the plan. Smoke the changed route in the browser before you hand off.</code></li>
-          <li>Security if data, auth, or secrets changed.</li>
+          <li>
+            Security if data, auth, or secrets changed — paste:
+            <pre id="security-prompt">
+Act as the security agent. Review auth, RLS, IDOR, and secrets. Exercise login or denied states in the browser when they are user-visible.</pre>
+            <div class="copy-row">
+              <button class="copy" type="button" data-copy-from="security-prompt">Copy Security prompt</button>
+            </div>
+          </li>
           <li>
             Design if the UI changed —
             <code
@@ -733,7 +740,12 @@ Act as design. This is a new repo. Scan what is already here, then ask me what w
           <button class="copy" type="button" data-copy-from="a11y-prompt">Copy accessibility prompt</button>
         </div>
         <h3>Copy pass</h3>
-        <p>Copy reviews the <em>rendered</em> words in screenshots, not strings in TSX. Run <code>product-copy</code>, then <code>deslop</code> last.</p>
+        <p>Copy reviews the <em>rendered</em> words in screenshots, not strings in TSX. Run <code>product-copy</code>, then <code>deslop</code> last. Paste:</p>
+        <pre id="copy-prompt">
+Act as the copy agent. Review the rendered words in screenshots, not just strings in source. Run product-copy first, then deslop last. Always.</pre>
+        <div class="copy-row">
+          <button class="copy" type="button" data-copy-from="copy-prompt">Copy the copy prompt</button>
+        </div>
         <h3>Release / ship</h3>
         <p>Before you promote or deploy, paste to QA:</p>
         <pre id="ship-prompt">

@@ -1,18 +1,21 @@
 name = "plan"
-description = "Create an implementation-ready Agent Kit plan through Planner and Lead Architect routing."
+description = "Plan the change, name the owning agent, and print a paste-ready USER_GUIDE prompt."
 
 prompt = """
-Run the planning workflow.
+Run the planning skill.
 
-Canonical sources: AGENTS.md, AGENT_ROSTER.md, .agent-kit/agent-roster.json, MODEL_ROUTING.md, .agent-kit/model-routing.json, .agent-kit/project-context.md, .agent-kit/corrections/project-rules.json, COUNCIL.md, and QUALITY_GATES.md.
+Canonical source: skills/planning/SKILL.md (or .cursor/skills/planning/SKILL.md). Prompts: USER_GUIDE.md. You do not run the other agents.
 
 Workflow:
-1. Start with Planner.
-2. Name the active workflow and maturity target from QUALITY_GATES.md.
-3. Map affected layers: data, business logic, presentation, auth, deployment, docs, and tests.
-4. Name preserved behavior and compatibility constraints.
-5. Route core changes through Lead Architect before implementation.
-6. Record decision, risk, next handoff, and required outputs with `agent-kit session ...` when available.
+1. Read enough of the repo to name affected routes, tables, and auth boundaries.
+2. Pick one owner: app-engineer, security, design, qa, or copy.
+3. Name extra reviewers and which screenshots QA must capture.
+4. Print a fenced ```text block from USER_GUIDE for the owner. Print extra fences for extra reviewers.
+5. If owner is Design and DESIGN.md is missing or TBD, print the Design setup prompt.
+6. If owner is QA (or QA is an extra reviewer), print the screenshot prompt.
+7. If this is a release go/no-go, print the ship prompt.
 
-Required outputs: goal, affected layers, preserved capabilities, implementation sequence, risks, tests, docs, handoffs, acceptance criteria.
+Reject: finishing without a fenced paste; "ask @qa next" with no prompt text; implementing.
+
+Required outputs: owner, extra reviewers, skills, screenshots, at least one copy-paste block.
 """

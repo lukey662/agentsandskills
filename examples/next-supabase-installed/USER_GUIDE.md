@@ -21,7 +21,7 @@ npx --yes @appsforgood/next-supabase-kit init --activate all
 Plan this change. Name the owning agent, extra reviewers, and which screenshots QA must capture. Do not write code.
 ```
 
-You should get a named owner (`app-engineer`, `security`, `design`, `qa`, or `copy`) and, if the work is user-visible, a desktop + mobile screenshot list.
+You should get a named owner (`app-engineer`, `security`, `design`, `qa`, or `copy`) and, if the work is user-visible, a desktop + mobile screenshot list. The plan reply includes a fenced paste for that owner.
 
 If this repo has no product `DESIGN.md` yet, also paste to Design:
 
@@ -110,7 +110,12 @@ QA of a screen always uses `browser-qa`, not `testing-qa` alone. User-facing scr
 
 1. **Planner** — paste: `Plan this change. Name the owning agent, extra reviewers, and which screenshots QA must capture. Do not write code.`
 2. **App engineer** — paste: `Implement the plan. Smoke the changed route in the browser before you hand off.`
-3. **Security** if data/auth/secrets changed.
+3. **Security** if data/auth/secrets changed — paste:
+
+```text
+Act as the security agent. Review auth, RLS, IDOR, and secrets. Exercise login or denied states in the browser when they are user-visible.
+```
+
 4. **Design** if the UI changed — paste: `Act as design. Name the mode (setup, build, review, or detect). Review the running UI from screenshots first. Desktop and mobile. Reject generic AI-looking layout.` If `DESIGN.md` is missing, run setup first.
 5. **QA** — paste: `Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.` For screens, also run `accessibility-wcag`.
 
@@ -144,7 +149,11 @@ Run accessibility-wcag. Open the changed flow. Keyboard-only pass. Do not accept
 
 ### Copy pass
 
-Copy reviews **rendered** screenshots, not just strings in TSX. Run `product-copy`, then **`deslop` last**. Do not hand off after the first draft.
+Copy reviews **rendered** screenshots, not just strings in TSX. Run `product-copy`, then **`deslop` last**. Do not hand off after the first draft. Paste:
+
+```text
+Act as the copy agent. Review the rendered words in screenshots, not just strings in source. Run product-copy first, then deslop last. Always.
+```
 
 ### Release / ship
 

@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-09-14 - Planner Paste-Ready Handoff
+
+### Context
+
+Planner named an owner and extra reviewers but did not print the prompt the next specialist should run. USER_GUIDE already had the canonical pastes. Native Antigravity `/plan` still pointed at council `QUALITY_GATES` and `agent-kit session`.
+
+### Decision
+
+Extend `planning` so Done-when includes a fenced USER_GUIDE paste for the owner and extra reviewers. Design setup, QA screenshot, and ship prompts stay copied from USER_GUIDE, not a second set. Planner still does not run the other agents. Reject finishing without a paste and “ask @qa next” with no prompt text. Generated `/plan` and native `antigravity/commands/plan.toml` use the same paste-ready Done-when. Do not expand Copilot’s per-specialist list.
+
+### Consequences
+
+A plan reply always contains a copy-paste block the next specialist can run. Next Wave 3 ticket is 10.9 (each agent’s Handoff names the next paste). Do not start Wave 4.
+
 ## 2026-09-13 - UI-polish Optional Playbook
 
 ### Context
