@@ -156,7 +156,7 @@ Acceptance: no default agent ends with “you do not run the others” without a
 - **Owner:** Copy + Design (kit HTML)
 - **Do:** Keep the charcoal desk. Make “New feature” show the relay: Plan → implement → Security if needed → Design if UI → Copy if public words → QA. Each step already has a paste; do not add a fourth ticket to the first viewport unless it is the next user action.
 - **Files:** `USER_GUIDE.md`, `USER_GUIDE.html`, `npm run smoke:ui-screens`
-- **Status:** `[ ]`
+- **Status:** `[x]`
 
 Wave 3 done when: a new user can run a feature without inventing prompts, and Copilot can play any specialist from the generated file.
 
@@ -522,8 +522,8 @@ Acceptance:
 
 Work Phase 10 in order. First open `[ ]` after this PR:
 
-1. **10.12** USER_GUIDE workflow as one sequence (Wave 3). Then Wave 4 decision (do not start it).
-2. Do not start Wave 4 (orchestrator decision) until Wave 3 is done.
+1. **Wave 4 decision** — stay paste-relay (recommended) or optional auto-handoff. Do not start Wave 4.
+2. Do not restore session, Studio, research, or `orchestrate` as the default install.
 
 Historical next-actions below (Trusted Publisher, orchestrate dogfood, 0.3 council) are **not** the 0.4 default queue. See Wave 5 and Phase 6 evidence if you are cutting a release.
 

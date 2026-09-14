@@ -18,13 +18,13 @@
   ],
   "templateHashes": {
     "AGENTS.md": "10a63cd533136555b5cd3b0a189fcd4091339918e62236f20b6dcd7628885369",
-    "USER_GUIDE.md": "7f4467388629afb2ed621138f18c0fd5a429c0f2f1c7d683c2608e3197d3167e",
-    "USER_GUIDE.html": "f04328668a94f19b2ec049746546bfd25fd9a388844c1badad73aa75a7710ead"
+    "USER_GUIDE.md": "afb1dd85b9c91bc6970804b649740983a7dd22d300f4b5a4b70f488ec7b3a0ae",
+    "USER_GUIDE.html": "2feb0f1defee76b64455fd5ced7d6129f5bec4f74bf3226c261fa0db026d5547"
   },
   "assetHashes": {
     "AGENTS.md": "10a63cd533136555b5cd3b0a189fcd4091339918e62236f20b6dcd7628885369",
-    "USER_GUIDE.md": "7f4467388629afb2ed621138f18c0fd5a429c0f2f1c7d683c2608e3197d3167e",
-    "USER_GUIDE.html": "f04328668a94f19b2ec049746546bfd25fd9a388844c1badad73aa75a7710ead",
+    "USER_GUIDE.md": "afb1dd85b9c91bc6970804b649740983a7dd22d300f4b5a4b70f488ec7b3a0ae",
+    "USER_GUIDE.html": "2feb0f1defee76b64455fd5ced7d6129f5bec4f74bf3226c261fa0db026d5547",
     ".cursor/rules/cursor-agent-kit.mdc": "850026beea86067d95925eea15eb447365d6a956e0f7f475ebd7fef89043d44b",
     "CLAUDE.md": "d5095edff182babe5c13717bb16cadcd95569d9e4abd37ceb307bb1448b65557",
     ".cursor/agents/planner.md": "7e26de7387298cda6b5dc51c332536f1ea1eb45f1a8839c2631dab7d4a61a8ed",
