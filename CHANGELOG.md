@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.9
+
+- After `init`, say the change once. The session launches Planner, then the named owner, then extra reviewers, then QA. Copy-paste between chats is retired. Planner still does not implement. Copilot and Antigravity continue in-thread with “now App engineer.”
+- USER_GUIDE.html first viewport is init plus say the change. Canonical prompts stay as spawn payloads under Workflows.
+
 ## 0.4.8
 
 - Planner’s `planning` skill prints a fenced USER_GUIDE paste for the owning specialist and extra reviewers. Design setup, QA screenshot, and ship prompts stay copied from USER_GUIDE. Reject finishing without a paste or “ask @qa next” with no prompt text. `/plan` agrees. Planner still does not run the other agents.

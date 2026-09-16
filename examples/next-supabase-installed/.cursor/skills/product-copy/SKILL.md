@@ -11,7 +11,7 @@ Landing pages, CTAs, positioning, onboarding, empty states, pricing copy, or the
 
 ## Audience
 
-Engineers and coding agents on a Next.js + Supabase repo who already have Cursor, Claude, Codex, Copilot, or Antigravity. They do not need a manifesto. They need to know **who to @**, **what to paste**, and **what “done” looks like**.
+Engineers and coding agents on a Next.js + Supabase repo who already have Cursor, Claude, Codex, Copilot, or Antigravity. They do not need a manifesto. They need to know **who owns the work**, **that the session launches them**, and **what “done” looks like**.
 
 ## Positioning (this product)
 
@@ -21,23 +21,23 @@ Do not describe this as an “agent operating system,” a copilot marketplace, 
 
 ## Voice
 
-Direct, specific, slightly dry. Prefer verbs: ask, paste, open, capture, reject.
+Direct, specific, slightly dry. Prefer verbs: say, launch, open, capture, reject.
 
-Use: specialist, owner, screenshot, desktop, mobile, fail-closed, paste, Planner, browser-qa.  
+Use: specialist, owner, screenshot, desktop, mobile, fail-closed, launch, Planner, browser-qa.  
 Avoid: supercharge, seamless, unlock, copilot for X, 10x, enterprise-grade, magic, revolutionize.
 
 ## Headline test
 
 If the headline could sell GitHub Copilot, Cursor, or any agent marketplace, rewrite it.
 
-Good: `Ask one specialist. Then open the running UI.`  
+Good: `Say the change. Then open the running UI.`  
 Bad: `Supercharge your AI workflow with agents and skills.`
 
 ## CTA test
 
-A CTA is a command or a pasteable prompt, not “Get started.”
+A CTA is a command or the next action, not “Get started.”
 
-Good: `Paste this to Planner` followed by the plan prompt.  
+Good: `Say the change.`  
 Good: `npx --yes @appsforgood/next-supabase-kit init --activate all`  
 Bad: `Start building today`.
 

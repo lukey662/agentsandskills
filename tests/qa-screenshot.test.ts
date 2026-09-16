@@ -39,7 +39,7 @@ describe("QA screenshot fail-closed rule", () => {
     expect(report.summary.fail).toBe(0);
     expect(createDoctorReport(root).ok).toBe(true);
     expect(existsSync(join(root, "USER_GUIDE.html"))).toBe(true);
-    expect(readFileSync(join(root, "USER_GUIDE.html"), "utf8")).toContain("Ask one specialist");
+    expect(readFileSync(join(root, "USER_GUIDE.html"), "utf8")).toContain("Say the change");
   });
 
   it("doctor fails if QA drops required screenshot tools", () => {

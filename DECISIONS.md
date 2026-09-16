@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-09-16 - Default Spawn Handoff
+
+### Context
+
+Wave 3 taught people to copy USER_GUIDE fences between chats. Wave 4 asked whether to keep that or chain specialists. The product choice is chaining: after `init`, you describe the change once and the session launches each specialist. Copy-paste between chats is retired. Auto-handoff is not an opt-in extra.
+
+### Decision
+
+Default `init` is spawn-handoff. The current chat is the conductor. It launches Planner, then the named owner, then extra reviewers, then QA, in New feature order. Canonical USER_GUIDE prompt text is the spawn payload, not a clipboard workflow. Planner still does not implement. Six specialists stay separate; one chat must not impersonate all six. QA accept stops. QA reject launches the owning specialist again. Copilot and Antigravity cannot spawn isolated agents: same sequence in one thread with an explicit “now App engineer” header. Do not restore Studio, session ledger, LangGraph, or `orchestrate` on default `init`.
+
+### Consequences
+
+Paste-relay is retired. USER_GUIDE start is init, then say the change. Wave 4 is closed. Wave 5 (detect uplift, dogfood) stays later. Ship as 0.4.9.
+
 ## 2026-09-14 - Kit-html Field Guide Rebuild
 
 ### Context

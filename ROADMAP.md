@@ -17,9 +17,9 @@ How to use this file:
 
 Playbook bar (what “top class” means here): `nextjs-app-router`, `supabase-auth-rls`, `postgres-migrations`, `owasp-security-review`, `frontend-design`, `accessibility-wcag`, `testing-qa`, `ship`, `browser-qa`, and `deslop` already meet it. Optional `debug`, `docs`, `upgrade`, and `ui-polish` meet it when added.
 
-## Phase 10: 0.4 Kit Quality — Playbooks, Skill Use, Paste Handoff
+## Phase 10: 0.4 Kit Quality — Playbooks, Skill Use, Spawn Handoff
 
-Goal: the default pack is even. Every default skill is a playbook. Agents name the skill they must run. Workflows stay a **human-run relay** (Planner names the next specialist; you paste). Agents do not spawn each other.
+Goal: the default pack is even. Every default skill is a playbook. Agents name the skill they must run. After `init`, the current chat launches each specialist in New feature order. You describe the change once. Planner does not implement. One chat does not impersonate all six.
 
 Keep:
 
@@ -27,7 +27,7 @@ Keep:
 - Screenshot fail-closed QA
 - Kit charcoal desk off product apps
 - One `frontend-design` skill, no design MCP/canvas OS
-- Planner does not run the other agents
+- Planner names the owner and does not implement. The session launches the next specialist.
 
 ### Wave 0 — Finish what is in flight
 
@@ -160,13 +160,11 @@ Acceptance: no default agent ends with “you do not run the others” without a
 
 Wave 3 done when: a new user can run a feature without inventing prompts, and Copilot can play any specialist from the generated file.
 
-### Wave 4 — Decision gate: stay a relay, or add optional auto-handoff
+### Wave 4 — Decide and ship default spawn
 
-Do **not** start until Waves 1–3 are done. This is a product decision, not a default.
+Waves 1–3 are done.
 
-- `[ ]` **Decide and record in `DECISIONS.md`:** stay paste-relay (recommended) **or** ship optional auto-handoff.
-- If paste-relay: stop. Wave 3 is the coordination model.
-- If auto-handoff: optional only (`agent-kit add` or activate flag). Must not run on plain `init`. Must not restore Studio, session ledger, or LangGraph as the default. A thin runner that prints “now paste this to @qa” is in scope; spawning six subagents in one chat is out of scope unless a later decision says otherwise.
+- `[x]` **Decide and ship default spawn:** recorded in `DECISIONS.md` (2026-09-16). Paste-relay is retired. After `init`, the session launches Planner, then the owner, then extra reviewers, then QA. Not optional. Not Studio / `orchestrate`. Copilot and Antigravity continue in-thread with “now App engineer.” Planner still does not implement. USER_GUIDE start is init, then say the change.
 
 ### Wave 5 — Later (after 10.1–10.11)
 
@@ -224,7 +222,7 @@ Source: [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) (`
 
 #### Frontend skill scan — 2026-09-14
 
-Sibling to the addyosmani pack scan above. Broader **frontend** agent/skill packs (screens, not generic coding). Trigger: user opened `USER_GUIDE.html` first viewport and called it really bad. Design `kit-html` / `review` first, then structure-only GitHub scan. **No third-party bodies.** Do not start Wave 4. Do not change Wave 3 10.x checkboxes or 10.12 New feature copy. Six default agents, twelve default skills. Planner does not run the others. Kit charcoal stays off product apps. `USER_GUIDE.html` is the one `kit-html` surface.
+Sibling to the addyosmani pack scan above. Broader **frontend** agent/skill packs (screens, not generic coding). Trigger: user opened `USER_GUIDE.html` first viewport and called it really bad. Design `kit-html` / `review` first, then structure-only GitHub scan. **No third-party bodies.** Wave 4 spawn-handoff is shipped. Do not change Wave 3 10.x checkboxes. Six default agents, twelve default skills. Planner names the owner and does not implement. Kit charcoal stays off product apps. `USER_GUIDE.html` is the one `kit-html` surface.
 
 **Why the first viewport fails** (desktop screenshot 2026-09-14 + live HTML; mobile inferred from CSS — frames stay two-column under 520px):
 
@@ -626,8 +624,8 @@ Acceptance:
 
 Work Phase 10 in order. First open `[ ]` after this PR:
 
-1. **Wave 4 decision** — stay paste-relay (recommended) or optional auto-handoff. Do not start Wave 4.
-2. Do not restore session, Studio, research, or `orchestrate` as the default install.
+1. **Wave 5** — `frontend-design` detect uplift, then dogfood. Do not restore session, Studio, research, or `orchestrate` as the default install.
+2. Wave 4 spawn-handoff is the coordination model. Planner still does not implement.
 
 Historical next-actions below (Trusted Publisher, orchestrate dogfood, 0.3 council) are **not** the 0.4 default queue. See Wave 5 and Phase 6 evidence if you are cutting a release.
 

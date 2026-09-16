@@ -1,6 +1,5 @@
 .agent-kit/config.json
 .agent-kit/manifest.json
-AGENTS.md
 .antigravity/agent-kit/commands/browser-qa.toml
 .antigravity/agent-kit/commands/copy.toml
 .antigravity/agent-kit/commands/frontend.toml
@@ -27,7 +26,6 @@ AGENTS.md
 .claude/agents/planner.md
 .claude/agents/qa.md
 .claude/agents/security.md
-CLAUDE.md
 .codex/agents/app-engineer.toml
 .codex/agents/copy.toml
 .codex/agents/design.toml
@@ -54,7 +52,11 @@ CLAUDE.md
 .cursor/skills/supabase-auth-rls/SKILL.md
 .cursor/skills/testing-qa/SKILL.md
 .github/copilot-instructions.md
+AGENTS.md
+CLAUDE.md
 README.md
+USER_GUIDE.html
+USER_GUIDE.md
 skills/accessibility-wcag/SKILL.md
 skills/browser-qa/SKILL.md
 skills/deslop/SKILL.md
@@ -68,5 +70,3 @@ skills/ship/SKILL.md
 skills/supabase-auth-rls/SKILL.md
 skills/testing-qa/SKILL.md
 tree.txt
-USER_GUIDE.html
-USER_GUIDE.md

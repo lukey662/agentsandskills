@@ -349,9 +349,10 @@
     </header>
 
     <main>
-      <h1 id="title">Ask one specialist. Then open the running UI.</h1>
+      <h1 id="title">Say the change. Then open the running UI.</h1>
       <p class="lede">
-        Planner names the owner. App engineer ships the route. Security owns RLS. Design and Copy read pixels. QA does not review <code>page.tsx</code>.
+        This session launches Planner, then the owner. App engineer ships the route. Security owns RLS. Design and Copy read pixels. QA does not review
+        <code>page.tsx</code>.
       </p>
       <p class="rule">
         <strong>Fail-closed.</strong> Do not review code alone. A user-visible change is not done until someone opened the running UI, captured desktop and
@@ -360,7 +361,7 @@
 
       <section id="start">
         <h2>Start</h2>
-        <p>Install the pack, open the repo, then paste to Planner.</p>
+        <p>Install the pack, open the repo, then say the change.</p>
         <div class="paste">
           <p>Init — every IDE this team uses</p>
           <pre id="init-cmd">npx --yes @appsforgood/next-supabase-kit init --activate all</pre>
@@ -368,27 +369,21 @@
             <button class="copy" type="button" data-copy-from="init-cmd">Copy init command</button>
           </div>
         </div>
-        <div class="paste">
-          <p>Planner — do not ask it to write code</p>
-          <pre id="plan-prompt">Plan this change. Name the owning agent, extra reviewers, and which screenshots QA must capture. Do not write code.</pre>
-          <div class="copy-row">
-            <button class="copy" type="button" data-copy-from="plan-prompt">Copy Planner prompt</button>
-          </div>
-        </div>
         <p>
           Open the project. You should see <code>AGENTS.md</code>, this guide, and native files under <code>.cursor/</code>, <code>.claude/</code>,
           <code>.codex/</code>, <code>.github/</code>, or <code>.antigravity/</code>.
         </p>
         <p>
-          You should get a named owner (<code>app-engineer</code>, <code>security</code>, <code>design</code>, <code>qa</code>, or <code>copy</code>) and, if
-          the work is user-visible, a desktop + mobile shot list. The plan reply includes a fenced paste for that owner.
+          Then say the change. This session launches Planner, then the named owner, then extra reviewers, then QA. You do not copy a prompt. You should get a
+          named owner (<code>app-engineer</code>, <code>security</code>, <code>design</code>, <code>qa</code>, or <code>copy</code>) and, if the work is
+          user-visible, a desktop + mobile shot list. The session launches that owner.
         </p>
-        <p>New repo with no product <code>DESIGN.md</code>? The Design setup paste is under <a href="#design-setup">Workflows</a>.</p>
+        <p>New repo with no product <code>DESIGN.md</code>? The session launches Design setup under <a href="#design-setup">Workflows</a>.</p>
       </section>
 
       <section id="ask">
         <h2>Which agent do I ask?</h2>
-        <p>Do not ask one chat to be all six. Planner names the next specialist. It does not run the other agents.</p>
+        <p>Do not ask one chat to be all six. Planner names the next specialist. The session launches them.</p>
         <table>
           <thead>
             <tr>
@@ -502,8 +497,8 @@
             <p><code>.cursor/agents/*.md</code>, <code>.cursor/skills/*/SKILL.md</code></p>
             <ul>
               <li>
-                Mention <code>@planner</code>, <code>@app-engineer</code>, <code>@security</code>, <code>@design</code>, <code>@qa</code>, or
-                <code>@copy</code>.
+                Describe the change. This session launches <code>@planner</code>, then the owner. You do not have to mention <code>@app-engineer</code>,
+                <code>@security</code>, <code>@design</code>, <code>@qa</code>, or <code>@copy</code>.
               </li>
               <li>Force a skill with <code>@browser-qa</code>.</li>
               <li>Use the built-in browser first. Playwright is backup.</li>
@@ -513,7 +508,7 @@
             <h3>Claude Code</h3>
             <p><code>.claude/agents/*.md</code>, <code>CLAUDE.md</code></p>
             <ul>
-              <li>Use the matching subagent instead of one generic thread.</li>
+              <li>This session launches the matching subagent. Do not play every role in one voice.</li>
               <li>Mention <code>browser-qa</code> for any screen. If there is no browser, use the Playwright commands in that skill.</li>
             </ul>
           </article>
@@ -521,15 +516,16 @@
             <h3>Codex</h3>
             <p><code>.codex/agents/*.toml</code>, <code>AGENTS.md</code></p>
             <ul>
-              <li>Spawn the named custom agent from <code>.codex/agents/</code>.</li>
-              <li>Paste the good QA prompt below. Use Playwright if Codex cannot see the page.</li>
+              <li>This session launches the named custom agent from <code>.codex/agents/</code>.</li>
+              <li>Use the QA spawn payload below. Use Playwright if Codex cannot see the page.</li>
             </ul>
           </article>
           <article class="ide">
             <h3>GitHub Copilot</h3>
             <p><code>.github/copilot-instructions.md</code></p>
             <p>
-              No <code>@agent</code> picker. The generated file already has one paste per specialist. New feature below has the same fences. To prove a screen:
+              No isolated specialist spawn. After you say the change, run New feature in this thread. Start each step with “now Planner” / “now App engineer” /
+              “now QA”. Do not stop after printing a prompt. To prove a screen:
             </p>
             <pre id="copilot-prompt">
 Act as the QA agent. Use the browser-qa skill. Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.</pre>
@@ -541,7 +537,7 @@ Act as the QA agent. Use the browser-qa skill. Do not review code alone. Open th
             <h3>Antigravity</h3>
             <p><code>.antigravity/agent-kit/commands/*.toml</code></p>
             <ul>
-              <li><code>/plan</code> — Planner</li>
+              <li><code>/plan</code> — Planner, then continue in-thread with “now App engineer”</li>
               <li><code>/browser-qa</code> — screenshot loop</li>
               <li><code>/security</code>, <code>/frontend</code>, <code>/copy</code>, <code>/test</code>, <code>/ship</code></li>
             </ul>
@@ -552,24 +548,27 @@ Act as the QA agent. Use the browser-qa skill. Do not review code alone. Open th
       <section id="flows">
         <h2>Standard workflows</h2>
         <h3>New feature</h3>
-        <p>Paste in this order. Skip Security, Design, or Copy when that specialist is not needed. Planner still does not run the other agents.</p>
+        <p>
+          Launch in this order. Skip Security, Design, or Copy when that specialist is not needed. The session launches each specialist; you do not copy these
+          blocks.
+        </p>
         <ol>
           <li>
-            Planner — paste the prompt at Start, or:
-            <pre id="plan-prompt-flow">Plan this change. Name the owning agent, extra reviewers, and which screenshots QA must capture. Do not write code.</pre>
+            Planner — spawn payload:
+            <pre id="plan-prompt">Plan this change. Name the owning agent, extra reviewers, and which screenshots QA must capture. Do not write code.</pre>
             <div class="copy-row">
-              <button class="copy" type="button" data-copy-from="plan-prompt-flow">Copy Planner prompt</button>
+              <button class="copy" type="button" data-copy-from="plan-prompt">Copy Planner prompt</button>
             </div>
           </li>
           <li>
-            App engineer — paste:
+            App engineer — spawn payload:
             <pre id="implement-prompt">Implement the plan. Smoke the changed route in the browser before you hand off.</pre>
             <div class="copy-row">
               <button class="copy" type="button" data-copy-from="implement-prompt">Copy App engineer prompt</button>
             </div>
           </li>
           <li>
-            Security if data, auth, or secrets changed — paste:
+            Security if data, auth, or secrets changed — spawn payload:
             <pre id="security-prompt">
 Act as the security agent. Review auth, RLS, IDOR, and secrets. Exercise login or denied states in the browser when they are user-visible.</pre>
             <div class="copy-row">
@@ -577,7 +576,7 @@ Act as the security agent. Review auth, RLS, IDOR, and secrets. Exercise login o
             </div>
           </li>
           <li>
-            Design if the UI changed — paste:
+            Design if the UI changed — spawn payload:
             <pre id="design-review-prompt">
 Act as design. Name the mode (setup, build, review, or detect). Review the running UI from screenshots first. Desktop and mobile. Reject generic AI-looking layout.</pre>
             <div class="copy-row">
@@ -586,7 +585,7 @@ Act as design. Name the mode (setup, build, review, or detect). Review the runni
             If <code>DESIGN.md</code> is missing, run setup first.
           </li>
           <li>
-            Copy if public words changed — paste:
+            Copy if public words changed — spawn payload:
             <pre id="copy-feature-prompt">
 Act as the copy agent. Review the rendered words in screenshots, not just strings in source. Run product-copy first, then deslop last. Always.</pre>
             <div class="copy-row">
@@ -594,7 +593,7 @@ Act as the copy agent. Review the rendered words in screenshots, not just string
             </div>
           </li>
           <li>
-            QA — paste:
+            QA — spawn payload:
             <pre id="qa-feature-prompt">
 Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.</pre>
             <div class="copy-row">
@@ -610,7 +609,7 @@ Do not review code alone. Open the app, capture desktop and mobile screenshots, 
           user-visible.
         </p>
         <h3 id="design-setup">New repo design setup</h3>
-        <p>After <code>init</code>, before the first product CSS, paste to Design:</p>
+        <p>After <code>init</code>, before the first product CSS, the session launches Design with:</p>
         <pre id="design-setup-flow">
 Act as design. This is a new repo. Scan what is already here, then ask me what we need to set up: who it is for, what they must get done, and what you should produce. Recommend from my answers. Write the style guide and principles with me before any CSS.</pre>
         <div class="copy-row">
@@ -627,20 +626,23 @@ Act as design. This is a new repo. Scan what is already here, then ask me what w
           mobile once a screen exists. One happy-path shot is a fail. A contrast guess from the screenshot is a fail.
         </p>
         <h3>Accessibility pass</h3>
-        <p>On any user-facing screen, paste to Design or QA:</p>
+        <p>On any user-facing screen, launch Design or QA with:</p>
         <pre id="a11y-prompt">Run accessibility-wcag. Open the changed flow. Keyboard-only pass. Do not accept contrast from the screenshot alone.</pre>
         <div class="copy-row">
           <button class="copy" type="button" data-copy-from="a11y-prompt">Copy accessibility prompt</button>
         </div>
         <h3>Copy pass</h3>
-        <p>Copy reviews the <em>rendered</em> words in screenshots, not strings in TSX. Run <code>product-copy</code>, then <code>deslop</code> last. Paste:</p>
+        <p>
+          Copy reviews the <em>rendered</em> words in screenshots, not strings in TSX. Run <code>product-copy</code>, then <code>deslop</code> last. Spawn
+          payload:
+        </p>
         <pre id="copy-prompt">
 Act as the copy agent. Review the rendered words in screenshots, not just strings in source. Run product-copy first, then deslop last. Always.</pre>
         <div class="copy-row">
           <button class="copy" type="button" data-copy-from="copy-prompt">Copy the copy prompt</button>
         </div>
         <h3>Release / ship</h3>
-        <p>Before you promote or deploy, paste to QA:</p>
+        <p>Before you promote or deploy, launch QA with:</p>
         <pre id="ship-prompt">
 Run ship. Go or no-go. Name env, migration order, rollback, commands run. User-visible needs browser-qa screenshot paths. Reject LGTM, ship it.</pre>
         <div class="copy-row">

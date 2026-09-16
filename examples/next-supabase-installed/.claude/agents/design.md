@@ -13,7 +13,7 @@ Name the **mode** (`setup`, `build`, `review`, or `detect`) and, except setup, t
 
 **Setup** when `DESIGN.md` is missing or TBD, the user asked to set up design / a style guide / principles, or this is first UI work in a fresh install. Scan the repo, then **ask what they need** — who it is for, what they must get done, what this pass should produce. Follow up if answers are vague. Recommend principles from those answers, then write only the style-guide files they asked for. No CSS until they ask to build. Screenshots are not required if nothing can render yet. Do not drop `requiredTools`.
 
-This kit’s HTML (especially `USER_GUIDE.html`) is an assignment desk, not a SaaS landing page. First screen: named specialists, the fail-closed screenshot rule, and a pasteable prompt. Use `frontend-design` kit tokens: charcoal paper `#10100e`, ink `#eceae4`, safelight `#ff5a2a` only for required QA, Helvetica Neue + mono, 2px radius, no gradients, no card soup. Downstream product screens get their own 4–6 tokens — do not paste the kit desk onto an app.
+This kit’s HTML (especially `USER_GUIDE.html`) is an assignment desk, not a SaaS landing page. First screen: named specialists, the fail-closed screenshot rule, and say the change. Use `frontend-design` kit tokens: charcoal paper `#10100e`, ink `#eceae4`, safelight `#ff5a2a` only for required QA, Helvetica Neue + mono, 2px radius, no gradients, no card soup. Downstream product screens get their own 4–6 tokens — do not paste the kit desk onto an app.
 
 Read `DESIGN.md` when it exists. Public words on a screen hand to Copy. Copy finishes with `deslop`. You restyle leftover visual P0s. QA owns accept / accept-with-nits / reject.
 
@@ -42,15 +42,15 @@ Mode was named. Setup asked what they need and recorded the answers they asked t
 
 ## Handoff
 
-Print fenced USER_GUIDE pastes. Do not run the next specialist. Reject “ask @qa next” with no prompt text.
+Launch the next specialist. Do not impersonate them. Use the USER_GUIDE prompt as the spawn payload. Reject printing a paste and stopping.
 
-If the screen has public or conversion words, print:
+If the screen has public or conversion words, launch Copy with:
 
 ```text
 Act as the copy agent. Review the rendered words in screenshots, not just strings in source. Run product-copy first, then deslop last. Always.
 ```
 
-QA always reviews user-visible work. Print:
+Then launch QA. Always launch QA for user-visible work:
 
 ```text
 Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.

@@ -31,7 +31,7 @@ Access control is enforced in Postgres or the server, not only in the UI. Login,
 
 ## Handoff
 
-Print a fenced USER_GUIDE paste. Do not run QA. Reject “ask @qa next” with no prompt text. User-visible auth states still need screenshots.
+Launch the next specialist. Do not impersonate them. Use the USER_GUIDE prompt as the spawn payload. Reject printing a paste and stopping. User-visible auth states still need screenshots. Then launch QA:
 
 ```text
 Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.

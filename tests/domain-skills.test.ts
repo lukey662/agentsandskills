@@ -80,7 +80,7 @@ describe("domain skill uplifts", () => {
     expect(design).toContain("Setup may skip capture");
   });
 
-  it("planning names which domain skill the owner must run and emits a fenced paste", () => {
+  it("planning names which domain skill the owner must run and launches them", () => {
     const skill = readSkill("planning");
     expect(skill).toContain("## Do");
     expect(skill).toContain("nextjs-app-router");
@@ -99,12 +99,13 @@ describe("domain skill uplifts", () => {
     expect(skill).toContain(
       "Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject."
     );
-    expect(skill).toContain("Finishing without a fenced paste");
-    expect(skill).toContain("Ask @qa next");
-    expect(skill).toContain("copy-paste block");
+    expect(skill).toContain("Finishing without launching the owner");
+    expect(skill).toContain("Printing a paste and stopping");
+    expect(skill).toContain("launch the owner");
     const planner = readFileSync(join(process.cwd(), "agents/planner/agent.md"), "utf8");
-    expect(planner).toContain("You do not run the other agents.");
-    expect(planner).toContain("fenced text paste from USER_GUIDE");
+    expect(planner).toContain("launch the owner");
+    expect(planner).not.toContain("You do not run the other agents.");
+    expect(planner).toContain("USER_GUIDE spawn payload");
   });
 
   it("accessibility-wcag requires a keyboard pass in the running UI and rejects screenshot-only contrast", () => {
@@ -181,16 +182,17 @@ describe("domain skill uplifts", () => {
     expect(design).toContain("requiredTools: [browser, screenshot, image-review]");
     expect(design).toContain("`setup`, `build`, `review`, or `detect`");
     const planning = readFileSync(join(root, ".cursor/skills/planning/SKILL.md"), "utf8");
-    expect(planning).toContain("Finishing without a fenced paste");
-    expect(planning).toContain("Ask @qa next");
+    expect(planning).toContain("Finishing without launching the owner");
+    expect(planning).toContain("Printing a paste and stopping");
     expect(planning).toContain("Act as design. This is a new repo. Scan what is already here, then ask me what we need to set up");
     expect(planning).toContain("Do not review code alone. Open the app, capture desktop and mobile screenshots");
     const planner = readFileSync(join(root, ".cursor/agents/planner.md"), "utf8");
-    expect(planner).toContain("You do not run the other agents.");
-    expect(planner).toContain("fenced text paste from USER_GUIDE");
+    expect(planner).toContain("launch the owner");
+    expect(planner).not.toContain("You do not run the other agents.");
+    expect(planner).toContain("USER_GUIDE spawn payload");
     const guide = readFileSync(join(root, "USER_GUIDE.md"), "utf8");
     expect(guide).toContain("ask me what we need to set up");
-    expect(guide).toContain("The plan reply includes a fenced paste for that owner");
+    expect(guide).toContain("The session launches that owner");
     expect(guide).toContain("Act as the security agent. Review auth, RLS, IDOR, and secrets");
     expect(guide).toContain("Act as the copy agent. Review the rendered words in screenshots");
     const a11y = readFileSync(join(root, ".cursor/skills/accessibility-wcag/SKILL.md"), "utf8");

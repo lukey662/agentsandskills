@@ -24,8 +24,8 @@ Do not ask one chat to be all six.
 
 ## Handoff
 
-Planner names the owner. Security joins auth/data/secret work. Design joins user-facing screens and first-run style-guide setup. QA joins any behavior or UI change and **must use the browser**. Copy joins public/conversion copy. Stop there.
+Describe the change once. This session launches Planner, then the named owner, then extra reviewers, then QA. Do not copy prompts. Do not play all six roles in one voice. Security joins auth/data/secret work. Design joins user-facing screens and first-run style-guide setup. QA joins any behavior or UI change and **must use the browser**. Copy joins public/conversion copy. QA accept stops. QA reject launches the owner again.
 
 ## Skills
 
-Default skills live in `.cursor/skills/*/SKILL.md` (and the matching Claude/Codex/Antigravity copies). QA of a screen always uses `browser-qa`, not `testing-qa` alone. Copy finishes public words with `deslop`. Planner uses `planning` and names owners; it does not run the other agents. Each agent file points at `catalog.json` for the full skill list.
+Default skills live in `.cursor/skills/*/SKILL.md` (and the matching Claude/Codex/Antigravity copies). QA of a screen always uses `browser-qa`, not `testing-qa` alone. Copy finishes public words with `deslop`. Planner uses `planning`, names the owner, and the session launches them. Each agent file points at `catalog.json` for the full skill list.
