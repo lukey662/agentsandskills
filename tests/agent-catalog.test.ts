@@ -28,14 +28,15 @@ function agentFiles(): string[] {
 }
 
 describe("agent skill catalog pointer", () => {
-  it("Planner names planning and does not run other agents", () => {
+  it("Planner names planning and the session launches the owner", () => {
     const planner = readFileSync(join(process.cwd(), "agents/planner/agent.md"), "utf8");
     expect(planner).toMatch(/`planning`/);
-    expect(planner).toContain("You do not run the other agents.");
+    expect(planner).toContain("launch the owner");
+    expect(planner).not.toContain("You do not run the other agents.");
     expect(planner).toContain(catalogPointer);
   });
 
-  it("default specialists print a fenced USER_GUIDE paste in Handoff", () => {
+  it("default specialists launch the next specialist with a USER_GUIDE spawn payload", () => {
     const qaPrompt =
       "Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.";
     const app = readFileSync(join(process.cwd(), "agents/app-engineer/agent.md"), "utf8");
@@ -43,7 +44,8 @@ describe("agent skill catalog pointer", () => {
     expect(app).toContain("```text");
     expect(app).toContain("Act as the security agent. Review auth, RLS, IDOR, and secrets");
     expect(app).toContain(qaPrompt);
-    expect(app).toContain("ask @qa next");
+    expect(app).toContain("Launch the next specialist");
+    expect(app).not.toContain("ask @qa next");
     const design = readFileSync(join(process.cwd(), "agents/design/agent.md"), "utf8");
     expect(design).toContain("## Handoff");
     expect(design).toContain("```text");
@@ -83,7 +85,8 @@ describe("agent skill catalog pointer", () => {
       expect(body, id).toContain(catalogPointer);
     }
     expect(readFileSync(join(root, ".cursor/agents/planner.md"), "utf8")).toMatch(/`planning`/);
-    expect(readFileSync(join(root, ".cursor/agents/planner.md"), "utf8")).toContain("You do not run the other agents.");
+    expect(readFileSync(join(root, ".cursor/agents/planner.md"), "utf8")).toContain("launch the owner");
+    expect(readFileSync(join(root, ".cursor/agents/planner.md"), "utf8")).not.toContain("You do not run the other agents.");
     expect(readFileSync(join(root, ".cursor/agents/app-engineer.md"), "utf8")).toContain("Act as the security agent. Review auth, RLS, IDOR, and secrets");
     expect(readFileSync(join(root, ".cursor/agents/app-engineer.md"), "utf8")).toContain(
       "Do not review code alone. Open the app, capture desktop and mobile screenshots"

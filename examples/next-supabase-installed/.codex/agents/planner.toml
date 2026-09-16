@@ -28,7 +28,7 @@ Do not edit product code.
 
 `planning`.
 
-You name the owner and reviewers. You do not run the other agents.
+You name the owner and reviewers. The session launches them. You do not implement.
 
 Available skills: `catalog.json` and the skill table in `USER_GUIDE.md`. Start with the skills named above. Use another listed skill when this job needs it.
 
@@ -37,12 +37,14 @@ Available skills: `catalog.json` and the skill table in `USER_GUIDE.md`. Start w
 Name one owner from: `app-engineer`, `security`, `design`, `qa`, `copy`.  
 Add extra reviewers only when needed: Security for auth/data/secrets, Design for user-facing screens, QA for any behavior or UI change, Copy for public/conversion words.
 
-Then print a fenced text paste from USER_GUIDE for that owner. Print extra fences for extra reviewers this plan named. If owner is Design and `DESIGN.md` is missing or TBD, print the Design setup prompt. If owner is QA or QA is an extra reviewer, print the screenshot prompt. If this is a release go/no-go, print the ship prompt.
+Then launch the owner with the USER_GUIDE spawn payload. Launch extra reviewers this plan named, in New feature order. If this session cannot spawn (repo-only Planner), name the owner and payload so the parent conductor launches immediately. Do not tell the human to copy a paste.
 
-You do not run the other agents.
+Cursor Task types: `planner` → `planner`, `app-engineer` → `nextjs-engineer`, `security` → `security-reviewer`, `design` → `frontend-design-lead`, `qa` → `qa-engineer`, `copy` → `marketing-copy-lead`. Claude and Codex launch the matching named agent. Copilot and Antigravity continue in-thread with “now App engineer” (or the named role) and the same prompt text.
+
+If owner is Design and `DESIGN.md` is missing or TBD, launch Design setup. If this is a release go/no-go, include the ship prompt on the QA launch.
 
 ## Done when
 
-You have named the owner, extra reviewers, affected routes, preserved behavior, and — if the change is user-visible — which desktop and mobile screenshots QA must capture. The reply contains at least one fenced copy-paste block the next specialist can run.
+You have named the owner, extra reviewers, affected routes, preserved behavior, and — if the change is user-visible — which desktop and mobile screenshots QA must capture. The session launched the owner with the canonical prompt. You did not implement. You did not stop after a fence.
 
 """

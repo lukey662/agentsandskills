@@ -66,7 +66,7 @@ export function generateCopilotInstructions(cwd: string, force: boolean, collect
   const catalog = loadCatalog();
   const content = `# Copilot instructions
 
-This repo uses a small agent and skill pack. Read \`AGENTS.md\` and \`USER_GUIDE.md\`. Copilot has no \`@agent\` picker. Paste one of these USER_GUIDE role prompts.
+This repo uses a small agent and skill pack. Read \`AGENTS.md\` and \`USER_GUIDE.md\`. Copilot has no isolated specialist spawn. When the user describes a change, run the New feature sequence in this thread. Start each step with an explicit “now Planner” / “now App engineer” / “now QA” header and the matching USER_GUIDE prompt. Do not stop after printing a prompt. Do not impersonate all six in one paragraph.
 
 When the user names a role, act as that agent:
 
@@ -128,7 +128,7 @@ export function generateAntigravityCommands(cwd: string, force: boolean, collect
       name: "plan",
       description: "Plan the change and name the owning agent.",
       prompt:
-        "Act as the planner agent. Use the planning skill. Plan this change. Name the owning agent, extra reviewers, and which screenshots QA must capture. Do not write code. Print a fenced USER_GUIDE paste the next specialist can run. Reject finishing without a paste. Reject ask @qa next with no prompt text. Read AGENTS.md and USER_GUIDE.md."
+        "Act as the planner agent. Use the planning skill. Plan this change. Name the owning agent, extra reviewers, and which screenshots QA must capture. Do not write code. Then continue in this thread with an explicit now App engineer (or the named role) header and the USER_GUIDE spawn payload. Reject finishing without launching the owner. Reject printing a paste and stopping. Reject asking one chat to play every role. Read AGENTS.md and USER_GUIDE.md."
     },
     {
       name: "browser-qa",

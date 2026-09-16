@@ -32,7 +32,7 @@
 
 ## Agent Council Style
 
-- Planning requests start with Planner. The plan reply includes a fenced USER_GUIDE paste for the named owner; Planner does not run the other agents.
+- Planning requests start with Planner. The session launches the named owner with the USER_GUIDE spawn payload. Planner does not implement. One chat does not impersonate all six.
 - Core changes route through Lead Architect before implementation.
 - Public-facing and conversion-facing copy changes route through Marketing Copy Lead before implementation.
 - Agent-to-skill mappings live in `.agent-kit/agent-roster.json` and must stay machine-readable.

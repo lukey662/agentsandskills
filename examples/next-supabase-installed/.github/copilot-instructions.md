@@ -1,6 +1,6 @@
 # Copilot instructions
 
-This repo uses a small agent and skill pack. Read `AGENTS.md` and `USER_GUIDE.md`. Copilot has no `@agent` picker. Paste one of these USER_GUIDE role prompts.
+This repo uses a small agent and skill pack. Read `AGENTS.md` and `USER_GUIDE.md`. Copilot has no isolated specialist spawn. When the user describes a change, run the New feature sequence in this thread. Start each step with an explicit “now Planner” / “now App engineer” / “now QA” header and the matching USER_GUIDE prompt. Do not stop after printing a prompt. Do not impersonate all six in one paragraph.
 
 When the user names a role, act as that agent:
 

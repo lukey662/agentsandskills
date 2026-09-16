@@ -15,19 +15,11 @@ npx --yes @appsforgood/next-supabase-kit init --activate all
 ```
 
 2. Open the project in your IDE.
-3. Paste this to Planner (do not ask it to write code):
+3. Say the change. This session launches Planner, then the named owner, then extra reviewers, then QA. You do not copy a prompt.
 
-```text
-Plan this change. Name the owning agent, extra reviewers, and which screenshots QA must capture. Do not write code.
-```
+You should get a named owner (`app-engineer`, `security`, `design`, `qa`, or `copy`) and, if the work is user-visible, a desktop + mobile screenshot list. The session launches that owner. It does not stop after a plan.
 
-You should get a named owner (`app-engineer`, `security`, `design`, `qa`, or `copy`) and, if the work is user-visible, a desktop + mobile screenshot list. The plan reply includes a fenced paste for that owner.
-
-If this repo has no product `DESIGN.md` yet, also paste to Design:
-
-```text
-Act as design. This is a new repo. Scan what is already here, then ask me what we need to set up: who it is for, what they must get done, and what you should produce. Recommend from my answers. Write the style guide and principles with me before any CSS.
-```
+If this repo has no product `DESIGN.md` yet, the session launches Design setup (see Workflows). Do not paste a second start prompt.
 
 ## How to invoke in each IDE
 
@@ -35,7 +27,7 @@ Act as design. This is a new repo. Scan what is already here, then ask me what w
 
 Files: `.cursor/agents/*.md`, `.cursor/skills/*/SKILL.md`, `.cursor/rules/cursor-agent-kit.mdc`
 
-- In chat, mention `@planner`, `@app-engineer`, `@security`, `@design`, `@qa`, or `@copy`.
+- Describe the change in chat. This session launches `@planner`, then the owner (`@app-engineer`, `@security`, `@design`, `@qa`, or `@copy`). You do not have to @mention them.
 - Skills apply from their descriptions. To force one, mention `@browser-qa` or the skill name.
 - Prefer the built-in browser for QA. Playwright is backup.
 
@@ -43,21 +35,21 @@ Files: `.cursor/agents/*.md`, `.cursor/skills/*/SKILL.md`, `.cursor/rules/cursor
 
 Files: `.claude/agents/*.md`, `CLAUDE.md`
 
-- Use the matching subagent (`planner`, `qa`, …) instead of one generic thread.
+- This session launches the matching subagent (`planner`, `qa`, …). Do not play every role in one voice.
 - Mention `browser-qa` for any screen review. If Claude has no browser, use the Playwright commands in that skill.
 
 ### Codex
 
 Files: `.codex/agents/*.toml`, `AGENTS.md`
 
-- Spawn the named custom agent from `.codex/agents/`.
-- Paste the QA prompt below when reviewing UI. Use Playwright if Codex cannot see the page.
+- This session launches the named custom agent from `.codex/agents/`.
+- Use the QA spawn payload below when reviewing UI. Use Playwright if Codex cannot see the page.
 
 ### GitHub Copilot
 
 Files: `.github/copilot-instructions.md`
 
-Copilot has no `@agent` picker. The generated file already includes one USER_GUIDE paste per specialist. Use those, or the New feature list below. To prove a screen:
+Copilot has no isolated specialist spawn. After you say the change, run the New feature sequence in this thread. Start each step with “now Planner” / “now App engineer” / “now QA” and the matching prompt. Do not stop after printing a prompt. To prove a screen:
 
 ```text
 Act as the QA agent. Use the browser-qa skill. Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.
@@ -67,7 +59,7 @@ Act as the QA agent. Use the browser-qa skill. Do not review code alone. Open th
 
 Files: `.antigravity/agent-kit/commands/*.toml`, `.antigravity/runtime-skills/*/SKILL.md`
 
-- `/plan` — Planner
+- `/plan` — Planner, then continue in-thread with “now App engineer” (Antigravity cannot spawn isolated agents)
 - `/browser-qa` — screenshot QA loop
 - `/security`, `/frontend`, `/copy`, `/test`, `/ship` — matching specialists
 
@@ -83,7 +75,7 @@ Files: `.antigravity/agent-kit/commands/*.toml`, `.antigravity/runtime-skills/*/
 | Is this done? | QA |
 | Landing / CTA words | Copy |
 
-Do not ask one chat to be all six. Planner names the next specialist. It does not run the other agents.
+Do not ask one chat to be all six. Planner names the next specialist. The session launches them.
 
 ## Which skill do I use?
 
@@ -108,19 +100,19 @@ QA of a screen always uses `browser-qa`, not `testing-qa` alone. User-facing scr
 
 ### New feature
 
-Paste in this order. Skip Security, Design, or Copy when that specialist is not needed. Planner still does not run the other agents.
+Launch in this order. Skip Security, Design, or Copy when that specialist is not needed. The session launches each specialist; you do not copy these blocks.
 
-1. **Planner** — paste: `Plan this change. Name the owning agent, extra reviewers, and which screenshots QA must capture. Do not write code.`
-2. **App engineer** — paste: `Implement the plan. Smoke the changed route in the browser before you hand off.`
-3. **Security** if data/auth/secrets changed — paste:
+1. **Planner** — spawn payload: `Plan this change. Name the owning agent, extra reviewers, and which screenshots QA must capture. Do not write code.`
+2. **App engineer** — spawn payload: `Implement the plan. Smoke the changed route in the browser before you hand off.`
+3. **Security** if data/auth/secrets changed — spawn payload:
 
 ```text
 Act as the security agent. Review auth, RLS, IDOR, and secrets. Exercise login or denied states in the browser when they are user-visible.
 ```
 
-4. **Design** if the UI changed — paste: `Act as design. Name the mode (setup, build, review, or detect). Review the running UI from screenshots first. Desktop and mobile. Reject generic AI-looking layout.` If `DESIGN.md` is missing, run setup first.
-5. **Copy** if public words changed — paste: `Act as the copy agent. Review the rendered words in screenshots, not just strings in source. Run product-copy first, then deslop last. Always.`
-6. **QA** — paste: `Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.` For screens, also run `accessibility-wcag`.
+4. **Design** if the UI changed — spawn payload: `Act as design. Name the mode (setup, build, review, or detect). Review the running UI from screenshots first. Desktop and mobile. Reject generic AI-looking layout.` If `DESIGN.md` is missing, run setup first.
+5. **Copy** if public words changed — spawn payload: `Act as the copy agent. Review the rendered words in screenshots, not just strings in source. Run product-copy first, then deslop last. Always.`
+6. **QA** — spawn payload: `Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.` For screens, also run `accessibility-wcag`.
 
 Done when QA attaches `qa-evidence/<date>-<slug>/desktop.png` and `mobile.png` plus a verdict, and the changed flow passed a keyboard-only check.
 
@@ -130,7 +122,7 @@ Planner → App engineer → Security → QA. QA must open login/logout/denied i
 
 ### New repo design setup
 
-After `init`, before the first product CSS, paste to Design:
+After `init`, before the first product CSS, the session launches Design with:
 
 ```text
 Act as design. This is a new repo. Scan what is already here, then ask me what we need to set up: who it is for, what they must get done, and what you should produce. Recommend from my answers. Write the style guide and principles with me before any CSS.
@@ -144,7 +136,7 @@ Design + `frontend-design` + `accessibility-wcag` + `browser-qa`. Name setup, bu
 
 ### Accessibility pass
 
-On any user-facing screen, paste to Design or QA:
+On any user-facing screen, launch Design or QA with:
 
 ```text
 Run accessibility-wcag. Open the changed flow. Keyboard-only pass. Do not accept contrast from the screenshot alone.
@@ -152,7 +144,7 @@ Run accessibility-wcag. Open the changed flow. Keyboard-only pass. Do not accept
 
 ### Copy pass
 
-Copy reviews **rendered** screenshots, not just strings in TSX. Run `product-copy`, then **`deslop` last**. Do not hand off after the first draft. Paste:
+Copy reviews **rendered** screenshots, not just strings in TSX. Run `product-copy`, then **`deslop` last**. Do not hand off after the first draft. Spawn payload:
 
 ```text
 Act as the copy agent. Review the rendered words in screenshots, not just strings in source. Run product-copy first, then deslop last. Always.
@@ -160,7 +152,7 @@ Act as the copy agent. Review the rendered words in screenshots, not just string
 
 ### Release / ship
 
-Before you promote or deploy, paste to QA:
+Before you promote or deploy, launch QA with:
 
 ```text
 Run ship. Go or no-go. Name env, migration order, rollback, commands run. User-visible needs browser-qa screenshot paths. Reject LGTM, ship it.

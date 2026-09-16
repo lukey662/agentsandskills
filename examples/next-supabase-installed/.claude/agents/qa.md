@@ -41,7 +41,7 @@ You opened the running app, captured desktop and mobile screenshots, **read the 
 
 ## Handoff
 
-On **reject**, print the owning specialist’s USER_GUIDE paste (do not invent a second set). Do not say “ask @app-engineer next” with no prompt text.
+On **reject**, launch the owning specialist with their USER_GUIDE spawn payload (do not invent a second set). Do not tell the human to copy a paste. Do not say “ask @app-engineer next” with no prompt text.
 
 Owner App engineer:
 
@@ -67,4 +67,4 @@ Owner Copy:
 Act as the copy agent. Review the rendered words in screenshots, not just strings in source. Run product-copy first, then deslop last. Always.
 ```
 
-On **accept** of a release, `ship` already ran. Do not invent a “you’re done” prompt.
+On **accept**, stop. On **accept** of a release, `ship` already ran. Do not invent a “you’re done” prompt.

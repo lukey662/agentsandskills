@@ -45,7 +45,7 @@ async function captureScreenshots() {
       if (!bodyText.includes("Do not review code alone") || !bodyText.includes(failClosed)) {
         throw new Error("Rendered USER_GUIDE.html dropped the screenshot fail-closed rule.");
       }
-      if (!bodyText.includes("Ask one specialist")) {
+      if (!bodyText.includes("Say the change")) {
         throw new Error("Rendered USER_GUIDE.html dropped the assignment-desk headline.");
       }
       if (!bodyText.includes("Run accessibility-wcag") || !bodyText.includes("Do not accept contrast from the screenshot alone")) {
@@ -54,7 +54,7 @@ async function captureScreenshots() {
       if (!bodyText.includes("Run ship") || !bodyText.includes("Reject LGTM, ship it")) {
         throw new Error("Rendered USER_GUIDE.html dropped the ship go/no-go prompt.");
       }
-      if (!bodyText.includes("Copy if public words changed") || !bodyText.includes("Paste in this order")) {
+      if (!bodyText.includes("Copy if public words changed") || !bodyText.includes("Launch in this order")) {
         throw new Error("Rendered USER_GUIDE.html dropped the New feature Copy → QA relay.");
       }
       await page.screenshot({ path: join(outputDir, `${shot.name}.png`), fullPage: true });
@@ -94,7 +94,7 @@ try {
   if (!html.includes("Run ship") || !html.includes("Reject LGTM, ship it")) {
     throw new Error("Installed USER_GUIDE.html dropped the ship go/no-go prompt.");
   }
-  if (!html.includes("Copy if public words changed") || !html.includes("Paste in this order. Skip Security, Design, or Copy")) {
+  if (!html.includes("Copy if public words changed") || !html.includes("Launch in this order. Skip Security, Design, or Copy")) {
     throw new Error("Installed USER_GUIDE.html dropped the New feature Copy → QA relay.");
   }
 
@@ -109,7 +109,7 @@ try {
       "viewport: desktop 1280 and mobile 390",
       "auth: none",
       "verdict: accept-with-nits-pending-visual-read",
-      "what the screenshots show: field guide with init plus Planner paste in the first viewport.",
+      "what the screenshots show: field guide with init plus say the change in the first viewport.",
       "Do not review code alone."
     ].join("\n") + "\n"
   );

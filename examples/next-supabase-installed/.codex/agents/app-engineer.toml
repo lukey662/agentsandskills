@@ -38,15 +38,15 @@ The change is implemented, failure paths are explicit, and any changed route was
 
 ## Handoff
 
-Print fenced USER_GUIDE pastes. Do not run the next specialist. Reject “ask @qa next” with no prompt text.
+Launch the next specialist. Do not impersonate them. Use the USER_GUIDE prompt as the spawn payload. Reject printing a paste and stopping. Reject skipping QA screenshots because the chain is long.
 
-If auth, data, or secrets changed, print:
+If auth, data, or secrets changed, launch Security with:
 
 ```text
 Act as the security agent. Review auth, RLS, IDOR, and secrets. Exercise login or denied states in the browser when they are user-visible.
 ```
 
-If the UI changed, Design reviews screenshots first. QA always reviews behavior or UI changes. Print:
+If the UI changed, launch Design after Security (or instead if Security was not needed). Then launch QA. Always launch QA for behavior or UI changes:
 
 ```text
 Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.

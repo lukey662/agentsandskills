@@ -32,6 +32,8 @@ describe("IDE activation", () => {
     expect(readFileSync(join(root, ".codex/agents/qa.toml"), "utf8")).toContain("Do not review");
     const copilot = readFileSync(join(root, ".github/copilot-instructions.md"), "utf8");
     expect(copilot).toContain("Do not review user-visible work from code alone");
+    expect(copilot).toContain("now Planner");
+    expect(copilot).toContain("now App engineer");
     expect(copilot).toContain("Plan this change. Name the owning agent, extra reviewers, and which screenshots QA must capture. Do not write code.");
     expect(copilot).toContain("Implement the plan. Smoke the changed route in the browser before you hand off.");
     expect(copilot).toContain("Act as the security agent. Review auth, RLS, IDOR, and secrets");
@@ -44,14 +46,14 @@ describe("IDE activation", () => {
     expect(readFileSync(join(root, ".antigravity/runtime-skills/testing-qa/SKILL.md"), "utf8")).toContain("Tests pass");
     expect(readFileSync(join(root, ".antigravity/agent-kit/commands/ship.toml"), "utf8")).toContain("LGTM, ship it");
     expect(readFileSync(join(root, ".antigravity/runtime-skills/ship/SKILL.md"), "utf8")).toContain("LGTM, ship it");
-    expect(readFileSync(join(root, ".antigravity/agent-kit/commands/plan.toml"), "utf8")).toContain("fenced USER_GUIDE paste");
-    expect(readFileSync(join(root, ".antigravity/agent-kit/commands/plan.toml"), "utf8")).toContain("Reject finishing without a paste");
-    expect(readFileSync(join(root, ".antigravity/agent-kit/commands/plan.toml"), "utf8")).toContain("ask @qa next");
+    expect(readFileSync(join(root, ".antigravity/agent-kit/commands/plan.toml"), "utf8")).toContain("launching the owner");
+    expect(readFileSync(join(root, ".antigravity/agent-kit/commands/plan.toml"), "utf8")).toContain("now App engineer");
+    expect(readFileSync(join(root, ".antigravity/agent-kit/commands/plan.toml"), "utf8")).toContain("printing a paste and stopping");
     expect(readFileSync(join(root, ".antigravity/agent-kit/commands/plan.toml"), "utf8")).not.toContain("QUALITY_GATES");
     const nativePlan = readFileSync(join(process.cwd(), "antigravity/commands/plan.toml"), "utf8");
     expect(nativePlan).toContain("skills/planning/SKILL.md");
-    expect(nativePlan).toContain("finishing without a fenced paste");
-    expect(nativePlan).toContain("ask @qa next");
+    expect(nativePlan).toContain("finishing without launching the owner");
+    expect(nativePlan).toContain("printing a paste and stopping");
     expect(nativePlan).not.toContain("QUALITY_GATES");
     expect(readFileSync(join(root, ".antigravity/agent-kit/commands/frontend.toml"), "utf8")).toContain("Name the mode (setup, build, review, or detect)");
     const nativePlugin = JSON.parse(readFileSync(join(process.cwd(), "antigravity/plugin.json"), "utf8")) as {
