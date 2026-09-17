@@ -49,3 +49,7 @@ updates:
       github-codeql-action:
         patterns:
           - "github/codeql-action*"
+    ignore:
+      - dependency-name: changesets/action
+        versions:
+          - ">=2"
