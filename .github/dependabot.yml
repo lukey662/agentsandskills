@@ -18,6 +18,24 @@ updates:
       - dependency-name: commander
         versions:
           - ">=15"
+      - dependency-name: typescript
+        versions:
+          - ">=7"
+      - dependency-name: vitest
+        versions:
+          - ">=5"
+      - dependency-name: "@vitest/coverage-v8"
+        versions:
+          - ">=5"
+      - dependency-name: eslint
+        versions:
+          - ">=10"
+      - dependency-name: "@eslint/js"
+        versions:
+          - ">=10"
+      - dependency-name: "@changesets/cli"
+        versions:
+          - ">=3"
   - package-ecosystem: github-actions
     directory: /
     schedule:
@@ -27,3 +45,7 @@ updates:
     open-pull-requests-limit: 5
     labels:
       - dependencies
+    groups:
+      github-codeql-action:
+        patterns:
+          - "github/codeql-action*"
