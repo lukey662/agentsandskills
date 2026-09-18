@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.4.10
+
+- browser-qa names unexpected console errors and failed same-origin requests.
+- frontend-design detect matches audit-only asks and fails slogan-hero first viewports. Catalog-clean is not enough.
+- Release inspect retries npm view. Publish treats a previously staged version as already published.
+- nextjs-app-router cites official Next.js docs or marks the API UNVERIFIED.
+- nextjs-app-router requires one Action/Handler error shape, boundary validation, additive fields, and idempotency or unsafe to retry.
+- Planner asks one question when who / why now / success / constraint is missing, then waits for an explicit yes.
+- ship names a kill switch (previous production deployment, flag, or revert) and production post-deploy smoke.
+- Optional web-performance playbook: measure first. Not on default init.
+
 ## 0.4.9
 
 - After `init`, say the change once. The session launches Planner, then the named owner, then extra reviewers, then QA. Copy-paste between chats is retired. Planner still does not implement. Copilot and Antigravity continue in-thread with “now App engineer.”
