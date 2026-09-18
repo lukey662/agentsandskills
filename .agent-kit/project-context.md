@@ -10,7 +10,7 @@ Generated from `.agent-kit/project-context.json`.
 - Quality target: best-practice-candidate
 - Last reviewed: 2026-09-18T01:00:00.000Z
 
-A public npm pack (`@appsforgood/next-supabase-kit`, current latest 0.4.9) that installs six agents, twelve default skills, and a user guide into Next.js + Supabase projects. Default init writes AGENTS.md, USER_GUIDE.md, USER_GUIDE.html, and native IDE files. After init, the current chat launches Planner then the named owner. Optional session, Studio, research, and orchestrate stay off default init.
+A public npm pack (`@appsforgood/next-supabase-kit`, current latest 0.4.10) that installs six agents, twelve default skills, and a user guide into Next.js + Supabase projects. Default init writes AGENTS.md, USER_GUIDE.md, USER_GUIDE.html, and native IDE files. After init, the current chat launches Planner then the named owner. Optional session, Studio, research, and orchestrate stay off default init.
 
 ## Primary Workflows
 

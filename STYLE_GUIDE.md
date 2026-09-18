@@ -35,7 +35,7 @@
 
 - Planning requests start with Planner. The session launches the named owner with the USER_GUIDE spawn payload. Planner does not implement. One chat does not impersonate all six.
 - Core changes route through Lead Architect before implementation.
-- Public-facing and conversion-facing copy changes route through Marketing Copy Lead before implementation.
+- Public-facing and conversion-facing copy changes route through the Copy agent (`product-copy` then `deslop`) before implementation. Confirm Reader / Job / One action / Proof. Do not import a marketing-skill zoo.
 - Agent-to-skill mappings live in `.agent-kit/agent-roster.json` and must stay machine-readable.
 - Handoffs should name decision, risk, next owner, and required verification evidence.
 - Audit failures for missing council routing are treated as setup failures, not optional style drift.

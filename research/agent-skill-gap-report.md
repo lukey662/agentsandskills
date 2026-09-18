@@ -130,6 +130,7 @@ Skills **kept despite being uncommon** in generic zoos:
 ### 2026-09-18 follow-up
 
 - Wave 5 playbook tighten: `frontend-design` detect fail-closed, `planning` one-question interview, `nextjs-app-router` Action/Handler contracts + official docs or UNVERIFIED, `browser-qa` console/same-origin, `ship` kill switch. Optional `web-performance` off default `init`. Skip-intake parked for external dogfood.
+- Copy scan: [coreyhaines31/marketingskills](https://github.com/coreyhaines31/marketingskills). Folded context-first + one action + proof-or-assume into `product-copy` / `deslop`. Did **not** import the 50-skill pack, Seven Sweeps, or `.agents/product-marketing.md`. Notes: `research/summaries/copywriting-skill-2026-09-18.md`.
 
 ### 2026-09-12 follow-up
 

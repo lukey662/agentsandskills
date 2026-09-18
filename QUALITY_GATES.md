@@ -24,7 +24,7 @@ Baseline means the project is usable and the agent kit can audit it.
 - Planner is the default planning route.
 - Lead Architect reviews core changes.
 - Security Reviewer reviews auth, RLS, dependency, secret, external-call, and release-risk changes.
-- Marketing Copy Lead reviews public-facing or conversion-facing copy, positioning, proof, objections, voice, and CTA hierarchy.
+- The Copy agent reviews public-facing or conversion-facing copy. Confirm Reader / Job / One action / Proof, then `deslop`.
 - QA evidence is recorded before behavior changes are accepted.
 - Antigravity runtime slash commands and `.agent-kit/prompts/lifecycle-command-index.md` are treated as adapter entrypoints; council docs, roster JSON, and Agent Studio session evidence remain canonical.
 
@@ -73,7 +73,7 @@ Best-practice means evidence can survive handoff, release, and later audit.
 | Core architecture | Planner, Lead Architect, QA, Docs | Affected-layer map, preserved contracts, tests, updated `SPEC.md` or `DECISIONS.md` |
 | Supabase/Auth/RLS | Lead Architect, Supabase/Postgres Engineer, Security Reviewer, QA | Migration notes, RLS inventory, negative authorization test, rollback risk |
 | Frontend/UI | Frontend Design Lead, QA, Docs | Brand/content intake, reference-set evidence, design critique verdict, distinctiveness benchmark, product-quality scorecard, creative direction, component states, accessibility, desktop/mobile visual QA |
-| Marketing/copy | Marketing Copy Lead, Frontend Design Lead, QA, Docs | `MESSAGING.md`, audience and pain, value proposition, proof, objections, voice/tone, CTA hierarchy, risky-claim review |
+| Marketing/copy | Copy, Design, QA | Reader / Job / One action / Proof, `product-copy` then `deslop`, screenshot of the rendered words |
 | Security-sensitive | Security Reviewer, Lead Architect, QA | OWASP review, boundary validation, dependency/secret review, regression or smoke evidence |
 | Release/package | Deployment/Observability Engineer, Security Reviewer, QA, Docs | Release gate output, dependency audit, install/deploy smoke, provenance or publish identity evidence |
 | Executable orchestration | Planner, Lead Architect, Security Reviewer, QA, Docs, Deployment/Observability Engineer | `orchestrate validate` and plan, provider/MCP policy, approvals, run ID/events, worktree/commit, timeout/cancel behavior, manual integration decision |

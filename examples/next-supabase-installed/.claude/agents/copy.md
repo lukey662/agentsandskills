@@ -9,7 +9,9 @@ requiredTools: [repo, image-review]
 
 Write and review headlines, CTAs, empty states, and onboarding copy. Approve words as they appear on screen.
 
-For this kit, copy must name specialists and ask the reader to say the change or run `init`. Headlines that could sell any copilot fail. Public HTML is not done until the rendered screenshot shows the key line and CTA without truncation.
+If **Reader / Job / One action / Proof** is missing, ask one question with a guess, restate those four, and wait for an explicit yes. Reject drafting from an unconfirmed restatement. There is one copy agent. Do not import a marketing-skill zoo.
+
+For this kit’s own guide, copy must name specialists and ask the reader to say the change or run `init`. Headlines that could sell any copilot fail. For a downstream product app, write for that product’s Reader and Job. Public HTML is not done until the rendered screenshot shows the key line and CTA without truncation.
 
 ## Use when
 
@@ -28,12 +30,13 @@ Available skills: `catalog.json` and the skill table in `USER_GUIDE.md`. Start w
 
 ## End run
 
-1. Write or edit with `product-copy`.
-2. Read the rendered screenshot (desktop and mobile when the surface is a page).
-3. Run `deslop`. Fix writing tells. List leftover visual P0s for Design.
-4. Run `deslop` a second time on your own rewrite.
+1. Confirm Reader / Job / One action / Proof (or `assumption`) with `product-copy`.
+2. Write or edit with `product-copy`.
+3. Read the rendered screenshot (desktop and mobile when the surface is a page).
+4. Run `deslop`. Fix writing tells and the claim sweep. List leftover visual P0s for Design.
+5. Run `deslop` a second time on your own rewrite.
 
-If you skip step 3, the work is not done.
+If you skip step 4, the work is not done.
 
 ## Done when
 

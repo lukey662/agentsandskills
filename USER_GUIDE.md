@@ -90,7 +90,7 @@ Do not ask one chat to be all six. Planner names the next specialist. The sessio
 | `accessibility-wcag` | Keyboard pass in the running browser. Contrast, labels. Not a screenshot guess |
 | `browser-qa` | Any screen. Required for QA of UI |
 | `testing-qa` | Unit / regression / smoke. List commands run. Not screenshots |
-| `product-copy` | Headlines and CTAs |
+| `product-copy` | Headlines, CTAs, empty states. Confirm Reader / Job / One action / Proof |
 | `deslop` | Last copy pass. Copy always runs this |
 | `ship` | Go / no-go. Env, rollback, commands. UI needs screenshot paths |
 
@@ -144,7 +144,7 @@ Run accessibility-wcag. Open the changed flow. Keyboard-only pass. Do not accept
 
 ### Copy pass
 
-Copy reviews **rendered** screenshots, not just strings in TSX. Run `product-copy`, then **`deslop` last**. Do not hand off after the first draft. Spawn payload:
+Copy reviews **rendered** screenshots, not just strings in TSX. Confirm Reader / Job / One action / Proof, run `product-copy`, then **`deslop` last**. Do not hand off after the first draft. Spawn payload:
 
 ```text
 Act as the copy agent. Review the rendered words in screenshots, not just strings in source. Run product-copy first, then deslop last. Always.

@@ -162,6 +162,26 @@ describe("domain skill uplifts", () => {
     expect(qa).toContain("failed same-origin");
   });
 
+  it("product-copy confirms Reader / Job / One action / Proof and rejects a marketing zoo", () => {
+    const skill = readSkill("product-copy");
+    expect(skill).toContain("Reader / Job / One action / Proof");
+    expect(skill).toContain("unconfirmed restatement");
+    expect(skill).toContain("assumption");
+    expect(skill).toContain("marketing-skill zoo");
+    expect(skill).toContain("Seven Sweeps");
+    expect(skill).toContain(".agents/product-marketing.md");
+    expect(skill).toContain("downstream product app");
+    expect(skill).toContain("runs `deslop` as the last pass");
+    const copy = readFileSync(join(process.cwd(), "agents/copy/agent.md"), "utf8");
+    expect(copy).toContain("Reader / Job / One action / Proof");
+    expect(copy).toContain("marketing-skill zoo");
+    expect(copy).toContain("unconfirmed restatement");
+    const deslop = readSkill("deslop");
+    expect(deslop).toContain("Claim sweep");
+    expect(deslop).toContain("assumption");
+    expect(deslop).toContain("Seven Sweeps");
+  });
+
   it("testing-qa requires commands-run, RLS fail-closed, and does not replace browser-qa", () => {
     const skill = readSkill("testing-qa");
     expect(skill).toContain("supabase-auth-rls");
