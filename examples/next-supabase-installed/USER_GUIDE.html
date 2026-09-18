@@ -699,7 +699,7 @@ npx agent-kit update</pre>
         </div>
         <p>
           Optional agents: <code>lead-architect</code>, <code>docs</code>, <code>deploy</code>, <code>research</code>. Optional skills: <code>ui-polish</code>,
-          <code>docs</code>, <code>upgrade</code>, <code>debug</code>. Do not add them unless that specialist has a repeating job.
+          <code>docs</code>, <code>upgrade</code>, <code>debug</code>, <code>web-performance</code>. Do not add them unless that specialist has a repeating job.
         </p>
         <p>
           Add <code>debug</code> when the same failure keeps coming back. Reproduce → localize → reduce → fix → guard. User-visible bugs need before/after
@@ -716,6 +716,10 @@ npx agent-kit update</pre>
         <p>
           Add <code>ui-polish</code> after the main <code>frontend-design</code> pass, not instead of it. If <code>DESIGN.md</code> is missing, Design
           <code>setup</code> first. Still desktop + mobile. Reject using polish as a second design system.
+        </p>
+        <p>
+          Add <code>web-performance</code> when the ask is LCP / INP / CLS / “this page is slow.” Measure → identify → fix → re-measure. Map onto
+          <code>next/image</code>, RSC payload, and PostgREST N+1. Reject optimizing from a guess. Not on default <code>init</code>.
         </p>
         <p><code>update</code> refreshes pristine files. Local edits win or land in <code>.agent-kit/conflicts/</code>. It never deletes your old docs.</p>
         <table>

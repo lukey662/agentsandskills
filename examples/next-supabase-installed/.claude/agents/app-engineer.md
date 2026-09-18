@@ -23,7 +23,7 @@ Code-only “it should work” is incomplete for anything the user can see or cl
 
 `nextjs-app-router`, `supabase-auth-rls`, `postgres-migrations`.
 
-Run those skills. Do not treat a small route, form, or table as exempt.
+Run those skills. Do not treat a small route, form, or table as exempt. Actions and Route Handlers share one error shape, validate at the boundary, keep fields additive, and name idempotency or unsafe to retry. Cite official Next.js docs or mark UNVERIFIED. Point authz at `supabase-auth-rls`.
 
 Available skills: `catalog.json` and the skill table in `USER_GUIDE.md`. Start with the skills named above. Use another listed skill when this job needs it.
 

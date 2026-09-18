@@ -26,6 +26,8 @@ Before publish:
 
 `npm run sbom:check` validates that the lockfile-derived CycloneDX SBOM can be generated, includes runtime dependencies, and has no unresolved required dependency links. Optional platform-specific dependency links may be skipped when npm records optional package edges that are not present for the current install target.
 
+Inspect retries `npm view` because npm malware-scan staging can 404 a version that already published. If `npm publish` returns “Cannot publish over previously staged version,” treat that version as already published and continue verification / GitHub release. Do not republish.
+
 After publish:
 
 - `npm view @appsforgood/next-supabase-kit@<version> version`

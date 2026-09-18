@@ -71,10 +71,22 @@ jobs:
           echo "runtime_name=${runtime_name}" >> "${GITHUB_OUTPUT}"
           echo "runtime_version=${runtime_version}" >> "${GITHUB_OUTPUT}"
 
+          registry_has_version() {
+            local spec="$1"
+            local attempt
+            for attempt in 1 2 3; do
+              if npm view "${spec}" version --json >/dev/null 2>&1; then
+                return 0
+              fi
+              sleep 8
+            done
+            return 1
+          }
+
           publish_needed=true
           runtime_publish_needed=true
-          npm view "${package_name}@${package_version}" version --json >/dev/null 2>&1 && publish_needed=false
-          npm view "${runtime_name}@${runtime_version}" version --json >/dev/null 2>&1 && runtime_publish_needed=false
+          registry_has_version "${package_name}@${package_version}" && publish_needed=false
+          registry_has_version "${runtime_name}@${runtime_version}" && runtime_publish_needed=false
           echo "publish_needed=${publish_needed}" >> "${GITHUB_OUTPUT}"
           echo "runtime_publish_needed=${runtime_publish_needed}" >> "${GITHUB_OUTPUT}"
           if [[ "${publish_needed}" == "true" || "${runtime_publish_needed}" == "true" ]]; then
@@ -194,7 +206,19 @@ jobs:
           npmrc="${RUNNER_TEMP}/agent-kit-publish.npmrc"
           printf 'registry=https://registry.npmjs.org/\nprovenance=true\naccess=public\n' > "${npmrc}"
           tarball="./${{ steps.pack.outputs.runtime_tarball }}"
-          env -u NODE_AUTH_TOKEN -u NPM_TOKEN npm publish "${tarball}" --userconfig "${npmrc}" --access public --provenance
+          set +e
+          out="$(env -u NODE_AUTH_TOKEN -u NPM_TOKEN npm publish "${tarball}" --userconfig "${npmrc}" --access public --provenance 2>&1)"
+          status=$?
+          set -e
+          printf '%s\n' "${out}"
+          if [[ "${status}" -eq 0 ]]; then
+            exit 0
+          fi
+          if printf '%s\n' "${out}" | grep -qiE 'Cannot publish over previously staged version|You cannot publish over the previously published versions'; then
+            echo "npm already has this runtime version staged or published; skip republish"
+            exit 0
+          fi
+          exit "${status}"
 
       - name: Publish through npm Trusted Publishing
         if: >-
@@ -206,7 +230,19 @@ jobs:
           npmrc="${RUNNER_TEMP}/agent-kit-publish.npmrc"
           printf 'registry=https://registry.npmjs.org/\nprovenance=true\naccess=public\n' > "${npmrc}"
           tarball="./${{ steps.pack.outputs.tarball }}"
-          env -u NODE_AUTH_TOKEN -u NPM_TOKEN npm publish "${tarball}" --userconfig "${npmrc}" --access public --provenance
+          set +e
+          out="$(env -u NODE_AUTH_TOKEN -u NPM_TOKEN npm publish "${tarball}" --userconfig "${npmrc}" --access public --provenance 2>&1)"
+          status=$?
+          set -e
+          printf '%s\n' "${out}"
+          if [[ "${status}" -eq 0 ]]; then
+            exit 0
+          fi
+          if printf '%s\n' "${out}" | grep -qiE 'Cannot publish over previously staged version|You cannot publish over the previously published versions'; then
+            echo "npm already has this version staged or published; skip republish"
+            exit 0
+          fi
+          exit "${status}"
 
       - name: Verify runtime package from the public registry
         if: github.event_name == 'push' || github.event.inputs.dry_run == 'false'

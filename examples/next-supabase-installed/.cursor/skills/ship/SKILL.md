@@ -33,6 +33,8 @@ Not a substitute for writing the feature. Run this **after** the owning speciali
 | Commands | `testing-qa` list with results. Smoke of the primary path (login or the workflow being released). |
 | UI | User-visible changes have `qa-evidence/<date>-<slug>/desktop.png` and `mobile.png`. |
 | Host | If this app is on Vercel (or similar), name preview vs production and how to restore the previous deployment. Do not require a Vercel CLI install from this kit. |
+| Kill switch | How to disable the change in minutes: previous production deployment, flag, or revert. Named. Do not write only “git revert” when a previous production deployment or a flag exists. |
+| Post-deploy | When the target is production, the primary path was smoked after deploy. |
 
 ## Evidence
 
@@ -47,6 +49,8 @@ migrations: 0012_widgets applied; rollback = reverse 0012 / expand-contract reve
 rollback:
   app: previous production deployment / git revert <sha>
   db: do not drop 0012 in this release if the app still reads it
+kill-switch: previous production deployment | flag <name> | revert <sha>
+post-deploy-smoke: production primary path smoked | preview only | named skip
 browser-qa: qa-evidence/2026-09-13-settings/desktop.png, mobile.png
 gaps: none | named
 ```
@@ -61,7 +65,10 @@ gaps: none | named
 - Treating `toBeVisible` or “tests pass” as the ship gate. Use `testing-qa` and, for UI, `browser-qa`.
 - Replacing `testing-qa`, `browser-qa`, `postgres-migrations`, `supabase-auth-rls`, or `owasp-security-review` with this skill.
 - Pasting secret **values** into the go/no-go note.
+- Writing only “git revert” when a previous production deployment or a feature flag exists.
+- Error-budget tables, canary matrices, or axe-as-ship-gate.
+- Requiring a Vercel CLI install from this kit.
 
 ## Done when
 
-Go or no-go is explicit. Commands run, env names, migration order, and rollback are named. User-visible work has `browser-qa` screenshot paths. Secrets were not written into the verdict.
+Go or no-go is explicit. Commands run, env names, migration order, rollback, and the kill switch (previous production deployment, flag, or revert) are named. When the target is production, the primary path was smoked after deploy. User-visible work has `browser-qa` screenshot paths. Secrets were not written into the verdict.

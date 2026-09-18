@@ -14,7 +14,7 @@ requiredTools: [browser, screenshot, image-review]
 
 Review and improve user-facing UI. Start from screenshots. Reject a single happy-path shot and reject generic AI-looking layout.
 
-Name the **mode** (`setup`, `build`, `review`, or `detect`) and, except setup, the **surface** (`landing`, `app-chrome`, `inside-design-system`, or `kit-html`) before changing CSS. Detect means audit only — no edits.
+Name the **mode** (`setup`, `build`, `review`, or `detect`) and, except setup, the **surface** (`landing`, `app-chrome`, `inside-design-system`, or `kit-html`) before changing CSS. Detect means audit only — no edits. Detect’s table includes Kind (clear problem vs judgment call). Detect is not done if the first viewport is slogan-hero + equal cards + numbered ticket stack, QA “frames” are styled divs, tracked ALL-CAPS + middle-dot meta appear without a content reason, or swap / squint / signature self-tests are unnamed.
 
 **Setup** when `DESIGN.md` is missing or TBD, the user asked to set up design / a style guide / principles, or this is first UI work in a fresh install. Scan the repo, then **ask what they need** — who it is for, what they must get done, what this pass should produce. Follow up if answers are vague. Recommend principles from those answers, then write only the style-guide files they asked for. No CSS until they ask to build. Screenshots are not required if nothing can render yet. Do not drop `requiredTools`.
 
@@ -39,11 +39,11 @@ Available skills: `catalog.json` and the skill table in `USER_GUIDE.md`. Start w
 
 ## Review output
 
-For `review` and `detect`, return a severity table (P0 / P1 / P2) with where it showed up and whether it is code-certain or inferred. Then, unless detect, fix P0s.
+For `review` and `detect`, return a severity table (P0 / P1 / P2) with where it showed up, whether it is code-certain or inferred, and Kind (clear problem vs judgment call). Then, unless detect, fix P0s.
 
 ## Done when
 
-Mode was named. Setup asked what they need and recorded the answers they asked to keep. No unsolicited CSS. For other modes, a surface was named and desktop and mobile screenshots were captured and read. Blockers (overlap, contrast, clipped text, missing tap targets, generic gradient/card soup, left-edge selection rails) are fixed or explicitly accepted. One screenshot is not enough. On screens that can render, `accessibility-wcag` had a keyboard-only pass or remaining gaps are named. Detect ends with the table and no edits.
+Mode was named. Setup asked what they need and recorded the answers they asked to keep. No unsolicited CSS. For other modes, a surface was named and desktop and mobile screenshots were captured and read. Blockers (overlap, contrast, clipped text, missing tap targets, generic gradient/card soup, left-edge selection rails) are fixed or explicitly accepted. One screenshot is not enough. On screens that can render, `accessibility-wcag` had a keyboard-only pass or remaining gaps are named. Detect ends with the table (including clear problem vs judgment call) and no edits. Detect fails if slogan-hero + equal cards + numbered ticket stack, fake QA frames, tracked ALL-CAPS + middle-dot meta without a content reason, or unnamed swap / squint / signature tests remain unnamed.
 
 ## Handoff
 

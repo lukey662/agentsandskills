@@ -43,6 +43,16 @@ describe("default skill YAML descriptions", () => {
     expect(new Set(descriptions).size).toBe(descriptions.length);
   });
 
+  it("frontend-design detect YAML matches audit-only asks", () => {
+    const markdown = readFileSync(skillSourcePath(process.cwd(), "frontend-design"), "utf8");
+    const description = (parseFrontmatter(markdown).description ?? "").toLowerCase();
+    expect(description).toContain("looks generic");
+    expect(description).toContain("de-slop");
+    expect(description).toContain("don't change the code");
+    expect(description).toContain("user_guide.html looks bad");
+    expect(description).toContain("kit-html");
+  });
+
   it("init copies trigger phrases onto Cursor skills", () => {
     const root = mkdtempSync(join(tmpdir(), "agent-kit-frontmatter-"));
     roots.push(root);

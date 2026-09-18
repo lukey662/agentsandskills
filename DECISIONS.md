@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-09-18 - Wave 5 Stricter Playbooks
+
+### Context
+
+0.4.9 shipped spawn-handoff. Detect would not have failed the old kit-html first viewport, YAML missed audit-only asks, Planner still invented routes from an unconfirmed restatement, Actions mixed error shapes, `browser-qa` ignored a red console, and `ship` wrote only “git revert.” External dogfood stays outside this repo.
+
+### Decision
+
+Keep six default agents and twelve default skills. Uplift existing playbooks: `frontend-design` detect (YAML + Kind + fail-closed first-viewport tells), `planning` one-question interview, `nextjs-app-router` Action/Handler contracts plus official-docs-or-UNVERIFIED, `browser-qa` console and failed same-origin, `ship` kill switch. Add optional `web-performance` off `init`. Park skip-intake and trigger fixtures until external dogfood names a skip. Release inspect retries `npm view`; publish treats “previously staged version” as already published. Do not restore Studio, paste-relay, or a 13th default skill.
+
+### Consequences
+
+Ship as 0.4.10. USER_GUIDE.html first viewport is unchanged. Catalog-clean is not enough for detect. “Sounds good” is not a Planner yes.
+
 ## 2026-09-16 - Default Spawn Handoff
 
 ### Context

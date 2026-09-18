@@ -125,7 +125,11 @@ Skills **kept despite being uncommon** in generic zoos:
 **Optional agents:** lead-architect, docs, deploy, research  
 
 **Skills:** planning, nextjs-app-router, supabase-auth-rls, postgres-migrations, owasp-security-review, frontend-design, accessibility-wcag, browser-qa, testing-qa, product-copy, deslop, ship  
-**Optional skills:** ui-polish, docs, upgrade, debug
+**Optional skills:** ui-polish, docs, upgrade, debug, web-performance
+
+### 2026-09-18 follow-up
+
+- Wave 5 playbook tighten: `frontend-design` detect fail-closed, `planning` one-question interview, `nextjs-app-router` Action/Handler contracts + official docs or UNVERIFIED, `browser-qa` console/same-origin, `ship` kill switch. Optional `web-performance` off default `init`. Skip-intake parked for external dogfood.
 
 ### 2026-09-12 follow-up
 
