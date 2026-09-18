@@ -6,6 +6,7 @@ Review the copy against `MESSAGING.md`, `DESIGN.md`, and the current implementat
 
 Report:
 
+- Missing Reader / Job / One action / Proof (Proof may be the word `assumption`).
 - Missing discovery answers: audience, pain, outcome, alternatives, differentiator, proof, objections, voice, and conversion goal.
 - Positioning statement and whether it is specific enough.
 - Unsupported claims, invented proof, vague SaaS language, or risky wording.

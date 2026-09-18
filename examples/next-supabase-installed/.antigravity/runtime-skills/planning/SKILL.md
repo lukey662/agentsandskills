@@ -19,7 +19,7 @@ Planning, roadmaps, “what should we do,” or any request that needs an owner.
    - Security: `owasp-security-review` + `supabase-auth-rls`
    - Design: `frontend-design` (name setup, build, review, or detect) and, for screens, `accessibility-wcag`
    - QA: `browser-qa` (screens), `testing-qa` (commands), `accessibility-wcag` for user-facing screens, and `ship` for a release go/no-go
-   - Copy: `product-copy` then `deslop` last
+   - Copy: `product-copy` (Reader / Job / One action / Proof) then `deslop` last
 5. If the work is user-visible and `DESIGN.md` is missing, TBD, or the user asked for a style guide / principles: owner is Design in `setup` first. Design must ask what they need before inventing tokens. Do not let App engineer invent tokens.
 6. Add extra reviewers: Security for auth/data/secrets, Design for UI, QA for behavior/UI, Copy for public words.
 7. If the change is user-visible, list the desktop and mobile screenshots QA must capture. Setup may skip screenshots when nothing can render yet.

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "projectName": "@appsforgood/next-supabase-kit",
-  "productSummary": "A public npm pack (@appsforgood/next-supabase-kit, current latest 0.4.9) that installs six agents, twelve default skills, and a user guide into Next.js + Supabase projects. Default init writes AGENTS.md, USER_GUIDE.md, USER_GUIDE.html, and native IDE files. After init, the current chat launches Planner then the named owner. Optional session, Studio, research, and orchestrate stay off default init.",
+  "productSummary": "A public npm pack (@appsforgood/next-supabase-kit, current latest 0.4.10) that installs six agents, twelve default skills, and a user guide into Next.js + Supabase projects. Default init writes AGENTS.md, USER_GUIDE.md, USER_GUIDE.html, and native IDE files. After init, the current chat launches Planner then the named owner. Optional session, Studio, research, and orchestrate stay off default init.",
   "productCategory": "tool",
   "primaryAudience": "Engineers and AI coding agents working on Next.js + Supabase projects who want structured agent roles, quality gates, and living documentation installed into their repos.",
   "primaryWorkflows": [

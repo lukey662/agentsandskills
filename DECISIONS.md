@@ -2,6 +2,20 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-09-18 - One Copy Agent, Inspired Not Copied
+
+### Context
+
+Default Copy was kit-guide voice plus `deslop`. Public GitHub’s strongest marketing pack ([coreyhaines31/marketingskills](https://github.com/coreyhaines31/marketingskills)) is a 50-skill CMO OS. Importing it would add a second copy agent and break the twelve-skill catalog.
+
+### Decision
+
+Keep one `copy` agent. Uplift `product-copy` with Reader / Job / One action / Proof (one-question interview, same shape as Planner). `deslop` adds a short claim sweep. Structure from `product-marketing` / `copywriting` / `copy-editing` only. Do not copy their catalog, Seven Sweeps, expert-panel scores, or `.agents/product-marketing.md`. Downstream product apps use that product’s Reader and Job. Kit `USER_GUIDE` still names specialists and `init`. Leftover `runtime-skills/*-copy` stubs point at the default pair.
+
+### Consequences
+
+Still six agents and twelve default skills. No 13th skill. No marketing-skill zoo on `init`. USER_GUIDE.html `#start` is unchanged.
+
 ## 2026-09-18 - Wave 5 Stricter Playbooks
 
 ### Context

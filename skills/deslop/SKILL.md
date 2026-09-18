@@ -9,6 +9,8 @@ Last pass. `product-copy` writes the words. This skill removes the machine accen
 
 Scan 2026-09-06: `conorbronsdon/avoid-ai-writing`, `funboy322/avoid-ai-design`, `educlopez/ui-craft`, `superdesigndev/superdesign-skill`. Patterns only. Do not copy their catalogs.
 
+Scan 2026-09-18: [coreyhaines31/marketingskills](https://github.com/coreyhaines31/marketingskills) `copy-editing` — keep a short prove / specific / so-what check. Do not copy Seven Sweeps, expert-panel scores, or their word lists.
+
 ## Use when
 
 Copy is about to say “done,” or anyone asked to de-slop, humanize, or “make this less AI.” Always run after `product-copy` on public or conversion copy.
@@ -36,6 +38,16 @@ Copy is about to say “done,” or anyone asked to de-slop, humanize, or “mak
 
 Second pass: re-read the rewrite. If the same tell remains, rewrite the paragraph, do not synonym-swap.
 
+## Claim sweep
+
+One table after the writing tells. Not a seven-pass edit OS.
+
+| Fail | Fix |
+| --- | --- |
+| Feature with no why | Say why the Reader cares, or cut. |
+| Vague (“save time”, “scale”) | Name the unit, or cut. |
+| Claim with no proof | Cite it, or mark `assumption`. |
+
 ## Visual P0s — fail if still on screen
 
 These are the 2026 flat AI/SaaS chrome cluster (same family as accent-border cards, glow rails, and card soup). One is a smell. Two or more is a reject. A pick-list row or status well with a left stroke is already a fail.
@@ -60,6 +72,13 @@ Copy does not restyle the page. It lists the P0s from the screenshot and sends t
 ## Must keep
 
 Facts, commands, file paths, the fail-closed screenshot sentence, and any claim that has proof. Deslop is subtraction, not a new brand voice.
+
+## Reject
+
+- Replacing `product-copy` with this skill.
+- Seven Sweeps theater or expert-panel scores.
+- Importing a copy-editing catalog or writing `.agents/product-marketing.md`.
+- Synonym-swapping a tell and calling it done.
 
 ## Done when
 

@@ -169,6 +169,7 @@ Waves 1–3 are done.
 ### Wave 5 — Later (after 10.1–10.11)
 
 - `[x]` Re-scan GitHub for `product-copy` / ship / a11y skill structure (structure only). Skip [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) — already scanned 2026-09-14 below. 2026-09-18: no new default skills. Known fold-ins below are the queue; do not import a 25-skill zoo.
+- `[x]` Copy playbook from [coreyhaines31/marketingskills](https://github.com/coreyhaines31/marketingskills) **structure only** (`product-marketing`, `copywriting`, `copy-editing`). One `copy` agent. `product-copy` confirms Reader / Job / One action / Proof. `deslop` claim sweep. Notes: `research/summaries/copywriting-skill-2026-09-18.md`. Do not copy their catalog.
 - `[ ]` Dogfood Wave 1–4 on one real Next.js + Supabase app **outside this repo** (kit-repo-only). Planner → owner → Design → QA. Record where the model still skipped a named skill. Not a kit PR until skips arrive.
 - `[ ]` Promote those skips into Reject lines or stronger descriptions. When a skip is an excuse (“I’ll add tests later”), prefer their Excuse → Reality table shape over another bullet. **Parked** until external dogfood findings exist. Do not invent fixtures from theory.
 - `[x]` Keep npm Trusted Publisher records current; run `release:check` on the 0.4.10 cut. Release inspect retries `npm view`; publish treats “previously staged version” 409 as already published.

@@ -32,7 +32,7 @@ describe("deslop last and frontend-design install", () => {
   it("Copy agent ends with deslop", () => {
     const copy = readFileSync(join(process.cwd(), "agents/copy/agent.md"), "utf8");
     expect(copy).toMatch(/`deslop` last/i);
-    expect(copy).toContain("If you skip step 3, the work is not done.");
+    expect(copy).toContain("If you skip step 4, the work is not done.");
     const productCopy = readFileSync(join(process.cwd(), "skills/product-copy/SKILL.md"), "utf8");
     expect(productCopy).toContain("runs `deslop` as the last pass");
   });
@@ -66,5 +66,11 @@ describe("deslop last and frontend-design install", () => {
     expect(deslop).toContain("Left accent bars");
     expect(deslop).toContain("pick-list row");
     expect(deslop).toContain("border-left");
+    expect(deslop).toContain("Claim sweep");
+    expect(deslop).toContain("Seven Sweeps");
+
+    const productCopy = readFileSync(join(root, ".cursor/skills/product-copy/SKILL.md"), "utf8");
+    expect(productCopy).toContain("Reader / Job / One action / Proof");
+    expect(productCopy).toContain("marketing-skill zoo");
   });
 });
