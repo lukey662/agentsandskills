@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.11
+
+- Copy stays one agent. product-copy confirms Reader / Job / One action / Proof instead of importing a marketing-skill catalog.
+
 ## 0.4.10
 
 - browser-qa names unexpected console errors and failed same-origin requests.
