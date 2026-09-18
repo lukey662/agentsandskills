@@ -9,6 +9,15 @@ This file is the public-safe summary of downstream adoption evidence. Detailed l
 - Public summaries use project archetypes instead of local paths or private project details.
 - A dogfood item only counts as promoted when it leads to an installed asset, audit check, test, release gate, or documented decision.
 
+## 2026-09-18 Pack Status
+
+Date: 2026-09-18
+CLI source: public npm `@appsforgood/next-supabase-kit@0.4.9` plus this branch’s Wave 5 playbooks (0.4.10 changeset).
+
+- Default `init` is agents, skills, and the user guide. After init, say the change once; the session launches specialists. Paste-relay is retired.
+- Product-app dogfood (Planner → owner → Design → QA) runs **outside this repository**. Kit-repo-only: do not add product apps here. Skip-intake PRs wait for those findings.
+- npm Trusted Publishing published 0.4.9 with provenance. GitHub release `v0.4.9` exists. Later Release runs must not republish a staged version.
+
 ## Current Read-Only Audit Snapshot
 
 Date: 2026-06-03
@@ -29,10 +38,9 @@ Mode: read-only audit; no downstream files were modified.
 
 ## What This Does Not Prove
 
-- These two projects are not yet best-practice candidates.
-- The public npm package has not yet been published and verified with `npx`.
-- Assistant adapters and upgrade lifecycle still need real activation/dogfood evidence after publication.
-- Reference-led design critique still needs a real UI change dogfood pass with screenshots or equivalent visual evidence.
+- These two 2026-06 projects are not yet best-practice candidates under the current 0.4 pack (they still reflect the older 17-doc audit).
+- External Next.js + Supabase spawn-handoff dogfood is not recorded here yet. Skip-intake stays parked until those skips arrive.
+- Historical snapshots below (0.1.x) stay for traceability. They do not describe the current default install.
 
 ## 2026-07-04 Publish @0.1.8 Snapshot
 

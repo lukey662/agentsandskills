@@ -128,4 +128,29 @@ describe("optional skill playbooks", () => {
     expect(installed).toContain("One viewport only");
     expect(installed).toContain("## Done when");
   });
+
+  it("web-performance measures first, rejects guesses, and stays off init", () => {
+    const skill = readOptionalSkill("web-performance");
+    expect(skill).toContain("## Use when");
+    expect(skill).toContain("## Reject");
+    expect(skill).toContain("## Done when");
+    expect(skill).toContain("LCP");
+    expect(skill).toContain("INP");
+    expect(skill).toContain("CLS");
+    expect(skill).toContain("next/image");
+    expect(skill).toContain("PostgREST");
+    expect(skill).toContain("agent-kit add skill web-performance");
+    expect(skill).toContain("not installed by `init`");
+    expect(skill).toContain("Optimizing from a guess");
+
+    const root = temp();
+    initProject({ cwd: root, activate: ["cursor"] });
+    expect(existsSync(join(root, ".cursor/skills/web-performance/SKILL.md"))).toBe(false);
+
+    const result = addSkill(root, "web-performance");
+    expect(result.action).toBe("created");
+    const installed = readFileSync(join(root, ".cursor/skills/web-performance/SKILL.md"), "utf8");
+    expect(installed).toContain("Optimizing from a guess");
+    expect(installed).toContain("## Done when");
+  });
 });

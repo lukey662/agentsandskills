@@ -7,7 +7,7 @@ This repo ships `@appsforgood/next-supabase-kit` and the optional `@appsforgood/
 - Local: development against `src/` with `npm run dev`; `npm run build` produces `dist/index.js`.
 - Local delivery gate: `npm run release:check` and `npm run smoke:audit-gate`; this evidence is sufficient for commit/push when hosted Actions is unavailable.
 - Optional CI: `.github/workflows/ci.yml` mirrors local verification when GitHub Actions entitlement is working. Billing or spending-limit startup failures are infrastructure failures, not code failures.
-- Release: `.github/workflows/release.yml` publishes runtime before root from the `npm-publish` GitHub environment using npm Trusted Publishing (OIDC), generates and attests a package-rooted SBOM for each tarball, and verifies both public packages before creating a GitHub release.
+- Release: `.github/workflows/release.yml` publishes runtime before root from the `npm-publish` GitHub environment using npm Trusted Publishing (OIDC), generates and attests a package-rooted SBOM for each tarball, and verifies both public packages before creating a GitHub release. Inspect retries `npm view` (malware-scan staging can 404). Publish treats “Cannot publish over previously staged version” as already published and still creates the GitHub release when needed.
 
 ## Environment Variables
 

@@ -51,6 +51,7 @@ describe("public package readiness", () => {
     expect(guide).toContain("Reject restoring the 17-doc OS");
     expect(guide).toContain("Reject `init --force` as the upgrade path");
     expect(guide).toContain("Reject using polish as a second design system");
+    expect(guide).toContain("Reject optimizing from a guess");
     expect(guide).toContain("The session launches that owner");
     expect(guide).toContain("Act as the security agent. Review auth, RLS, IDOR, and secrets");
     expect(guide).toContain("Act as the copy agent. Review the rendered words in screenshots");
@@ -71,6 +72,7 @@ describe("public package readiness", () => {
     expect(html).toMatch(/Reject restoring the\s+17-doc OS/);
     expect(html).toMatch(/Reject\s+<code>init --force<\/code>\s+as the upgrade path/);
     expect(html).toMatch(/Reject using polish as a second design system/);
+    expect(html).toContain("Reject optimizing from a guess");
     expect(html).toContain("The session launches that owner");
     expect(html).toContain("Act as the security agent. Review auth, RLS, IDOR, and secrets");
     expect(html).toContain("Act as the copy agent. Review the rendered words in screenshots");
@@ -107,6 +109,7 @@ describe("public package readiness", () => {
     expect(existsSync(join(root, "agents/qa/agent.md"))).toBe(true);
     expect(existsSync(join(root, "skills/browser-qa/SKILL.md"))).toBe(true);
     expect(readFileSync(join(root, "skills/browser-qa/SKILL.md"), "utf8")).toContain("Do not review code alone");
+    expect(readFileSync(join(root, ".github/workflows/release.yml"), "utf8")).toContain("previously staged version");
   });
 
   it("ROADMAP Phase 10 is the working queue", () => {

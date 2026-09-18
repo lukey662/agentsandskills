@@ -38,11 +38,12 @@ Available skills: `catalog.json` and the skill table in `USER_GUIDE.md`. Start w
 - Skipping mobile, or skipping auth/empty/error when those states exist.
 - “Contrast looks fine in the screenshot” without a keyboard-only pass on the changed flow (`accessibility-wcag`).
 - “Tests pass” with no command list (`testing-qa`).
-- “LGTM, ship it” without env names, rollback, commands, and `browser-qa` paths for UI (`ship`).
+- “LGTM, ship it” without env names, rollback, kill switch, commands, and `browser-qa` paths for UI (`ship`).
+- Accepting screenshots while unexpected console errors or failed same-origin requests go unnamed (`browser-qa`).
 
 ## Done when
 
-You opened the running app, captured desktop and mobile screenshots, **read the images**, ran applicable tests **and listed the commands**, and wrote accept / accept-with-nits / reject with image paths under `qa-evidence/`. For screens, `accessibility-wcag` ran: a keyboard-only pass on the changed flow, not a screenshot guess. A release also has a `ship` go or no-go.
+You opened the running app, captured desktop and mobile screenshots, **read the images**, named unexpected console errors and failed same-origin requests (or `none`), ran applicable tests **and listed the commands**, and wrote accept / accept-with-nits / reject with image paths under `qa-evidence/`. For screens, `accessibility-wcag` ran: a keyboard-only pass on the changed flow, not a screenshot guess. A release also has a `ship` go or no-go with a named kill switch.
 
 ## Handoff
 

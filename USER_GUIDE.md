@@ -199,7 +199,7 @@ npx agent-kit add skill debug
 ```
 
 Optional agents: `lead-architect`, `docs`, `deploy`, `research`.  
-Optional skills: `ui-polish`, `docs`, `upgrade`, `debug`.
+Optional skills: `ui-polish`, `docs`, `upgrade`, `debug`, `web-performance`.
 
 Do not add them unless you have a repeating job for that specialist.
 
@@ -210,6 +210,8 @@ Add `docs` when `USER_GUIDE`, `CHANGELOG`, or the living file this change moved 
 Add `upgrade` when bumping this pack or frameworks. Run `agent-kit update` on a branch. Read `UPGRADE.md`. Reject `init --force` as the upgrade path.
 
 Add `ui-polish` after the main `frontend-design` pass, not instead of it. If `DESIGN.md` is missing, Design `setup` first. Still desktop + mobile. Reject using polish as a second design system.
+
+Add `web-performance` when the ask is LCP / INP / CLS / “this page is slow.” Measure → identify → fix → re-measure. Map onto `next/image`, RSC payload, and PostgREST N+1. Reject optimizing from a guess. Not on default `init`.
 
 ## Updating
 

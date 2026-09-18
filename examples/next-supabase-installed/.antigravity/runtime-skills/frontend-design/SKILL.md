@@ -1,6 +1,6 @@
 ---
 name: frontend-design
-description: Use when the UI looks generic, or when setting up design on a new repo, or building, reviewing, or auditing UI. Name the mode (setup, build, review, or detect). Setup asks what the user needs, then recommends principles before CSS.
+description: Use when the UI looks generic, or to de-slop a UI, or when someone says don't change the code, USER_GUIDE.html looks bad, or kit-html. Also when setting up design on a new repo, or building, reviewing, or auditing UI. Name the mode (setup, build, review, or detect). Setup asks what the user needs, then recommends principles before CSS.
 ---
 
 # Frontend Design
@@ -22,7 +22,7 @@ Name the mode before CSS. Default is `setup` when `DESIGN.md` is missing or TBD,
 | `setup` | New repo or missing/TBD `DESIGN.md`. Scan, then ask what they need. Recommend from the answers. Record principles and style-guide rules only after that. No CSS unless they then ask to build. |
 | `build` | Write tokens and one layout idea, then CSS. Screenshot after. |
 | `review` | Screenshot first. Findings table, then fix P0s. |
-| `detect` | Audit only. No edits. Use when asked to scan, flag, or not change code. |
+| `detect` | Audit only. No edits. Use when asked to scan, flag, de-slop, or not change code — including “USER_GUIDE.html looks bad” and kit-html. |
 
 ## Surface
 
@@ -206,15 +206,21 @@ If mode is `setup`, follow **Setup** instead of this list.
 
 ## Review output
 
-For `review` and `detect`, use a table. Do not approve from a vibe.
+For `review` and `detect`, use a table. Do not approve from a vibe. Name **Kind**: **clear problem** (a stranger or this playbook’s fail-closed tells) vs **judgment call** (taste you would defend).
 
-| Severity | Finding | Where | Confidence |
-| --- | --- | --- | --- |
-| P0 | Layperson would call it AI-made, or it blocks use | screenshot or file | code-certain / inferred |
-| P1 | A designer would notice | screenshot or file | code-certain / inferred |
-| P2 | Craft gap | screenshot or file | code-certain / inferred |
+| Severity | Finding | Where | Confidence | Kind |
+| --- | --- | --- | --- | --- |
+| P0 | Layperson would call it AI-made, or it blocks use | screenshot or file | code-certain / inferred | clear problem / judgment call |
+| P1 | A designer would notice | screenshot or file | code-certain / inferred | clear problem / judgment call |
+| P2 | Craft gap | screenshot or file | code-certain / inferred | clear problem / judgment call |
 
 P0 list lives in `deslop`. A clean catalog pass is necessary but not enough: the result must still look chosen for this product.
+
+On `review` and `detect`, name these three self-tests (or detect is not done):
+
+- **Swap:** would another product’s first screen drop in unchanged?
+- **Squint:** does hierarchy still read when you blur the type?
+- **Signature:** would a stranger name this product from the first viewport?
 
 ## Reject
 
@@ -226,6 +232,11 @@ P0 list lives in `deslop`. A clean catalog pass is necessary but not enough: the
 - Pasting this kit’s charcoal desk onto a downstream product.
 - Installing a design MCP, canvas CLI, or slash-command pack to “do design.”
 - Detect-mode edits.
+- Detect that skips a slogan-hero + equal feature cards + numbered ticket stack in the first viewport.
+- QA “frames” that are styled divs pretending to be screenshots.
+- Tracked ALL-CAPS + middle-dot meta with no content reason.
+- Unnamed swap / squint / signature self-tests on `review` or `detect`.
+- Calling detect done because the catalog pass is clean.
 - A full rebuild inside an existing design system when a surgical pass would do.
 - Mesh gradients, noise overlays, and decorative atmosphere as the default “bold” move (older `frontend-design` forks). The brief can ask; the model must not invent it.
 - “We’ll make it distinctive later.” Use the product’s tokens now.
@@ -238,4 +249,6 @@ P0 list lives in `deslop`. A clean catalog pass is necessary but not enough: the
 
 **Setup:** architecture was reported, need questions were asked (and followed up if vague) or assumptions stated, recommendations match what they need, and the files this pass called for were written. No unsolicited CSS. Screenshots are not required if nothing can render.
 
-**Build / review / detect:** Mode and surface were named. Desktop and mobile images were read (or detect listed what could not be rendered). Token list is in the change or in `DESIGN.md`. No P0 slop from `deslop` remains unless Design names it as an accepted exception. Detect ends with the table and no file edits.
+**Build / review / detect:** Mode and surface were named. Desktop and mobile images were read (or detect listed what could not be rendered). Token list is in the change or in `DESIGN.md`. No P0 slop from `deslop` remains unless Design names it as an accepted exception. Review and detect named swap / squint / signature.
+
+**Detect fails** (not done) if any of: first viewport is slogan-hero + equal feature cards + numbered ticket stack; QA “frames” are styled divs pretending to be screenshots; tracked ALL-CAPS + middle-dot meta appear without a content reason; swap / squint / signature self-tests are unnamed. Catalog-clean is necessary, not sufficient. Detect ends with the table (including clear problem vs judgment call) and no file edits.

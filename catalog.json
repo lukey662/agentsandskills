@@ -16,6 +16,6 @@
     "deslop",
     "ship"
   ],
-  "optionalSkills": ["ui-polish", "docs", "upgrade", "debug"],
+  "optionalSkills": ["ui-polish", "docs", "upgrade", "debug", "web-performance"],
   "screenshotFailClosed": "A user-visible change is not done until someone opened the running UI, captured desktop and mobile screenshots, and reviewed those images."
 }

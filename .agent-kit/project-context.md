@@ -8,15 +8,15 @@ Generated from `.agent-kit/project-context.json`.
 - Category: tool
 - Audience: Engineers and AI coding agents working on Next.js + Supabase projects who want structured agent roles, quality gates, and living documentation installed into their repos.
 - Quality target: best-practice-candidate
-- Last reviewed: 2026-07-02T12:30:58.880Z
+- Last reviewed: 2026-09-18T01:00:00.000Z
 
-An npm package that installs an agent operating system into Next.js + Supabase projects. It ships the agent-kit CLI (init, audit, diff, update, add skill, doctor, onboard, context, session, correction, studio export, research) plus installable markdown templates, agent role definitions, skills, prompts, checklists, design briefs, stack profiles, assistant adapters, model-routing profiles, JSON Schemas, and a default council roster. It has no runtime LLM orchestration; all evidence is file- and CLI-based.
+A public npm pack (`@appsforgood/next-supabase-kit`, current latest 0.4.9) that installs six agents, twelve default skills, and a user guide into Next.js + Supabase projects. Default init writes AGENTS.md, USER_GUIDE.md, USER_GUIDE.html, and native IDE files. After init, the current chat launches Planner then the named owner. Optional session, Studio, research, and orchestrate stay off default init.
 
 ## Primary Workflows
 
-- Install the kit into a downstream project with agent-kit init and audit readiness with agent-kit audit --min-readiness
+- Install the kit into a downstream project with agent-kit init --activate all, then say the change so the session launches specialists
 - Upgrade an installed project with agent-kit diff and agent-kit update while preserving local docs through conflict files
-- Record multi-agent council evidence locally with agent-kit session, correction, and studio export commands
+- QA user-visible work with browser-qa desktop and mobile screenshots; ship with a named kill switch
 
 
 ## Architecture Signals
@@ -47,7 +47,7 @@ Data sensitivity:
 
 ## Messaging
 
-- Value proposition: Install a complete, auditable agent operating system (roles, skills, quality gates, docs, and model routing) into a Next.js + Supabase repo with one command, and keep it upgradeable without losing local customizations.
+- Value proposition: Install a complete, auditable agent operating system (roles, skills, quality gates, and model routing) into a Next.js + Supabase repo with one command, and keep it upgradeable without losing local customizations.
 
 Proof:
 
@@ -58,15 +58,15 @@ Proof:
 
 Objections:
 
-- Package not yet published to npm; npx quick-start commands are prospective until publish completes
-- Only the next-supabase stack profile ships today
-- Docs-and-checklist enforcement is advisory; no runtime LLM orchestration exists yet
+- Default init does not restore the 0.3 council OS, Studio, or orchestrate
+- Only the next-supabase stack is the default pack; other profiles stay optional
+- Playbooks are advisory to the model until skip-intake from external dogfood lands
 
 
 ## Open Questions
 
-- When will the @appsforgood npm scope and Trusted Publishing setup complete so the first publish can be verified?
-- Which second stack profile \(next-prisma-postgres or vite-supabase\) should prove the multi-stack abstraction?
+- Which skipped skills will external Next.js + Supabase dogfood promote into Excuse → Reality Reject lines?
+- When should Changesets CLI v3 and changesets/action v2 be adopted together?
 
 
 ## Evidence

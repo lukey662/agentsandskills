@@ -25,6 +25,13 @@ describe("domain skill uplifts", () => {
     expect(skill).toContain("Supabase");
     expect(skill).toContain("Clerk");
     expect(skill).toContain("open the running route");
+    expect(skill).toContain("one error shape");
+    expect(skill).toContain("Action or Route Handler boundary");
+    expect(skill).toContain("additive");
+    expect(skill).toContain("unsafe to retry");
+    expect(skill).toContain("UNVERIFIED");
+    expect(skill).toContain("official Next.js docs");
+    expect(skill).toContain("sync `cookies()`");
   });
 
   it("supabase-auth-rls keeps service role server-only and treats UI as not authorization", () => {
@@ -73,9 +80,21 @@ describe("domain skill uplifts", () => {
     expect(skill).toContain("STYLE_GUIDE.md");
     expect(skill).toContain("do not overwrite");
     expect(skill).toContain("Quizzing them on hex");
+    expect(skill).toContain("clear problem");
+    expect(skill).toContain("judgment call");
+    expect(skill).toContain("slogan-hero + equal feature cards + numbered ticket stack");
+    expect(skill).toContain("styled divs pretending to be screenshots");
+    expect(skill).toContain("tracked ALL-CAPS + middle-dot meta");
+    expect(skill).toContain("swap / squint / signature");
+    expect(skill).toContain("Catalog-clean is necessary, not sufficient");
+    expect(skill).toContain("don't change the code");
+    expect(skill).toContain("USER_GUIDE.html looks bad");
+    expect(skill).toContain("kit-html");
     const design = readFileSync(join(process.cwd(), "agents/design/agent.md"), "utf8");
     expect(design).toContain("`setup`, `build`, `review`, or `detect`");
     expect(design).toContain("Detect means audit only");
+    expect(design).toContain("clear problem vs judgment call");
+    expect(design).toContain("swap / squint / signature");
     expect(design).toContain("requiredTools: [browser, screenshot, image-review]");
     expect(design).toContain("Setup may skip capture");
   });
@@ -101,9 +120,13 @@ describe("domain skill uplifts", () => {
     );
     expect(skill).toContain("Finishing without launching the owner");
     expect(skill).toContain("Printing a paste and stopping");
+    expect(skill).toContain("unconfirmed restatement");
+    expect(skill).toContain("Outcome / User / Why now / Success / Constraint / Out of scope");
+    expect(skill).toContain("sounds good");
     expect(skill).toContain("launch the owner");
     const planner = readFileSync(join(process.cwd(), "agents/planner/agent.md"), "utf8");
     expect(planner).toContain("launch the owner");
+    expect(planner).toContain("unconfirmed restatement");
     expect(planner).not.toContain("You do not run the other agents.");
     expect(planner).toContain("USER_GUIDE spawn payload");
   });
@@ -125,6 +148,18 @@ describe("domain skill uplifts", () => {
     const design = readFileSync(join(process.cwd(), "agents/design/agent.md"), "utf8");
     expect(design).toContain("accessibility-wcag");
     expect(design).toContain("frontend-design` does not replace it");
+  });
+
+  it("browser-qa names console errors and failed same-origin requests", () => {
+    const skill = readSkill("browser-qa");
+    expect(skill).toContain("unexpected console errors");
+    expect(skill).toContain("failed same-origin requests");
+    expect(skill).toContain("Chrome DevTools MCP");
+    expect(skill).toContain("Lighthouse");
+    expect(skill).toContain("daily Chrome profile");
+    const qa = readFileSync(join(process.cwd(), "agents/qa/agent.md"), "utf8");
+    expect(qa).toContain("unexpected console errors");
+    expect(qa).toContain("failed same-origin");
   });
 
   it("testing-qa requires commands-run, RLS fail-closed, and does not replace browser-qa", () => {
@@ -160,6 +195,10 @@ describe("domain skill uplifts", () => {
     expect(skill).toContain("SUPABASE_SERVICE_ROLE_KEY");
     expect(skill).toContain("We’ll set env in the dashboard later");
     expect(skill).toContain("does not replace");
+    expect(skill).toContain("Kill switch");
+    expect(skill).toContain("previous production deployment");
+    expect(skill).toContain("git revert");
+    expect(skill).toContain("axe-as-ship-gate");
     const qa = readFileSync(join(process.cwd(), "agents/qa/agent.md"), "utf8");
     expect(qa).toContain("ship");
     expect(qa).toContain("LGTM, ship it");
@@ -210,6 +249,13 @@ describe("domain skill uplifts", () => {
     expect(ship).toContain("LGTM, ship it");
     expect(ship).toContain("rollback");
     expect(ship).toContain("browser-qa");
+    expect(ship).toContain("Kill switch");
     expect(qa).toContain("LGTM, ship it");
+    const frontend = readFileSync(join(root, ".cursor/skills/frontend-design/SKILL.md"), "utf8");
+    expect(frontend).toContain("don't change the code");
+    expect(frontend).toContain("judgment call");
+    const browser = readFileSync(join(root, ".cursor/skills/browser-qa/SKILL.md"), "utf8");
+    expect(browser).toContain("unexpected console errors");
+    expect(existsSync(join(root, ".cursor/skills/web-performance/SKILL.md"))).toBe(false);
   });
 });
