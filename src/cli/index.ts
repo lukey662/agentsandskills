@@ -97,7 +97,21 @@ program
       const shown = dryRun ? result.prunePlan.map((entry) => entry.path) : result.pruned;
       if (shown.length > 0) fileGroup(dryRun ? "would prune" : "pruned", shown);
     }
-    if (result.leftoverDocs.length > 0) {
+    if (result.summary.conflict > 0) {
+      const conflicts = result.files
+        .filter((file) => file.action === "conflict")
+        .map((file) => (file.conflictPath ? `${file.target} -> ${file.conflictPath}` : file.target));
+      fileGroup("conflicts", conflicts);
+      detail("Review proposals under .agent-kit/conflicts/, or re-run with --force to overwrite local customizations.");
+    }
+    if (!options.pruneLegacy && result.prunePlan.length > 0) {
+      const preview = result.prunePlan
+        .slice(0, 3)
+        .map((entry) => entry.path)
+        .join(", ");
+      const extra = result.prunePlan.length > 3 ? `, +${result.prunePlan.length - 3} more` : "";
+      detail(`Notice: ${result.prunePlan.length} legacy file(s) remain (${preview}${extra}). Run 'agent-kit update --prune-legacy' to remove them.`);
+    } else if (result.leftoverDocs.length > 0) {
       detail(`Left in place (not deleted): ${result.leftoverDocs.join(", ")}. Run update --prune-legacy to remove them.`);
     }
   });

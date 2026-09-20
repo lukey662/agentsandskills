@@ -4,6 +4,7 @@ import { isOptionalSkill, listKnownSkills, skillSourcePath } from "../catalog.js
 import { findPackageRoot } from "../utils/package-root.js";
 import { activatedHosts } from "./add-agent.js";
 import { emptyCollector } from "./copy-asset.js";
+import { readManifest } from "./install.js";
 import { copyOptionalSkill } from "./roster-adapters.js";
 
 export function listSkills(): string[] {
@@ -42,7 +43,8 @@ export function addSkill(cwd: string, skillName: string, options: { force?: bool
   }
 
   const collector = emptyCollector();
-  copyOptionalSkill(cwd, id, Boolean(options.force), collector, activatedHosts(cwd).includes("claude"));
+  const manifestHashes = readManifest(cwd)?.assetHashes;
+  copyOptionalSkill(cwd, id, Boolean(options.force), collector, activatedHosts(cwd).includes("claude"), manifestHashes);
   const action = collector.copied.includes(target)
     ? "created"
     : collector.unchanged.includes(target)

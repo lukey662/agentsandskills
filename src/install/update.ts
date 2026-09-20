@@ -9,7 +9,7 @@ import { initProject, readManifest } from "./install.js";
 import { activateIdeTargets } from "./ide-activate.js";
 import { listManagedAssets } from "./managed-assets.js";
 import { listLegacyLeftovers } from "./doctor.js";
-import { pruneLegacy, type PrunePlanEntry } from "./prune-legacy.js";
+import { planLegacyPrune, pruneLegacy, type PrunePlanEntry } from "./prune-legacy.js";
 import type { CopyCollector } from "./copy-asset.js";
 import type { IdeTarget } from "./ide-activate.js";
 
@@ -57,6 +57,9 @@ function activationToUpdateFiles(collector: CopyCollector): UpdateFileResult[] {
   for (const target of collector.copied) {
     files.push({ target, action: "created", reason: "Refreshed generated IDE or skill file." });
   }
+  for (const target of collector.updated) {
+    files.push({ target, action: "updated", reason: "Refreshed unmodified generated IDE or skill file." });
+  }
   for (const target of collector.unchanged) {
     files.push({ target, action: "unchanged", reason: "Generated file already matched the package asset." });
   }
@@ -87,6 +90,8 @@ export function updateProject(options: UpdateOptions): UpdateResult {
     const outcome = pruneLegacy(cwd, { dryRun });
     pruned = outcome.removed;
     prunePlan = outcome.planned;
+  } else {
+    prunePlan = planLegacyPrune(cwd);
   }
 
   const manifest = readManifest(cwd);
@@ -98,6 +103,7 @@ export function updateProject(options: UpdateOptions): UpdateResult {
     const initResult = initProject({ cwd, force });
     const files: UpdateFileResult[] = [
       ...initResult.copied.map((target): UpdateFileResult => ({ target, action: "created", reason: "Installed by init fallback." })),
+      ...initResult.updated.map((target): UpdateFileResult => ({ target, action: "updated", reason: "Refreshed by init fallback." })),
       ...initResult.unchanged.map((target): UpdateFileResult => ({ target, action: "unchanged", reason: "Already matched the package asset." })),
       ...initResult.overwritten.map((target): UpdateFileResult => ({ target, action: "overwritten", reason: "Overwritten by init --force fallback." })),
       ...initResult.conflicts.map((entry): UpdateFileResult => {
@@ -159,14 +165,19 @@ export function updateProject(options: UpdateOptions): UpdateResult {
   }
 
   if (!dryRun) {
-    const activation = activateIdeTargets({ cwd, targets: activated, force });
+    const activation = activateIdeTargets({
+      cwd,
+      targets: activated,
+      force,
+      ...(manifest.assetHashes !== undefined ? { installedHashes: manifest.assetHashes } : {})
+    });
     files.push(...activationToUpdateFiles(activation));
 
     const nextHashes = { ...manifest.assetHashes };
     for (const asset of assets) {
       if (existsSync(asset.sourcePath)) nextHashes[asset.target] = sha256(readFileSync(asset.sourcePath, "utf8"));
     }
-    for (const relative of [...activation.copied, ...activation.unchanged, ...activation.overwritten]) {
+    for (const relative of [...activation.copied, ...activation.updated, ...activation.unchanged, ...activation.overwritten]) {
       const path = join(cwd, relative);
       if (existsSync(path)) nextHashes[relative] = sha256(readFileSync(path, "utf8"));
     }

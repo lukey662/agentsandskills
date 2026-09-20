@@ -159,34 +159,37 @@ export function renderAgent(host: AgentHost, id: string): string {
   }
 }
 
-export function generateAgents(host: AgentHost, cwd: string, force: boolean, collector: CopyCollector): void {
+export function generateAgents(host: AgentHost, cwd: string, force: boolean, collector: CopyCollector, installedHashes?: Record<string, string>): void {
   const catalog = loadCatalog(findPackageRoot());
   for (const id of catalog.defaultAgents) {
-    writeGenerated(cwd, agentTargetPath(host, id), renderAgent(host, id), force, collector);
+    const target = agentTargetPath(host, id);
+    writeGenerated(cwd, target, renderAgent(host, id), force, collector, installedHashes?.[target]);
   }
 }
 
 /** `.agents/skills/` is read by Cursor, Codex, Copilot, and Antigravity. Written on every init. */
-export function generateSkills(cwd: string, force: boolean, collector: CopyCollector): void {
+export function generateSkills(cwd: string, force: boolean, collector: CopyCollector, installedHashes?: Record<string, string>): void {
   const packageRoot = findPackageRoot();
   const catalog = loadCatalog(packageRoot);
   for (const id of catalog.defaultSkills) {
+    const target = `.agents/skills/${id}/SKILL.md`;
     const content = readFileSync(skillSourcePath(packageRoot, id), "utf8");
-    writeGenerated(cwd, `.agents/skills/${id}/SKILL.md`, content, force, collector);
+    writeGenerated(cwd, target, content, force, collector, installedHashes?.[target]);
   }
 }
 
 /** Claude reads `.claude/skills/` only. Same bytes as `.agents/skills/`. */
-export function generateClaudeSkills(cwd: string, force: boolean, collector: CopyCollector): void {
+export function generateClaudeSkills(cwd: string, force: boolean, collector: CopyCollector, installedHashes?: Record<string, string>): void {
   const packageRoot = findPackageRoot();
   const catalog = loadCatalog(packageRoot);
   for (const id of catalog.defaultSkills) {
+    const target = `.claude/skills/${id}/SKILL.md`;
     const content = readFileSync(skillSourcePath(packageRoot, id), "utf8");
-    writeGenerated(cwd, `.claude/skills/${id}/SKILL.md`, content, force, collector);
+    writeGenerated(cwd, target, content, force, collector, installedHashes?.[target]);
   }
 }
 
-export function generateCopilotInstructions(cwd: string, force: boolean, collector: CopyCollector): void {
+export function generateCopilotInstructions(cwd: string, force: boolean, collector: CopyCollector, installedHashes?: Record<string, string>): void {
   const catalog = loadCatalog();
   const p = catalog.spawnPayloads;
   const fence = (label: string, text: string): string => `${label}:\n\n\`\`\`text\n${text}\n\`\`\``;
@@ -229,19 +232,39 @@ npx playwright screenshot --viewport-size=1280,720 "$URL" qa-evidence/<slug>/des
 npx playwright screenshot --viewport-size=390,844 "$URL" qa-evidence/<slug>/mobile.png
 \`\`\`
 `;
-  writeGenerated(cwd, ".github/copilot-instructions.md", content, force, collector);
+  const target = ".github/copilot-instructions.md";
+  writeGenerated(cwd, target, content, force, collector, installedHashes?.[target]);
 }
 
 /** Optional agents render to every activated host that exists in the project. */
-export function copyOptionalAgent(cwd: string, id: string, force: boolean, collector: CopyCollector, hosts: AgentHost[]): void {
+export function copyOptionalAgent(
+  cwd: string,
+  id: string,
+  force: boolean,
+  collector: CopyCollector,
+  hosts: AgentHost[],
+  installedHashes?: Record<string, string>
+): void {
   for (const host of hosts) {
-    writeGenerated(cwd, agentTargetPath(host, id), renderAgent(host, id), force, collector);
+    const target = agentTargetPath(host, id);
+    writeGenerated(cwd, target, renderAgent(host, id), force, collector, installedHashes?.[target]);
   }
 }
 
-export function copyOptionalSkill(cwd: string, id: string, force: boolean, collector: CopyCollector, includeClaude: boolean): void {
+export function copyOptionalSkill(
+  cwd: string,
+  id: string,
+  force: boolean,
+  collector: CopyCollector,
+  includeClaude: boolean,
+  installedHashes?: Record<string, string>
+): void {
   const packageRoot = findPackageRoot();
   const content = readFileSync(skillSourcePath(packageRoot, id), "utf8");
-  writeGenerated(cwd, `.agents/skills/${id}/SKILL.md`, content, force, collector);
-  if (includeClaude) writeGenerated(cwd, `.claude/skills/${id}/SKILL.md`, content, force, collector);
+  const agentsTarget = `.agents/skills/${id}/SKILL.md`;
+  writeGenerated(cwd, agentsTarget, content, force, collector, installedHashes?.[agentsTarget]);
+  if (includeClaude) {
+    const claudeTarget = `.claude/skills/${id}/SKILL.md`;
+    writeGenerated(cwd, claudeTarget, content, force, collector, installedHashes?.[claudeTarget]);
+  }
 }
