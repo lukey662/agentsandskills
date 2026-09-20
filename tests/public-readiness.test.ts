@@ -97,12 +97,25 @@ describe("public package readiness", () => {
     const installedAgents = readFileSync(join(root, "templates/next-supabase/AGENTS.md"), "utf8");
     expect(installedAgents).toContain("the session launches them");
     expect(installedAgents).not.toContain("it does not run the other agents");
-    const cursorRule = readFileSync(join(root, "assistant-adapters/cursor-agent-kit.mdc"), "utf8");
+    const cursorRule = readFileSync(join(root, "templates/next-supabase/.cursor/rules/cursor-agent-kit.mdc"), "utf8");
     expect(cursorRule).toContain("This session launches Planner");
     expect(cursorRule).not.toContain("Use `@planner` to pick an owner");
-    const distinct = readFileSync(join(root, "checklists/frontend-distinctiveness.md"), "utf8");
-    expect(distinct).toContain("left selection rail");
-    expect(distinct).toContain("thick left border");
+    // The 0.3 council tree is gone from the source repo.
+    for (const gone of [
+      "checklists",
+      "prompts",
+      "profiles",
+      "design-briefs",
+      "rosters",
+      "model-routing",
+      "schemas",
+      "antigravity",
+      "src/studio",
+      "src/research",
+      "packages"
+    ]) {
+      expect(existsSync(join(root, gone)), gone).toBe(false);
+    }
   });
 
   it("canonical QA files exist", () => {
@@ -112,13 +125,12 @@ describe("public package readiness", () => {
     expect(readFileSync(join(root, ".github/workflows/release.yml"), "utf8")).toContain("previously staged version");
   });
 
-  it("ROADMAP Phase 10 is the working queue", () => {
+  it("ROADMAP holds only the open queue", () => {
     const roadmap = readFileSync(join(root, "ROADMAP.md"), "utf8");
-    expect(roadmap).toContain("## Phase 10:");
-    expect(roadmap).toContain("#### 10.1 `accessibility-wcag` playbook");
-    expect(roadmap).toContain("Do not restore session, Studio, research, or `orchestrate` as the default install.");
     expect(roadmap).toContain("## Current Next Actions");
-    expect(roadmap.indexOf("## Phase 10:")).toBeLessThan(roadmap.indexOf("## Phase 1:"));
+    expect(roadmap).toContain("no Studio / audit / research / orchestrator on the default install");
+    expect(roadmap).not.toContain("## Phase 1:");
+    expect(roadmap.split("\n").length).toBeLessThan(60);
   });
 
   it("post-publish verify uses the 0.4 CLI, not audit or orchestrate", () => {

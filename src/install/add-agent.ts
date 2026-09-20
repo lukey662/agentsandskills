@@ -1,7 +1,9 @@
 import { listKnownAgents } from "../catalog.js";
 import { findPackageRoot } from "../utils/package-root.js";
 import { emptyCollector } from "./copy-asset.js";
-import { copyOptionalAgent } from "./roster-adapters.js";
+import { IDE_TARGETS, isIdeTarget } from "./ide-activate.js";
+import { readManifest } from "./install.js";
+import { agentTargetPath, copyOptionalAgent, type AgentHost } from "./roster-adapters.js";
 
 export function listAgents(): string[] {
   return listKnownAgents();
@@ -10,7 +12,14 @@ export function listAgents(): string[] {
 export interface AddAgentResult {
   action: "created" | "unchanged" | "conflict" | "overwritten";
   target: string;
+  targets: string[];
   dryRun: boolean;
+}
+
+/** Hosts the project activated, so an optional agent lands everywhere the defaults did. Falls back to Cursor. */
+export function activatedHosts(cwd: string): AgentHost[] {
+  const activated = (readManifest(cwd)?.activated ?? []).filter(isIdeTarget);
+  return activated.length > 0 ? activated : ["cursor"];
 }
 
 export function addAgent(cwd: string, agentName: string, options: { force?: boolean; dryRun?: boolean } = {}): AddAgentResult {
@@ -25,13 +34,15 @@ export function addAgent(cwd: string, agentName: string, options: { force?: bool
     throw new Error(`Unknown agent "${agentName}". Available agents: ${available.join(", ")}`);
   }
 
-  const target = `.cursor/agents/${id}.md`;
+  const hosts = activatedHosts(cwd).filter((host): host is AgentHost => (IDE_TARGETS as readonly string[]).includes(host));
+  const targets = hosts.map((host) => agentTargetPath(host, id));
+  const target = targets[0] ?? agentTargetPath("cursor", id);
   if (options.dryRun) {
-    return { action: "created", target, dryRun: true };
+    return { action: "created", target, targets, dryRun: true };
   }
 
   const collector = emptyCollector();
-  copyOptionalAgent(cwd, id, Boolean(options.force), collector);
+  copyOptionalAgent(cwd, id, Boolean(options.force), collector, hosts);
   const action = collector.copied.includes(target)
     ? "created"
     : collector.unchanged.includes(target)
@@ -39,5 +50,5 @@ export function addAgent(cwd: string, agentName: string, options: { force?: bool
       : collector.overwritten.includes(target)
         ? "overwritten"
         : "conflict";
-  return { action, target, dryRun: false };
+  return { action, target, targets, dryRun: false };
 }

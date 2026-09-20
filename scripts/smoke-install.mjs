@@ -111,7 +111,7 @@ try {
   if (!existsSync(join(projectRoot, "USER_GUIDE.md"))) {
     throw new Error("Expected init to install USER_GUIDE.md.");
   }
-  if (!existsSync(join(projectRoot, ".cursor", "skills", "browser-qa", "SKILL.md"))) {
+  if (!existsSync(join(projectRoot, ".agents", "skills", "browser-qa", "SKILL.md"))) {
     throw new Error("Expected init to install browser-qa.");
   }
 

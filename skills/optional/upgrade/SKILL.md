@@ -18,8 +18,8 @@ Pack or framework upgrades, `agent-kit update`, “should I re-init?”, `init -
 1. Work on a git branch.
 2. Read `UPGRADE.md` for this package version (link only — do not invent a second upgrade guide).
 3. Run `npx agent-kit update`. Pristine files refresh. Local edits win or land in `.agent-kit/conflicts/`.
-4. Never delete user files. Leftover `QUALITY_GATES.md` / `COUNCIL.md` stay; `doctor` lists them.
-5. Run `npx agent-kit doctor` after. Leftover warnings are not a prompt to delete.
+4. Never delete user files. Leftover `QUALITY_GATES.md` / `COUNCIL.md` stay until the user runs `npx agent-kit update --prune-legacy`, which lists every path and asks first.
+5. Run `npx agent-kit doctor` after. A council stub shadowing a real agent is a failure; the fix is the prune, not a hand edit.
 
 ## Checks
 

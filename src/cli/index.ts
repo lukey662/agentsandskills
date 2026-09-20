@@ -1,3 +1,4 @@
+import { createInterface } from "node:readline/promises";
 import { Command } from "commander";
 import { addAgent, listAgents } from "../install/add-agent.js";
 import { addSkill, listSkills } from "../install/add-skill.js";
@@ -5,9 +6,10 @@ import { validateAdapter, validatePackage, type AdapterValidationTarget } from "
 import { createDoctorReport } from "../install/doctor.js";
 import { resolveUserGuideHtml } from "../install/guide.js";
 import { initProject } from "../install/install.js";
+import { planLegacyPrune } from "../install/prune-legacy.js";
 import { updateProject } from "../install/update.js";
 import { PACKAGE_VERSION } from "../config/defaults.js";
-import { detail, fail, heading, levelLabel, line, printJson } from "./output.js";
+import { detail, fail, fileGroup, heading, levelLabel, line, listItem, printJson } from "./output.js";
 
 const program = new Command();
 
@@ -18,18 +20,17 @@ program
   .description("Install AGENTS.md, USER_GUIDE.md, USER_GUIDE.html, and native IDE agents/skills.")
   .option("--stack <stack>", "Stack profile", "next-supabase")
   .option("--activate <targets...>", "IDE surfaces: cursor, claude, codex, copilot, antigravity, all")
-  .option("--legacy-docs", "Also copy leftover living-doc templates")
   .option("--force", "Overwrite customized files")
   .option("--json", "Machine-readable output")
   .option("--dry-run", "Show what would be written")
-  .action((options: { stack: "next-supabase"; activate?: string[]; legacyDocs?: boolean; force?: boolean; json?: boolean; dryRun?: boolean }) => {
+  .action((options: { stack: "next-supabase"; activate?: string[]; force?: boolean; json?: boolean; dryRun?: boolean }) => {
     if (options.dryRun) {
       if (options.json) {
-        printJson({ dryRun: true, wouldWrite: ["AGENTS.md", "USER_GUIDE.md", "USER_GUIDE.html", ".cursor/agents/", ".cursor/skills/"] });
+        printJson({ dryRun: true, wouldWrite: ["AGENTS.md", "USER_GUIDE.md", "USER_GUIDE.html", ".agents/skills/", ".cursor/agents/"] });
         return;
       }
       heading("init dry-run");
-      line("Would write AGENTS.md, USER_GUIDE.md, USER_GUIDE.html, and native IDE agent/skill files.");
+      line("Would write AGENTS.md, USER_GUIDE.md, USER_GUIDE.html, .agents/skills/, and native IDE agent files.");
       return;
     }
 
@@ -37,7 +38,6 @@ program
       cwd: process.cwd(),
       stack: options.stack,
       ...(options.activate ? { activate: options.activate } : {}),
-      ...(options.legacyDocs ? { legacyDocs: true } : {}),
       force: Boolean(options.force)
     });
     if (options.json) {
@@ -56,27 +56,68 @@ program
   .description("Refresh pristine installed files. Local edits win or become conflicts.")
   .option("--force", "Overwrite customized files")
   .option("--dry-run", "Preview only")
+  .option("--prune-legacy", "Delete 0.3 council leftovers (allowlisted paths only), then regenerate what 0.4 owns")
+  .option("--yes", "Skip the --prune-legacy confirmation")
   .option("--json", "Machine-readable output")
-  .action((options: { force?: boolean; dryRun?: boolean; json?: boolean }) => {
-    const result = updateProject({ cwd: process.cwd(), force: Boolean(options.force), dryRun: Boolean(options.dryRun) });
+  .action(async (options: { force?: boolean; dryRun?: boolean; pruneLegacy?: boolean; yes?: boolean; json?: boolean }) => {
+    const cwd = process.cwd();
+    const dryRun = Boolean(options.dryRun);
+
+    if (options.pruneLegacy && !dryRun) {
+      const plan = planLegacyPrune(cwd);
+      if (plan.length === 0) {
+        if (!options.json) detail("No 0.3 council leftovers to prune.");
+      } else if (!options.yes) {
+        // Deletion is the one thing update never did before 0.5, so it stays behind an explicit yes.
+        if (!options.json) {
+          heading("prune preview");
+          for (const entry of plan) listItem(`${entry.path}  (${entry.reason})`);
+          line();
+          detail("Run on a branch. Nothing outside this list is touched.");
+        }
+        const confirmed = await confirmPrune(plan.length, Boolean(options.json));
+        if (!confirmed) {
+          fail("prune cancelled. Re-run with --yes to skip the prompt, or --dry-run to preview.");
+          process.exitCode = 1;
+          return;
+        }
+      }
+    }
+
+    const result = updateProject({ cwd, force: Boolean(options.force), dryRun, pruneLegacy: Boolean(options.pruneLegacy) });
     if (options.json) {
       printJson(result);
       return;
     }
-    heading(options.dryRun ? "update preview" : "update");
+    heading(dryRun ? "update preview" : "update");
     line(
       `created ${result.summary.created}, updated ${result.summary.updated}, kept-local ${result.summary["kept-local"]}, conflicts ${result.summary.conflict}`
     );
+    if (options.pruneLegacy) {
+      const shown = dryRun ? result.prunePlan.map((entry) => entry.path) : result.pruned;
+      if (shown.length > 0) fileGroup(dryRun ? "would prune" : "pruned", shown);
+    }
     if (result.leftoverDocs.length > 0) {
-      detail(`Left in place (not deleted): ${result.leftoverDocs.join(", ")}. Run doctor for the 0.4 layout.`);
+      detail(`Left in place (not deleted): ${result.leftoverDocs.join(", ")}. Run update --prune-legacy to remove them.`);
     }
   });
+
+async function confirmPrune(count: number, json: boolean): Promise<boolean> {
+  if (json || !process.stdin.isTTY || !process.stdout.isTTY) return false;
+  const rl = createInterface({ input: process.stdin, output: process.stdout });
+  try {
+    const answer = await rl.question(`Delete these ${count} path(s)? [y/N] `);
+    return /^y(es)?$/i.test(answer.trim());
+  } finally {
+    rl.close();
+  }
+}
 
 const add = program.command("add").description("Add an optional agent or skill.");
 
 add
   .command("skill <name>")
-  .description("Install one skill into .cursor/skills")
+  .description("Install one optional skill into .agents/skills (and .claude/skills when Claude is activated)")
   .option("--force", "Overwrite")
   .option("--dry-run", "Preview")
   .option("--json", "Machine-readable output")

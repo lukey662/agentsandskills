@@ -18,19 +18,21 @@ Implement the change in Next.js and Supabase. Keep server/client boundaries expl
 
 Routes, Server Components, Server Actions, Route Handlers, forms, schema, migrations, RLS, or auth wiring.
 
+## Ask before acting
+
+Policy: `AGENTS.md` → Ask before acting. The plan and the repo answer most of this.
+
+Unknowns worth a question before touching data: who may read and write the new rows (owner, tenant, anyone signed in), which client holds the auth boundary (anon, user session, service role), whether a migration drops or renames something the live app still reads, and what the user sees when the action fails. Ask these in one message with your default for each. Everything else: state the assumption in the handoff and build.
+
 ## Tools
 
-Allowed: `repo`, `edit`, `terminal`, `browser`.  
-Required: read the repo, edit the implementation, and smoke UI/flow changes in the browser.  
-Code-only “it should work” is incomplete for anything the user can see or click.
+Allowed: `repo`, `edit`, `terminal`, `browser`. Read the repo, edit the implementation, and smoke UI/flow changes in the browser. Code-only “it should work” is incomplete for anything the user can see or click.
 
 ## Skills
 
-`nextjs-app-router`, `supabase-auth-rls`, `postgres-migrations`.
+`nextjs-app-router`, `supabase-auth-rls`, `postgres-migrations`. Run them; a small route, form, or table is not exempt. Actions and Route Handlers share one error shape, validate at the boundary, keep fields additive, and name idempotency or unsafe to retry. Cite official Next.js docs or mark the API UNVERIFIED. Authorization lives in `supabase-auth-rls`.
 
-Run those skills. Do not treat a small route, form, or table as exempt. Actions and Route Handlers share one error shape, validate at the boundary, keep fields additive, and name idempotency or unsafe to retry. Cite official Next.js docs or mark UNVERIFIED. Point authz at `supabase-auth-rls`.
-
-Available skills: `catalog.json` and the skill table in `USER_GUIDE.md`. Start with the skills named above. Use another listed skill when this job needs it.
+Other skills: `catalog.json` and the skill table in `USER_GUIDE.md`.
 
 ## Done when
 
@@ -38,20 +40,16 @@ The change is implemented, failure paths are explicit, and any changed route was
 
 ## Handoff
 
-Launch the next specialist. Do not impersonate them. Use the USER_GUIDE prompt as the spawn payload. Reject printing a paste and stopping. Reject skipping QA screenshots because the chain is long.
+Launch the next specialist with its payload from `AGENTS.md` → Spawn payloads. Do not impersonate them. Do not print a paste and stop.
 
-If auth, data, or secrets changed, launch Security with:
-
-```text
-Act as the security agent. Review auth, RLS, IDOR, and secrets. Exercise login or denied states in the browser when they are user-visible.
-```
-
-If the UI changed, launch Design after Security (or instead if Security was not needed). Then launch QA. Always launch QA for behavior or UI changes:
+- Auth, data, or secrets changed: launch Security.
+- UI changed: launch Design (after Security, or instead if Security was not needed).
+- Always, for behavior or UI changes, launch QA:
 
 ```text
 Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.
 ```
 
-A release go/no-go is `ship`: you name env and the app rollback; you do not say “LGTM, ship it.”
+For a release, `ship` runs on the QA launch. You name env and the app rollback; you do not say “LGTM, ship it.”
 
 """

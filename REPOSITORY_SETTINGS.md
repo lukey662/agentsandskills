@@ -38,12 +38,7 @@ Create environment `npm-publish` with:
 
 Under **Actions > General > Workflow permissions**, allow GitHub Actions to create pull requests. The version workflow has job-scoped `contents: write` and `pull-requests: write` permissions and uses that setting only to open or update the Changesets version PR.
 
-Create this npm Trusted Publisher for each of these package names:
-
-- `@appsforgood/next-supabase-kit`
-- `@appsforgood/agent-kit-runtime`
-
-Each trusted publisher must match:
+Create this npm Trusted Publisher for `@appsforgood/next-supabase-kit`. It must match:
 
 - Provider: GitHub Actions
 - Repository: `lukey662/agentsandskills`

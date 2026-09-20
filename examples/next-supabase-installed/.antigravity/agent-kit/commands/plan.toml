@@ -1,6 +1,0 @@
-name = "plan"
-description = "Plan the change and name the owning agent."
-
-prompt = """
-Act as the planner agent. Use the planning skill. Plan this change. Name the owning agent, extra reviewers, and which screenshots QA must capture. Do not write code. Then continue in this thread with an explicit now App engineer (or the named role) header and the USER_GUIDE spawn payload. Reject finishing without launching the owner. Reject printing a paste and stopping. Reject asking one chat to play every role. Read AGENTS.md and USER_GUIDE.md.
-"""

@@ -1,14 +1,7 @@
-import { CLAUDE_TEMPLATE, CURSOR_RULE_FILE } from "../config/defaults.js";
+import { AGENTS_RULE_FILE, CLAUDE_TEMPLATE, CURSOR_RULE_FILE } from "../config/defaults.js";
 import { findPackageRoot } from "../utils/package-root.js";
 import { copyFromPackage, emptyCollector, type CopyCollector } from "./copy-asset.js";
-import {
-  generateAntigravityCommands,
-  generateClaudeAgents,
-  generateCodexAgents,
-  generateCopilotInstructions,
-  generateCursorAgents,
-  generateCursorSkills
-} from "./roster-adapters.js";
+import { generateAgents, generateClaudeSkills, generateCopilotInstructions, generateSkills } from "./roster-adapters.js";
 
 export const IDE_TARGETS = ["cursor", "claude", "codex", "copilot", "antigravity"] as const;
 export type IdeTarget = (typeof IDE_TARGETS)[number];
@@ -61,6 +54,11 @@ function normalizeTargets(targets: string[]): IdeTarget[] {
   return [...normalized];
 }
 
+/**
+ * Write the host-native files for each activated IDE. `.agents/skills/` is written for every
+ * activation because four of the five hosts read it and it is the only skills location the kit
+ * ships; Claude gets its own mirror.
+ */
 export function activateIdeTargets(options: ActivateIdeOptions): ActivateIdeResult {
   const cwd = options.cwd;
   const packageRoot = findPackageRoot();
@@ -71,23 +69,27 @@ export function activateIdeTargets(options: ActivateIdeOptions): ActivateIdeResu
 
   if (targets.length === 0) return result;
 
+  generateSkills(cwd, force, result);
+
   if (targets.includes("cursor")) {
     copyFromPackage(cwd, packageRoot, CURSOR_RULE_FILE.source, CURSOR_RULE_FILE.target, force, result);
-    generateCursorAgents(cwd, force, result);
-    generateCursorSkills(cwd, force, result);
+    generateAgents("cursor", cwd, force, result);
   }
   if (targets.includes("claude")) {
     copyFromPackage(cwd, packageRoot, CLAUDE_TEMPLATE, "CLAUDE.md", force, result);
-    generateClaudeAgents(cwd, force, result);
+    generateAgents("claude", cwd, force, result);
+    generateClaudeSkills(cwd, force, result);
   }
   if (targets.includes("codex")) {
-    generateCodexAgents(cwd, force, result);
+    generateAgents("codex", cwd, force, result);
   }
   if (targets.includes("copilot")) {
     generateCopilotInstructions(cwd, force, result);
+    generateAgents("copilot", cwd, force, result);
   }
   if (targets.includes("antigravity")) {
-    generateAntigravityCommands(cwd, force, result);
+    copyFromPackage(cwd, packageRoot, AGENTS_RULE_FILE.source, AGENTS_RULE_FILE.target, force, result);
+    generateAgents("antigravity", cwd, force, result);
   }
 
   return result;

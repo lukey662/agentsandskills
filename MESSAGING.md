@@ -1,88 +1,44 @@
-# Messaging And Copy
+# MESSAGING.md
 
-This file is the persistent positioning, value proposition, voice, and copy-evidence contract for agents and reviewers.
+Voice file for this repo's public words: `USER_GUIDE.html`, `README.md`, npm metadata, CLI help and errors. `product-copy` reads this first. Downstream products write their own.
 
-Use it before writing or changing public-facing pages, onboarding, empty states, pricing, upgrade prompts, CTAs, lifecycle emails, notifications, or conversion-critical UX copy. For this repo, the public surfaces are `USER_GUIDE.html`, `README.md`, npm package metadata, CLI help/output text, and GitHub repository copy.
+## Reader / Job / One action / Proof
 
-## Discovery Questions
-
-Answer these before final copy is accepted. If an answer is unknown, mark it as unknown and treat the copy as provisional.
-
-| Question | Current Answer | Evidence |
-| --- | --- | --- |
-| Who is the primary audience? | Engineers and AI coding agents building Next.js + Supabase products who want structured agent roles, quality gates, and living docs installed into their repos. | Package description, `README.md`, `.agent-kit/project-context.json` |
-| What painful, expensive, slow, risky, or annoying problem do they need solved? | AI-assisted projects collapse into one vague assistant with no security review, no design discipline, no documentation trail, and unreviewable output. | Research corpus under `research/summaries/`, dogfood audits in `DOGFOOD.md` |
-| What outcome do they want? | Repeatable, auditable agent delivery: every change gets planning, architecture, security, QA, and docs coverage without manual policing. | `QUALITY_GATES.md` maturity model, audit readiness levels |
-| What alternatives do they use today? | Hand-written CLAUDE.md/AGENTS.md files, ad hoc prompt folders, copy-pasted cursor rules, or nothing. | `research/findings/` per-repo scans |
-| Why is this product meaningfully different? | It is installable, auditable, and upgradeable: one command installs the full operating system, `agent-kit audit` proves setup validity in CI, and `agent-kit update` upgrades without destroying local customizations. | `src/install/`, `tests/audit.test.ts`, smoke-install regression fixture |
-| What proof supports the claim? | Vitest suites plus smoke scripts gate every release; this repo dogfoods its own kit (see `COUNCIL.md`, `.agent-kit/`); supply chain uses Trusted Publishing, SBOM, CodeQL, and Scorecard. | `scripts/release-check.mjs`, `.github/workflows/` |
-| What objections could stop signup, activation, or purchase? | Package not yet published to npm; only one stack profile; enforcement is advisory (docs and CI gates, not runtime orchestration). | `PUBLIC_RELEASE_REVIEW.md`, `RUNTIME_ORCHESTRATION_SCOPE.md` |
-| What action should the user take next? | Run `npx @appsforgood/next-supabase-kit init --stack next-supabase` in their project, then `agent-kit audit`. | `README.md` quick start |
-
-## Positioning
-
-One-sentence positioning statement:
-
-> For engineers shipping Next.js + Supabase products with AI coding agents, this product is a small pack of named specialists and skills you install in one command. QA of a screen is two screenshots, not a file diff.
-
-Primary value proposition:
-
-- Name the specialist. Prove the screen. Six agents, twelve skills, five IDEs.
-
-Secondary value propositions:
-
-- CI-gateable readiness: `agent-kit audit --min-readiness` turns agent-setup quality into a merge gate.
-- Local-first evidence: council sessions, corrections, and context live in files, with no database, daemon, or API keys.
-
-Non-goals and claims to avoid:
-
-- Do not claim runtime LLM orchestration or model enforcement; the kit is file- and CLI-based and enforcement is advisory.
-- Do not claim npm availability until the first publish is verified.
-- Do not use unsupported superlatives ("the best", "10x") or invented adoption numbers.
-
-## Proof And Objections
-
-| Claim | Proof Required | Current Proof | Status |
-| --- | --- | --- | --- |
-| Install without overwriting local docs | Regression test of upgrade path | `scripts/smoke-install.mjs` older-install fixture, `tests/update.test.ts` | Proven |
-| Audit is CI-gateable | CI job using the gate | `.github/workflows/ci.yml` runs `smoke:audit-gate` with `--min-readiness baseline-setup` | Proven |
-| Supply-chain hardened release | Workflow evidence | `release.yml` Trusted Publishing/OIDC, SBOM attestation, `post-publish-verify.mjs` | Proven (pending first publish) |
-| Kit works on real projects | Dogfood evidence | `DOGFOOD.md` downstream audits and this repo's own install | Partial (this repo plus read-only downstream audits) |
-
-| Objection | Response | Evidence Or Product Support |
-| --- | --- | --- |
-| "Not on npm yet" | First publish is the tracked release blocker; everything else is release-gated and green. | `PUBLIC_RELEASE_REVIEW.md` |
-| "Only Next.js + Supabase" | Stack profiles are pluggable; a second profile is on the roadmap to prove the abstraction. | `ROADMAP.md`, `profiles/` |
-| "It is just markdown" | The CLI enforces structure: schema-backed contracts, hash-tracked templates, audit findings, and conflict-safe updates. | `schemas/`, `src/install/audit.ts` |
-
-## Voice And Tone
-
-| Area | Decision |
+| Slot | Answer |
 | --- | --- |
-| Voice traits | Direct, technical, evidence-led, calm, practical |
-| Words to use | install, audit, readiness, council, handoff, evidence, conflict-safe, local-first, Trusted Publishing |
-| Words to avoid | revolutionize, supercharge, AI-powered magic, 10x, enterprise-grade (unsupported), any invented metrics |
-| Error tone | Clear cause, useful recovery command, no blame |
-| Security/privacy tone | Specific and factual: local files only, no telemetry, tokens stay in env vars |
-| Pricing/upgrade tone | Free and MIT-licensed; upgrade guidance is versioned and reviewable |
+| Reader | An engineer with an IDE and an npm project who is tired of one chat playing every role. |
+| Job | Get a plan, an implementation, a security pass, a design pass, and QA on a change without policing each step or copying prompts between chats. |
+| One action | `npx --yes @appsforgood/next-supabase-kit init --activate all`, then say the change. |
+| Proof | `doctor` and the tests fail if the screenshot rule or `requiredTools` are dropped. `qa-evidence/` in this repo holds the desktop and mobile shots for the guide itself. |
 
-## Page And Flow Copy Inventory
+## Voice
 
-| Surface | Goal | Primary Message | Primary CTA | Secondary CTA | Proof | Objections |
-| --- | --- | --- | --- | --- | --- | --- |
-| README hero | Get an engineer to try init | Install an auditable agent operating system in one command | `npx @appsforgood/next-supabase-kit init` | Read `DOCS.md` | CI badges, audit output sample | Not published yet: mark quick start as pending first publish |
-| npm package page | Establish trust at a glance | Same as README hero, with provenance badge | Install command | Repository link | Trusted Publishing provenance | Version 0.x maturity |
-| CLI `--help` and errors | Keep users unblocked | Each command states what it does and what to run next | Suggested next command in error text | `agent-kit doctor` | Exit codes documented in `SPEC.md` | None |
-| Audit output | Convert findings into action | Readiness level plus prioritized next actions | Remediation line per finding | `agent-kit audit --json` | Deterministic findings | Warning fatigue: cap next actions at five |
+Direct, specific, slightly dry. Verbs: say, launch, open, capture, reject, name.
 
-## Acceptance Evidence
+Words that belong here: specialist, owner, screenshot, desktop, mobile, fail-closed, launch, Planner, `browser-qa`, payload.
 
-Copy work is not accepted until:
+Words that do not: supercharge, seamless, unlock, copilot for X, 10x, enterprise-grade, magic, revolutionize, AI-powered.
 
-- Discovery questions are answered or explicitly marked unknown.
-- Audience, pain, outcome, differentiator, proof, objections, voice, and conversion goal are documented.
-- Claims are tied to proof or marked as assumptions.
-- CTA hierarchy has one primary action and clear secondary actions.
-- Onboarding, empty, error, permission, and upgrade copy provides a useful next step.
-- Marketing Copy Lead has handed off public-facing pages to Frontend Design Lead for layout and hierarchy review.
-- Risky claims are reviewed before release.
+## Headline and CTA tests
+
+A headline that could sell Cursor, Copilot, or any pack on the same shelf fails. A CTA that does not name the next action fails.
+
+- Good headline: `Say the change. Then open the running UI.`
+- Bad headline: `Supercharge your AI workflow with agents and skills.`
+- Good CTA: the init command, or `Say the change.`
+- Bad CTA: `Get started`, `Learn more`, `Start building today`.
+
+## Claims
+
+- Do not claim runtime enforcement. The kit is files and a CLI; the gate is `doctor`, tests, and the agents' own contracts.
+- Do not invent adoption numbers, logos, or testimonials.
+- Every claim on a public surface cites a file, a test, or a command, or is marked `assumption`.
+
+## Surfaces
+
+| Surface | Job | Primary action |
+| --- | --- | --- |
+| `USER_GUIDE.html` first viewport | Assign: who to ask, the one rule, say the change | init command |
+| `README.md` | Get an engineer to run init | init command |
+| CLI errors | Name the failing input and the next command | the next command |
+| `doctor` output | Turn a finding into a fix | remediation line per finding |

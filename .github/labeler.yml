@@ -1,45 +1,30 @@
 "area: cli":
   - changed-files:
       - any-glob-to-any-file:
-          - src/cli/**
-          - src/install/**
+          - src/**
           - scripts/**
 "area: agents":
   - changed-files:
       - any-glob-to-any-file:
           - agents/**
+          - catalog.json
+          - templates/**
+"area: skills":
+  - changed-files:
+      - any-glob-to-any-file:
           - skills/**
-          - rosters/**
-          - schemas/**
-          - templates/next-supabase/AGENTS.md
-          - templates/next-supabase/AGENT_ROSTER.md
-          - templates/next-supabase/COUNCIL.md
-"area: frontend":
+"area: guide":
   - changed-files:
       - any-glob-to-any-file:
-          - design-adapters/**
-          - design-briefs/**
-          - templates/next-supabase/DESIGN.md
-          - templates/next-supabase/STYLE_GUIDE.md
-          - checklists/frontend-quality.md
-          - checklists/brand-content.md
-          - checklists/visual-regression.md
-"area: supabase":
-  - changed-files:
-      - any-glob-to-any-file:
-          - skills/supabase-auth-rls.md
-          - skills/postgres-migrations.md
-          - checklists/rls.md
-          - templates/next-supabase/SECURITY.md
-"area: research":
-  - changed-files:
-      - any-glob-to-any-file:
-          - src/research/**
-          - research/**
+          - USER_GUIDE.md
+          - USER_GUIDE.html
+          - README.md
+          - qa-evidence/**
 "area: release":
   - changed-files:
       - any-glob-to-any-file:
           - .github/workflows/release.yml
+          - .changeset/**
           - package.json
           - package-lock.json
           - SUPPLY_CHAIN.md
@@ -57,13 +42,12 @@
           - SECURITY.md
           - SUPPLY_CHAIN.md
           - .github/workflows/**
-          - skills/owasp-security-review.md
-          - checklists/owasp.md
-          - templates/next-supabase/SECURITY.md
+          - skills/owasp-security-review/**
+          - skills/supabase-auth-rls/**
+          - src/install/prune-legacy.ts
 "risk: breaking-change":
   - changed-files:
       - any-glob-to-any-file:
           - src/**
+          - catalog.json
           - package.json
-          - schemas/**
-          - rosters/**

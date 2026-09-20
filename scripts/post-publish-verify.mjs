@@ -8,11 +8,9 @@ import { resolveNpmCommand, resolveNpxCommand } from "./lib/npm-command.mjs";
 
 const repoRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const packageJson = JSON.parse(readFileSync(join(repoRoot, "package.json"), "utf8"));
-const runtimePackageJson = JSON.parse(readFileSync(join(repoRoot, "packages", "runtime", "package.json"), "utf8"));
 const packageName = process.env.AGENT_KIT_VERIFY_PACKAGE_NAME ?? packageJson.name;
 const packageVersion = process.env.AGENT_KIT_VERIFY_PACKAGE_VERSION ?? packageJson.version;
 const packageSpec = process.argv[2] ?? `${packageName}@${packageVersion}`;
-const runtimeSpec = process.env.AGENT_KIT_VERIFY_RUNTIME_SPEC ?? `${runtimePackageJson.name}@${runtimePackageJson.version}`;
 const registry = process.env.npm_config_registry ?? "https://registry.npmjs.org";
 const tempRoot = mkdtempSync(join(tmpdir(), "agent-kit-published-verify-"));
 const tempCacheRoot = process.env.npm_config_cache ? null : mkdtempSync(join(tmpdir(), "agent-kit-published-verify-cache-"));
@@ -76,24 +74,8 @@ try {
     'import assert from "node:assert/strict";\nimport test from "node:test";\n\ntest("verification fixture", () => assert.equal(1, 1));\n'
   );
 
-  if (packageName === "@appsforgood/agent-kit-runtime") {
-    console.log("installing and importing published runtime");
-    run("npm", ["install", "--save-exact", packageSpec, `--registry=${registry}`], { cwd: tempRoot, stdio: "inherit" });
-    run(
-      process.execPath,
-      [
-        "--input-type=module",
-        "-e",
-        "const runtime = await import('@appsforgood/agent-kit-runtime'); if (typeof runtime.AgentKitRuntimeService !== 'function') process.exit(1); console.log('runtime import passed');"
-      ],
-      { cwd: tempRoot, stdio: "inherit" }
-    );
-    console.log(`published runtime verification passed: ${packageSpec}`);
-    process.exit(0);
-  }
-
-  console.log("installing published Agent Kit packages");
-  run("npm", ["install", "--save-exact", packageSpec, ...(runtimeSpec ? [runtimeSpec] : []), `--registry=${registry}`], {
+  console.log("installing published Agent Kit package");
+  run("npm", ["install", "--save-exact", packageSpec, `--registry=${registry}`], {
     cwd: tempRoot,
     stdio: "inherit"
   });
@@ -111,7 +93,7 @@ try {
   if (!guide.includes("Do not review code alone")) {
     throw new Error("Published init dropped the screenshot fail-closed sentence.");
   }
-  if (!existsSync(join(tempRoot, ".cursor", "skills", "browser-qa", "SKILL.md"))) {
+  if (!existsSync(join(tempRoot, ".agents", "skills", "browser-qa", "SKILL.md"))) {
     throw new Error("Expected published init to install browser-qa.");
   }
   if (!existsSync(join(tempRoot, ".cursor", "agents", "qa.md"))) {

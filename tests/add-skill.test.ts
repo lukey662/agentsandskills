@@ -30,7 +30,7 @@ describe("add skill and agent", () => {
     initProject({ cwd: root });
     const result = addSkill(root, "debug");
     expect(result.action).toBe("created");
-    expect(existsSync(join(root, ".cursor/skills/debug/SKILL.md"))).toBe(true);
+    expect(existsSync(join(root, ".agents/skills/debug/SKILL.md"))).toBe(true);
   });
 
   it("adds an optional agent", () => {

@@ -16,20 +16,17 @@ import { findPackageRoot } from "../utils/package-root.js";
 import { emptyCollector, recordCopy, type CopyCollector } from "./copy-asset.js";
 import { activateIdeTargets, parseActivateTargets, type ActivateIdeResult, type IdeTarget } from "./ide-activate.js";
 import { listManagedAssets } from "./managed-assets.js";
-import { generatePortableSkills } from "./roster-adapters.js";
 
 export interface InitOptions {
   cwd: string;
   stack?: StackProfile;
   force?: boolean;
   activate?: string[];
-  legacyDocs?: boolean;
 }
 
 export interface InitResult extends CopyCollector {
   manifestPath: string;
   activation?: ActivateIdeResult;
-  contextPath?: string;
 }
 
 export function initProject(options: InitOptions): InitResult {
@@ -53,48 +50,14 @@ export function initProject(options: InitOptions): InitResult {
   templateHashes["USER_GUIDE.md"] = sha256(userGuide);
   templateHashes["USER_GUIDE.html"] = sha256(userGuideHtml);
 
-  recordCopy(
-    result,
-    copyTextWithConflict(join(packageRoot, AGENTS_DOC_SOURCE), cwd, "AGENTS.md", {
-      force,
-      conflictRoot: join(cwd, ".agent-kit", "conflicts")
-    })
-  );
-  recordCopy(
-    result,
-    copyTextWithConflict(join(packageRoot, USER_GUIDE_SOURCE), cwd, "USER_GUIDE.md", {
-      force,
-      conflictRoot: join(cwd, ".agent-kit", "conflicts")
-    })
-  );
-  recordCopy(
-    result,
-    copyTextWithConflict(join(packageRoot, USER_GUIDE_HTML_SOURCE), cwd, "USER_GUIDE.html", {
-      force,
-      conflictRoot: join(cwd, ".agent-kit", "conflicts")
-    })
-  );
-
-  if (options.legacyDocs) {
-    const legacyRoot = join(packageRoot, "templates", stack);
-    const legacyDocs = ["SPEC.md", "DECISIONS.md", "DESIGN.md", "SECURITY.md", "TESTING.md", "QUALITY_GATES.md"];
-    for (const doc of legacyDocs) {
-      const source = join(legacyRoot, doc);
-      if (!existsSync(source)) continue;
-      recordCopy(
-        result,
-        copyTextWithConflict(source, cwd, doc, {
-          force,
-          conflictRoot: join(cwd, ".agent-kit", "conflicts")
-        })
-      );
-    }
-  }
+  const conflictRoot = join(cwd, ".agent-kit", "conflicts");
+  recordCopy(result, copyTextWithConflict(join(packageRoot, AGENTS_DOC_SOURCE), cwd, "AGENTS.md", { force, conflictRoot }));
+  recordCopy(result, copyTextWithConflict(join(packageRoot, USER_GUIDE_SOURCE), cwd, "USER_GUIDE.md", { force, conflictRoot }));
+  recordCopy(result, copyTextWithConflict(join(packageRoot, USER_GUIDE_HTML_SOURCE), cwd, "USER_GUIDE.html", { force, conflictRoot }));
 
   const activateTargets = parseActivateTargets(options.activate);
   const targets: IdeTarget[] = activateTargets.length > 0 ? activateTargets : ["cursor"];
   result.activation = activateIdeTargets({ cwd, targets, force });
-  generatePortableSkills(cwd, force, result.activation);
   result.copied.push(...result.activation.copied.filter((path) => !result.copied.includes(path)));
   result.unchanged.push(...result.activation.unchanged.filter((path) => !result.unchanged.includes(path)));
   result.conflicts.push(...result.activation.conflicts.filter((path) => !result.conflicts.includes(path)));
@@ -105,7 +68,7 @@ export function initProject(options: InitOptions): InitResult {
   for (const asset of assets) {
     if (existsSync(asset.sourcePath)) assetHashes[asset.target] = sha256(readFileSync(asset.sourcePath, "utf8"));
   }
-  // Generated files: hash what we just wrote
+  // Generated files: hash what we just wrote so update can tell pristine from edited.
   for (const relative of [...result.copied, ...result.unchanged, ...result.overwritten]) {
     const path = join(cwd, relative);
     if (existsSync(path) && !assetHashes[relative]) {
@@ -132,15 +95,9 @@ export function initProject(options: InitOptions): InitResult {
     `${JSON.stringify({ stack, catalog: { defaultAgents: catalog.defaultAgents, defaultSkills: catalog.defaultSkills } }, null, 2)}\n`
   );
 
-  // Always keep the Cursor rule available even when only other IDEs were requested
+  // The Cursor rule carries the launch order and the screenshot rule; keep it even when only other IDEs were requested.
   if (!targets.includes("cursor")) {
-    recordCopy(
-      result,
-      copyTextWithConflict(join(packageRoot, CURSOR_RULE_FILE.source), cwd, CURSOR_RULE_FILE.target, {
-        force,
-        conflictRoot: join(cwd, ".agent-kit", "conflicts")
-      })
-    );
+    recordCopy(result, copyTextWithConflict(join(packageRoot, CURSOR_RULE_FILE.source), cwd, CURSOR_RULE_FILE.target, { force, conflictRoot }));
   }
 
   return result;
@@ -150,10 +107,6 @@ export function readManifest(cwd: string): InstallManifest | null {
   const manifestPath = join(cwd, ".agent-kit", "manifest.json");
   if (!existsSync(manifestPath)) return null;
   return JSON.parse(readFileSync(manifestPath, "utf8")) as InstallManifest;
-}
-
-export function readGithubActionsMode(_cwd: string): "off" | "advisory" {
-  return "off";
 }
 
 export { type IdeTarget };

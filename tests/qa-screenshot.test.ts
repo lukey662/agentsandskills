@@ -24,7 +24,7 @@ describe("QA screenshot fail-closed rule", () => {
     const root = temp();
     initProject({ cwd: root, activate: ["all"] });
 
-    const skill = readFileSync(join(root, ".cursor/skills/browser-qa/SKILL.md"), "utf8");
+    const skill = readFileSync(join(root, ".agents/skills/browser-qa/SKILL.md"), "utf8");
     expect(skill).toContain("Do not review code alone");
     expect(skill).toContain("desktop");
     expect(skill).toContain("mobile");
@@ -47,10 +47,25 @@ describe("QA screenshot fail-closed rule", () => {
     initProject({ cwd: root });
     const qaPath = join(root, ".cursor/agents/qa.md");
     const original = readFileSync(qaPath, "utf8");
-    writeFileSync(qaPath, original.replace("requiredTools: [browser, screenshot, image-review]", "requiredTools: [repo]"));
+    expect(original).toContain("> Required tools: browser, screenshot, image-review. Do not drop them.");
+    writeFileSync(
+      qaPath,
+      original.replace("> Required tools: browser, screenshot, image-review. Do not drop them.", "> Required tools: repo. Do not drop them.")
+    );
     const report = createDoctorReport(root);
     expect(report.ok).toBe(false);
     expect(report.findings.some((finding) => finding.message.includes("dropped requiredTools"))).toBe(true);
+  });
+
+  it("doctor fails if a Claude agent carries the kit tool vocabulary instead of Claude tool names", () => {
+    const root = temp();
+    initProject({ cwd: root, activate: ["claude"] });
+    const qaPath = join(root, ".claude/agents/qa.md");
+    const original = readFileSync(qaPath, "utf8");
+    writeFileSync(qaPath, original.replace("model: inherit", "model: inherit\ntools: repo, edit, browser"));
+    const report = createDoctorReport(root);
+    expect(report.ok).toBe(false);
+    expect(report.findings.some((finding) => finding.message.includes("will not load in claude"))).toBe(true);
   });
 
   it("doctor fails if USER_GUIDE loses the screenshot rule", () => {

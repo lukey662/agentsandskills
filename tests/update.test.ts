@@ -38,6 +38,6 @@ describe("update", () => {
     writeFileSync(join(root, ".cursor/agents/qa.md"), "# stale\n");
     updateProject({ cwd: root, force: true });
     expect(readFileSync(join(root, ".cursor/agents/qa.md"), "utf8")).toContain("Do not review");
-    expect(existsSync(join(root, "skills/browser-qa/SKILL.md"))).toBe(true);
+    expect(existsSync(join(root, ".agents/skills/browser-qa/SKILL.md"))).toBe(true);
   });
 });
