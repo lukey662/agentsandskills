@@ -1,44 +1,36 @@
 # Deployment
 
-This repo ships `@appsforgood/next-supabase-kit` and the optional `@appsforgood/agent-kit-runtime`, so "deployment" means publishing both npm packages through GitHub Actions.
+This repo ships one npm package, `@appsforgood/next-supabase-kit`. "Deployment" means publishing it through GitHub Actions.
 
 ## Environments
 
 - Local: development against `src/` with `npm run dev`; `npm run build` produces `dist/index.js`.
 - Local delivery gate: `npm run release:check` and `npm run smoke:audit-gate`; this evidence is sufficient for commit/push when hosted Actions is unavailable.
-- Optional CI: `.github/workflows/ci.yml` mirrors local verification when GitHub Actions entitlement is working. Billing or spending-limit startup failures are infrastructure failures, not code failures.
-- Release: `.github/workflows/release.yml` publishes runtime before root from the `npm-publish` GitHub environment using npm Trusted Publishing (OIDC), generates and attests a package-rooted SBOM for each tarball, and verifies both public packages before creating a GitHub release. Inspect retries `npm view` (malware-scan staging can 404). Publish treats “Cannot publish over previously staged version” as already published and still creates the GitHub release when needed.
+- CI: `.github/workflows/ci.yml` mirrors local verification across Node 20/22/24 on Linux, Windows, and macOS, plus a Playwright job for `USER_GUIDE.html`.
+- Release: `.github/workflows/release.yml` publishes from the `npm-publish` GitHub environment using npm Trusted Publishing (OIDC), generates and attests a CycloneDX SBOM for the tarball, verifies the public package, then creates the GitHub release. Inspect retries `npm view` (malware-scan staging can 404). Publish treats "Cannot publish over previously staged version" as already published and still creates the GitHub release when needed.
 
 ## Environment Variables
 
-- `GITHUB_TOKEN`: optional, used only by `agent-kit research discover|scan` for GitHub API access. Never committed; see `.env.example`.
-- Optional provider credentials use project-owned `env:` references or OS-keychain entries and are never required by baseline CI.
-- Release publishing uses OIDC identity, not stored npm tokens. Both npm package records must trust `.github/workflows/release.yml` and the `npm-publish` environment.
+None are required to build, test, or install the kit. Release publishing uses OIDC identity, not stored npm tokens; the npm package record must trust `.github/workflows/release.yml` and the `npm-publish` environment.
 
 ## Release Order
 
-Before publishing a new version:
-
-1. Update root/runtime changesets and changelogs, then confirm `npm run version:check` passes for both workspace manifests.
-2. Run `npm run release:check` locally (typecheck, tests, build, smoke install/studio/audit, example check, SBOM check, pack dry run).
-3. Merge to `main` after the local release gate passes. Confirm hosted CI too only when this repository has deliberately enabled it as a required gate.
-4. The release workflow packs and attests both packages, publishes runtime before root when needed, verifies both from the public registry, then creates the root-version GitHub release.
-5. Confirm public runtime import plus root `init`, `doctor`, and `adapter validate all` verification passed.
+1. Merge the Version Packages PR so `package.json`, `package-lock.json`, and `CHANGELOG.md` agree (`npm run version:check`).
+2. Run `npm run release:check` locally.
+3. Merge to `main`; the release workflow runs on the version bump, or dispatch it manually with `dry_run=false`.
+4. Confirm the workflow's public verification (`init --activate all`, `doctor`, `adapter validate all`) passed and the `vX.Y.Z` release exists.
 
 ## Observability
 
 - CI and release logs: GitHub Actions run history on `lukey662/agentsandskills`.
-- Security scanning: CodeQL, OpenSSF Scorecard, and dependency review workflows report into the GitHub Security tab.
+- Security scanning: CodeQL, OpenSSF Scorecard, and dependency review report into the GitHub Security tab.
 - Dependency freshness: Dependabot PRs.
-- Package health: npm registry page (downloads, provenance badge) once published.
-- There is no hosted runtime telemetry; the CLI does not phone home. Local run status, approvals, provider selection, artifacts, verification, and errors are recorded under `.agent-kit/runtime/runs/`.
+- Package health: the npm registry page (downloads, provenance badge).
+- The CLI does not phone home and writes nothing outside the project it is run in.
 
 ## Rollback
 
-- Code: revert the offending commit on `main`; the local release gate must return green before any re-release. Hosted CI is additional evidence when available.
+- Code: revert the offending commit on `main`; the release gate must return green before any re-release.
 - Package: npm unpublish is restricted, so ship a patch release with the fix and deprecate the broken version with `npm deprecate`.
-- Release workflow mistakes: the workflow validates the publish ref and dry-run mode exercises all gates without credentials; failed publishes leave no partial state.
-- Runtime execution: reject/cancel the gate, inspect the cached worktree and `agent-kit/<run-id>` branch, preserve or remove the scoped commit manually, and keep SQLite/JSONL evidence until the incident review is complete.
-- Record rollback evidence (versions, commands, owner, date) in `UPGRADE.md` alongside the upgrade history table.
-
-Link upgrade-specific rollback evidence from `UPGRADE.md` when the release includes package, framework, Agent Kit, or migration changes.
+- Downstream installs: `agent-kit update` to the patch; `update --prune-legacy` is opt-in and lists what it will remove before doing so.
+- Record rollback evidence (versions, commands, owner, date) in `UPGRADE.md`.

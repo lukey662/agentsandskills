@@ -1,6 +1,8 @@
 import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import { isOptionalSkill, listKnownSkills, skillSourcePath } from "../catalog.js";
 import { findPackageRoot } from "../utils/package-root.js";
+import { activatedHosts } from "./add-agent.js";
 import { emptyCollector } from "./copy-asset.js";
 import { copyOptionalSkill } from "./roster-adapters.js";
 
@@ -27,10 +29,11 @@ export function addSkill(cwd: string, skillName: string, options: { force?: bool
   }
 
   const sourcePath = skillSourcePath(packageRoot, id);
-  const target = `.cursor/skills/${id}/SKILL.md`;
+  const target = `.agents/skills/${id}/SKILL.md`;
 
   if (options.dryRun) {
-    const existing = existsSync(`${cwd}/${target}`) ? readFileSync(`${cwd}/${target}`, "utf8") : null;
+    const targetPath = join(cwd, target);
+    const existing = existsSync(targetPath) ? readFileSync(targetPath, "utf8") : null;
     const sourceContent = readFileSync(sourcePath, "utf8");
     let action: AddSkillResult["action"] = "created";
     if (existing === sourceContent) action = "unchanged";
@@ -39,7 +42,7 @@ export function addSkill(cwd: string, skillName: string, options: { force?: bool
   }
 
   const collector = emptyCollector();
-  copyOptionalSkill(cwd, id, Boolean(options.force), collector);
+  copyOptionalSkill(cwd, id, Boolean(options.force), collector, activatedHosts(cwd).includes("claude"));
   const action = collector.copied.includes(target)
     ? "created"
     : collector.unchanged.includes(target)

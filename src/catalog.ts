@@ -2,13 +2,29 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { findPackageRoot } from "./utils/package-root.js";
 
+/** Ids of the canonical handoff prompts. Six agents, Design's new-repo setup variant, and the release go/no-go. */
+export type SpawnPayloadId = "planner" | "app-engineer" | "security" | "design" | "design-setup" | "qa" | "copy" | "ship";
+
 export interface Catalog {
   schemaVersion: number;
   defaultAgents: string[];
   optionalAgents: string[];
   defaultSkills: string[];
   optionalSkills: string[];
+  /**
+   * Skills each agent must run, by agent id. Claude preloads them through the subagent `skills:`
+   * field and Antigravity through `skills:` paths, so the gate skills are in context at launch
+   * rather than discovered by description.
+   */
+  agentSkills: Record<string, string[]>;
   screenshotFailClosed: string;
+  /** Shared ask-before-acting rule. Rendered into AGENTS.md so every agent context has it once. */
+  askPolicy: string;
+  /**
+   * The only copy of each handoff prompt. AGENTS.md, USER_GUIDE.md, the Copilot and Antigravity
+   * generators, and the agent files all read or are tested against this map so the text cannot drift.
+   */
+  spawnPayloads: Record<SpawnPayloadId, string>;
 }
 
 const catalogByRoot = new Map<string, Catalog>();
@@ -64,8 +80,8 @@ export function parseFrontmatter(markdown: string): { name?: string; description
   if (!match) return { body: markdown };
   const raw = match[1] ?? "";
   const body = match[2] ?? "";
-  const name = raw.match(/^name:\s*(.+)$/m)?.[1]?.trim();
-  const description = raw.match(/^description:\s*(.+)$/m)?.[1]?.trim();
+  const name = unquote(raw.match(/^name:\s*(.+)$/m)?.[1]?.trim());
+  const description = unquote(raw.match(/^description:\s*(.+)$/m)?.[1]?.trim());
   const tools = parseYamlList(raw, "tools");
   const requiredTools = parseYamlList(raw, "requiredTools");
   return {
@@ -75,6 +91,15 @@ export function parseFrontmatter(markdown: string): { name?: string; description
     ...(requiredTools ? { requiredTools } : {}),
     body
   };
+}
+
+/** Rendered host files double-quote scalars so colons in descriptions stay valid YAML. Canonical files do not. */
+function unquote(value: string | undefined): string | undefined {
+  if (!value) return value;
+  if (value.length >= 2 && value.startsWith('"') && value.endsWith('"')) {
+    return value.slice(1, -1).replace(/\\"/g, '"').replace(/\\\\/g, "\\");
+  }
+  return value;
 }
 
 function parseYamlList(frontmatter: string, key: string): string[] | undefined {

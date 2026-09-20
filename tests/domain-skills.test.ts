@@ -70,7 +70,12 @@ describe("domain skill uplifts", () => {
     expect(skill).toContain("code-certain");
     expect(skill).toContain("inferred");
     expect(skill).toContain("Installing a design MCP");
-    expect(skill).toContain("#10100e");
+    // Kit tokens live in this repo's DESIGN.md; the skill derives tokens from the product.
+    expect(skill).not.toContain("#10100e");
+    expect(skill).toContain("## Derive the direction");
+    expect(skill).toContain("Object.");
+    expect(skill).toContain("examples of the method, not a menu");
+    expect(skill).toContain("## Type and rhythm");
     expect(skill).toContain("Do not mark selection or severity with a left edge stroke");
     expect(skill).toContain("Scan first");
     expect(skill).toContain("Ask what they need");
@@ -78,57 +83,56 @@ describe("domain skill uplifts", () => {
     expect(skill).toContain("what do you need from this pass");
     expect(skill).toContain("a **short** product `DESIGN.md`");
     expect(skill).toContain("STYLE_GUIDE.md");
-    expect(skill).toContain("do not overwrite");
+    expect(skill).toContain("never overwrite");
     expect(skill).toContain("Quizzing them on hex");
     expect(skill).toContain("clear problem");
     expect(skill).toContain("judgment call");
-    expect(skill).toContain("slogan-hero + equal feature cards + numbered ticket stack");
-    expect(skill).toContain("styled divs pretending to be screenshots");
-    expect(skill).toContain("tracked ALL-CAPS + middle-dot meta");
+    // The detect fail-closed tells appear once, in the detect row, not three times.
+    expect(skill.match(/slogan hero/g)?.length).toBe(1);
+    expect(skill).toContain("styled divs");
+    expect(skill).toContain("tracked ALL-CAPS");
     expect(skill).toContain("swap / squint / signature");
-    expect(skill).toContain("Catalog-clean is necessary, not sufficient");
+    expect(skill).toContain("A clean fail-list pass is necessary, not sufficient");
+    expect(skill).toContain("## Fail list");
     expect(skill).toContain("don't change the code");
-    expect(skill).toContain("USER_GUIDE.html looks bad");
-    expect(skill).toContain("kit-html");
     const design = readFileSync(join(process.cwd(), "agents/design/agent.md"), "utf8");
     expect(design).toContain("`setup`, `build`, `review`, or `detect`");
-    expect(design).toContain("Detect means audit only");
-    expect(design).toContain("clear problem vs judgment call");
+    expect(design).toContain("Detect is audit only");
     expect(design).toContain("swap / squint / signature");
     expect(design).toContain("requiredTools: [browser, screenshot, image-review]");
     expect(design).toContain("Setup may skip capture");
+    // The agent points at the skill instead of restating it.
+    expect(design).toContain("this file does not restate them");
+    expect(design).not.toContain("slogan-hero");
   });
 
   it("planning names which domain skill the owner must run and launches them", () => {
     const skill = readSkill("planning");
     expect(skill).toContain("## Do");
     expect(skill).toContain("nextjs-app-router");
-    expect(skill).toContain("Skipping `supabase-auth-rls`");
-    expect(skill).toContain("Skipping `nextjs-app-router`");
+    expect(skill).toContain("`supabase-auth-rls` on any table");
+    expect(skill).toContain("`nextjs-app-router` on any route");
     expect(skill).toContain("name setup, build, review, or detect");
-    expect(skill).toContain("Skipping Design `setup`");
-    expect(skill).toContain("Skipping `accessibility-wcag`");
-    expect(skill).toContain("contrast looks fine in the screenshot");
-    expect(skill).toContain("Skipping `testing-qa`");
-    expect(skill).toContain("we’ll add tests later");
-    expect(skill).toContain("```text");
-    expect(skill).toContain(
-      "Act as design. This is a new repo. Scan what is already here, then ask me what we need to set up: who it is for, what they must get done, and what you should produce. Recommend from my answers. Write the style guide and principles with me before any CSS."
-    );
-    expect(skill).toContain(
-      "Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject."
-    );
-    expect(skill).toContain("Finishing without launching the owner");
-    expect(skill).toContain("Printing a paste and stopping");
-    expect(skill).toContain("unconfirmed restatement");
-    expect(skill).toContain("Outcome / User / Why now / Success / Constraint / Out of scope");
-    expect(skill).toContain("sounds good");
-    expect(skill).toContain("launch the owner");
+    expect(skill).toContain("Design `setup` on a new product UI");
+    expect(skill).toContain("`accessibility-wcag` because the screenshot looks fine");
+    expect(skill).toContain("`testing-qa` on auth/RLS");
+    // Payloads are referenced, not duplicated.
+    expect(skill).toContain("payload from `AGENTS.md` → Spawn payloads");
+    expect(skill).not.toContain("```text");
+    expect(skill).toContain("finishing without launching the owner");
+    expect(skill).toContain("a paste printed and left for the human to copy");
+    // Shared ask policy replaces the one-question ritual.
+    expect(skill).toContain("Ask before acting");
+    expect(skill).toContain("one message with a default each");
+    expect(skill).not.toContain("unconfirmed restatement");
+    expect(skill).not.toContain("sounds good");
+    expect(skill).toContain("Launch the owner");
     const planner = readFileSync(join(process.cwd(), "agents/planner/agent.md"), "utf8");
-    expect(planner).toContain("launch the owner");
-    expect(planner).toContain("unconfirmed restatement");
+    expect(planner).toContain("Launch the owner");
+    expect(planner).toContain("## Ask before acting");
+    expect(planner).not.toContain("unconfirmed restatement");
     expect(planner).not.toContain("You do not run the other agents.");
-    expect(planner).toContain("USER_GUIDE spawn payload");
+    expect(planner).toContain("payload from `AGENTS.md`");
   });
 
   it("accessibility-wcag requires a keyboard pass in the running UI and rejects screenshot-only contrast", () => {
@@ -147,7 +151,7 @@ describe("domain skill uplifts", () => {
     expect(qa).toContain("keyboard-only pass on the changed flow");
     const design = readFileSync(join(process.cwd(), "agents/design/agent.md"), "utf8");
     expect(design).toContain("accessibility-wcag");
-    expect(design).toContain("frontend-design` does not replace it");
+    expect(design).toContain("keyboard pass in the running browser, not a contrast guess");
   });
 
   it("browser-qa names console errors and failed same-origin requests", () => {
@@ -162,24 +166,28 @@ describe("domain skill uplifts", () => {
     expect(qa).toContain("failed same-origin");
   });
 
-  it("product-copy confirms Reader / Job / One action / Proof and rejects a marketing zoo", () => {
+  it("product-copy confirms Reader / Job / One action / Proof and rejects a marketing catalog", () => {
     const skill = readSkill("product-copy");
     expect(skill).toContain("Reader / Job / One action / Proof");
-    expect(skill).toContain("unconfirmed restatement");
+    expect(skill).toContain("Ask before acting");
     expect(skill).toContain("assumption");
-    expect(skill).toContain("marketing-skill zoo");
-    expect(skill).toContain("Seven Sweeps");
-    expect(skill).toContain(".agents/product-marketing.md");
-    expect(skill).toContain("downstream product app");
+    expect(skill).toContain("Importing a copy catalog");
+    expect(skill).toContain("MESSAGING.md");
     expect(skill).toContain("runs `deslop` as the last pass");
+    // Product-neutral: the kit's own guide voice lives in this repo's MESSAGING.md.
+    expect(skill).not.toContain("unconfirmed restatement");
+    expect(skill).not.toContain("USER_GUIDE");
+    expect(skill).not.toContain("Seven Sweeps");
     const copy = readFileSync(join(process.cwd(), "agents/copy/agent.md"), "utf8");
-    expect(copy).toContain("Reader / Job / One action / Proof");
-    expect(copy).toContain("marketing-skill zoo");
-    expect(copy).toContain("unconfirmed restatement");
+    expect(copy).toContain("Reader");
+    expect(copy).toContain("marketing catalog");
+    expect(copy).toContain("## Ask before acting");
+    expect(copy).not.toContain("unconfirmed restatement");
     const deslop = readSkill("deslop");
     expect(deslop).toContain("Claim sweep");
     expect(deslop).toContain("assumption");
-    expect(deslop).toContain("Seven Sweeps");
+    expect(deslop).toContain("## Structure tells");
+    expect(deslop).not.toContain("Seven Sweeps");
   });
 
   it("testing-qa requires commands-run, RLS fail-closed, and does not replace browser-qa", () => {
@@ -223,59 +231,61 @@ describe("domain skill uplifts", () => {
     expect(qa).toContain("ship");
     expect(qa).toContain("LGTM, ship it");
     const planning = readSkill("planning");
-    expect(planning).toContain("Skipping `ship`");
-    expect(planning).toContain("LGTM, ship it");
+    expect(planning).toContain("`ship` because someone said “LGTM.”");
   });
 
   it("init installs the uplifted domain skills", () => {
     const root = mkdtempSync(join(tmpdir(), "agent-kit-domain-"));
     roots.push(root);
     initProject({ cwd: root, activate: ["cursor"] });
-    const next = readFileSync(join(root, ".cursor/skills/nextjs-app-router/SKILL.md"), "utf8");
+    const next = readFileSync(join(root, ".agents/skills/nextjs-app-router/SKILL.md"), "utf8");
     expect(next).toContain("proxy.ts");
-    expect(existsSync(join(root, ".cursor/skills/supabase-auth-rls/SKILL.md"))).toBe(true);
+    expect(existsSync(join(root, ".agents/skills/supabase-auth-rls/SKILL.md"))).toBe(true);
     const engineer = readFileSync(join(root, ".cursor/agents/app-engineer.md"), "utf8");
-    expect(engineer).toContain("Do not treat a small route, form, or table as exempt");
+    expect(engineer).toContain("a small route, form, or table is not exempt");
+    expect(engineer).toContain("## Ask before acting");
     const design = readFileSync(join(root, ".cursor/agents/design.md"), "utf8");
-    expect(design).toContain("Detect means audit only");
-    expect(design).toContain("requiredTools: [browser, screenshot, image-review]");
+    expect(design).toContain("Detect is audit only");
+    expect(design).toContain("Required tools: browser, screenshot, image-review");
     expect(design).toContain("`setup`, `build`, `review`, or `detect`");
-    const planning = readFileSync(join(root, ".cursor/skills/planning/SKILL.md"), "utf8");
-    expect(planning).toContain("Finishing without launching the owner");
-    expect(planning).toContain("Printing a paste and stopping");
-    expect(planning).toContain("Act as design. This is a new repo. Scan what is already here, then ask me what we need to set up");
-    expect(planning).toContain("Do not review code alone. Open the app, capture desktop and mobile screenshots");
+    const planning = readFileSync(join(root, ".agents/skills/planning/SKILL.md"), "utf8");
+    expect(planning).toContain("finishing without launching the owner");
+    expect(planning).toContain("payload from `AGENTS.md` → Spawn payloads");
+    const agentsDoc = readFileSync(join(root, "AGENTS.md"), "utf8");
+    expect(agentsDoc).toContain("Act as design. This is a new repo. Scan what is already here, then ask me what we need to set up");
+    expect(agentsDoc).toContain("Do not review code alone. Open the app, capture desktop and mobile screenshots");
+    expect(agentsDoc).toContain("## Ask before acting");
     const planner = readFileSync(join(root, ".cursor/agents/planner.md"), "utf8");
-    expect(planner).toContain("launch the owner");
+    expect(planner).toContain("Launch the owner");
     expect(planner).not.toContain("You do not run the other agents.");
-    expect(planner).toContain("USER_GUIDE spawn payload");
+    expect(planner).toContain("payload from `AGENTS.md`");
     const guide = readFileSync(join(root, "USER_GUIDE.md"), "utf8");
     expect(guide).toContain("ask me what we need to set up");
     expect(guide).toContain("The session launches that owner");
     expect(guide).toContain("Act as the security agent. Review auth, RLS, IDOR, and secrets");
     expect(guide).toContain("Act as the copy agent. Review the rendered words in screenshots");
-    const a11y = readFileSync(join(root, ".cursor/skills/accessibility-wcag/SKILL.md"), "utf8");
+    const a11y = readFileSync(join(root, ".agents/skills/accessibility-wcag/SKILL.md"), "utf8");
     expect(a11y).toContain("Contrast looks fine in the screenshot");
     expect(a11y).toContain("keyboard-only pass works on the changed flow in the running UI");
     const qa = readFileSync(join(root, ".cursor/agents/qa.md"), "utf8");
     expect(qa).toContain("accessibility-wcag");
     expect(qa).toContain("keyboard-only pass on the changed flow");
     expect(qa).toContain("Tests pass");
-    const testing = readFileSync(join(root, ".cursor/skills/testing-qa/SKILL.md"), "utf8");
+    const testing = readFileSync(join(root, ".agents/skills/testing-qa/SKILL.md"), "utf8");
     expect(testing).toContain("Tests pass");
     expect(testing).toContain("fail closed when another user or anon can read the row");
     expect(testing).toContain("does not replace");
-    const ship = readFileSync(join(root, ".cursor/skills/ship/SKILL.md"), "utf8");
+    const ship = readFileSync(join(root, ".agents/skills/ship/SKILL.md"), "utf8");
     expect(ship).toContain("LGTM, ship it");
     expect(ship).toContain("rollback");
     expect(ship).toContain("browser-qa");
     expect(ship).toContain("Kill switch");
     expect(qa).toContain("LGTM, ship it");
-    const frontend = readFileSync(join(root, ".cursor/skills/frontend-design/SKILL.md"), "utf8");
+    const frontend = readFileSync(join(root, ".agents/skills/frontend-design/SKILL.md"), "utf8");
     expect(frontend).toContain("don't change the code");
     expect(frontend).toContain("judgment call");
-    const browser = readFileSync(join(root, ".cursor/skills/browser-qa/SKILL.md"), "utf8");
+    const browser = readFileSync(join(root, ".agents/skills/browser-qa/SKILL.md"), "utf8");
     expect(browser).toContain("unexpected console errors");
-    expect(existsSync(join(root, ".cursor/skills/web-performance/SKILL.md"))).toBe(false);
+    expect(existsSync(join(root, ".agents/skills/web-performance/SKILL.md"))).toBe(false);
   });
 });

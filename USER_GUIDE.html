@@ -45,6 +45,11 @@
         font-size: 0.88em;
       }
 
+      /* Short CLI flags must not break after the leading dashes on narrow screens. */
+      code.flag {
+        white-space: nowrap;
+      }
+
       a {
         color: inherit;
       }
@@ -370,8 +375,8 @@
           </div>
         </div>
         <p>
-          Open the project. You should see <code>AGENTS.md</code>, this guide, and native files under <code>.cursor/</code>, <code>.claude/</code>,
-          <code>.codex/</code>, <code>.github/</code>, or <code>.antigravity/</code>.
+          Open the project. You should see <code>AGENTS.md</code>, this guide, and skills under <code>.agents/skills/</code>, and native agents under
+          <code>.cursor/</code>, <code>.claude/</code>, <code>.codex/</code>, <code>.github/agents/</code>, or <code>.agents/agents/</code>.
         </p>
         <p>
           Then say the change. This session launches Planner, then the named owner, then extra reviewers, then QA. You do not copy a prompt. You should get a
@@ -454,7 +459,7 @@
             </tr>
             <tr>
               <td><code>frontend-design</code></td>
-              <td>Setup, build, review, or detect UI. Tokens first. Anti-generic</td>
+              <td>Setup, build, review, or detect UI. Derive tokens from the product. Owns the visual fail list</td>
             </tr>
             <tr>
               <td><code>accessibility-wcag</code></td>
@@ -474,7 +479,7 @@
             </tr>
             <tr>
               <td><code>deslop</code></td>
-              <td>Last copy pass. Copy always runs this</td>
+              <td>Last copy pass. Word and structure tells. Copy always runs this</td>
             </tr>
             <tr>
               <td><code>ship</code></td>
@@ -491,42 +496,54 @@
 
       <section id="invoke">
         <h2>How to invoke in each IDE</h2>
+        <p>
+          Every host gets the same six agents as native subagents, launched by id. Skills live once in <code>.agents/skills/</code>; Claude reads its own copy
+          at <code>.claude/skills/</code>.
+        </p>
         <div class="ides">
           <article class="ide">
             <h3>Cursor</h3>
-            <p><code>.cursor/agents/*.md</code>, <code>.cursor/skills/*/SKILL.md</code></p>
+            <p><code>.cursor/agents/</code>, <code>.agents/skills/</code>, <code>.cursor/rules/</code></p>
             <ul>
               <li>
-                Describe the change. This session launches <code>@planner</code>, then the owner. You do not have to mention <code>@app-engineer</code>,
-                <code>@security</code>, <code>@design</code>, <code>@qa</code>, or <code>@copy</code>.
+                Describe the change. This session launches <code>@planner</code> as a Task, then the owner. You do not have to mention
+                <code>@app-engineer</code>, <code>@security</code>, <code>@design</code>, <code>@qa</code>, or <code>@copy</code>.
               </li>
-              <li>Force a skill with <code>@browser-qa</code>.</li>
-              <li>Use the built-in browser first. Playwright is backup.</li>
+              <li>Planner is <code>readonly</code>; it cannot implement.</li>
+              <li>Force a skill with <code>/browser-qa</code>. Use the built-in browser first. Playwright is backup.</li>
             </ul>
           </article>
           <article class="ide">
             <h3>Claude Code</h3>
-            <p><code>.claude/agents/*.md</code>, <code>CLAUDE.md</code></p>
+            <p><code>.claude/agents/</code>, <code>.claude/skills/</code>, <code>CLAUDE.md</code></p>
             <ul>
-              <li>This session launches the matching subagent. Do not play every role in one voice.</li>
-              <li>Mention <code>browser-qa</code> for any screen. If there is no browser, use the Playwright commands in that skill.</li>
+              <li>
+                This session launches the matching subagent by id. Each one preloads its skills, so Design and QA start with <code>browser-qa</code> in context.
+              </li>
+              <li>Planner, Security, and Design run at <code>effort: high</code>. If there is no browser, use the Playwright commands in that skill.</li>
             </ul>
           </article>
           <article class="ide">
             <h3>Codex</h3>
-            <p><code>.codex/agents/*.toml</code>, <code>AGENTS.md</code></p>
+            <p><code>.codex/agents/</code>, <code>.agents/skills/</code>, <code>AGENTS.md</code></p>
             <ul>
-              <li>This session launches the named custom agent from <code>.codex/agents/</code>.</li>
-              <li>Use the QA spawn payload below. Use Playwright if Codex cannot see the page.</li>
+              <li>This session spawns the named custom agent. Planner, Security, and Design use high reasoning effort.</li>
+              <li>Codex discovers the skills from <code>.agents/skills/</code>. Use Playwright if Codex cannot see the page.</li>
             </ul>
           </article>
           <article class="ide">
             <h3>GitHub Copilot</h3>
-            <p><code>.github/copilot-instructions.md</code></p>
-            <p>
-              No isolated specialist spawn. After you say the change, run New feature in this thread. Start each step with “now Planner” / “now App engineer” /
-              “now QA”. Do not stop after printing a prompt. To prove a screen:
-            </p>
+            <p><code>.github/agents/</code>, <code>.agents/skills/</code>, <code>.github/copilot-instructions.md</code></p>
+            <ul>
+              <li>
+                Launch each specialist with <code>/agent planner</code>, <code>/agent app-engineer</code>, <code>/agent qa</code> (CLI:
+                <code class="flag">copilot --agent=qa</code>) and its payload from <code>AGENTS.md</code>.
+              </li>
+              <li>
+                If this Copilot surface has no custom agents, run the sequence in this thread under “now Planner” / “now App engineer” / “now QA”. To prove a
+                screen:
+              </li>
+            </ul>
             <pre id="copilot-prompt">
 Act as the QA agent. Use the browser-qa skill. Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.</pre>
             <div class="copy-row">
@@ -535,11 +552,15 @@ Act as the QA agent. Use the browser-qa skill. Do not review code alone. Open th
           </article>
           <article class="ide">
             <h3>Antigravity</h3>
-            <p><code>.antigravity/agent-kit/commands/*.toml</code></p>
+            <p><code>.agents/agents/</code>, <code>.agents/skills/</code>, <code>.agents/rules/</code></p>
             <ul>
-              <li><code>/plan</code> — Planner, then continue in-thread with “now App engineer”</li>
-              <li><code>/browser-qa</code> — screenshot loop</li>
-              <li><code>/security</code>, <code>/frontend</code>, <code>/copy</code>, <code>/test</code>, <code>/ship</code></li>
+              <li>
+                Each agent is a custom subagent with its skills attached. Say the change; the main agent calls <code>invoke_subagent</code> for Planner, then
+                the owner, then QA.
+              </li>
+              <li>
+                Pick an agent directly from <code>/agents</code>. If subagents are unavailable, continue in this thread under a “now App engineer” header.
+              </li>
             </ul>
           </article>
         </div>
@@ -721,7 +742,10 @@ npx agent-kit update</pre>
           Add <code>web-performance</code> when the ask is LCP / INP / CLS / “this page is slow.” Measure → identify → fix → re-measure. Map onto
           <code>next/image</code>, RSC payload, and PostgREST N+1. Reject optimizing from a guess. Not on default <code>init</code>.
         </p>
-        <p><code>update</code> refreshes pristine files. Local edits win or land in <code>.agent-kit/conflicts/</code>. It never deletes your old docs.</p>
+        <p>
+          <code>update</code> refreshes pristine files. Local edits win or land in <code>.agent-kit/conflicts/</code>. It never deletes your old docs unless you
+          pass <code class="flag">--prune-legacy</code>, which lists the 0.3 council leftovers and asks before removing them.
+        </p>
         <table>
           <thead>
             <tr>
@@ -731,16 +755,33 @@ npx agent-kit update</pre>
           </thead>
           <tbody>
             <tr>
-              <td>Agent missing in Cursor / Claude</td>
-              <td>Re-run <code>init --activate cursor</code> or <code>claude</code>.</td>
+              <td>Agent missing in an IDE</td>
+              <td>
+                Re-run <code>init --activate &lt;ide&gt;</code> or <code>all</code>. Agents render to <code>.cursor/agents/</code>,
+                <code>.claude/agents/</code>, <code>.codex/agents/</code>, <code>.github/agents/</code>, <code>.agents/agents/</code>.
+              </td>
             </tr>
             <tr>
               <td>Skill not triggering</td>
-              <td>Mention <code>browser-qa</code> or <code>@</code> it in Cursor.</td>
+              <td>Name it or type <code>/browser-qa</code>. Skills live in <code>.agents/skills/</code> (Claude: <code>.claude/skills/</code>).</td>
             </tr>
             <tr>
               <td>No browser in Copilot / Codex</td>
               <td>Use the Playwright commands above.</td>
+            </tr>
+            <tr>
+              <td>Cursor lists an agent twice</td>
+              <td>
+                Cursor also reads <code>.claude/agents/</code> and <code>.codex/agents/</code>. Keep one host activated in Cursor-only repos, or pick the
+                <code>.cursor</code> entry.
+              </td>
+            </tr>
+            <tr>
+              <td>Claude subagent refuses to launch</td>
+              <td>
+                Its <code>tools:</code> must be real Claude tool names. Run <code class="flag">update --force</code> to re-render; <code>doctor</code> fails on
+                a stale file.
+              </td>
             </tr>
             <tr>
               <td>QA finished from the diff</td>
@@ -756,7 +797,10 @@ npx agent-kit update</pre>
             </tr>
             <tr>
               <td>Still have <code>QUALITY_GATES.md</code> / <code>COUNCIL.md</code></td>
-              <td>Expected. <code>update</code> does not delete them. <code>doctor</code> lists leftovers.</td>
+              <td>
+                <code>doctor</code> lists them. Run <code class="flag">update --prune-legacy</code> on a branch to remove them and any 0.3 agent shadowing a 0.4
+                one.
+              </td>
             </tr>
           </tbody>
         </table>

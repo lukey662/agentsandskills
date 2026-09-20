@@ -2,290 +2,104 @@
 
 ## Package Purpose
 
-`@appsforgood/next-supabase-kit` is a public pack of agents, skills, and a user guide for Next.js and Supabase projects. `init` writes `AGENTS.md`, `USER_GUIDE.md`, `USER_GUIDE.html`, and native Cursor/Claude/Codex/Copilot/Antigravity files. QA of user-visible work requires desktop and mobile screenshots. Default domain skills (`nextjs-app-router`, `supabase-auth-rls`, `postgres-migrations`, `owasp-security-review`) are playbooks with Reject and Done-when, not one-line checklists. `nextjs-app-router` also requires one Action/Handler error shape, boundary validation, additive fields, idempotency or “unsafe to retry,” and official Next.js docs or UNVERIFIED. `frontend-design` is the same shape: name `setup`, `build`, `review`, or `detect`, commit 4–6 tokens, match the existing stack, and screenshot before accepting UI. `detect` is audit-only: YAML matches “don't change the code” / “USER_GUIDE.html looks bad” / `kit-html`; the table includes clear problem vs judgment call; Done-when fails slogan-hero + equal cards + numbered tickets, fake QA frames, tracked ALL-CAPS + middle-dot meta, or unnamed swap / squint / signature tests. `setup` is the new-repo path: scan architecture, ask what the user needs, recommend principles from those answers, and write a short product `DESIGN.md` plus frontend `STYLE_GUIDE.md` rules before CSS. `init` does not install `DESIGN.md` by default. `accessibility-wcag` is a WCAG 2.1 AA playbook: keyboard-only pass in the running UI; contrast is not signed off from a screenshot. `testing-qa` is commands (unit / regression / smoke): list what ran; `toBeVisible` is not visual proof; RLS tests fail when another user can read the row. `browser-qa` also names unexpected console errors and failed same-origin requests. `ship` is go / no-go: env names, migration order, rollback, kill switch (previous production deployment, flag, or revert), commands run; Reject “LGTM, ship it”; user-visible still needs `browser-qa` paths. Optional `debug` (`agent-kit add skill debug`) is reproduce → localize → reduce → fix → guard; Reject guessing from the stack trace alone; not on default `init`. Optional `docs` (`agent-kit add skill docs`) updates USER_GUIDE, CHANGELOG, and the living file that moved; Reject restoring the 17-doc OS. Optional `upgrade` (`agent-kit add skill upgrade`) is `agent-kit update` on a branch; Reject `init --force`; version notes in `UPGRADE.md`. Optional `ui-polish` is a surgical pass after `frontend-design`; Reject a second design system; desktop and mobile. Optional `web-performance` (`agent-kit add skill web-performance`) is measure → identify → fix → re-measure; Reject optimizing from a guess; not on default `init`. `product-copy` asks one question when Reader / Job / One action / Proof is missing, waits for an explicit yes, and rejects a marketing-skill zoo or `.agents/product-marketing.md`. `deslop` then runs a claim sweep (prove / specific / so-what) before visual P0s. There is one Copy agent. Planner’s `planning` skill asks one question when who / why now / success / constraint is missing, restates Outcome / User / Why now / Success / Constraint / Out of scope, waits for an explicit yes, then names the owner and the session launches them with the USER_GUIDE spawn payload. Default specialists launch the next specialist in Handoff. Copilot and Antigravity continue in-thread with “now App engineer.” USER_GUIDE New feature is Plan → implement → Security if needed → Design if UI → Copy if public words → QA. USER_GUIDE.html first viewport is init plus say the change; Design setup is under Workflows. Remaining kit-quality work is skip-intake in `ROADMAP.md`. The default CLI is `init`, `add`, `update`, `doctor`, `guide`, and `adapter validate`.
+`@appsforgood/next-supabase-kit` installs six specialist agents, twelve skills, and a user guide into a Next.js + Supabase repository, rendered natively for Cursor, Claude Code, Codex, GitHub Copilot, and Antigravity. The one rule it enforces everywhere: a user-visible change is not done until someone opened the running UI, captured desktop and mobile screenshots, and reviewed those images.
 
 ## CLI Surface
 
-The package exposes the `agent-kit` binary from `dist/index.js`.
+The package exposes the `agent-kit` binary (alias `agents-and-skills`) from `dist/index.js`.
 
-Supported commands:
-
-- `init`
-- `audit`
-- `diff`
-- `update`
-- `add skill`
-- `adapter validate`
-- `package validate`
-- `doctor`
-- `research discover`
-- `research scan`
-- `research summarize`
-- `research propose-updates`
-- `init --guided`
-- `init --github-actions` (optional advisory hosted audit; off by default)
-- `onboard`
-- `context init`
-- `context scan`
-- `context ask`
-- `context render`
-- `context validate`
-- `context show`
-- `session start`
-- `session list`
-- `session active`
-- `session note`
-- `session decision`
-- `session handoff`
-- `session correct`
-- `session artifact`
-- `session verify`
-- `session output`
-- `session render`
-- `session close`
-- `correction list`
-- `correction add`
-- `correction apply`
-- `correction retire`
-- `correction propose-upstream`
-- `studio export`
-
-Existing project files must not be overwritten by default. Template conflicts are written to `.agent-kit/conflicts/`, and installed template hashes are tracked in `.agent-kit/manifest.json`.
-
-Fresh installs write `.agent-kit/config.json` with `githubActions.mode: "off"` and do not create a workflow. Explicit `init --github-actions` writes `mode: "advisory"` and installs the maintained workflow with job-level opt-in. Local verification remains authoritative for commit/push and phase progression. Updates never delete an existing workflow; older managed workflows remain updateable so they can receive the advisory execution guard.
-
-`update` performs a hash-aware merge using the manifest template hashes. Per file it reports one action:
-
-- `created`: the file was missing locally.
-- `unchanged`: the file already matches the current template.
-- `updated`: the file was pristine (matched the installed template hash) and was auto-refreshed to the newer template.
-- `kept-local`: the file is locally customized and the bundled template did not change; local edits win silently.
-- `conflict`: the file is locally customized and the template changed; the new template is written to `.agent-kit/conflicts/` for review.
-- `overwritten`: local customizations were replaced because `--force` was passed.
-
-`update --dry-run` reports the same per-file plan without writing anything (it errors if no manifest exists). Running `update` without a previous install falls back to a conflict-safe `init`. After a real update, the manifest records `updatedAt` and refreshed `templateHashes`.
+- `init [--stack next-supabase] [--activate cursor|claude|codex|copilot|antigravity|all] [--force] [--dry-run] [--json]`
+- `update [--force] [--dry-run] [--prune-legacy [--yes]] [--json]`
+- `add skill <id>` / `add agent <id>` (optional catalog entries only; rendered to every activated host)
+- `doctor [--json]`
+- `guide [--json]`
+- `adapter validate [cursor|claude|codex|copilot|antigravity|all] [--json]`
+- `package validate [--json]` (source repository only)
 
 ### Output And Exit-Code Contract
 
-- Commands print human-readable output by default and accept `--json` for machine-readable output. Machine consumers (CI gates, scripts) must pass `--json`; the human output format is not a stable contract.
-- Color output uses ANSI semantic colors only when stdout is a TTY and `NO_COLOR` is unset; output degrades to monochrome otherwise.
-- Mutating commands support `--dry-run` where preview is meaningful: `init --dry-run`, `update --dry-run`, and `add skill --dry-run`.
-- `init --guided` asks interactive project-context questions only when running on a TTY; in CI and scripts it falls back to the non-interactive context scan.
-- Exit codes: `0` success; `1` for invalid input, failed audit gates (`--min-readiness` not met or any `fail` finding), and runtime errors. Errors print a single `error: <message>` line to stderr instead of a stack trace.
+- Commands print human-readable output by default and accept `--json` for machine-readable output. Machine consumers must pass `--json`; the human format is not a stable contract.
+- Colour is ANSI semantic colour only when stdout is a TTY and `NO_COLOR` is unset; otherwise monochrome. The level word is always printed.
+- Exit codes: `0` success; `1` for invalid input, a failed `doctor`, a cancelled prune, or a runtime error. Errors print one `error: <message>` line to stderr.
 
-`init` also installs assistant adapter rules when absent:
+## Install Layout
 
-- `.cursor/rules/cursor-agent-kit.mdc`
-- `.cursor/rules/cursor-model-selection.mdc`
+`init` writes root docs and one skills location, then the native agent files for each activated host.
 
-Downstream projects should record adapter activation evidence in `ASSISTANT_ADAPTERS.md`.
+| Path | Written when | Read by |
+| --- | --- | --- |
+| `AGENTS.md`, `USER_GUIDE.md`, `USER_GUIDE.html` | always | every host and every human |
+| `.agent-kit/manifest.json`, `.agent-kit/config.json` | always | `update`, `doctor`, `adapter validate` |
+| `.cursor/rules/cursor-agent-kit.mdc` | always | Cursor (always-on rule) |
+| `.agents/skills/<id>/SKILL.md` | always | Cursor, Codex, Copilot, Antigravity (Agent Skills open standard) |
+| `.cursor/agents/<id>.md` | cursor | Cursor Task subagents |
+| `.claude/agents/<id>.md`, `.claude/skills/<id>/SKILL.md`, `CLAUDE.md` | claude | Claude Code subagents and skills |
+| `.codex/agents/<id>.toml` | codex | Codex custom agents |
+| `.github/agents/<id>.agent.md`, `.github/copilot-instructions.md` | copilot | Copilot custom agents (`/agent <id>`) and repository instructions |
+| `.agents/agents/<id>/agent.md`, `.agents/rules/agent-kit.md` | antigravity | Antigravity custom subagents and workspace rules |
 
-`init --activate antigravity` installs:
+Nothing else is written. There is no `.cursor/skills/`, no `.antigravity/`, and no repo-root `skills/` in an install; those were 0.4 locations and `update --prune-legacy` removes them.
 
-- `.antigravity/agent-kit/plugin.json`
-- `.antigravity/agent-kit/commands/*.toml`
-- `.antigravity/runtime-skills/*/SKILL.md`
-- `.antigravity/agent-kit/README.md`
+### Per-Host Agent Frontmatter
 
-The Antigravity command layer exposes `/setup`, `/audit`, `/plan`, `/handoff`, `/frontend`, `/security`, `/copy`, `/ship`, and `/upgrade`. It also exposes focused UI improvement commands: `/ui-audit`, `/ui-polish`, `/layout-cleanup`, `/responsive-cleanup`, `/accessibility-pass`, `/distinctiveness-pass`, `/screenshot-critique`, and `/browser-qa`. These command files must wrap the existing council/session contracts and must not fork role definitions, security policy, quality gates, frontend detector policy, or model-routing policy.
+Canonical agents in `agents/<id>/agent.md` carry `name`, `description`, `tools`, and `requiredTools` in the kit's own vocabulary (`repo`, `edit`, `terminal`, `browser`, `screenshot`, `image-review`, `test-runner`). The renderer in `src/install/roster-adapters.ts` keeps the body byte-for-byte, prefixes one line (`> Required tools: …. Do not drop them.`) when the agent has required tools, and rewrites the frontmatter to what each host documents:
 
-`agent-kit adapter validate all` validates the IDEs recorded in `.agent-kit/manifest.json` `activated`. A Cursor-only install must not fail because Claude files are absent. Pass a named target (`cursor`, `claude`, `codex`, `copilot`, `antigravity`) to check that surface only. If no manifest `activated` list exists, `all` still checks every IDE.
+- **Cursor**: `name`, `description`, `model: inherit`; `readonly: true` when the canonical `tools` list is only `repo` (Planner). Cursor has no `tools` field.
+- **Claude Code**: `name`, `description`, `model: inherit`; `effort: high` for planner, security, design; `tools:` mapped to real Claude tool names (`repo → Read, Grep, Glob`; `edit → Edit, Write`; `terminal`/`test-runner → Bash`; plus `Skill`) only when the agent needs no browser tools, otherwise omitted so the agent inherits everything; `skills:` preloading the agent's catalog skills. Claude refuses to launch a subagent whose `tools` do not resolve, so the kit vocabulary never reaches a Claude file.
+- **Codex**: TOML with `name`, `description`, `model_reasoning_effort` (`high` for planner, security, design), and `developer_instructions` holding the canonical markdown verbatim.
+- **Copilot**: `name`, `description`. Tools omitted means all.
+- **Antigravity**: `name`, `description`, `subagent: true`, `mainAgent: true`, `skills:` as `skills/<id>` paths relative to `.agents/`.
 
-`agent-kit doctor` fails when a default agent drops the packaged `requiredTools` list (QA and Design must keep `browser`, `screenshot`, and `image-review`). Missing `.cursor/agents/` is still a warning.
+Descriptions are double-quoted YAML scalars because they contain colons. `src/install/host-frontmatter.ts` holds the allowlists (`CURSOR_AGENT_KEYS`, `CLAUDE_TOOL_NAMES`) and `validateHostAgentFile`, which `adapter validate`, `doctor`, and the tests all use.
 
-`agent-kit guide` prints the absolute path to `USER_GUIDE.html`. Open that file in a browser. GitHub shows HTML as source and is not the layout.
+### Update And Prune
 
-`agent-kit adapter validate antigravity` validates the Antigravity manifest, command files, portable `SKILL.md` wrappers, source-of-truth references, package allowlist, and secret-safety. Native Antigravity CLI validation is optional because the package must remain usable where `agy` is not installed.
+`update` refreshes pristine managed files (`AGENTS.md`, `USER_GUIDE.*`, the Cursor rule, `CLAUDE.md`, `.agents/rules/agent-kit.md`) by hash and regenerates `.agents/skills/` and the activated hosts' agent files. Local edits win or land in `.agent-kit/conflicts/`. It never deletes unless `--prune-legacy` is passed.
 
-`agent-kit package validate` runs from the source repository and validates runtime adapter assets, portable skills, docs, example snapshots, package allowlists, and source-package audit behavior.
+`update --prune-legacy`:
 
-Release and CI gates include `npm run smoke:audit-gate`, which requires a fresh install to pass `agent-kit audit --min-readiness baseline-setup` with zero failures.
+- Deletes only paths on the allowlist in `src/install/prune-legacy.ts`: 0.3 council root docs and `.agent-kit/` library folders, council agent and skill files by id, council Antigravity commands, kit-installed files whose body is the council version, and the 0.4 skill copies (`.cursor/skills/<id>/`, `.antigravity/`, repo-root `skills/<id>/`).
+- Detects a council stub at a 0.4+ agent path by content (no `description`, or council doc names such as `COUNCIL.md` and `.agent-kit/agents/` in the body), never by path alone.
+- Never removes repo-root `skills/` when `cwd` is the kit's own source tree (`isKitSource`: `catalog.json`, `agents/`, and `src/catalog.ts` present).
+- Prints the plan and requires an interactive `y` or `--yes`; `--dry-run` prints the plan only. Runs before regeneration so every deleted 0.5-owned path is recreated in the same call.
 
-## Context And Session Surface
+`doctor` fails when a default agent file on any host is a council stub, will not load under that host's frontmatter rules (for example a Claude `tools:` entry that is not a Claude tool), or has dropped the packaged required tools from its `Required tools` line. It fails when the always-on Cursor rule or `.github/copilot-instructions.md` carries council routing. It warns when council skills, 0.4 skill copies, or `.antigravity/` remain. Every message names the fix.
 
-Phase 9 adds a local-first Agent Studio workflow. The baseline implementation must not require a database, hosted service, background daemon, or direct model API credentials.
+## Default Agents And Skills
 
-Implemented commands:
+`catalog.json` is the single machine-readable contract:
 
-- `init --guided`
-- `onboard`
-- `context init`
-- `context scan`
-- `context ask`
-- `context render`
-- `context validate`
-- `context show`
-- `session start`
-- `session list`
-- `session active`
-- `session note`
-- `session decision`
-- `session handoff`
-- `session correct`
-- `session artifact`
-- `session verify`
-- `session output`
-- `session render`
-- `session close`
-- `correction list`
-- `correction add`
-- `correction apply`
-- `correction retire`
-- `correction propose-upstream`
-- `studio export`
-- `adapter validate`
-- `package validate`
-
-Implemented local files:
-
-- `.agent-kit/project-context.json`
-- `.agent-kit/project-context.md`
-- `.agent-kit/corrections/project-rules.json`
-- `.agent-kit/corrections/agent-rules.json`
-- `.agent-kit/corrections/upstream-proposals.json`
-- `.agent-kit/council-sessions/<session-id>/session.json`
-- `.agent-kit/council-sessions/<session-id>/events.jsonl`
-- `.agent-kit/council-sessions/<session-id>/index.md`
-- `.agent-kit/council-sessions/<session-id>/transcript.md`
-- `.agent-kit/studio/index.html`
-
-`project-context.json` is the machine-readable source for product, audience, workflows, sensitive data, auth model, tenant model, integrations, UI direction, messaging, quality target, known constraints, and open questions.
-
-`events.jsonl` is the append-only source of truth for visible session events: agent messages, decisions, handoffs, risks, evidence, human corrections, artifacts, verification, required-output status updates, open questions, and session status changes.
-
-Generated Markdown files are the primary human interface. They must include Mermaid handoff graphs, current status, agent streams, decision tables, correction summaries, required outputs, verification evidence, artifact links, and next actions.
-
-The static Studio export is an optional visual interface generated from the same local files. It must embed only redacted export-time JSON, render an SVG handoff graph, provide clickable transcript panels, avoid external assets, and require no server or database.
-
-Human corrections can be scoped to a session, the project, a specific agent, or an upstream proposal. Active project and agent corrections must be loaded by future IDE-agent work through installed assistant-adapter guidance. Invalid correction scopes must be rejected with a stable package-owned error before selecting or writing any durable correction file.
-
-The package must not claim to expose private model reasoning. Agent Studio records visible work products, decisions, and evidence only.
-
-Runtime command files and portable skills are adapter surfaces. They are allowed to summarize routing and required outputs, but the canonical source of truth remains `AGENTS.md`, `.agent-kit/agent-roster.json`, `QUALITY_GATES.md`, `.agent-kit/skills/`, and Agent Studio JSON/JSONL session records.
-
-### Automated Verification Requirements
-
-Every context, session, correction, renderer, adapter, audit, and studio feature must ship with automated tests before it is marked complete.
-
-Required and current coverage:
-
-- Unit tests for schema validation, scanner output, guided answer normalization, correction scope handling, JSONL parsing, event validation, graph generation, Markdown rendering, redaction, path safety, and audit findings.
-- Fixture tests for empty projects, fresh installs, existing customized docs, old manifests, malformed context files, active corrections, unrendered sessions, incomplete completed sessions, and fake secret-looking values.
-- CLI smoke tests for `init --guided`, context scan/render/validate, session start/decision/handoff/correct/artifact/verify/output/render, static studio export, and audit.
-- Golden output tests for generated project context Markdown, session index Markdown, transcript Markdown, and expected audit output.
-- Regression tests proving existing `init`, `update`, `diff`, conflict handling, examples, and public package file allowlist behavior do not regress.
-- Runtime adapter tests proving Antigravity activation, native command structure, UI improvement command coverage, plugin manifest references, portable `SKILL.md` wrappers, adapter validation, package validation, and package-root audit mode do not regress.
-- Security tests for path traversal, Markdown injection, secret redaction, malformed JSON/JSONL, unsafe static exports, and localhost-only live studio behavior when implemented.
-
-The shared `npm run release:check` gate includes `npm run smoke:studio`. Broken context/session/correction behavior should fail in automation before reaching user testing.
-
-## Executable Orchestrator Surface
-
-`@appsforgood/agent-kit-runtime` is an optional workspace and public npm package. Baseline behavior remains available when it is absent or `.agent-kit/orchestrator.json` has `enabled: false`.
-
-Required contracts:
-
-- Config validates against `schemas/orchestrator.schema.json`; raw credentials are rejected in favor of `env:` and `keychain:` references.
-- Roster workflows compile to an explicit sequence with bounded steps, visits, retries, tool calls, output, and total run time.
-- Ordered model aliases enforce required capabilities before provider invocation and record deterministic fallback outcomes.
-- Provider and MCP HTTP calls reject redirects, unsafe protocols, embedded credentials, non-allowlisted hosts, and private/special DNS results unless explicitly permitted.
-- Stdio MCP and Cursor execution require global host-mutation opt-in plus a resumable host approval.
-- Worktree writes require approval; destructive and secret tool actions fail closed. Docker commands have no network by default.
-- Source dirty changes are excluded from the worktree only after acknowledgement. Tracked sensitive filenames block worktree creation.
-- LangGraph checkpoints persist in SQLite. Redacted run/event records validate against `runtime-run.schema.json` and `runtime-event.schema.json`.
-- Applicable plan, external, mutation, host, and final-commit gates pause and resume without replaying a completed mutating agent.
-- Finalization creates at most one scoped commit and never merges, pushes, opens a pull request, deploys, or applies migrations.
-- CLI and Studio use the same runtime service and evidence store.
-
-## Upgrade Surface
-
-Installed projects receive `UPGRADE.md` and `.agent-kit/` assets for upgrade review. Upgrade work must support:
-
-- `agent-kit diff` before accepting template changes.
-- `agent-kit update` with conflict-safe writes.
-- `.agent-kit/overrides.json` for accepted local deviations.
-- Next.js upgrade-guide and codemod review when framework behavior changes.
-- Supabase migration history, RLS impact, generated types, and rollback review when data/auth behavior changes.
-- `agent-kit audit --min-readiness baseline-setup` after upgrade.
-- Rollback evidence and owner/date in `UPGRADE.md`.
-
-## Default Agent Council
-
-Installs must create `.agent-kit/agent-roster.json` from `rosters/next-supabase-default-council.json`.
-
-Required default behavior:
-
-- Planner owns planning, roadmaps, scope, ambiguous requests, and handoff routing.
-- Lead Architect owns architecture and must review core changes before implementation.
-- Supabase/Postgres Engineer, Next.js Engineer, Frontend Design Lead, Marketing Copy Lead, Security Reviewer, QA Engineer, Documentation Maintainer, and Deployment/Observability Engineer join based on roster triggers.
-- Core changes must use the `core-change` workflow and include Lead Architect in both sequence and council.
-- Agent skill routing must include planning, upgrade maintenance, Next.js, Supabase/RLS, Postgres migrations, OWASP, frontend design, marketing copy, accessibility, testing, docs, and deployment skills.
-- Frontend skill routing must include content-first design, reference-led design critique, frontend distinctiveness benchmark, frontend product-quality rubric, UI improvement harness, visual regression QA, and accessibility.
-- Marketing copy routing must include positioning, conversion copywriting, landing-page copy, product voice/tone, onboarding, and empty-state copy skills.
-
-`agent-kit audit` must fail when the default roster is missing, invalid, lacks required agents, lacks required skill routing, or does not make Planner the default planning agent.
-
-## Messaging And Copy Surface
-
-Installed projects receive `MESSAGING.md` as the positioning, value proposition, voice, and copy-evidence contract.
+- `defaultAgents` (`planner`, `app-engineer`, `security`, `design`, `qa`, `copy`), `optionalAgents`, `defaultSkills` (twelve), `optionalSkills`.
+- `agentSkills`: the skills each agent must run. Claude preloads them through `skills:`; Antigravity attaches them; the agent files name them in prose.
+- `screenshotFailClosed`: the sentence `doctor` requires in `USER_GUIDE.md` and `USER_GUIDE.html`.
+- `askPolicy`: ask only when the answer changes what gets built; never what the repo can answer; up to three bundled questions with a default each; proceed on defaults when told to go or when non-interactive; no gate on the wording of the yes.
+- `spawnPayloads`: the eight handoff prompts (`planner`, `app-engineer`, `security`, `design`, `design-setup`, `qa`, `copy`, `ship`).
 
 Required behavior:
 
-- Public-facing or conversion-facing copy changes route through Marketing Copy Lead.
-- The marketing-copy workflow records discovery questions, audience, pain, desired outcome, alternatives, differentiator, proof, objections, voice/tone, page or flow copy inventory, CTA hierarchy, and design handoff notes.
-- `agent-kit audit` fails when Marketing Copy Lead or the marketing-copy workflow is missing from the default roster.
-- `agent-kit audit` warns when `MESSAGING.md` does not capture discovery questions, value-proposition evidence, claim/proof mapping, objections, and CTA hierarchy.
-- Risky claims about pricing, privacy, security, compliance, performance, legal, medical, or financial outcomes must be reviewed before release.
+- `templates/next-supabase/AGENTS.md` renders `askPolicy` under `## Ask before acting` and every payload under `## Spawn payloads`. Agents reference payloads by name and inline only the QA payload.
+- Each agent has an `## Ask before acting` section with its own decision-relevant unknowns.
+- The subagent id is the agent id on every host. No shipped file maps an agent to a council role name.
+- `doctor` fails when Design or QA drop `browser`, `screenshot`, or `image-review`.
+- Tests: `payloads` (every copy equals the catalog), `rendered-drift` (every host file equals the current render; bodies equal canonical), `adapter-frontmatter` (per-host schema), `no-kit-content` (no kit palette, HTML, or scan notes in shipped files), `doctor-legacy` (stubs fail, prune is allowlisted and guarded). `npm run dogfood:check` applies the same to this repo's own rendered layers.
 
-## Model Routing Surface
+## Copy Surface
 
-Installs must create `.agent-kit/model-routing.json` from `model-routing/default-model-routing.json` and install `MODEL_ROUTING.md`.
+One Copy agent. `product-copy` runs first; `deslop` runs last. `product-copy` reads the product's `MESSAGING.md` when it exists, names Reader / Job / One action / Proof, marks open slots `assumption`, and is product-neutral. `deslop` owns words only: word tells, structure tells, the Reader test, the claim sweep, and an allowance for imperative commands and labels in a tool context. It hands pixels to Design.
 
-Required behavior:
+## Frontend Surface
 
-- The model-routing contract maps every default council agent to a provider-neutral model profile.
-- Profile names describe capability and operating mode, not permanent vendor promises.
-- IDE-specific files may include dated June 2026 comments for Codex, Claude Code, Cursor, and GitHub Copilot.
-- Audit warns when model routing is missing, malformed, incomplete, or not reflected in `ASSISTANT_ADAPTERS.md`.
-- Audit does not fail solely because a downstream IDE cannot enforce per-agent model choice.
-
-## Frontend Quality Surface
-
-Installed projects receive frontend guidance that is stricter than a generic component checklist.
-
-Required frontend evidence:
-
-- `DESIGN.md` captures brand, content, user needs, creative direction, design tokens, reference set, anti-references, distinctiveness, design critique guidance, frontend distinctiveness benchmark, and a product-quality scorecard.
-- Frontend-change workflow includes Frontend Design Lead, reference-set evidence, distinctiveness benchmark, design critique verdict, frontend product-quality scorecard, visual QA evidence, state coverage, accessibility checks, and desktop/mobile verification.
-- UI improvement workflows are defined by `.agent-kit/prompts/ui-command-index.md`, `.agent-kit/checklists/ui-detectors.md`, `.agent-kit/checklists/ui-acceptance-rubric.md`, and `.agent-kit/skills/ui-improvement-harness.md`.
-- Meaningful UI audit or polish must classify detector findings by severity and require desktop/mobile screenshots.
-- Authenticated or permission-gated UI changes must include signed-in, role, tenant, or permission-state evidence before acceptance.
-- `agent-kit audit` warns when `DESIGN.md` lacks content-first design direction, reference-led critique guidance, frontend distinctiveness benchmark evidence, or the product-quality scorecard.
-- Provider-neutral design adapters must respect reference sets, anti-references, and source-safety notes.
+`frontend-design` owns visual quality and the visual fail list. Modes `setup`, `build`, `review`, `detect`; surfaces `landing`, `app-chrome`, `inside-design-system`. Setup is an interview that writes a short product `DESIGN.md` and no CSS. Build derives the direction in five lines (Object, Field/ink/accent with hex, Type with a reason, Structure, Removed) before tokens. Review and detect return a P0 / P1 / P2 table with Where, Confidence, and Kind, then name swap / squint / signature. Each detect tell appears once. This repo's own tokens live in `DESIGN.md` at the repo root, not in the shipped skill.
 
 ## Release System
 
-The root kit and optional runtime are published as separate public npm packages.
-
-Release workflow requirements:
-
-- GitHub Actions workflow: `.github/workflows/release.yml`
-- GitHub environment: `npm-publish`
-- Publish trigger: version metadata pushed to `main` or manual workflow dispatch with `dry_run=false`
-- Publish authentication: npm Trusted Publishing through GitHub Actions OIDC
-- Publish command: create and attest separate root/runtime tarballs and SBOMs, publish runtime then root through OIDC with inherited token state scrubbed, and verify both registry packages
-- Public install verification: import the runtime native package; for the root kit, `init --activate all`, then `doctor` and `adapter validate all`; then create the GitHub release
-
-The release workflow must run typecheck, tests, build, dependency audit, SBOM check, install smoke, and package dry run before publishing.
+One public npm package, published by `.github/workflows/release.yml` through npm Trusted Publishing (GitHub Actions OIDC, environment `npm-publish`). The workflow runs `npm run release:check`, packs one tarball, generates and attests a CycloneDX SBOM, publishes with inherited token state scrubbed, verifies the published package with `scripts/post-publish-verify.mjs` (`init --activate all`, `doctor`, `adapter validate all`, `.agents/skills/browser-qa` present), then creates the `vX.Y.Z` GitHub release.
 
 ## Security Requirements
 
-- Do not store long-lived npm publish tokens in GitHub Actions.
-- Use least-privilege release credentials: OIDC for publish.
-- Do not let inherited `NODE_AUTH_TOKEN` or setup-node user config become a publish fallback.
-- Keep detailed per-repo research findings out of the public npm package unless separately reviewed.
-- Run `npm audit --audit-level=moderate` before publishing.
-- Generate a CycloneDX SBOM from `package-lock.json`, upload release evidence, and attest the SBOM for the published tarball.
-- Do not record secrets, raw environment values, access tokens, database URLs, private customer data, or hidden model reasoning in project-context, correction, or session files.
-- Redact common secret patterns from recorded command output and generated Markdown.
-- Pin reviewed npm lifecycle-script approvals for required native/build packages and deny optional unneeded scripts.
+- No long-lived npm publish tokens in GitHub Actions; OIDC only. Inherited `NODE_AUTH_TOKEN` or setup-node user config must not become a publish fallback.
+- `npm audit --audit-level=moderate` before publishing.
+- CycloneDX SBOM from `package-lock.json`, uploaded as release evidence and attested for the published tarball.
+- `update --prune-legacy` re-resolves every path inside `cwd` before deletion and removes symlinks rather than their targets.
+- The kit never writes secrets, environment values, or tokens into installed files. The `ship` skill forbids secret values in a go/no-go note.
+- Pinned, reviewed npm lifecycle-script approvals; optional unneeded scripts denied.

@@ -11,6 +11,6 @@ Inventory public agent/skill patterns. Extract structure only. Do not re-import 
 
 ## Skills
 
-Available skills: `catalog.json` and the skill table in `USER_GUIDE.md`. Start with the skills named above. Use another listed skill when this job needs it.
+Other skills: `catalog.json` and the skill table in `USER_GUIDE.md`.
 
 Add with `agent-kit add agent research`.

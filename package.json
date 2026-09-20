@@ -27,7 +27,7 @@
     "templates/next-supabase/CLAUDE.md",
     "agents",
     "skills",
-    "assistant-adapters/cursor-agent-kit.mdc",
+    "templates/next-supabase/.cursor/rules/cursor-agent-kit.mdc",
     "USER_GUIDE.md",
     "USER_GUIDE.html",
     "examples/next-supabase-installed",
@@ -45,22 +45,15 @@
     "node": ">=20"
   },
   "packageManager": "npm@11.6.2",
-  "workspaces": [
-    "packages/runtime"
-  ],
   "scripts": {
-    "build": "npm run build --workspace @appsforgood/agent-kit-runtime && tsup && node scripts/copy-studio-assets.mjs",
-    "predev": "npm run build --workspace @appsforgood/agent-kit-runtime",
+    "build": "tsup",
     "dev": "tsx src/cli/index.ts",
-    "pretypecheck": "npm run build --workspace @appsforgood/agent-kit-runtime",
-    "typecheck": "tsc --noEmit && npm run typecheck --workspace @appsforgood/agent-kit-runtime",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "pretest": "npm run build --workspace @appsforgood/agent-kit-runtime",
     "test": "vitest run",
-    "pretest:coverage": "npm run build --workspace @appsforgood/agent-kit-runtime",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
     "smoke": "node dist/index.js doctor",
@@ -69,6 +62,7 @@
     "smoke:ui-screens": "node scripts/smoke-ui-screens.mjs",
     "package:validate": "node dist/index.js package validate",
     "examples:check": "node scripts/example-check.mjs",
+    "examples:refresh": "node scripts/refresh-examples.mjs",
     "version:check": "node scripts/version-check.mjs",
     "sbom:check": "node scripts/sbom-check.mjs",
     "sbom:generate": "node scripts/sbom-check.mjs --output sbom.cdx.json",
@@ -79,15 +73,12 @@
     "release:check": "node scripts/release-check.mjs",
     "pack:check": "npm pack --dry-run",
     "dogfood:init": "node scripts/dogfood-init.mjs",
+    "dogfood:check": "tsx scripts/dogfood-check.ts",
     "adapter:validate": "node scripts/adapter-validate-example.mjs"
   },
   "dependencies": {
-    "@clack/prompts": "^1.6.0",
-    "@octokit/rest": "^22.0.1",
     "commander": "^14.0.3",
-    "picocolors": "^1.1.1",
-    "simple-git": "^3.27.0",
-    "zod": "^4.4.3"
+    "picocolors": "^1.1.1"
   },
   "peerDependencies": {
     "@appsforgood/agent-kit-runtime": "^0.1.0"

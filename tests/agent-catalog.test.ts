@@ -5,8 +5,8 @@ import { afterEach, describe, expect, it } from "vitest";
 import { loadCatalog } from "../src/catalog.js";
 import { initProject } from "../src/install/install.js";
 
-const catalogPointer =
-  "Available skills: `catalog.json` and the skill table in `USER_GUIDE.md`. Start with the skills named above. Use another listed skill when this job needs it.";
+const catalogPointer = "Other skills: `catalog.json` and the skill table in `USER_GUIDE.md`.";
+const payloadPointer = "payload from `AGENTS.md` → Spawn payloads";
 
 let roots: string[] = [];
 
@@ -31,39 +31,32 @@ describe("agent skill catalog pointer", () => {
   it("Planner names planning and the session launches the owner", () => {
     const planner = readFileSync(join(process.cwd(), "agents/planner/agent.md"), "utf8");
     expect(planner).toMatch(/`planning`/);
-    expect(planner).toContain("launch the owner");
+    expect(planner).toContain("Launch the owner");
+    expect(planner).toContain(payloadPointer);
     expect(planner).not.toContain("You do not run the other agents.");
     expect(planner).toContain(catalogPointer);
   });
 
-  it("default specialists launch the next specialist with a USER_GUIDE spawn payload", () => {
-    const qaPrompt =
-      "Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.";
-    const app = readFileSync(join(process.cwd(), "agents/app-engineer/agent.md"), "utf8");
-    expect(app).toContain("## Handoff");
-    expect(app).toContain("```text");
-    expect(app).toContain("Act as the security agent. Review auth, RLS, IDOR, and secrets");
-    expect(app).toContain(qaPrompt);
-    expect(app).toContain("Launch the next specialist");
-    expect(app).not.toContain("ask @qa next");
-    const design = readFileSync(join(process.cwd(), "agents/design/agent.md"), "utf8");
-    expect(design).toContain("## Handoff");
-    expect(design).toContain("```text");
-    expect(design).toContain("Act as the copy agent. Review the rendered words in screenshots");
-    expect(design).toContain(qaPrompt);
-    const copy = readFileSync(join(process.cwd(), "agents/copy/agent.md"), "utf8");
-    expect(copy).toContain("## Handoff");
-    expect(copy).toContain("```text");
-    expect(copy).toContain("Act as design. Name the mode (setup, build, review, or detect)");
-    expect(copy).toContain(qaPrompt);
-    const security = readFileSync(join(process.cwd(), "agents/security/agent.md"), "utf8");
-    expect(security).toContain("## Handoff");
-    expect(security).toContain("```text");
-    expect(security).toContain(qaPrompt);
+  it("default specialists hand off through AGENTS.md payloads and keep the QA gate inline", () => {
+    const catalog = loadCatalog();
+    const qaPrompt = catalog.spawnPayloads.qa;
+    for (const id of ["app-engineer", "design", "copy", "security"]) {
+      const agent = readFileSync(join(process.cwd(), "agents", id, "agent.md"), "utf8");
+      expect(agent, id).toContain("## Handoff");
+      expect(agent, id).toContain(payloadPointer);
+      expect(agent, id).toContain("```text");
+      expect(agent, id).toContain(qaPrompt);
+      expect(agent, id).toContain("Launch the next specialist");
+      expect(agent, id).not.toContain("ask @qa next");
+      // Only the gate prompt is inlined; the rest are referenced so they cannot drift.
+      expect(agent, id).not.toContain(catalog.spawnPayloads.security);
+      expect(agent, id).not.toContain(catalog.spawnPayloads.design);
+    }
     const qa = readFileSync(join(process.cwd(), "agents/qa/agent.md"), "utf8");
     expect(qa).toContain("## Handoff");
-    expect(qa).toContain("```text");
-    expect(qa).toContain("Implement the plan. Smoke the changed route in the browser before you hand off.");
+    expect(qa).toContain(payloadPointer);
+    expect(qa).toContain("On **reject**");
+    expect(qa).toContain("On **accept**, stop.");
   });
 
   it("every agent file points at the full catalog", () => {
@@ -84,20 +77,13 @@ describe("agent skill catalog pointer", () => {
       const body = readFileSync(join(root, `.cursor/agents/${id}.md`), "utf8");
       expect(body, id).toContain(catalogPointer);
     }
-    expect(readFileSync(join(root, ".cursor/agents/planner.md"), "utf8")).toMatch(/`planning`/);
-    expect(readFileSync(join(root, ".cursor/agents/planner.md"), "utf8")).toContain("launch the owner");
-    expect(readFileSync(join(root, ".cursor/agents/planner.md"), "utf8")).not.toContain("You do not run the other agents.");
-    expect(readFileSync(join(root, ".cursor/agents/app-engineer.md"), "utf8")).toContain("Act as the security agent. Review auth, RLS, IDOR, and secrets");
-    expect(readFileSync(join(root, ".cursor/agents/app-engineer.md"), "utf8")).toContain(
-      "Do not review code alone. Open the app, capture desktop and mobile screenshots"
-    );
-    expect(readFileSync(join(root, ".cursor/agents/design.md"), "utf8")).toContain("Act as the copy agent. Review the rendered words in screenshots");
-    expect(readFileSync(join(root, ".cursor/agents/copy.md"), "utf8")).toContain("Act as design. Name the mode (setup, build, review, or detect)");
-    expect(readFileSync(join(root, ".cursor/agents/security.md"), "utf8")).toContain(
-      "Do not review code alone. Open the app, capture desktop and mobile screenshots"
-    );
-    expect(readFileSync(join(root, ".cursor/agents/qa.md"), "utf8")).toContain(
-      "Implement the plan. Smoke the changed route in the browser before you hand off."
-    );
+    const planner = readFileSync(join(root, ".cursor/agents/planner.md"), "utf8");
+    expect(planner).toMatch(/`planning`/);
+    expect(planner).toContain("Launch the owner");
+    expect(planner).not.toContain("You do not run the other agents.");
+    for (const id of ["app-engineer", "design", "copy", "security"]) {
+      expect(readFileSync(join(root, `.cursor/agents/${id}.md`), "utf8"), id).toContain(catalog.spawnPayloads.qa);
+    }
+    expect(readFileSync(join(root, ".cursor/agents/qa.md"), "utf8")).toContain(payloadPointer);
   });
 });

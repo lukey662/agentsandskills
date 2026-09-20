@@ -37,11 +37,11 @@ describe("optional skill playbooks", () => {
 
     const root = temp();
     initProject({ cwd: root, activate: ["cursor"] });
-    expect(existsSync(join(root, ".cursor/skills/debug/SKILL.md"))).toBe(false);
+    expect(existsSync(join(root, ".agents/skills/debug/SKILL.md"))).toBe(false);
 
     const result = addSkill(root, "debug");
     expect(result.action).toBe("created");
-    const installed = readFileSync(join(root, ".cursor/skills/debug/SKILL.md"), "utf8");
+    const installed = readFileSync(join(root, ".agents/skills/debug/SKILL.md"), "utf8");
     expect(installed).toContain("Guessing from the stack trace alone");
     expect(installed).toContain("## Done when");
   });
@@ -64,12 +64,12 @@ describe("optional skill playbooks", () => {
 
     const root = temp();
     initProject({ cwd: root, activate: ["cursor"] });
-    expect(existsSync(join(root, ".cursor/skills/docs/SKILL.md"))).toBe(false);
+    expect(existsSync(join(root, ".agents/skills/docs/SKILL.md"))).toBe(false);
     expect(existsSync(join(root, ".cursor/agents/docs.md"))).toBe(false);
 
     const skillResult = addSkill(root, "docs");
     expect(skillResult.action).toBe("created");
-    const installed = readFileSync(join(root, ".cursor/skills/docs/SKILL.md"), "utf8");
+    const installed = readFileSync(join(root, ".agents/skills/docs/SKILL.md"), "utf8");
     expect(installed).toContain("Restoring `QUALITY_GATES.md`");
     expect(installed).toContain("## Done when");
 
@@ -91,11 +91,11 @@ describe("optional skill playbooks", () => {
 
     const root = temp();
     initProject({ cwd: root, activate: ["cursor"] });
-    expect(existsSync(join(root, ".cursor/skills/upgrade/SKILL.md"))).toBe(false);
+    expect(existsSync(join(root, ".agents/skills/upgrade/SKILL.md"))).toBe(false);
 
     const result = addSkill(root, "upgrade");
     expect(result.action).toBe("created");
-    const installed = readFileSync(join(root, ".cursor/skills/upgrade/SKILL.md"), "utf8");
+    const installed = readFileSync(join(root, ".agents/skills/upgrade/SKILL.md"), "utf8");
     expect(installed).toContain("`init --force` (or re-init) as the upgrade path");
     expect(installed).toContain("## Done when");
   });
@@ -119,11 +119,11 @@ describe("optional skill playbooks", () => {
 
     const root = temp();
     initProject({ cwd: root, activate: ["cursor"] });
-    expect(existsSync(join(root, ".cursor/skills/ui-polish/SKILL.md"))).toBe(false);
+    expect(existsSync(join(root, ".agents/skills/ui-polish/SKILL.md"))).toBe(false);
 
     const result = addSkill(root, "ui-polish");
     expect(result.action).toBe("created");
-    const installed = readFileSync(join(root, ".cursor/skills/ui-polish/SKILL.md"), "utf8");
+    const installed = readFileSync(join(root, ".agents/skills/ui-polish/SKILL.md"), "utf8");
     expect(installed).toContain("Using polish as a second design system");
     expect(installed).toContain("One viewport only");
     expect(installed).toContain("## Done when");
@@ -145,11 +145,11 @@ describe("optional skill playbooks", () => {
 
     const root = temp();
     initProject({ cwd: root, activate: ["cursor"] });
-    expect(existsSync(join(root, ".cursor/skills/web-performance/SKILL.md"))).toBe(false);
+    expect(existsSync(join(root, ".agents/skills/web-performance/SKILL.md"))).toBe(false);
 
     const result = addSkill(root, "web-performance");
     expect(result.action).toBe("created");
-    const installed = readFileSync(join(root, ".cursor/skills/web-performance/SKILL.md"), "utf8");
+    const installed = readFileSync(join(root, ".agents/skills/web-performance/SKILL.md"), "utf8");
     expect(installed).toContain("Optimizing from a guess");
     expect(installed).toContain("## Done when");
   });

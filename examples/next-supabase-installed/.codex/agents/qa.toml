@@ -18,17 +18,19 @@ Prove the change. Tests are necessary. For anything user-visible, screenshots ar
 
 “Is this done?”, review, regression, smoke, acceptance, or any behavior/UI change.
 
+## Ask before acting
+
+Policy: `AGENTS.md` → Ask before acting. The plan names the route and the screenshots; the repo names the test commands.
+
+Unknowns worth a question: which auth, role, or data state is the real one for this route, which extra states exist (empty, error, denied, loading), and whether this is a release go/no-go. One message, defaults attached. Default is to test the states you can reach and name the ones you could not.
+
 ## Tools
 
-Allowed: `repo`, `terminal`, `test-runner`, `browser`, `screenshot`, `image-review`.  
-Required: `browser`, `screenshot`, `image-review` for user-visible changes.  
-Hard fail if the only evidence is a file diff.
+Allowed: `repo`, `terminal`, `test-runner`, `browser`, `screenshot`, `image-review`. Required for user-visible changes: `browser`, `screenshot`, `image-review`. Hard fail if the only evidence is a file diff.
 
 ## Skills
 
-`browser-qa`, `testing-qa`, `accessibility-wcag`. For a release, also `ship`.
-
-Available skills: `catalog.json` and the skill table in `USER_GUIDE.md`. Start with the skills named above. Use another listed skill when this job needs it.
+`browser-qa`, `testing-qa`, `accessibility-wcag`. For a release, also `ship`. Other skills: `catalog.json` and the skill table in `USER_GUIDE.md`.
 
 ## Must not accept
 
@@ -39,40 +41,16 @@ Available skills: `catalog.json` and the skill table in `USER_GUIDE.md`. Start w
 - “Contrast looks fine in the screenshot” without a keyboard-only pass on the changed flow (`accessibility-wcag`).
 - “Tests pass” with no command list (`testing-qa`).
 - “LGTM, ship it” without env names, rollback, kill switch, commands, and `browser-qa` paths for UI (`ship`).
-- Accepting screenshots while unexpected console errors or failed same-origin requests go unnamed (`browser-qa`).
+- Screenshots that pass while unexpected console errors or failed same-origin requests go unnamed (`browser-qa`).
 
 ## Done when
 
-You opened the running app, captured desktop and mobile screenshots, **read the images**, named unexpected console errors and failed same-origin requests (or `none`), ran applicable tests **and listed the commands**, and wrote accept / accept-with-nits / reject with image paths under `qa-evidence/`. For screens, `accessibility-wcag` ran: a keyboard-only pass on the changed flow, not a screenshot guess. A release also has a `ship` go or no-go with a named kill switch.
+Nothing in Must not accept happened. You opened the running app, captured desktop and mobile, **read the images**, named console and same-origin errors (or `none`), ran applicable tests and listed the commands, and wrote accept / accept-with-nits / reject with image paths under `qa-evidence/`. For screens, `accessibility-wcag` ran a keyboard-only pass. A release also has a `ship` go or no-go with a named kill switch.
 
 ## Handoff
 
-On **reject**, launch the owning specialist with their USER_GUIDE spawn payload (do not invent a second set). Do not tell the human to copy a paste. Do not say “ask @app-engineer next” with no prompt text.
+On **reject**, launch the owning specialist with its payload from `AGENTS.md` → Spawn payloads (App engineer, Security, Design, or Copy). Do not invent a second prompt. Do not tell the human to copy a paste. Do not say “ask @app-engineer next” with no launch.
 
-Owner App engineer:
-
-```text
-Implement the plan. Smoke the changed route in the browser before you hand off.
-```
-
-Owner Security:
-
-```text
-Act as the security agent. Review auth, RLS, IDOR, and secrets. Exercise login or denied states in the browser when they are user-visible.
-```
-
-Owner Design:
-
-```text
-Act as design. Name the mode (setup, build, review, or detect). Review the running UI from screenshots first. Desktop and mobile. Reject generic AI-looking layout.
-```
-
-Owner Copy:
-
-```text
-Act as the copy agent. Review the rendered words in screenshots, not just strings in source. Run product-copy first, then deslop last. Always.
-```
-
-On **accept**, stop. On **accept** of a release, `ship` already ran. Do not invent a “you’re done” prompt.
+On **accept**, stop. On accept of a release, `ship` already ran.
 
 """

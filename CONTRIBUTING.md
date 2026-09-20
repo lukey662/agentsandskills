@@ -29,11 +29,11 @@ When adding a repo finding:
 
 When an existing project installs the kit:
 
-1. Run `agent-kit init --stack next-supabase` without `--force`.
-2. Run `agent-kit audit --json` and `agent-kit diff`.
-3. Run `agent-kit audit --min-readiness baseline-setup` when the project should at least preserve installed contracts.
-4. Record the project type, created files, conflict files, audit summary, readiness level, and top gaps in `dogfood/<project>-audit.md`.
-5. Promote repeated gaps into this package's templates, skills, checklists, prompts, profiles, or audit rules.
+1. Run `agent-kit init --stack next-supabase --activate <ide>` without `--force`.
+2. Run `agent-kit doctor` and `agent-kit adapter validate all`.
+3. Run one UI change through Planner → owner → QA in that IDE and keep the `qa-evidence/` folder.
+4. Record the project type, IDE, created files, conflict files, which agents launched by id, and which skills were skipped in `DOGFOOD.md`.
+5. Promote repeated gaps into the owning skill's Reject list and a test, not into every file that mentions the topic.
 6. Keep project-specific wording in the downstream project unless the pattern generalizes.
 7. Re-run package tests, `npm run examples:check`, and a temporary install smoke test before committing kit changes.
 

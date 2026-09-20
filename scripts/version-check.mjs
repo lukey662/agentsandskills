@@ -4,10 +4,8 @@ import { fileURLToPath } from "node:url";
 
 const repoRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const packageJson = JSON.parse(readFileSync(join(repoRoot, "package.json"), "utf8"));
-const runtimePackageJson = JSON.parse(readFileSync(join(repoRoot, "packages", "runtime", "package.json"), "utf8"));
 const packageLock = JSON.parse(readFileSync(join(repoRoot, "package-lock.json"), "utf8"));
 const changelog = readFileSync(join(repoRoot, "CHANGELOG.md"), "utf8");
-const runtimeChangelog = readFileSync(join(repoRoot, "packages", "runtime", "CHANGELOG.md"), "utf8");
 const versionSource = readFileSync(join(repoRoot, "src", "config", "defaults.ts"), "utf8");
 
 const semverPattern =
@@ -37,7 +35,6 @@ function validatePackage(label, manifest, lockPath, changelogText) {
 }
 
 validatePackage("root package", packageJson, "", changelog);
-validatePackage("runtime package", runtimePackageJson, "packages/runtime", runtimeChangelog);
 
 const version = packageJson.version;
 assertEqual("package-lock root version", packageLock.version, version);

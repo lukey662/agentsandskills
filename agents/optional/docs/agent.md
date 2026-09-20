@@ -17,6 +17,6 @@ Significant pack or product changes that moved USER_GUIDE, CHANGELOG, or another
 
 `docs` (optional). Run that skill. Do not treat leftover 0.3 council docs as required.
 
-Available skills: `catalog.json` and the skill table in `USER_GUIDE.md`. Start with the skills named above. Use another listed skill when this job needs it.
+Other skills: `catalog.json` and the skill table in `USER_GUIDE.md`.
 
 Add with `agent-kit add agent docs`.
