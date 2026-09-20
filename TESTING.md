@@ -1,108 +1,38 @@
 # Testing
 
-Testing should be proportional to risk. Auth, data mutations, payments, admin actions, and migrations receive the most coverage.
+How this repository tests itself. Downstream projects get their testing rules from the `testing-qa` and `browser-qa` skills, not from this file.
 
-## Required Test Types
-
-- Unit tests for core logic and edge cases.
-- Regression tests for preserved behavior.
-- Integration tests for API, Server Actions, and Supabase interactions where practical.
-- Playwright smoke tests for auth and critical user workflows.
-- Visual QA for important user-facing screens and reusable component states.
-
-## Critical Smoke Paths
-
-Define project-specific smoke tests for:
-
-- Login and logout
-- Protected route access
-- Primary user workflow
-- Data creation and update
-- Error and empty states
-- Mobile navigation
-
-## Visual QA And Regression
-
-Choose the smallest reliable visual QA tier for the project:
-
-| Tier | Use When | Evidence |
-| --- | --- | --- |
-| Baseline | Any user-facing UI exists | Desktop/mobile screenshots reviewed with `.agent-kit/prompts/screenshot-review.md` |
-| Strong | Primary workflows or responsive layouts change often | Playwright screenshot checks such as `toHaveScreenshot()` for stable pages/states |
-| Mature | Shared component system, design system, or frequent UI releases | Storybook state stories plus visual regression in CI through Chromatic, Argos, Loki, Playwright snapshots, or equivalent |
-
-Required rules:
-
-- Capture default, loading, empty, error, disabled, success, permission-denied, and mobile states where relevant.
-- Stabilize dynamic data, animations, dates, avatars, generated media, and third-party widgets before visual comparison.
-- Review baseline updates as product changes; do not auto-accept visual diffs without rationale.
-- Keep accessibility, semantic, keyboard, auth, and data-boundary tests separate from visual checks.
-
-## CI Gates
-
-Every project should define the smallest reliable verification gate for its risk profile. Local verification is the default and must be recorded before commit/push or phase progression. Hosted GitHub Actions is optional and must not be treated as required when jobs cannot start because of account billing, spending limits, or entitlement.
-
-Use `agent-kit init --github-actions` only to install the advisory hosted audit. Automatic runs require the repository variable `AGENT_KIT_ACTIONS_ENABLED=true`; keep `githubActions.mode` as `off` or `advisory` unless branch protection and Actions availability have been explicitly verified.
-
-For this package, the authoritative local gate is:
+## Local gate
 
 ```bash
 npm run release:check
-npm run smoke:audit-gate
-agent-kit session verify --command "npm run release:check && npm run smoke:audit-gate" --result pass --notes "Record commit SHA and verification time."
 ```
 
-A failed or unavailable hosted job never converts missing local evidence into a pass.
+Runs, in order: JSON validation, version and changeset checks, typecheck, lint, format check, `vitest run --coverage` with thresholds, `tsup` build, package and adapter validation, example fixture check, `dogfood:check`, install and doctor smokes, dependency audit, SBOM check, `npm pack --dry-run`. CI runs the same command on a Node 20/22/24 × Linux/Windows/macOS matrix, plus a Playwright job that captures `USER_GUIDE.html` desktop and mobile.
 
-Recommended baseline:
+## What the tests lock
 
-- Install from lockfile
-- Typecheck
-- Unit tests
-- Build
-- Dependency audit
-- `agent-kit audit --min-readiness baseline-setup`
-- Playwright smoke tests for critical paths
-- Visual QA evidence for high-risk UI changes
+| File | Contract |
+| --- | --- |
+| `tests/qa-screenshot.test.ts` | The fail-closed sentence in `USER_GUIDE.*`, `browser-qa` forbids code-only review, `doctor` fails when Design or QA drop `requiredTools`. |
+| `tests/payloads.test.ts` | Every spawn payload and the ask policy equal `catalog.json` in both `AGENTS.md` files, `USER_GUIDE.md`, the agents, and the generated Copilot and Antigravity files. |
+| `tests/rendered-drift.test.ts` | Every rendered agent body and every rendered skill is byte-equal to `agents/` and `skills/`; per-host frontmatter is what that host documents. |
+| `tests/adapter-frontmatter.test.ts` | Claude `tools` entries are real Claude tool names; Cursor files carry only Cursor's five fields; Planner is `readonly`; Copilot has `description`; Antigravity has `subagent: true` and the catalog's skill list. |
+| `tests/no-kit-content.test.ts` | Shipped agents and skills carry none of this repo's palette, HTML page, or scan notes. |
+| `tests/doctor-legacy.test.ts` | Council stubs at 0.4 paths fail `doctor`; `--prune-legacy` deletes only its allowlist and never the kit's own `skills/`. |
+| `tests/deslop.test.ts`, `domain-skills.test.ts`, `skill-frontmatter.test.ts`, `agent-catalog.test.ts` | Skill and agent contracts: `deslop` last, fail list owned by `frontend-design`, unique trigger phrases, catalog pointer on every agent. |
+| `tests/update.test.ts`, `cli.test.ts`, `ide-activate.test.ts`, `adapter-validate.test.ts` | Install, update, activation, and CLI output contracts. |
 
-## Agent Kit UI And Runtime Adapter Smoke
+## Scripts
 
-The kit ships optional smoke scripts for Agent Office and wizard UI rendering:
+- `npm run dogfood:check` regenerates this repo's own IDE layers and fails on drift or a failing `doctor`.
+- `npm run examples:refresh` regenerates `examples/next-supabase-installed` from a fresh init; `examples:check` verifies it.
+- `npm run smoke:ui-screens` captures `USER_GUIDE.html` at 1280 and 390 with Playwright into `artifacts/ui-screens/`.
 
-- `npm run smoke:setup` — setup server API + office/wizard flow (wired into `npm run release:check`).
-- `npm run smoke:ui-screens` — Playwright captures desktop/mobile screenshots of the office canvas and wizard form (`artifacts/ui-screens/`). Runs in CI as a dedicated Ubuntu job; not part of the full OS matrix.
-- The CI matrix runs Node 22/24 on `windows-latest` and Node 20 on `windows-2022`, where the native SQLite fallback has a supported Visual Studio toolchain.
+## Screenshot evidence
 
-Antigravity runtime slash commands (`/setup`, `/spec`, `/plan`, `/test`, `/review`, `/ship`, UI harness commands, and others) are adapter entrypoints only. Canonical workflow steps live in `.agent-kit/prompts/lifecycle-command-index.md`, `.agent-kit/prompts/ui-command-index.md`, and the council contract in `.agent-kit/agent-roster.json`.
+Any change to `USER_GUIDE.html` needs `browser-qa`: desktop and mobile PNGs plus `notes.md` under `qa-evidence/<date>-<slug>/`, read by a person or the QA agent, verdict recorded. Reading the HTML is not QA.
 
-## Executable Runtime Verification
+## Test gaps
 
-Changes under `packages/runtime`, orchestrator config/schema, CLI bridges, or Studio run controls require focused evidence for:
-
-- Config/roster validation with zero provider calls for `orchestrate validate` and `plan`.
-- Deterministic capability mismatch and provider fallback behavior.
-- Provider request/response normalization and redirect rejection through loopback mocks.
-- MCP host/tool allowlists, private-address rejection, stdio host opt-in, and credential references.
-- Sensitive path denial, recursive evidence redaction, partial JSONL recovery, and ordered event IDs.
-- Real SQLite interrupt/resume through plan, mutation, and final-commit gates without replaying a mutating node.
-- Dirty-base acknowledgement, sensitive tracked-file rejection, isolated worktree branch, and one scoped commit.
-- Git-root and filesystem-containment enforcement through repository context and native real-path resolution, including Windows temp paths with distinct long and 8.3 spellings.
-- Docker immutable image ID plus read-only, capability, privilege, network, and resource flags.
-- Root CLI optional-import behavior and secured Studio start/detail/decision/cancel APIs.
-- Separate runtime/root pack dry runs, package metadata, SBOMs, OIDC publish order, and post-publish import/integration verification.
-
-Provider and MCP probes are explicit live checks and must not be required for deterministic unit tests. Do not put real provider credentials in CI fixtures.
-
-## Security-Focused Tests
-
-Prioritize:
-
-- IDOR attempts
-- Cross-tenant access attempts
-- Unauthorized API calls
-- RLS-protected reads and writes
-- Service-role-only operations
-
-## Test Gaps
-
-If test infrastructure does not exist, document the smallest viable setup and the risk of shipping without it.
+Claude Code, Codex, Copilot, and Antigravity adapters are verified against their documented frontmatter schemas, not by driving those hosts. Live runs are the open item in `ROADMAP.md`.

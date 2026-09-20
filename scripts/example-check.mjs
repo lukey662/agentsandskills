@@ -17,7 +17,7 @@ try {
   if (!existsSync(cliPath)) throw new Error("dist/index.js is missing. Run npm run build first.");
   run(["init", "--activate", "all"], tempRoot);
 
-  const required = ["AGENTS.md", "USER_GUIDE.md", "USER_GUIDE.html", ".cursor/agents/qa.md", ".cursor/skills/browser-qa/SKILL.md"];
+  const required = ["AGENTS.md", "USER_GUIDE.md", "USER_GUIDE.html", ".cursor/agents/qa.md", ".agents/skills/browser-qa/SKILL.md"];
   for (const file of required) {
     if (!existsSync(join(tempRoot, file))) throw new Error(`Fresh init missing ${file}`);
     if (!existsSync(join(exampleRoot, file))) throw new Error(`Example fixture missing ${file}`);

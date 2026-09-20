@@ -3,72 +3,200 @@ import { agentSourcePath, loadCatalog, parseFrontmatter, skillSourcePath } from 
 import { findPackageRoot } from "../utils/package-root.js";
 import { writeGenerated, type CopyCollector } from "./copy-asset.js";
 
+/**
+ * One canonical agent file, five hosts, five frontmatter schemas. Each host honours a different
+ * set of keys and some reject unknown ones (Claude refuses to launch a subagent whose `tools`
+ * entries do not resolve). The body is never changed; only the frontmatter is rewritten, plus a
+ * single "Required tools" line so the kit's gate contract stays visible to the model on hosts
+ * that have no tools field.
+ *
+ * Skills follow the Agent Skills open standard. Cursor, Codex, Copilot, and Antigravity read
+ * `.agents/skills/<id>/SKILL.md`; Claude reads `.claude/skills/<id>/SKILL.md`.
+ */
+
+export type AgentHost = "cursor" | "claude" | "codex" | "copilot" | "antigravity";
+
+/** Kit tool vocabulary → Claude Code tool names. Browser-class tools are MCP-provided and vary per machine, so an agent that needs them inherits everything. */
+const CLAUDE_TOOL_MAP: Record<string, string[]> = {
+  repo: ["Read", "Grep", "Glob"],
+  edit: ["Edit", "Write"],
+  terminal: ["Bash"],
+  "test-runner": ["Bash"]
+};
+const BROWSER_TOOLS = new Set(["browser", "screenshot", "image-review"]);
+
+/** Agents whose judgment sets the rest of the chain get higher effort where the host supports it. */
+const HIGH_EFFORT_AGENTS = new Set(["planner", "security", "design"]);
+
+interface CanonicalAgent {
+  id: string;
+  name: string;
+  description: string;
+  tools: string[];
+  requiredTools: string[];
+  skills: string[];
+  body: string;
+}
+
+function readCanonicalAgent(id: string): CanonicalAgent {
+  const packageRoot = findPackageRoot();
+  const markdown = readFileSync(agentSourcePath(packageRoot, id), "utf8");
+  const meta = parseFrontmatter(markdown);
+  const catalog = loadCatalog(packageRoot);
+  return {
+    id,
+    name: meta.name ?? id,
+    description: meta.description ?? id,
+    tools: meta.tools ?? [],
+    requiredTools: meta.requiredTools ?? [],
+    skills: catalog.agentSkills[id] ?? [],
+    body: meta.body
+  };
+}
+
+/** The gate contract in prose. `doctor` checks this line on every rendered host file. */
+export function requiredToolsLine(requiredTools: string[]): string {
+  return requiredTools.length > 0 ? `> Required tools: ${requiredTools.join(", ")}. Do not drop them.\n\n` : "";
+}
+
+function yamlScalar(value: string): string {
+  // Descriptions contain colons and quotes; a double-quoted scalar is safe on every host.
+  return `"${value.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
+}
+
+function withFrontmatter(lines: string[], agent: CanonicalAgent): string {
+  return `---\n${lines.join("\n")}\n---\n${requiredToolsLine(agent.requiredTools)}${agent.body.replace(/^\n/, "")}`;
+}
+
+/** Cursor: name, description, model, readonly, is_background. Nothing else. */
+export function renderCursorAgent(id: string): string {
+  const agent = readCanonicalAgent(id);
+  const lines = [`name: ${agent.name}`, `description: ${yamlScalar(agent.description)}`, "model: inherit"];
+  // A repo-only agent must not edit. Cursor enforces that natively.
+  if (agent.tools.length > 0 && agent.tools.every((tool) => tool === "repo")) lines.push("readonly: true");
+  return withFrontmatter(lines, agent);
+}
+
+/** Claude Code: real tool names or inherit, preloaded skills, effort. */
+export function renderClaudeAgent(id: string): string {
+  const agent = readCanonicalAgent(id);
+  const lines = [`name: ${agent.name}`, `description: ${yamlScalar(agent.description)}`, "model: inherit"];
+  if (HIGH_EFFORT_AGENTS.has(id)) lines.push("effort: high");
+  const needsBrowser = agent.tools.some((tool) => BROWSER_TOOLS.has(tool));
+  if (!needsBrowser && agent.tools.length > 0) {
+    const mapped = [...new Set(agent.tools.flatMap((tool) => CLAUDE_TOOL_MAP[tool] ?? []))];
+    // Skill lets a restricted agent still invoke unlisted skills on demand.
+    lines.push(`tools: ${[...mapped, "Skill"].join(", ")}`);
+  }
+  if (agent.skills.length > 0) lines.push(`skills: [${agent.skills.join(", ")}]`);
+  return withFrontmatter(lines, agent);
+}
+
+/** Copilot: description required, name optional; tools omitted means all. */
+export function renderCopilotAgent(id: string): string {
+  const agent = readCanonicalAgent(id);
+  return withFrontmatter([`name: ${agent.name}`, `description: ${yamlScalar(agent.description)}`], agent);
+}
+
+/** Antigravity: name, description, subagent/mainAgent, skill paths relative to .agents/. */
+export function renderAntigravityAgent(id: string): string {
+  const agent = readCanonicalAgent(id);
+  const lines = [`name: ${agent.name}`, `description: ${yamlScalar(agent.description)}`, "subagent: true", "mainAgent: true"];
+  if (agent.skills.length > 0) {
+    lines.push("skills:");
+    for (const skill of agent.skills) lines.push(`  - skills/${skill}`);
+  }
+  return withFrontmatter(lines, agent);
+}
+
 function escapeTomlString(value: string): string {
   return value.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
 }
 
-export function generateCursorAgents(cwd: string, force: boolean, collector: CopyCollector): void {
+/** Codex: TOML custom agent wrapping the canonical markdown verbatim. */
+export function renderCodexAgent(id: string): string {
   const packageRoot = findPackageRoot();
-  const catalog = loadCatalog(packageRoot);
-  for (const id of catalog.defaultAgents) {
-    const content = readFileSync(agentSourcePath(packageRoot, id), "utf8");
-    writeGenerated(cwd, `.cursor/agents/${id}.md`, content, force, collector);
-  }
-}
-
-export function generateCursorSkills(cwd: string, force: boolean, collector: CopyCollector): void {
-  const packageRoot = findPackageRoot();
-  const catalog = loadCatalog(packageRoot);
-  for (const id of catalog.defaultSkills) {
-    const content = readFileSync(skillSourcePath(packageRoot, id), "utf8");
-    writeGenerated(cwd, `.cursor/skills/${id}/SKILL.md`, content, force, collector);
-  }
-}
-
-export function generatePortableSkills(cwd: string, force: boolean, collector: CopyCollector): void {
-  const packageRoot = findPackageRoot();
-  const catalog = loadCatalog(packageRoot);
-  for (const id of catalog.defaultSkills) {
-    const content = readFileSync(skillSourcePath(packageRoot, id), "utf8");
-    writeGenerated(cwd, `skills/${id}/SKILL.md`, content, force, collector);
-  }
-}
-
-export function generateClaudeAgents(cwd: string, force: boolean, collector: CopyCollector): void {
-  const packageRoot = findPackageRoot();
-  const catalog = loadCatalog(packageRoot);
-  for (const id of catalog.defaultAgents) {
-    const content = readFileSync(agentSourcePath(packageRoot, id), "utf8");
-    writeGenerated(cwd, `.claude/agents/${id}.md`, content, force, collector);
-  }
-}
-
-export function generateCodexAgents(cwd: string, force: boolean, collector: CopyCollector): void {
-  const packageRoot = findPackageRoot();
-  const catalog = loadCatalog(packageRoot);
-  for (const id of catalog.defaultAgents) {
-    const markdown = readFileSync(agentSourcePath(packageRoot, id), "utf8");
-    const meta = parseFrontmatter(markdown);
-    const description = meta.description ?? id;
-    const toml = `name = "${id}"
-description = "${escapeTomlString(description)}"
-model_reasoning_effort = "medium"
+  const markdown = readFileSync(agentSourcePath(packageRoot, id), "utf8");
+  const meta = parseFrontmatter(markdown);
+  const effort = HIGH_EFFORT_AGENTS.has(id) ? "high" : "medium";
+  return `name = "${id}"
+description = "${escapeTomlString(meta.description ?? id)}"
+model_reasoning_effort = "${effort}"
 
 developer_instructions = """
 ${markdown.replace(/"""/g, '\\"\\"\\"')}
 """
 `;
-    writeGenerated(cwd, `.codex/agents/${id}.toml`, toml, force, collector);
+}
+
+export function agentTargetPath(host: AgentHost, id: string): string {
+  switch (host) {
+    case "cursor":
+      return `.cursor/agents/${id}.md`;
+    case "claude":
+      return `.claude/agents/${id}.md`;
+    case "codex":
+      return `.codex/agents/${id}.toml`;
+    case "copilot":
+      return `.github/agents/${id}.agent.md`;
+    case "antigravity":
+      return `.agents/agents/${id}/agent.md`;
+  }
+}
+
+export function renderAgent(host: AgentHost, id: string): string {
+  switch (host) {
+    case "cursor":
+      return renderCursorAgent(id);
+    case "claude":
+      return renderClaudeAgent(id);
+    case "codex":
+      return renderCodexAgent(id);
+    case "copilot":
+      return renderCopilotAgent(id);
+    case "antigravity":
+      return renderAntigravityAgent(id);
+  }
+}
+
+export function generateAgents(host: AgentHost, cwd: string, force: boolean, collector: CopyCollector): void {
+  const catalog = loadCatalog(findPackageRoot());
+  for (const id of catalog.defaultAgents) {
+    writeGenerated(cwd, agentTargetPath(host, id), renderAgent(host, id), force, collector);
+  }
+}
+
+/** `.agents/skills/` is read by Cursor, Codex, Copilot, and Antigravity. Written on every init. */
+export function generateSkills(cwd: string, force: boolean, collector: CopyCollector): void {
+  const packageRoot = findPackageRoot();
+  const catalog = loadCatalog(packageRoot);
+  for (const id of catalog.defaultSkills) {
+    const content = readFileSync(skillSourcePath(packageRoot, id), "utf8");
+    writeGenerated(cwd, `.agents/skills/${id}/SKILL.md`, content, force, collector);
+  }
+}
+
+/** Claude reads `.claude/skills/` only. Same bytes as `.agents/skills/`. */
+export function generateClaudeSkills(cwd: string, force: boolean, collector: CopyCollector): void {
+  const packageRoot = findPackageRoot();
+  const catalog = loadCatalog(packageRoot);
+  for (const id of catalog.defaultSkills) {
+    const content = readFileSync(skillSourcePath(packageRoot, id), "utf8");
+    writeGenerated(cwd, `.claude/skills/${id}/SKILL.md`, content, force, collector);
   }
 }
 
 export function generateCopilotInstructions(cwd: string, force: boolean, collector: CopyCollector): void {
   const catalog = loadCatalog();
+  const p = catalog.spawnPayloads;
+  const fence = (label: string, text: string): string => `${label}:\n\n\`\`\`text\n${text}\n\`\`\``;
   const content = `# Copilot instructions
 
-This repo uses a small agent and skill pack. Read \`AGENTS.md\` and \`USER_GUIDE.md\`. Copilot has no isolated specialist spawn. When the user describes a change, run the New feature sequence in this thread. Start each step with an explicit “now Planner” / “now App engineer” / “now QA” header and the matching USER_GUIDE prompt. Do not stop after printing a prompt. Do not impersonate all six in one paragraph.
+This repo uses a small agent and skill pack. Read \`AGENTS.md\` and \`USER_GUIDE.md\`. The specialists are custom agents in \`.github/agents/\`; skills are in \`.agents/skills/\`.
 
-When the user names a role, act as that agent:
+When the user describes a change, launch the agents in New feature order with \`/agent <id>\` (CLI: \`copilot --agent=<id>\`), each with its payload below: \`planner\`, then the owner (\`app-engineer\`, \`security\`, \`design\`, or \`copy\`), then \`qa\`. If this Copilot surface exposes no custom agents, run the same sequence in this thread under an explicit “now Planner” / “now App engineer” / “now QA” header. Do not stop after printing a prompt. Do not impersonate all six in one paragraph.
+
+Agents:
 
 ${catalog.defaultAgents.map((id) => `- ${id}`).join("\n")}
 
@@ -76,41 +204,23 @@ ${catalog.screenshotFailClosed}
 
 Do not review user-visible work from code alone. Use the browser-qa skill.
 
-Planner:
+${catalog.askPolicy}
 
-\`\`\`text
-Plan this change. Name the owning agent, extra reviewers, and which screenshots QA must capture. Do not write code.
-\`\`\`
+${fence("Planner", p.planner)}
 
-App engineer:
+${fence("App engineer", p["app-engineer"])}
 
-\`\`\`text
-Implement the plan. Smoke the changed route in the browser before you hand off.
-\`\`\`
+${fence("Security", p.security)}
 
-Security:
+${fence("Design", p.design)}
 
-\`\`\`text
-Act as the security agent. Review auth, RLS, IDOR, and secrets. Exercise login or denied states in the browser when they are user-visible.
-\`\`\`
+${fence("Design setup (no DESIGN.md yet)", p["design-setup"])}
 
-Design:
+${fence("QA", p.qa)}
 
-\`\`\`text
-Act as design. Name the mode (setup, build, review, or detect). Review the running UI from screenshots first. Desktop and mobile. Reject generic AI-looking layout.
-\`\`\`
+${fence("Copy", p.copy)}
 
-QA:
-
-\`\`\`text
-Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.
-\`\`\`
-
-Copy:
-
-\`\`\`text
-Act as the copy agent. Review the rendered words in screenshots, not just strings in source. Run product-copy first, then deslop last. Always.
-\`\`\`
+${fence("Release go/no-go (add to QA)", p.ship)}
 
 If you cannot open a browser, use Playwright:
 
@@ -122,86 +232,16 @@ npx playwright screenshot --viewport-size=390,844 "$URL" qa-evidence/<slug>/mobi
   writeGenerated(cwd, ".github/copilot-instructions.md", content, force, collector);
 }
 
-export function generateAntigravityCommands(cwd: string, force: boolean, collector: CopyCollector): void {
-  const commands: Array<{ name: string; description: string; prompt: string }> = [
-    {
-      name: "plan",
-      description: "Plan the change and name the owning agent.",
-      prompt:
-        "Act as the planner agent. Use the planning skill. Plan this change. Name the owning agent, extra reviewers, and which screenshots QA must capture. Do not write code. Then continue in this thread with an explicit now App engineer (or the named role) header and the USER_GUIDE spawn payload. Reject finishing without launching the owner. Reject printing a paste and stopping. Reject asking one chat to play every role. Read AGENTS.md and USER_GUIDE.md."
-    },
-    {
-      name: "browser-qa",
-      description: "Live browser QA with desktop and mobile screenshots.",
-      prompt:
-        "Act as the QA agent. Use the browser-qa skill. Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject. For screens, also run accessibility-wcag: keyboard-only pass. Do not accept contrast from the screenshot alone."
-    },
-    {
-      name: "security",
-      description: "Auth, RLS, secrets, and OWASP review.",
-      prompt: "Act as the security agent. Review auth, RLS, IDOR, and secrets. Exercise login or denied states in the browser when they are user-visible."
-    },
-    {
-      name: "frontend",
-      description: "UI review from screenshots first.",
-      prompt:
-        "Act as the design agent. Name the mode (setup, build, review, or detect) and the surface. Use the frontend-design skill. If DESIGN.md is missing or this is a new repo, run setup: scan what is here, then ask what they need (who it is for, what they must get done, what this pass should produce). Recommend from the answers. Write style guide and principles only after that, and before CSS. Otherwise review the running UI from screenshots first. Desktop and mobile. Reject generic AI-looking layout. Detect means audit only — no edits."
-    },
-    {
-      name: "copy",
-      description: "Review rendered conversion copy.",
-      prompt: "Act as the copy agent. Review the rendered words in screenshots, not just strings in source. Run product-copy first, then deslop last. Always."
-    },
-    {
-      name: "test",
-      description: "Run tests, then browser-qa for UI.",
-      prompt:
-        "Act as the QA agent. Use the testing-qa skill: run applicable tests and list the commands. Then use browser-qa for any user-visible change. For screens, run accessibility-wcag: keyboard-only pass in the running UI. Do not treat toBeVisible as a screenshot."
-    },
-    {
-      name: "ship",
-      description: "Release go / no-go.",
-      prompt:
-        "Use the ship skill. Go or no-go. Name env, migration order, rollback, and commands run (testing-qa). User-visible changes need browser-qa screenshot paths. Reject LGTM, ship it."
-    }
-  ];
-
-  writeGenerated(
-    cwd,
-    ".antigravity/agent-kit/plugin.json",
-    `${JSON.stringify({ name: "agents-and-skills", commands: commands.map((item) => item.name) }, null, 2)}\n`,
-    force,
-    collector
-  );
-
-  for (const command of commands) {
-    const toml = `name = "${command.name}"
-description = "${command.description}"
-
-prompt = """
-${command.prompt}
-"""
-`;
-    writeGenerated(cwd, `.antigravity/agent-kit/commands/${command.name}.toml`, toml, force, collector);
-  }
-
-  const packageRoot = findPackageRoot();
-  const catalog = loadCatalog(packageRoot);
-  for (const id of catalog.defaultSkills) {
-    const content = readFileSync(skillSourcePath(packageRoot, id), "utf8");
-    writeGenerated(cwd, `.antigravity/runtime-skills/${id}/SKILL.md`, content, force, collector);
+/** Optional agents render to every activated host that exists in the project. */
+export function copyOptionalAgent(cwd: string, id: string, force: boolean, collector: CopyCollector, hosts: AgentHost[]): void {
+  for (const host of hosts) {
+    writeGenerated(cwd, agentTargetPath(host, id), renderAgent(host, id), force, collector);
   }
 }
 
-export function copyOptionalAgent(cwd: string, id: string, force: boolean, collector: CopyCollector): void {
-  const packageRoot = findPackageRoot();
-  const content = readFileSync(agentSourcePath(packageRoot, id), "utf8");
-  writeGenerated(cwd, `.cursor/agents/${id}.md`, content, force, collector);
-  writeGenerated(cwd, `.claude/agents/${id}.md`, content, force, collector);
-}
-
-export function copyOptionalSkill(cwd: string, id: string, force: boolean, collector: CopyCollector): void {
+export function copyOptionalSkill(cwd: string, id: string, force: boolean, collector: CopyCollector, includeClaude: boolean): void {
   const packageRoot = findPackageRoot();
   const content = readFileSync(skillSourcePath(packageRoot, id), "utf8");
-  writeGenerated(cwd, `.cursor/skills/${id}/SKILL.md`, content, force, collector);
+  writeGenerated(cwd, `.agents/skills/${id}/SKILL.md`, content, force, collector);
+  if (includeClaude) writeGenerated(cwd, `.claude/skills/${id}/SKILL.md`, content, force, collector);
 }

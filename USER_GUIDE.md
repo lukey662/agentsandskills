@@ -23,45 +23,45 @@ If this repo has no product `DESIGN.md` yet, the session launches Design setup (
 
 ## How to invoke in each IDE
 
+Every host gets the same six agents as native subagents, launched by id. Skills live once in `.agents/skills/<id>/SKILL.md`; Claude reads its own copy at `.claude/skills/`.
+
 ### Cursor
 
-Files: `.cursor/agents/*.md`, `.cursor/skills/*/SKILL.md`, `.cursor/rules/cursor-agent-kit.mdc`
+Files: `.cursor/agents/<id>.md`, `.agents/skills/<id>/SKILL.md`, `.cursor/rules/cursor-agent-kit.mdc`
 
-- Describe the change in chat. This session launches `@planner`, then the owner (`@app-engineer`, `@security`, `@design`, `@qa`, or `@copy`). You do not have to @mention them.
-- Skills apply from their descriptions. To force one, mention `@browser-qa` or the skill name.
+- Describe the change in chat. This session launches `@planner` as a Task, then the owner (`@app-engineer`, `@security`, `@design`, `@qa`, or `@copy`). You do not have to @mention them.
+- Planner is `readonly`; it cannot implement.
+- Skills apply from their descriptions. To force one, type `/browser-qa` or name it.
 - Prefer the built-in browser for QA. Playwright is backup.
 
 ### Claude Code
 
-Files: `.claude/agents/*.md`, `CLAUDE.md`
+Files: `.claude/agents/<id>.md`, `.claude/skills/<id>/SKILL.md`, `CLAUDE.md`
 
-- This session launches the matching subagent (`planner`, `qa`, …). Do not play every role in one voice.
-- Mention `browser-qa` for any screen review. If Claude has no browser, use the Playwright commands in that skill.
+- This session launches the matching subagent by id. Each subagent preloads its skills (`skills:` in its frontmatter), so Design and QA start with `browser-qa` in context.
+- Planner, Security, and Design run at `effort: high`.
+- If Claude has no browser, use the Playwright commands in `browser-qa`.
 
 ### Codex
 
-Files: `.codex/agents/*.toml`, `AGENTS.md`
+Files: `.codex/agents/<id>.toml`, `.agents/skills/<id>/SKILL.md`, `AGENTS.md`
 
-- This session launches the named custom agent from `.codex/agents/`.
-- Use the QA spawn payload below when reviewing UI. Use Playwright if Codex cannot see the page.
+- This session spawns the named custom agent from `.codex/agents/`. Planner, Security, and Design use high reasoning effort.
+- Codex discovers the skills from `.agents/skills/`. Use Playwright if Codex cannot see the page.
 
 ### GitHub Copilot
 
-Files: `.github/copilot-instructions.md`
+Files: `.github/agents/<id>.agent.md`, `.agents/skills/<id>/SKILL.md`, `.github/copilot-instructions.md`
 
-Copilot has no isolated specialist spawn. After you say the change, run the New feature sequence in this thread. Start each step with “now Planner” / “now App engineer” / “now QA” and the matching prompt. Do not stop after printing a prompt. To prove a screen:
-
-```text
-Act as the QA agent. Use the browser-qa skill. Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.
-```
+- Launch each specialist with `/agent planner`, `/agent app-engineer`, `/agent qa` (CLI: `copilot --agent=qa`) and its payload from `AGENTS.md`.
+- If the Copilot surface you are in has no custom agents, run the same sequence in this thread under a “now Planner” / “now App engineer” / “now QA” header. Do not stop after printing a prompt.
 
 ### Antigravity
 
-Files: `.antigravity/agent-kit/commands/*.toml`, `.antigravity/runtime-skills/*/SKILL.md`
+Files: `.agents/agents/<id>/agent.md`, `.agents/skills/<id>/SKILL.md`, `.agents/rules/agent-kit.md`
 
-- `/plan` — Planner, then continue in-thread with “now App engineer” (Antigravity cannot spawn isolated agents)
-- `/browser-qa` — screenshot QA loop
-- `/security`, `/frontend`, `/copy`, `/test`, `/ship` — matching specialists
+- Each agent is a custom subagent (`subagent: true`) with its skills attached. Say the change; the main agent calls `invoke_subagent` for Planner, then the owner, then QA. You can also pick an agent directly from `/agents`.
+- If subagents are unavailable, continue in this thread under a “now App engineer” header with the same payload.
 
 ## Which agent do I ask?
 
@@ -86,12 +86,12 @@ Do not ask one chat to be all six. Planner names the next specialist. The sessio
 | `supabase-auth-rls` | Auth, RLS, service role, Storage |
 | `postgres-migrations` | Schema, constraints, RLS in the same change |
 | `owasp-security-review` | Mutations, uploads, SSRF, secrets |
-| `frontend-design` | Setup, build, review, or detect UI. Tokens first. Anti-generic |
+| `frontend-design` | Setup, build, review, or detect UI. Derive tokens from the product. Owns the visual fail list |
 | `accessibility-wcag` | Keyboard pass in the running browser. Contrast, labels. Not a screenshot guess |
 | `browser-qa` | Any screen. Required for QA of UI |
 | `testing-qa` | Unit / regression / smoke. List commands run. Not screenshots |
 | `product-copy` | Headlines, CTAs, empty states. Confirm Reader / Job / One action / Proof |
-| `deslop` | Last copy pass. Copy always runs this |
+| `deslop` | Last copy pass. Word and structure tells. Copy always runs this |
 | `ship` | Go / no-go. Env, rollback, commands. UI needs screenshot paths |
 
 QA of a screen always uses `browser-qa`, not `testing-qa` alone. User-facing screens also run `accessibility-wcag` (keyboard in the browser, not a contrast guess from the screenshot). Each agent file names the skills it must run, then points at `catalog.json` for the rest.
@@ -219,16 +219,18 @@ Add `web-performance` when the ask is LCP / INP / CLS / “this page is slow.”
 npx agent-kit update
 ```
 
-Pristine files refresh. Local edits win or land in `.agent-kit/conflicts/`. Do not re-init. `update` never deletes your old docs.
+Pristine files refresh. Local edits win or land in `.agent-kit/conflicts/`. Do not re-init. `update` never deletes your old docs unless you pass `--prune-legacy`, which lists the 0.3 council leftovers and asks before removing them.
 
 ## Troubleshooting
 
 | Problem | Fix |
 | --- | --- |
-| Agent missing in Cursor / Claude | Re-run `init --activate cursor` or `claude`. Check `.cursor/agents/` or `.claude/agents/`. |
-| Skill not triggering | Mention the skill name (`browser-qa`) or `@` it in Cursor. |
+| Agent missing in an IDE | Re-run `init --activate <ide>` (or `all`). Agents render to `.cursor/agents/`, `.claude/agents/`, `.codex/agents/`, `.github/agents/`, `.agents/agents/`. |
+| Skill not triggering | Name it (`browser-qa`) or type `/browser-qa`. Skills live in `.agents/skills/` (Claude: `.claude/skills/`). |
 | No browser in Copilot / Codex | Use the Playwright commands in `browser-qa`. |
+| Cursor lists an agent twice | Cursor also reads `.claude/agents/` and `.codex/agents/`. Keep one host activated in Cursor-only repos, or pick the `.cursor` entry. |
+| Claude subagent refuses to launch | Its `tools:` must be real Claude tool names. Run `update --force` to re-render; `doctor` fails on a stale file. |
 | QA finished from the diff | Reject it. Re-run with the good QA prompt above. |
 | GitHub shows `USER_GUIDE.html` as code | Open the file in a browser. Run `npx agent-kit guide` to print the path. GitHub does not render the layout. |
 | `doctor` fails USER_GUIDE | The screenshot fail-closed sentence must stay in this file. |
-| Still have `QUALITY_GATES.md` / `COUNCIL.md` | Expected. `update` does not delete them. `doctor` lists leftovers. |
+| Still have `QUALITY_GATES.md` / `COUNCIL.md` | `doctor` lists them. Run `update --prune-legacy` on a branch to remove them and any 0.3 agent shadowing a 0.4 one. |

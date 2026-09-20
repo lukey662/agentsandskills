@@ -10,9 +10,9 @@
 ## Markdown Style
 
 - Use clear headings and concise prose.
-- Keep operational docs current with release, research, and dogfood evidence.
+- Keep operational docs current with release and dogfood evidence.
 - Record architectural decisions in `DECISIONS.md` with context, decision, and consequences.
-- Keep `ROADMAP.md` as the source of truth for phase status and next actions.
+- Keep `ROADMAP.md` short: only the open queue. History lives in `DECISIONS.md` and `CHANGELOG.md`.
 
 ## Release Workflow Style
 
@@ -25,60 +25,47 @@
 
 ## Upgrade Workflow Style
 
-- Treat package, framework, Supabase, assistant-adapter, and template updates as reviewable changes.
-- Run diff before update when project-owned files may change.
-- Preserve local decisions with `.agent-kit/overrides.json`.
-- Record version changes, migration impact, rollback process, owner, date, and verification evidence in `UPGRADE.md`.
-- Do not claim best-practice readiness when upgrade placeholders remain.
+- Treat package, template, renderer, and host-frontmatter updates as reviewable changes.
+- `update --dry-run` before `update` when project-owned files may change; `update --prune-legacy --dry-run` before any prune.
+- Local edits to managed files win or land in `.agent-kit/conflicts/`; never overwrite them silently.
+- Record what each version asks downstream users to do in `UPGRADE.md`, with the exact commands.
 
-## Agent Council Style
+## Agent Style
 
-- Planning requests start with Planner. The session launches the named owner with the USER_GUIDE spawn payload. Planner does not implement. One chat does not impersonate all six.
-- Core changes route through Lead Architect before implementation.
-- Public-facing and conversion-facing copy changes route through the Copy agent (`product-copy` then `deslop`) before implementation. Confirm Reader / Job / One action / Proof. Do not import a marketing-skill zoo.
-- Agent-to-skill mappings live in `.agent-kit/agent-roster.json` and must stay machine-readable.
-- Handoffs should name decision, risk, next owner, and required verification evidence.
-- Audit failures for missing council routing are treated as setup failures, not optional style drift.
-
-## Agent Studio And Context Style
-
-- Keep Agent Studio local-first: JSON/JSONL files are the machine-readable source of truth, and generated Markdown is the human-readable interface.
-- Do not require SQLite, a hosted database, a background daemon, or model API credentials for baseline context, session, correction, or rendering workflows.
-- Treat session event logs as append-only. Corrections add new events and status changes; they do not silently rewrite prior agent messages.
-- Record visible agent outputs, decisions, handoffs, risks, artifacts, verification, and user corrections. Do not claim to expose hidden model reasoning.
-- Update required-output status through `agent-kit session output` so session JSON and append-only events stay in sync.
-- Store human corrections with explicit scope: `session`, `project`, `agent`, or `upstream-proposal`.
-- Redact secrets, raw environment values, access tokens, database URLs, private customer data, and other sensitive data before writing context, session, correction, or Markdown files.
-- Generated Markdown should be deterministic, link back to source JSON/JSONL files, and include Mermaid graphs only when they remain readable in common Markdown previewers.
-- Static Studio exports must remain self-contained, use export-time redacted data, avoid external assets, and never read live files from the browser.
-- Do not mark an Agent Studio item complete until automated coverage exists for its schema, CLI path, renderer or audit behavior, and relevant security edge cases.
+- Planning requests start with Planner. The session launches the named owner with its payload from `AGENTS.md` → Spawn payloads. Planner does not implement. One chat does not impersonate all six.
+- The subagent id is the agent id (`app-engineer`, `design`, `qa`, …) on every host. Never map an agent to a council role name; those files are not rendered.
+- Edit `agents/<id>/agent.md` and `skills/<id>/SKILL.md` only. Never hand-edit a rendered file under `.cursor/`, `.claude/`, `.codex/`, `.github/agents/`, or `.agents/`; run `npm run dogfood:check` and it will regenerate them. Frontmatter for each host is produced by `src/install/roster-adapters.ts` from the canonical `tools`/`requiredTools` and `catalog.json` `agentSkills`; if a host adds or changes a field, change the renderer and `src/install/host-frontmatter.ts` together.
+- Canonical `tools`/`requiredTools` use the kit vocabulary (`repo`, `edit`, `terminal`, `browser`, `screenshot`, `image-review`, `test-runner`). That vocabulary never reaches a Claude file; the renderer maps or omits it.
+- Every agent follows the shared ask policy in `AGENTS.md` and lists its own three or four decision-relevant unknowns under `## Ask before acting`. Ask in one message with defaults; proceed on defaults when told to go or when non-interactive. Do not write "wait for an explicit yes" or test for the wording of a yes.
+- Agents inline only the QA payload (the gate) and reference the rest by name. Do not paste other agents' payloads into an agent file; `tests/payloads.test.ts` fails on drift from `catalog.json`.
+- Public-facing and conversion-facing copy changes route through the Copy agent (`product-copy` then `deslop`). Name Reader / Job / One action / Proof or mark `assumption`. Do not import a marketing catalog.
+- A fail-closed tell appears once, in the skill that owns it. Agents point at the skill; they do not restate its list. When a dogfood failure suggests a new rule, add it to the owning skill and to a test, not to every file that mentions the topic.
+- Shipped `agents/` and `skills/` are product-neutral. This repo's palette, `USER_GUIDE.html`, and scan provenance live in `DESIGN.md`, `MESSAGING.md`, and `DECISIONS.md`; `tests/no-kit-content.test.ts` enforces it.
 
 ## Messaging And Copy Style
 
-- Keep `MESSAGING.md` current when positioning, value proposition, voice, CTAs, onboarding, empty states, pricing, or public-facing copy changes.
-- Prefer product-specific nouns, customer language, proof, constraints, and clear next steps over broad SaaS claims.
-- Mark unknown audience, differentiator, proof, objections, or conversion assumptions as `TBD` instead of hiding gaps behind polished copy.
+- `MESSAGING.md` at the repo root is the voice file for this repo's public words (`USER_GUIDE.html`, `README.md`, CLI text). Keep it current when the guide's Reader, Job, One action, Proof, or voice words change. Downstream products write their own.
+- Prefer product-specific nouns, the Reader's language, proof, constraints, and the next action over broad SaaS claims.
+- Mark an unknown Reader, Job, action, or proof as `assumption` in the copy instead of hiding the gap behind polished words.
+- Run `deslop` on the kit's own prose too. Fragment triads ("Reject X. Reject Y. Always."), colon-led reveals, and em-dash stacks are tells here as much as on a landing page; imperative commands and table cells are not.
 - Avoid unsupported superlatives, invented proof, dark patterns, forced urgency, and risky pricing, privacy, security, compliance, performance, medical, financial, or legal claims.
 
 ## Design Tokens And States For This Repo
 
-This repo's user-facing surfaces are terminal output, markdown, and the static Agent Studio HTML export. `DESIGN.md` is the design token source of truth; apply content-first creative direction from `DESIGN.md` before changing any output surface, and record the chosen creative direction there.
+`DESIGN.md` at the repo root is the short design contract for this repo's surfaces (`USER_GUIDE.html`, CLI output, `README.md`): need, who, first-screen job, principles, the charcoal desk tokens, and anti-references. Read it before changing any of those surfaces. Nothing in it is pasted onto a downstream app; the shipped `frontend-design` skill derives tokens from the product instead.
 
-- Design token decisions: semantic ANSI color (green pass, yellow warn, red fail, cyan headings, dim detail) with monochrome fallback; terminal monospace typography with sentence-case markdown headings; spacing of one blank line between sections and two-space remediation indents; a single 6px radius token in the studio export; no motion.
-- Component state coverage: every command defines its loading (start line, no spinner), empty ("no sessions yet" style guidance with the next command), error (cause plus recovery command), disabled (feature unavailable with reason), and success states; studio export must stay readable at mobile widths (360px).
-- No landing page ships from this repo: the first screen of every surface is the working app itself, meaning task-first audit output that shows readiness, findings, and remediation rather than marketing copy.
+- CLI: semantic ANSI colour with the level word always printed, monochrome when not a TTY or `NO_COLOR`, one blank line between sections, two-space remediation indents, no spinners.
+- `USER_GUIDE.html`: self-contained, skip link, safelight `:focus-visible`, `lang` on `<html>`, flat tint wells, no `border-left`. Any change to it needs `browser-qa` desktop and mobile shots under `qa-evidence/`.
 
 ## Front-End Guidance For Installed Projects
 
-Installed project docs should push teams away from generic AI-looking interfaces. Prefer product-specific layouts, explicit component states, accessible interactions, real content structure, reference-led critique, frontend distinctiveness benchmarking, and design briefs tailored to SaaS, admin, marketplace, content, or tool workflows.
+The installed `frontend-design` skill names a mode (`setup`, `build`, `review`, `detect`) and a surface (`landing`, `app-chrome`, `inside-design-system`) before CSS. Setup is the new-repo path: scan, ask what the user needs with defaults attached, recommend principles, write a short product `DESIGN.md`, no CSS. Build derives the direction in five lines (Object, Field/ink/accent, Type, Structure, Removed) before tokens; the two worked examples are examples, not a menu. Detect is audit-only, and its fail-closed tells (slogan hero over cards over tickets, styled-div screenshots, tracked caps and middle-dot meta, unnamed swap / squint / signature) appear once, in the detect row. Findings are tagged code-certain or inferred and clear problem or judgment call.
 
-The installed `frontend-design` skill names a mode (`setup`, `build`, `review`, `detect`) and a surface (`landing`, `app-chrome`, `inside-design-system`, `kit-html`) before CSS. Setup is the new-repo path: scan architecture, ask what the user needs, recommend principles from those answers, then write a short product `DESIGN.md` and frontend `STYLE_GUIDE.md` rules. Detect is audit-only. Findings are tagged code-certain or inferred and Kind (clear problem vs judgment call). Detect fails if the first viewport is slogan-hero + equal cards + numbered tickets, QA frames are styled divs, or swap / squint / signature tests go unnamed. Do not paste this kit’s charcoal desk onto a product app.
-
-Significant frontend work should record references, anti-references, source-safety notes, a distinctiveness verdict, first-screen proof, content fingerprint, asset provenance, state proof, UI detector findings, visual QA proof, and a frontend product-quality scorecard in `DESIGN.md` before it is accepted as best-practice ready. The scorecard should reject work with critical zeroes or a total below `10/14`; reserve best-practice claims for `12/14` or higher plus a passing distinctiveness benchmark, desktop/mobile review, authenticated screen evidence when applicable, and visual QA evidence.
+The visual fail list lives in `frontend-design`, not in `deslop`. Copy reads the screenshot and hands it to Design; Design fixes pixels. The rules below are this repo's summary of that list for reviewers.
 
 ### Anti-Slop UI Rules
 
-Do not use generic AI-slop treatments as a substitute for product design. If a mature brand system intentionally uses one of these patterns, record the exception and rationale in `DESIGN.md` or `.agent-kit/overrides.json`.
+Do not use generic AI-slop treatments as a substitute for product design. If a mature brand system intentionally uses one of these patterns, record the exception and rationale in `DESIGN.md`.
 
 - No accent-border cards or left rails. Replace thick, high-contrast, one-sided colored borders (especially a left-edge stroke on selected rows, list items, cards, or success/error/warn wells), glow rails, neon strokes, and gradient borders with radio/check + light row tint, typography/weight, restrained 1px full-border surfaces, or a flat tint fill. Keep one accent for the primary CTA, not as a row edge.
 - No gradient-as-design. Replace generic purple-blue gradient heroes, gradient text, and gradient blobs with product-specific imagery, workflow screenshots, object-focused media, real content, or a quiet tokenized background.

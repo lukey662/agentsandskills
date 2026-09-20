@@ -8,8 +8,8 @@ import { planFileUpdate, type PlannedUpdateAction } from "./file-update-plan.js"
 import { initProject, readManifest } from "./install.js";
 import { activateIdeTargets } from "./ide-activate.js";
 import { listManagedAssets } from "./managed-assets.js";
-import { generatePortableSkills } from "./roster-adapters.js";
 import { listLegacyLeftovers } from "./doctor.js";
+import { pruneLegacy, type PrunePlanEntry } from "./prune-legacy.js";
 import type { CopyCollector } from "./copy-asset.js";
 import type { IdeTarget } from "./ide-activate.js";
 
@@ -25,16 +25,20 @@ export interface UpdateFileResult {
 export interface UpdateResult {
   dryRun: boolean;
   files: UpdateFileResult[];
-  libraryFoldersRefreshed: string[];
   manifestPath: string;
   summary: Record<UpdateAction, number>;
   leftoverDocs: string[];
+  /** Paths deleted by --prune-legacy (or planned, on dry-run). Empty unless the flag was set. */
+  pruned: string[];
+  prunePlan: PrunePlanEntry[];
 }
 
 export interface UpdateOptions {
   cwd: string;
   force?: boolean;
   dryRun?: boolean;
+  /** Opt-in. Deletes only the 0.3 council allowlist in prune-legacy.ts, then regenerates what 0.4 owns. */
+  pruneLegacy?: boolean;
 }
 
 function summarize(files: UpdateFileResult[]): Record<UpdateAction, number> {
@@ -75,6 +79,16 @@ export function updateProject(options: UpdateOptions): UpdateResult {
   const cwd = options.cwd;
   const force = Boolean(options.force);
   const dryRun = Boolean(options.dryRun);
+
+  // Prune first so a 0.3 stub at a 0.4 path is gone before activation regenerates that path.
+  let pruned: string[] = [];
+  let prunePlan: PrunePlanEntry[] = [];
+  if (options.pruneLegacy) {
+    const outcome = pruneLegacy(cwd, { dryRun });
+    pruned = outcome.removed;
+    prunePlan = outcome.planned;
+  }
+
   const manifest = readManifest(cwd);
 
   if (!manifest) {
@@ -99,10 +113,11 @@ export function updateProject(options: UpdateOptions): UpdateResult {
     return {
       dryRun,
       files,
-      libraryFoldersRefreshed: [],
       manifestPath: ".agent-kit/manifest.json",
       summary: summarize(files),
-      leftoverDocs: listLegacyLeftovers(cwd)
+      leftoverDocs: listLegacyLeftovers(cwd),
+      pruned,
+      prunePlan
     };
   }
 
@@ -145,7 +160,6 @@ export function updateProject(options: UpdateOptions): UpdateResult {
 
   if (!dryRun) {
     const activation = activateIdeTargets({ cwd, targets: activated, force });
-    generatePortableSkills(cwd, force, activation);
     files.push(...activationToUpdateFiles(activation));
 
     const nextHashes = { ...manifest.assetHashes };
@@ -167,18 +181,19 @@ export function updateProject(options: UpdateOptions): UpdateResult {
     writeText(join(cwd, ".agent-kit", "manifest.json"), `${JSON.stringify(next, null, 2)}\n`);
   } else {
     files.push({
-      target: ".cursor/agents/",
+      target: ".agents/skills/",
       action: "updated",
-      reason: "Would refresh activated IDE agents, skills, and portable skills/ copies."
+      reason: "Would refresh .agents/skills/ and the activated IDE agent files."
     });
   }
 
   return {
     dryRun,
     files,
-    libraryFoldersRefreshed: [],
     manifestPath: ".agent-kit/manifest.json",
     summary: summarize(files),
-    leftoverDocs: listLegacyLeftovers(cwd)
+    leftoverDocs: listLegacyLeftovers(cwd),
+    pruned,
+    prunePlan
   };
 }

@@ -14,9 +14,10 @@ Then open **[USER_GUIDE.html](USER_GUIDE.html)** in a browser (markdown twin: [U
 
 ## What you get
 
-- `AGENTS.md` — who to ask
+- `AGENTS.md` — who to ask, the ask-before-acting rule, and the handoff prompts
 - `USER_GUIDE.md` — how to invoke agents and skills in Cursor, Claude, Codex, Copilot, and Antigravity
-- Native agents and skills for the IDEs you activate
+- Six agents rendered natively for each host you activate (`.cursor/agents/`, `.claude/agents/`, `.codex/agents/`, `.github/agents/`, `.agents/agents/`)
+- Twelve skills in one place, `.agents/skills/` (Claude: `.claude/skills/`), following the Agent Skills open standard
 - A `browser-qa` skill that fails closed without desktop + mobile screenshots
 
 ## Commands
@@ -28,6 +29,7 @@ npx agent-kit doctor
 npx agent-kit add skill debug
 npx agent-kit add agent lead-architect
 npx agent-kit update
+npx agent-kit update --prune-legacy   # remove 0.3 council leftovers after a confirmation
 npx agent-kit adapter validate all
 ```
 

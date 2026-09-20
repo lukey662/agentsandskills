@@ -49,8 +49,9 @@ describe("default skill YAML descriptions", () => {
     expect(description).toContain("looks generic");
     expect(description).toContain("de-slop");
     expect(description).toContain("don't change the code");
-    expect(description).toContain("user_guide.html looks bad");
-    expect(description).toContain("kit-html");
+    // Kit-specific triggers stay out of the shipped skill.
+    expect(description).not.toContain("user_guide.html");
+    expect(description).not.toContain("kit-html");
   });
 
   it("init copies trigger phrases onto Cursor skills", () => {
@@ -58,7 +59,7 @@ describe("default skill YAML descriptions", () => {
     roots.push(root);
     initProject({ cwd: root, activate: ["cursor"] });
     for (const [id, trigger] of Object.entries(triggers)) {
-      const body = readFileSync(join(root, `.cursor/skills/${id}/SKILL.md`), "utf8");
+      const body = readFileSync(join(root, `.agents/skills/${id}/SKILL.md`), "utf8");
       expect(body.toLowerCase(), id).toContain(trigger.toLowerCase());
     }
   });

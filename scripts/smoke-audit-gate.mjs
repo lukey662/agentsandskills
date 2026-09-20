@@ -28,7 +28,7 @@ try {
   if (!guide.includes("Do not review code alone")) {
     throw new Error("Installed USER_GUIDE.md dropped the screenshot fail-closed sentence.");
   }
-  if (!existsSync(join(tempRoot, ".cursor/skills/browser-qa/SKILL.md"))) {
+  if (!existsSync(join(tempRoot, ".agents/skills/browser-qa/SKILL.md"))) {
     throw new Error("Expected browser-qa skill after init.");
   }
   if (!existsSync(join(tempRoot, ".cursor/agents/qa.md"))) {

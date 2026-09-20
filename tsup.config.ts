@@ -8,7 +8,6 @@ export default defineConfig({
   sourcemap: true,
   splitting: false,
   target: "node20",
-  external: ["@appsforgood/agent-kit-runtime"],
   banner: {
     js: "#!/usr/bin/env node"
   }

@@ -1,5 +1,5 @@
 name: Bug report
-description: Report a reproducible package, CLI, template, or audit problem.
+description: Report a reproducible package, CLI, template, or IDE adapter problem.
 title: "[Bug]: "
 labels:
   - bug
@@ -36,7 +36,7 @@ body:
     id: evidence
     attributes:
       label: Evidence
-      description: Paste redacted command output, audit JSON summary, screenshots, or relevant file paths.
+      description: Paste redacted command output, doctor JSON summary, screenshots, or relevant file paths.
     validations:
       required: false
   - type: dropdown
@@ -46,7 +46,7 @@ body:
       options:
         - CLI install/update/diff
         - Audit rules
-        - Agent roster/council
+        - Agents and skills
         - Frontend/design guidance
         - Supabase/security guidance
         - Research scanner

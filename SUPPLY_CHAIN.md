@@ -1,18 +1,18 @@
 # Supply Chain Security
 
-The root kit and optional runtime are intended for public npm distribution. Release integrity is part of the product, not an optional operations detail.
+The kit is published to public npm. Release integrity is part of the product, not an optional operations detail.
 
 ## Publish Identity
 
-- Public packages: `@appsforgood/next-supabase-kit` and `@appsforgood/agent-kit-runtime`.
+- Public package: `@appsforgood/next-supabase-kit`.
 - Publish path: GitHub Actions release workflow through npm Trusted Publishing.
 - Authentication: short-lived GitHub OIDC identity only; automated publishing has no npm token fallback.
 - Environment: `npm-publish`.
-- Each npm package must have its own Trusted Publisher scoped to repository `lukey662/agentsandskills`, workflow `release.yml`, environment `npm-publish`, and allowed action `npm publish`.
+- The npm package has a Trusted Publisher scoped to repository `lukey662/agentsandskills`, workflow `release.yml`, environment `npm-publish`, and allowed action `npm publish`.
 
 The workflow removes inherited npm token variables, supplies a token-free npm configuration, and requires the GitHub OIDC request context before publishing. A missing or incorrect package-level Trusted Publisher fails closed instead of switching authentication modes. Successful publication carries npm provenance tied to that workflow identity.
 
-The release workflow creates separate root/runtime tarballs and package-rooted CycloneDX SBOMs, uploads them as release evidence, and attests each SBOM against its exact tarball. Runtime publishes before root when both are new. Both public packages are verified before the matching GitHub release, so a partial npm publish cannot create an apparently successful source release.
+The release workflow creates one tarball and a lockfile-derived CycloneDX SBOM, uploads both as release evidence, and attests the SBOM against the exact tarball. The public package is verified before the GitHub release is created, so a failed publish cannot produce an apparently successful source release.
 
 ## Release Gates
 
@@ -22,7 +22,7 @@ Before publish:
 - `npm run release:check`
 - Public release review
 
-`npm run release:check` validates JSON assets, typechecks both workspaces, tests, builds both packages, runs install smoke, runs dependency audit, validates SBOM generation, and performs root/runtime package dry runs. The install smoke also inspects packaged public files for forbidden private-package text.
+`npm run release:check` validates JSON assets, typechecks, lints, tests with a coverage gate, builds, validates package and adapters, checks the example fixture and the maintainer dogfood layers, runs install smoke, runs dependency audit, validates SBOM generation, and dry-runs `npm pack`. The install smoke also inspects packaged public files for forbidden private-package text.
 
 `npm run sbom:check` validates that the lockfile-derived CycloneDX SBOM can be generated, includes runtime dependencies, and has no unresolved required dependency links. Optional platform-specific dependency links may be skipped when npm records optional package edges that are not present for the current install target.
 
@@ -31,9 +31,7 @@ Inspect retries `npm view` because npm malware-scan staging can 404 a version th
 After publish:
 
 - `npm view @appsforgood/next-supabase-kit@<version> version`
-- `npm view @appsforgood/agent-kit-runtime@<version> version`
-- Clean install and import of `@appsforgood/agent-kit-runtime`
-- Clean install of both packages followed by root `init --activate all`, `doctor`, and `adapter validate all`
+- Clean install followed by `init --activate all`, `doctor`, and `adapter validate all`
 
 The release workflow and `npm run publish:verify` both use `scripts/post-publish-verify.mjs` for this post-publish verification path.
 
@@ -45,7 +43,7 @@ The release workflow and `npm run publish:verify` both use `scripts/post-publish
 - Dependabot proposes npm and GitHub Actions updates; workflow actions remain pinned to immutable commit SHAs with reviewed version comments.
 - CodeQL scans JavaScript/TypeScript code.
 - OpenSSF Scorecard publishes repository security posture as code-scanning evidence.
-- CODEOWNERS identifies default review ownership for source, templates, schemas, and workflows.
+- CODEOWNERS identifies default review ownership for source, templates, agents, skills, the catalog, and workflows.
 - Release artifacts include an attested CycloneDX SBOM for the npm tarball.
 
 ## Maintainer Rules

@@ -8,8 +8,6 @@ on:
       - .github/workflows/release.yml
       - package.json
       - package-lock.json
-      - packages/*/package.json
-      - packages/*/CHANGELOG.md
       - scripts/post-publish-verify.mjs
       - CHANGELOG.md
   workflow_dispatch:
@@ -35,11 +33,7 @@ jobs:
     outputs:
       package_name: ${{ steps.state.outputs.package_name }}
       package_version: ${{ steps.state.outputs.package_version }}
-      runtime_name: ${{ steps.state.outputs.runtime_name }}
-      runtime_version: ${{ steps.state.outputs.runtime_version }}
       publish_needed: ${{ steps.state.outputs.publish_needed }}
-      runtime_publish_needed: ${{ steps.state.outputs.runtime_publish_needed }}
-      any_publish_needed: ${{ steps.state.outputs.any_publish_needed }}
       release_needed: ${{ steps.state.outputs.release_needed }}
     steps:
       - name: Checkout
@@ -62,14 +56,10 @@ jobs:
           set -euo pipefail
           package_name="$(node --input-type=module -e "import pkg from './package.json' with { type: 'json' }; process.stdout.write(pkg.name)")"
           package_version="$(node --input-type=module -e "import pkg from './package.json' with { type: 'json' }; process.stdout.write(pkg.version)")"
-          runtime_name="$(node --input-type=module -e "import pkg from './packages/runtime/package.json' with { type: 'json' }; process.stdout.write(pkg.name)")"
-          runtime_version="$(node --input-type=module -e "import pkg from './packages/runtime/package.json' with { type: 'json' }; process.stdout.write(pkg.version)")"
           release_tag="v${package_version}"
 
           echo "package_name=${package_name}" >> "${GITHUB_OUTPUT}"
           echo "package_version=${package_version}" >> "${GITHUB_OUTPUT}"
-          echo "runtime_name=${runtime_name}" >> "${GITHUB_OUTPUT}"
-          echo "runtime_version=${runtime_version}" >> "${GITHUB_OUTPUT}"
 
           registry_has_version() {
             local spec="$1"
@@ -84,16 +74,8 @@ jobs:
           }
 
           publish_needed=true
-          runtime_publish_needed=true
           registry_has_version "${package_name}@${package_version}" && publish_needed=false
-          registry_has_version "${runtime_name}@${runtime_version}" && runtime_publish_needed=false
           echo "publish_needed=${publish_needed}" >> "${GITHUB_OUTPUT}"
-          echo "runtime_publish_needed=${runtime_publish_needed}" >> "${GITHUB_OUTPUT}"
-          if [[ "${publish_needed}" == "true" || "${runtime_publish_needed}" == "true" ]]; then
-            echo "any_publish_needed=true" >> "${GITHUB_OUTPUT}"
-          else
-            echo "any_publish_needed=false" >> "${GITHUB_OUTPUT}"
-          fi
 
           if gh release view "${release_tag}" --repo "${GITHUB_REPOSITORY}" >/dev/null 2>&1; then
             echo "release_needed=false" >> "${GITHUB_OUTPUT}"
@@ -102,11 +84,11 @@ jobs:
           fi
 
   publish:
-    name: Verify and publish packages
+    name: Verify and publish package
     needs: inspect
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      needs.inspect.outputs.any_publish_needed == 'true' ||
+      needs.inspect.outputs.publish_needed == 'true' ||
       needs.inspect.outputs.release_needed == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 25
@@ -138,23 +120,18 @@ jobs:
       - name: Release readiness check
         run: npm run release:check
 
-      - name: Create package artifacts
+      - name: Create package artifact
         id: pack
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p release-artifacts
           npm pack --json --pack-destination release-artifacts > release-artifacts/npm-pack.json
-          npm pack --json --workspace @appsforgood/agent-kit-runtime --pack-destination release-artifacts > release-artifacts/runtime-npm-pack.json
           tarball="$(node -e "const [result] = JSON.parse(require('fs').readFileSync('release-artifacts/npm-pack.json', 'utf8')); if (!result?.filename) process.exit(1); console.log('release-artifacts/' + result.filename);")"
-          runtime_tarball="$(node -e "const [result] = JSON.parse(require('fs').readFileSync('release-artifacts/runtime-npm-pack.json', 'utf8')); if (!result?.filename) process.exit(1); console.log('release-artifacts/' + result.filename);")"
           echo "tarball=${tarball}" >> "${GITHUB_OUTPUT}"
-          echo "runtime_tarball=${runtime_tarball}" >> "${GITHUB_OUTPUT}"
 
-      - name: Generate package SBOMs
-        run: |
-          node scripts/sbom-check.mjs --output release-artifacts/sbom.cdx.json
-          node scripts/sbom-check.mjs --workspace packages/runtime --output release-artifacts/runtime-sbom.cdx.json
+      - name: Generate package SBOM
+        run: node scripts/sbom-check.mjs --output release-artifacts/sbom.cdx.json
 
       - name: Upload release evidence
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
@@ -163,14 +140,12 @@ jobs:
           path: |
             release-artifacts/*.tgz
             release-artifacts/sbom.cdx.json
-            release-artifacts/runtime-sbom.cdx.json
             release-artifacts/npm-pack.json
-            release-artifacts/runtime-npm-pack.json
           retention-days: 30
 
       - name: Validate trusted publishing context
         if: >-
-          needs.inspect.outputs.any_publish_needed == 'true' &&
+          needs.inspect.outputs.publish_needed == 'true' &&
           (github.event_name == 'push' || github.event.inputs.dry_run == 'false')
         shell: bash
         run: |
@@ -178,7 +153,7 @@ jobs:
           test -n "${ACTIONS_ID_TOKEN_REQUEST_TOKEN:-}"
           test -n "${ACTIONS_ID_TOKEN_REQUEST_URL:-}"
 
-      - name: Attest root package SBOM
+      - name: Attest package SBOM
         if: >-
           needs.inspect.outputs.publish_needed == 'true' &&
           (github.event_name == 'push' || github.event.inputs.dry_run == 'false')
@@ -186,39 +161,6 @@ jobs:
         with:
           subject-path: ${{ steps.pack.outputs.tarball }}
           sbom-path: release-artifacts/sbom.cdx.json
-
-      - name: Attest runtime package SBOM
-        if: >-
-          needs.inspect.outputs.runtime_publish_needed == 'true' &&
-          (github.event_name == 'push' || github.event.inputs.dry_run == 'false')
-        uses: actions/attest-sbom@c604332985a26aa8cf1bdc465b92731239ec6b9e # v4.1.0
-        with:
-          subject-path: ${{ steps.pack.outputs.runtime_tarball }}
-          sbom-path: release-artifacts/runtime-sbom.cdx.json
-
-      - name: Publish runtime through npm Trusted Publishing
-        if: >-
-          needs.inspect.outputs.runtime_publish_needed == 'true' &&
-          (github.event_name == 'push' || github.event.inputs.dry_run == 'false')
-        shell: bash
-        run: |
-          set -euo pipefail
-          npmrc="${RUNNER_TEMP}/agent-kit-publish.npmrc"
-          printf 'registry=https://registry.npmjs.org/\nprovenance=true\naccess=public\n' > "${npmrc}"
-          tarball="./${{ steps.pack.outputs.runtime_tarball }}"
-          set +e
-          out="$(env -u NODE_AUTH_TOKEN -u NPM_TOKEN npm publish "${tarball}" --userconfig "${npmrc}" --access public --provenance 2>&1)"
-          status=$?
-          set -e
-          printf '%s\n' "${out}"
-          if [[ "${status}" -eq 0 ]]; then
-            exit 0
-          fi
-          if printf '%s\n' "${out}" | grep -qiE 'Cannot publish over previously staged version|You cannot publish over the previously published versions'; then
-            echo "npm already has this runtime version staged or published; skip republish"
-            exit 0
-          fi
-          exit "${status}"
 
       - name: Publish through npm Trusted Publishing
         if: >-
@@ -244,19 +186,11 @@ jobs:
           fi
           exit "${status}"
 
-      - name: Verify runtime package from the public registry
-        if: github.event_name == 'push' || github.event.inputs.dry_run == 'false'
-        env:
-          AGENT_KIT_VERIFY_PACKAGE_NAME: ${{ needs.inspect.outputs.runtime_name }}
-          AGENT_KIT_VERIFY_PACKAGE_VERSION: ${{ needs.inspect.outputs.runtime_version }}
-        run: node scripts/post-publish-verify.mjs
-
       - name: Verify package from the public registry
         if: github.event_name == 'push' || github.event.inputs.dry_run == 'false'
         env:
           AGENT_KIT_VERIFY_PACKAGE_NAME: ${{ needs.inspect.outputs.package_name }}
           AGENT_KIT_VERIFY_PACKAGE_VERSION: ${{ needs.inspect.outputs.package_version }}
-          AGENT_KIT_VERIFY_RUNTIME_SPEC: ${{ needs.inspect.outputs.runtime_name }}@${{ needs.inspect.outputs.runtime_version }}
         run: node scripts/post-publish-verify.mjs
 
       - name: Create GitHub release after registry verification

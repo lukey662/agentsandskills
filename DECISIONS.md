@@ -2,6 +2,48 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-09-20 - Delete The 0.3 Source Tree And Render Each Host's Native Files
+
+### Context
+
+After the prune landed, the source repo still carried the whole 0.3 operating system off the CLI: `src/studio/` (29 files), `src/research/`, `src/install/{audit,audit-v2,diff,assistant-adapters-table}.ts`, `src/config/contracts.ts`, fourteen quarantined tests, four scripts, a research-refresh workflow calling removed commands, root `checklists/ prompts/ profiles/ design-briefs/ design-adapters/ rosters/ model-routing/ schemas/ antigravity/ dogfood/ docs/`, 101 generated research findings, twenty dead templates, fourteen dead adapter files, seven 0.3 root docs, a 663-line roadmap, and `packages/runtime`, the separately published LangGraph runtime that every `npm test` built first. Four runtime dependencies (`@clack/prompts`, `@octokit/rest`, `simple-git`, `zod`) were used only by those modules.
+
+Checking each host's current documentation (September 2026) also showed the adapters were wrong, not just untidy. Claude Code refuses to launch a subagent whose `tools:` entries do not resolve to real tool names (v2.1.208+), and the kit wrote `tools: [repo, edit, terminal, browser]` into every `.claude/agents/*.md`. Cursor's subagent frontmatter is exactly `name, description, model, readonly, is_background`; the kit's `tools`/`requiredTools` keys were ignored and `readonly` (real enforcement for Planner) was unused. Codex reads skills from `.agents/skills/` and the kit wrote none for it. Copilot has native custom agents at `.github/agents/<id>.agent.md` and Antigravity has native subagents at `.agents/agents/<id>/agent.md`; the kit told both "you cannot spawn, continue in-thread." Cursor, Codex, Copilot, and Antigravity all read `.agents/skills/` (the Agent Skills open standard); the kit wrote `.cursor/skills/`, `.antigravity/runtime-skills/`, and a repo-root `skills/` folder into downstream projects.
+
+### Decision
+
+- Delete the 0.3 tree from source. `packages/runtime` is tagged `runtime-0.1.3` and removed with its workspace, `pre*` build hooks, tsup external, release-workflow publish path, and post-publish import check; it lives on from that tag or in its own repository. The four legacy dependencies go. `templates/next-supabase/` keeps `AGENTS.md`, `CLAUDE.md`, and the Cursor rule (moved from `assistant-adapters/`). `research/summaries/` and the shipped gap report stay as provenance. `ROADMAP.md` and `TESTING.md` are rewritten to the current queue and the current test layout. `SPEC.md` and `DOCS.md` drop their historical sections.
+- One skills location: `.agents/skills/<id>/SKILL.md` on every init, plus `.claude/skills/` when Claude is activated. No more `.cursor/skills/`, `.antigravity/`, or repo-root `skills/` in installs; `--prune-legacy` removes the 0.4 copies and is guarded so it never touches `skills/` inside the kit's own source tree.
+- Per-host agent frontmatter from one canonical file (`src/install/roster-adapters.ts`). Body unchanged; one `> Required tools: …` line keeps the kit's gate contract visible on hosts without a tools field. Cursor gets `readonly: true` for Planner. Claude gets real tool names (or inherits all when the agent needs browser tools), `skills:` preloading the catalog's per-agent list, and `effort: high` for planner, security, design. Copilot gets `.github/agents/<id>.agent.md`. Antigravity gets `.agents/agents/<id>/agent.md` with `subagent: true` and `skills:` paths, plus `.agents/rules/agent-kit.md`. `catalog.json` gains `agentSkills`.
+- `src/install/host-frontmatter.ts` holds the documented allowlists and `validateHostAgentFile`; `adapter validate`, `doctor`, `tests/adapter-frontmatter.test.ts`, and `dogfood:check` all judge rendered files by it. `doctor` fails on a Claude file that carries the kit vocabulary.
+- `AGENTS.md`, `planning`, `planner`, `CLAUDE.md`, the Copilot instructions, and the user guide say every host launches agents by id; the in-thread "now App engineer" header is a fallback for surfaces without subagents, not the Copilot and Antigravity path.
+
+### Consequences
+
+This repo's `npm test` no longer builds a second package first. Downstream 0.4 installs get their Claude subagents working for the first time after `update --force`, and Codex, Copilot, and Antigravity get skills and native agents they never had. Cursor may list an agent up to three times in a repo that activated Claude and Codex as well, because Cursor also reads those folders; the guide names the workaround and the roadmap tracks the check. Claude, Codex, Copilot, and Antigravity are verified against their documented schemas by tests, not by driving the hosts; live runs are the open item. Ships in 0.5.0 with the prune.
+
+## 2026-09-20 - Retire The 0.3 Council Residue And Give Every Rule One Home
+
+### Context
+
+A structural review of 0.4.10 found that two generations of the kit ran at once in every install that had ever been on 0.3, including this repo. `update` never deleted, and `writeGenerated` never overwrote an existing file, so a 0.3 council `planner.md` sat at `.cursor/agents/planner.md` and shadowed the 0.4 Planner; the always-on `.cursor/rules/cursor-agent-kit.mdc` was the council version; sixteen council skills with "any user-facing screen" triggers loaded beside `frontend-design`. `AGENTS.md` and `agents/planner/agent.md` told Cursor to spawn `frontend-design-lead`, `nextjs-engineer`, `qa-engineer`: ids that `roster-adapters.ts` never renders, so downstream spawns failed and here they hit council stubs with no `browser-qa` and no `requiredTools`. `doctor` checked `requiredTools` on a file the Task mapping routed around. A design task in this repo loaded roughly 15–20k tokens of instruction before work, half of it asking for two creative directions, a reference set, a scorecard, and a benchmark.
+
+Inside the 0.4 files themselves, each dogfood failure had added a "Reject …" line to both the skill and the agent: the slogan-hero / fake-frames / tracked-caps / swap-squint-signature quartet appeared three times in `design/agent.md` and three times in `frontend-design`; the five spawn payloads were copied into nine files. `frontend-design` (2,581 words) carried this repo's charcoal palette three times, a `kit-html` surface, and a four-recipe palette table that made every downstream app that picked "Paper + ink" converge. `deslop`, a copy skill, owned Design's visual fail list. Planner and Copy ran a "one question, restate six slots, wait for an explicit yes (not 'sounds good')" ritual; App engineer, Security, and QA had no question guidance at all. Tests asserted incidental strings (`#10100e`, "Seven Sweeps") rather than contracts.
+
+### Decision
+
+- Cursor Task subagent types are the agent ids. No shipped file maps to a council role name.
+- `update --prune-legacy` is the first deleting path. It deletes only the allowlist in `src/install/prune-legacy.ts`, detects a council stub at a 0.4 path by content (no `tools:` frontmatter, or council doc names), prints the plan, requires `y` or `--yes`, and runs before regeneration. `doctor` fails on a shadowed default agent or a council rule / Copilot file and warns on council skills; every message names the prune. This repo ran the prune, removed tracked `runtime-skills/` (read by nothing) and the council root docs, and regenerated `.cursor/`.
+- `catalog.json` gains `askPolicy` and `spawnPayloads`. `AGENTS.md` (template and this repo) renders both. Agents inline only the QA payload and reference the rest. Copilot and Antigravity generators read the catalog. One shared ask rule replaces the ritual: ask only when the answer changes what gets built, never what the repo answers, up to three bundled questions with defaults, proceed on defaults when told to go or when non-interactive, no gate on the wording of the yes. Each agent names its own decision-relevant unknowns.
+- `frontend-design` (now ~1,900 words) states each detect tell once, drops the kit palette, `kit-html`, and scan provenance, replaces the recipe table with a five-line derive-the-direction method (Object, Field/ink/accent, Type, Structure, Removed) plus two examples labelled as examples, adds a type-and-rhythm block, and takes the visual fail list from `deslop`. The Design agent (~540 words) names mode and surface and points at the skill.
+- `deslop` is copy-only and adds structure tells, a Reader test, and a tool-voice allowance. `product-copy` is product-neutral; kit-guide voice moves to this repo's `MESSAGING.md`. Kit tokens move to this repo's `DESIGN.md`, rewritten to the short shape the skill prescribes.
+- Codex agents get per-agent reasoning effort (high for planner, security, design). Provenance lines leave the seven domain skills; they stay in this file and `research/summaries/`.
+- Tests lock contracts: `rendered-drift`, `payloads`, `no-kit-content`, shadow detection and prune safety in `doctor-legacy`; `dogfood:check` guards this repo's own installed copies in `release:check`.
+
+### Consequences
+
+Downstream 0.3 upgraders must run the prune once to get the 0.4 Planner and rule; until then `doctor` fails and says so. The spawn payload text is byte-identical, so `USER_GUIDE.html` changed only in the skill table and the update/troubleshooting rows. Studio, audit, diff, research, and the root council folders remain in the tree as removal candidates; `DOCS.md` and `SPEC.md` mark them historical. Ship as 0.5.0.
+
 ## 2026-09-18 - One Copy Agent, Inspired Not Copied
 
 ### Context

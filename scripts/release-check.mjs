@@ -43,11 +43,11 @@ run("Build", ["run", "build"]);
 run("Package asset validation", ["run", "package:validate"]);
 run("IDE adapter template validation", ["run", "adapter:validate"]);
 run("Example consistency check", ["run", "examples:check"]);
+run("Dogfood drift check", ["run", "dogfood:check"]);
 run("Install smoke", ["run", "smoke:install"]);
 run("Doctor gate smoke", ["run", "smoke:audit-gate"]);
 run("Dependency audit", ["audit", "--audit-level=moderate"]);
 run("SBOM check", ["run", "sbom:check"]);
 run("Package dry run", ["pack", "--dry-run"]);
-run("Runtime package dry run", ["pack", "--dry-run", "--workspace", "@appsforgood/agent-kit-runtime"]);
 
 console.log("\nrelease check passed");
