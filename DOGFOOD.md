@@ -9,6 +9,20 @@ This file is the public-safe summary of downstream adoption evidence. Detailed l
 - Public summaries use project archetypes instead of local paths or private project details.
 - A dogfood item only counts as promoted when it leads to an installed asset, audit check, test, release gate, or documented decision.
 
+## 2026-09-21 Leaderboard Invariants In Copy And Design (0.5.2)
+
+Date: 2026-09-21
+CLI source: public npm `@appsforgood/next-supabase-kit@0.5.2`.
+Commands: `npm run release:check` passed; GitHub Release workflow published through Trusted Publishing, verified the public package, and created `v0.5.2`.
+
+What changed for downstream:
+- `product-copy`: Single CTA intent per page, desktop CTA button wrap ban (~1280), single copy register per page, and plain functional form error / toast wording (no "Oops!").
+- `deslop`: New word tells ("Oops!", mock-humble asides, cute-but-wrong wordplay) and unverified statistical precision sweep (`99.4%`, `4.2×`) without proof or assumption marks.
+- `frontend-design`: One-line Design Read before deriving tokens; theme menus (glassmorphism, bento, brutalism) rejected; placeholder copy (Lorem Ipsum, Acme) and generic avatars flagged in the visual fail list.
+- `ui-polish`: Mobile `100dvh` over `100vh` and tabular numbers on data and financial columns.
+
+`USER_GUIDE.html` did not change. No new screenshot pass.
+
 ## 2026-09-20 Hash-aware Update (0.5.1)
 
 Date: 2026-09-20
