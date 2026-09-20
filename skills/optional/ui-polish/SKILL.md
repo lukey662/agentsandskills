@@ -19,7 +19,7 @@ Not a substitute for `frontend-design` `setup` / `build` / `review`.
 
 1. If `DESIGN.md` is missing or TBD, stop. Send Design to `setup` first. Do not invent a second brand.
 2. Name that `frontend-design` already ran (or is running in `review`). This pass stays `inside-design-system`.
-3. Change hierarchy, spacing, states (loading / empty / error / success), and mobile fit. Do not change product scope.
+3. Change hierarchy, spacing, states (loading / empty / error / success), and mobile fit (`min-height: 100dvh` over `100vh`, tabular numbers on data and financial columns). Do not change product scope.
 4. Capture `browser-qa` desktop (~1280) and mobile (~390). One viewport is not enough.
 5. Keep kit charcoal tokens off product apps.
 

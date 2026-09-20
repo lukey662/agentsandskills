@@ -2,6 +2,23 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-09-21 - Extract Leaderboard Structure, Reject Skill Bloat
+
+### Context
+
+A survey of the top 10 public skill repositories on skillleaderboard.com (Karpathy, Ponytail, UI UX Pro Max, Graphify, Caveman, Addy Osmani, Taste Skill, Understand Anything, Awesome Claude Skills, Archify) was evaluated for potential gaps in design and copywriting. Most packs either supply general developer hygiene / token compression (Karpathy, Ponytail, Caveman), graph/diagram generators (Graphify, Archify, Understand Anything), or giant theme/style catalogues (UI UX Pro Max with 84 styles; Awesome Claude Skills directories). The leaderboard contained zero dedicated copywriting skills, while Taste Skill v2 contained valuable empirical fail-closed UI/microcopy checks buried in an image-first, GSAP-heavy landing-page OS.
+
+### Decision
+
+- Do not install any of the top 10 repositories. Keep twelve default skills and six default agents. No 13th default skill.
+- Reject style menus (UI UX Pro Max) in `frontend-design`: tokens must derive from the subject object, not style presets (glassmorphism, claymorphism, bento, brutalism). Add a one-line Design Read before deriving tokens. Flag placeholder content (Lorem Ipsum, John Doe, Acme) and avatar placeholders in the visual fail list.
+- Adopt high-leverage copy and microcopy invariants into `product-copy` and `deslop`: single CTA intent per page, desktop button wrap ban (~1280), single copy register, functional form error/toast messages ("Oops!" ban), and unverified precision sweep (`99.4%`, `4.2×`) without proof or assumption mark.
+- Optional `ui-polish` notes `100dvh` over `100vh` and tabular numbers for data/money.
+
+### Consequences
+
+The skills gain roughly 15 lines of fail-closed rules that directly prevent AI aesthetic and copy tells without increasing token bloat, creating new agents, or adding external dependencies.
+
 ## 2026-09-20 - Delete The 0.3 Source Tree And Render Each Host's Native Files
 
 ### Context

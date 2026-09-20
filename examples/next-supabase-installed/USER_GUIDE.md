@@ -219,7 +219,15 @@ Add `web-performance` when the ask is LCP / INP / CLS / “this page is slow.”
 npx agent-kit update
 ```
 
-Pristine files refresh. Local edits win or land in `.agent-kit/conflicts/`. Do not re-init. `update` never deletes your old docs unless you pass `--prune-legacy`, which lists the 0.3 council leftovers and asks before removing them.
+Pristine files refresh automatically using recorded install hashes. Local edits win or land in `.agent-kit/conflicts/`. Do not re-init. `update` never deletes your old files unless you pass `--prune-legacy`, which lists 0.3 council leftovers and 0.4 duplicate skill copies and asks before removing them.
+
+When upgrading from 0.4 or earlier:
+
+```bash
+git switch -c agent-kit-0.5
+npx agent-kit update --prune-legacy
+npx agent-kit doctor
+```
 
 ## Troubleshooting
 

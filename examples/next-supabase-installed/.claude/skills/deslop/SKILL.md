@@ -30,6 +30,9 @@ Copy is about to say “done,” or anyone asked to de-slop, humanize, or “mak
 | Title Case Headings on every line | Sentence case. |
 | Em dash stacks, emoji headers, sparkle bullets | Periods. Real nouns. |
 | “Get started” / “Learn more” with no object | Say the next action. |
+| “Oops!”, “Uh oh”, excited success marks (“Saved!”) | Plain functional statement: “Saved.”, “Connection failed.” |
+| Mock-humble asides, fake craftsman claims (“We obsess over…”, “Crafted with love”) | State what the software actually does. |
+| Cute-but-wrong wordplay, forced metaphors | Plain sentence. |
 | Placeholder leftovers (`[Your Name]`, `TODO copy`) | Fill or delete. |
 
 ## Structure tells
@@ -57,6 +60,7 @@ These survive a word-level pass and still read as generated.
 | --- | --- |
 | Feature with no why | Say why the Reader cares, or cut. |
 | Vague (“save time”, “scale”) | Name the unit, or cut. |
+| Fake precision (`99.4%`, `4.2×`, `10x faster`) with no benchmark | Name the benchmark, or mark `assumption`. |
 | Claim with no proof | Cite it, or mark `assumption`. |
 
 ## Must keep
