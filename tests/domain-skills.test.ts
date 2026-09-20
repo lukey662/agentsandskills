@@ -95,6 +95,10 @@ describe("domain skill uplifts", () => {
     expect(skill).toContain("A clean fail-list pass is necessary, not sufficient");
     expect(skill).toContain("## Fail list");
     expect(skill).toContain("don't change the code");
+    expect(skill).toContain("Design read.");
+    expect(skill).toContain("theme menu");
+    expect(skill).toContain("DiceBear");
+    expect(skill).toContain("Lorem Ipsum");
     const design = readFileSync(join(process.cwd(), "agents/design/agent.md"), "utf8");
     expect(design).toContain("`setup`, `build`, `review`, or `detect`");
     expect(design).toContain("Detect is audit only");
@@ -174,6 +178,11 @@ describe("domain skill uplifts", () => {
     expect(skill).toContain("Importing a copy catalog");
     expect(skill).toContain("MESSAGING.md");
     expect(skill).toContain("runs `deslop` as the last pass");
+    expect(skill).toContain("Lock CTA intent");
+    expect(skill).toContain("Primary CTAs must not wrap");
+    expect(skill).toContain("One copy register per page");
+    expect(skill).toContain("Form errors and status messages are copy");
+    expect(skill).toContain("Duplicate CTA intents");
     // Product-neutral: the kit's own guide voice lives in this repo's MESSAGING.md.
     expect(skill).not.toContain("unconfirmed restatement");
     expect(skill).not.toContain("USER_GUIDE");
@@ -185,6 +194,9 @@ describe("domain skill uplifts", () => {
     expect(copy).not.toContain("unconfirmed restatement");
     const deslop = readSkill("deslop");
     expect(deslop).toContain("Claim sweep");
+    expect(deslop).toContain("Fake precision");
+    expect(deslop).toContain("Oops!");
+    expect(deslop).toContain("Mock-humble");
     expect(deslop).toContain("assumption");
     expect(deslop).toContain("## Structure tells");
     expect(deslop).not.toContain("Seven Sweeps");

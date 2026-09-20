@@ -69,8 +69,9 @@ If an answer is vague (“make it modern”), ask once: what should a stranger s
 
 ## Derive the direction
 
-Tokens come from the subject, not a theme pack. A toy store and a ledger cannot share a palette. Before CSS, write these five lines:
+Tokens come from the subject, not a theme pack. A toy store and a ledger cannot share a palette. Before CSS, state a one-line design read, then write these five lines:
 
+0. **Design read.** State who has to succeed on this screen, the surface depth, and its register: `Reading this as: [user/job] on [landing / app-chrome / inside-design-system], with a [quiet / dense / direct] register.`
 1. **Object.** The one real thing this product is about: a material, a place, a time of day, a document, a tool. Name it.
 2. **Field, ink, accent.** Pull them from that object and write the hex. Field is the page (~80%, flat). Ink is body text (~15%, ≥ 4.5:1). Accent is one action or one required state (~5%). Add one line/well color one step off the field.
 3. **Type.** One family, or two that are obviously different (display vs mono), with a reason tied to the object. Inter + system sans is not a pairing; Space Grotesk + slate and last week’s “tasteful” swap are defaults.
@@ -121,7 +122,7 @@ Flat AI/SaaS chrome. One is a smell; two or more is a reject; a left stroke on a
 - Cream `#F4F1EA` + terracotta as the unrequested editorial default
 - Acid green or neon vermilion on near-black as decoration
 - Lucide Sparkles / Zap as the product metaphor
-- Fake dashboard metrics or DiceBear avatars
+- Fake dashboard metrics, DiceBear avatars, or placeholder copy (Lorem Ipsum, “John Doe”, “Acme Corp”) instead of real draft content or labeled assumptions
 - Left accent bars or `border-left` strokes on selected rows, list items, cards, or success/error/warn wells
 - Thick one-sided colored borders, glow rails, or gradient borders as the main state cue
 - Glass navbar, four-column empty footer, broadsheet hairlines over dense newsprint columns
@@ -144,6 +145,7 @@ Name the three self-tests: **Swap** (would another product’s first screen drop
 
 - Approving UI from TSX or HTML alone.
 - CSS on a new product before `setup`, or a `DESIGN.md` written from a template without asking what this setup is for.
+- Picking a named style pack (glassmorphism, claymorphism, bento, brutalism, “AI-native UI”) off a theme menu instead of deriving from the object.
 - Quizzing them on hex, fonts, or motion before you know the need.
 - Overwriting a mature `STYLE_GUIDE.md`, or a full rebuild inside an existing design system when a surgical pass would do.
 - Installing a design MCP, canvas CLI, or slash-command pack to “do design.”
