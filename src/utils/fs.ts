@@ -68,7 +68,7 @@ export function listFilesRecursive(root: string): string[] {
 }
 
 export interface CopyResult {
-  action: "created" | "unchanged" | "conflict" | "overwritten";
+  action: "created" | "unchanged" | "updated" | "conflict" | "overwritten";
   target: string;
   conflictPath?: string;
 }
@@ -117,7 +117,7 @@ export function copyTextWithConflict(
   sourcePath: string,
   targetRoot: string,
   targetRelativePath: string,
-  options: { force?: boolean; conflictRoot?: string } = {}
+  options: { force?: boolean; conflictRoot?: string; installedHash?: string | undefined } = {}
 ): CopyResult {
   const targetPath = resolveInside(targetRoot, targetRelativePath);
   const sourceContent = readFileSync(sourcePath, "utf8");
@@ -135,6 +135,11 @@ export function copyTextWithConflict(
   if (options.force) {
     writeText(targetPath, sourceContent);
     return { action: "overwritten", target: targetRelativePath };
+  }
+
+  if (options.installedHash && sha256(existingContent) === options.installedHash) {
+    writeText(targetPath, sourceContent);
+    return { action: "updated", target: targetRelativePath };
   }
 
   const defaultConflictRoot = join(targetRoot, ".agent-kit", "conflicts");

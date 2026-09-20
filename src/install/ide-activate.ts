@@ -10,6 +10,7 @@ export interface ActivateIdeOptions {
   cwd: string;
   targets: Array<IdeTarget | "all">;
   force?: boolean;
+  installedHashes?: Record<string, string>;
 }
 
 export interface ActivateIdeResult extends CopyCollector {
@@ -64,32 +65,33 @@ export function activateIdeTargets(options: ActivateIdeOptions): ActivateIdeResu
   const packageRoot = findPackageRoot();
   const targets = normalizeTargets(options.targets);
   const force = Boolean(options.force);
+  const installedHashes = options.installedHashes;
   const collector = emptyCollector();
   const result: ActivateIdeResult = { activated: targets, ...collector };
 
   if (targets.length === 0) return result;
 
-  generateSkills(cwd, force, result);
+  generateSkills(cwd, force, result, installedHashes);
 
   if (targets.includes("cursor")) {
-    copyFromPackage(cwd, packageRoot, CURSOR_RULE_FILE.source, CURSOR_RULE_FILE.target, force, result);
-    generateAgents("cursor", cwd, force, result);
+    copyFromPackage(cwd, packageRoot, CURSOR_RULE_FILE.source, CURSOR_RULE_FILE.target, force, result, installedHashes?.[CURSOR_RULE_FILE.target]);
+    generateAgents("cursor", cwd, force, result, installedHashes);
   }
   if (targets.includes("claude")) {
-    copyFromPackage(cwd, packageRoot, CLAUDE_TEMPLATE, "CLAUDE.md", force, result);
-    generateAgents("claude", cwd, force, result);
-    generateClaudeSkills(cwd, force, result);
+    copyFromPackage(cwd, packageRoot, CLAUDE_TEMPLATE, "CLAUDE.md", force, result, installedHashes?.["CLAUDE.md"]);
+    generateAgents("claude", cwd, force, result, installedHashes);
+    generateClaudeSkills(cwd, force, result, installedHashes);
   }
   if (targets.includes("codex")) {
-    generateAgents("codex", cwd, force, result);
+    generateAgents("codex", cwd, force, result, installedHashes);
   }
   if (targets.includes("copilot")) {
-    generateCopilotInstructions(cwd, force, result);
-    generateAgents("copilot", cwd, force, result);
+    generateCopilotInstructions(cwd, force, result, installedHashes);
+    generateAgents("copilot", cwd, force, result, installedHashes);
   }
   if (targets.includes("antigravity")) {
-    copyFromPackage(cwd, packageRoot, AGENTS_RULE_FILE.source, AGENTS_RULE_FILE.target, force, result);
-    generateAgents("antigravity", cwd, force, result);
+    copyFromPackage(cwd, packageRoot, AGENTS_RULE_FILE.source, AGENTS_RULE_FILE.target, force, result, installedHashes?.[AGENTS_RULE_FILE.target]);
+    generateAgents("antigravity", cwd, force, result, installedHashes);
   }
 
   return result;

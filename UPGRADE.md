@@ -4,7 +4,7 @@
 
 `0.5.0` rewrites the design, copy, and planning playbooks and adds the first deleting command. Nothing is deleted unless you ask.
 
-If you upgraded from 0.3 at any point, your install still has council files that shadow the 0.4 ones: a council `planner.md` at `.cursor/agents/planner.md`, a council `.cursor/rules/cursor-agent-kit.mdc`, and sixteen council skills that trigger on every UI task. `doctor` now fails on the first two. Fix them on a branch:
+If you upgraded from 0.3 at any point, your install still has council files that shadow the 0.4 ones: a council `planner.md` at `.cursor/agents/planner.md`, a council `.cursor/rules/cursor-agent-kit.mdc`, and eighteen council skills that trigger on every UI task. `doctor` now fails on the first two. 0.4 installs also have duplicate skill copies in `.cursor/skills/` and `skills/` (making Cursor list skills twice). In both cases, run prune on a branch:
 
 ```bash
 git switch -c agent-kit-0.5
@@ -14,11 +14,13 @@ npx @appsforgood/next-supabase-kit@0.5.0 doctor
 npx @appsforgood/next-supabase-kit@0.5.0 adapter validate all
 ```
 
-The prune deletes only the allowlist in the package (`src/install/prune-legacy.ts`): council root docs (`COUNCIL.md`, `QUALITY_GATES.md`, `AGENT_ROSTER.md`, `MODEL_ROUTING.md`, `SKILLS.md`, `ASSISTANT_ADAPTERS.md`), `.agent-kit/` roster, routing, and library folders, council agent and skill files by id, council Antigravity commands, and kit-installed files whose body is the council version. Your `SPEC.md`, `DESIGN.md`, `DECISIONS.md`, and product code are never touched. Review the diff, then merge.
+The prune deletes only the allowlist in the package (`src/install/prune-legacy.ts`): council root docs (`COUNCIL.md`, `QUALITY_GATES.md`, `AGENT_ROSTER.md`, `MODEL_ROUTING.md`, `SKILLS.md`, `ASSISTANT_ADAPTERS.md`), `.agent-kit/` roster, routing, and library folders, council agent and skill files by id, council Antigravity commands, 0.4 duplicate skill folders in `.cursor/skills/` and `skills/`, and kit-installed files whose body is the council version. Your `SPEC.md`, `DESIGN.md`, `DECISIONS.md`, and product code are never touched. Review the diff, then merge.
 
 0.5.0 also moves skills to one location. 0.4 wrote `.cursor/skills/`, `.antigravity/runtime-skills/`, and a repo-root `skills/` folder; 0.5 writes `.agents/skills/` (read by Cursor, Codex, Copilot, and Antigravity) plus `.claude/skills/` for Claude. The same `--prune-legacy` run removes the 0.4 copies; until it does, Cursor lists every skill twice and `doctor` warns.
 
-Agent files are now rendered per host. Claude subagents get real Claude tool names, preloaded skills, and `effort: high` for Planner, Security, and Design (0.4 Claude files carried the kit's `tools: [repo, edit, …]` vocabulary, which Claude Code refuses to launch). Copilot gets custom agents in `.github/agents/`; Antigravity gets custom subagents in `.agents/agents/` and a rule in `.agents/rules/`. Run `update` (with `--force` if you never edited the agent files) and `adapter validate all`.
+Agent files are now rendered per host. Claude subagents get real Claude tool names, preloaded skills, and `effort: high` for Planner, Security, and Design (0.4 Claude files carried the kit's `tools: [repo, edit, …]` vocabulary, which Claude Code refuses to launch). Copilot gets custom agents in `.github/agents/`; Antigravity gets custom subagents in `.agents/agents/` and a rule in `.agents/rules/`.
+
+Unmodified generated agent and skill files now update automatically by checking recorded install hashes. If you customized an agent or skill file locally, `update` preserves your version and writes a proposal under `.agent-kit/conflicts/`. You can pass `--force` to overwrite local customizations if desired.
 
 Behavior changes after the prune:
 
@@ -29,7 +31,7 @@ Behavior changes after the prune:
 - `deslop` is copy-only and adds structure tells.
 - Codex agents get `model_reasoning_effort = "high"` for planner, security, and design.
 
-If you did not upgrade from 0.3, `update` is enough; `--prune-legacy` finds nothing and says so.
+If your repo has no 0.3 leftovers and no 0.4 duplicate skill copies, plain `update` is enough; `--prune-legacy` finds nothing and says so.
 
 ## 0.4.3
 

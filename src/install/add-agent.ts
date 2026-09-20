@@ -42,7 +42,8 @@ export function addAgent(cwd: string, agentName: string, options: { force?: bool
   }
 
   const collector = emptyCollector();
-  copyOptionalAgent(cwd, id, Boolean(options.force), collector, hosts);
+  const manifestHashes = readManifest(cwd)?.assetHashes;
+  copyOptionalAgent(cwd, id, Boolean(options.force), collector, hosts, manifestHashes);
   const action = collector.copied.includes(target)
     ? "created"
     : collector.unchanged.includes(target)

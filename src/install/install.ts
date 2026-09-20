@@ -59,6 +59,7 @@ export function initProject(options: InitOptions): InitResult {
   const targets: IdeTarget[] = activateTargets.length > 0 ? activateTargets : ["cursor"];
   result.activation = activateIdeTargets({ cwd, targets, force });
   result.copied.push(...result.activation.copied.filter((path) => !result.copied.includes(path)));
+  result.updated.push(...result.activation.updated.filter((path) => !result.updated.includes(path)));
   result.unchanged.push(...result.activation.unchanged.filter((path) => !result.unchanged.includes(path)));
   result.conflicts.push(...result.activation.conflicts.filter((path) => !result.conflicts.includes(path)));
   result.overwritten.push(...result.activation.overwritten.filter((path) => !result.overwritten.includes(path)));
@@ -69,7 +70,7 @@ export function initProject(options: InitOptions): InitResult {
     if (existsSync(asset.sourcePath)) assetHashes[asset.target] = sha256(readFileSync(asset.sourcePath, "utf8"));
   }
   // Generated files: hash what we just wrote so update can tell pristine from edited.
-  for (const relative of [...result.copied, ...result.unchanged, ...result.overwritten]) {
+  for (const relative of [...result.copied, ...result.updated, ...result.unchanged, ...result.overwritten]) {
     const path = join(cwd, relative);
     if (existsSync(path) && !assetHashes[relative]) {
       assetHashes[relative] = sha256(readFileSync(path, "utf8"));
