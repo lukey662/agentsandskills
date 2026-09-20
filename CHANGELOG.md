@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.2
+
+- Refine product-copy, deslop, and frontend-design with fail-closed CTA-intent, desktop button wrap, design-read, and error microcopy rules inspired by public skill research.
+
 ## 0.5.1
 
 - Unmodified generated agents and skills refresh on `update` without `--force`. Remaining 0.4 skill copies are listed so you can run `--prune-legacy`.
