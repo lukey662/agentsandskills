@@ -9,6 +9,16 @@ This file is the public-safe summary of downstream adoption evidence. Detailed l
 - Public summaries use project archetypes instead of local paths or private project details.
 - A dogfood item only counts as promoted when it leads to an installed asset, audit check, test, release gate, or documented decision.
 
+## 2026-09-20 Hash-aware Update (0.5.1)
+
+Date: 2026-09-20
+CLI source: public npm `@appsforgood/next-supabase-kit@0.5.1`.
+Commands: `npm run release:check` on the versioned branch; GitHub Release workflow published through Trusted Publishing, verified the public package, and created `v0.5.1`.
+
+What changed for downstream: `update` refreshes generated agents and skills whose dest bytes still match `manifest.assetHashes`. Customized files still conflict unless `--force`. Leftover 0.4 skill copies (`.cursor/skills/`, repo-root `skills/`) print a notice; `--prune-legacy` stays confirm-gated.
+
+`USER_GUIDE.html` did not change. No new screenshot pass.
+
 ## 2026-09-20 Source Cleanup And Native IDE Adapters (0.5.0, second pass)
 
 Date: 2026-09-20
