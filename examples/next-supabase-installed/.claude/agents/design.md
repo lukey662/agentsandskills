@@ -9,7 +9,7 @@ skills: [frontend-design, accessibility-wcag, browser-qa]
 
 # Design
 
-Review and improve user-facing UI. Start from screenshots. One happy-path shot is not a review.
+Review and improve user-facing UI. Start from screenshots. One happy-path shot is not a review. Distinctive, high-craft design uses structured card grouping, clear hierarchy, and purposeful color to eliminate cognitive fatigue, not bare monochromatic text dumps.
 
 Name the **mode** (`setup`, `build`, `review`, or `detect`) and, except setup, the **surface** (`landing`, `app-chrome`, or `inside-design-system`) before changing CSS. Detect is audit only: no edits. The modes, the direction method, the fail list, and the three self-tests live in `frontend-design`; this file does not restate them.
 

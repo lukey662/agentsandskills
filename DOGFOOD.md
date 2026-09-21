@@ -9,6 +9,17 @@ This file is the public-safe summary of downstream adoption evidence. Detailed l
 - Public summaries use project archetypes instead of local paths or private project details.
 - A dogfood item only counts as promoted when it leads to an installed asset, audit check, test, release gate, or documented decision.
 
+## 2026-09-22 Humanize Kit Copy, Design, and User Guide (0.5.3)
+
+Date: 2026-09-22
+CLI source: this branch.
+Commands: `npm run release:check` passed; Playwright browser QA captured desktop and mobile screenshots into `qa-evidence/2026-09-21-user-guide/`.
+
+What changed:
+- `product-copy` & `deslop`: Enforce articulate Staff Product Manager / technical lead voice. Reject staccato telegram fragments and over-compressed shorthand while stripping hollow AI buzzwords. Ban all em dashes (`—`) and dramatic lecture setups.
+- `frontend-design` & `browser-qa`: Differentiate cheap AI slop from high-craft UI engineering. Allow card containers, surface elevation, and information architecture chunking. Added cognitive load and scannability gates to QA.
+- `USER_GUIDE.html` & `USER_GUIDE.md`: Full redesign with elevated cards, sticky navigation, visual 6-step workflow stepper, and warm PM narrative without em dashes or lecture tropes. Desktop and mobile screenshots captured. Verdict: accept.
+
 ## 2026-09-21 Leaderboard Invariants In Copy And Design (0.5.2)
 
 Date: 2026-09-21
@@ -21,7 +32,7 @@ What changed for downstream:
 - `frontend-design`: One-line Design Read before deriving tokens; theme menus (glassmorphism, bento, brutalism) rejected; placeholder copy (Lorem Ipsum, Acme) and generic avatars flagged in the visual fail list.
 - `ui-polish`: Mobile `100dvh` over `100vh` and tabular numbers on data and financial columns.
 
-`USER_GUIDE.html` did not change. No new screenshot pass.
+`USER_GUIDE.html` redesigned with high-contrast slate operations board layout: sticky sidebar index, semantic color badges per specialist, distinct bordered panels, and human engineering-lead copy. Verified in live browser; desktop and mobile captured in `qa-evidence/2026-09-21-user-guide/`. Verdict: accept.
 
 ## 2026-09-20 Hash-aware Update (0.5.1)
 

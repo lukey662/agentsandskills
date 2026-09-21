@@ -13,9 +13,9 @@ Voice file for this repo's public words: `USER_GUIDE.html`, `README.md`, npm met
 
 ## Voice
 
-Direct, specific, slightly dry. Verbs: say, launch, open, capture, reject, name.
+Clear, articulate, approachable, and direct, like an experienced Staff Product Manager or technical lead explaining a high-leverage development system. Explain the mental model and why specialization works rather than barking blunt imperatives. Avoid robotic staccato fragments.
 
-Words that belong here: specialist, owner, screenshot, desktop, mobile, fail-closed, launch, Planner, `browser-qa`, payload.
+Words that belong here: specialist, owner, screenshot, desktop, mobile, fail-closed, launch, Planner, `browser-qa`, payload, workflow, verification.
 
 Words that do not: supercharge, seamless, unlock, copilot for X, 10x, enterprise-grade, magic, revolutionize, AI-powered.
 

@@ -28,7 +28,7 @@ Copy is about to say “done,” or anyone asked to de-slop, humanize, or “mak
 | Moreover / Furthermore / In today’s X / In conclusion / In short | Cut, or join with “and.” |
 | Vague experts, “studies show” | Cite or delete. |
 | Title Case Headings on every line | Sentence case. |
-| Em dash stacks, emoji headers, sparkle bullets | Periods. Real nouns. |
+| Any em dash (—), emoji headers, sparkle bullets | Periods. Commas. Real nouns. Zero em dashes. Never use em dashes as crutches for sentence structure. |
 | “Get started” / “Learn more” with no object | Say the next action. |
 | “Oops!”, “Uh oh”, excited success marks (“Saved!”) | Plain functional statement: “Saved.”, “Connection failed.” |
 | Mock-humble asides, fake craftsman claims (“We obsess over…”, “Crafted with love”) | State what the software actually does. |
@@ -48,9 +48,12 @@ These survive a word-level pass and still read as generated.
 | Colon-led reveal (“The result: …”, “The truth is: …”) | Plain sentence. |
 | Closing summary that repeats the section | Delete. |
 | “Whether you’re X or Y” | Name the one Reader. |
+| Dramatic lecture setup (“When a single developer tries to...”, “In the fast-paced world...”) | Delete the lecture. State the product's actual mechanism directly. |
+| AI cliché failure tropes (“inevitably cuts corners”, “leads to chaos”, “hallucinates wildly”) | Name the specific failure mode plainly without melodrama. |
+| Staccato telegrams and over-compressed fragments (“App engineer builds route. Security owns RLS.”) | Write a complete, cohesive human sentence that connects the ideas naturally. |
 | Every sentence the same length | Vary. Let one be long when the fact is long. |
 
-**Reader test.** Would the named Reader say this sentence out loud to a colleague? If not, rewrite it as they would say it.
+**Reader test & Staff Product Manager test.** Would a real technical lead or Product Manager speak this sentence out loud to a colleague? If it sounds like a machine issuing military commands or compressed JSON, rewrite it with natural human phrasing, connective tissue, and cadence. Deslop strips machine pretension; it must never strip human warmth, clarity, or explanation.
 
 **Allowance.** Imperative commands, CLI labels, table cells, and short headings in a tool or product context are not tells. “Run doctor.” is fine. A landing page made only of those is a tell.
 
@@ -70,6 +73,7 @@ Facts, commands, file paths, the fail-closed screenshot sentence, and any claim 
 ## Reject
 
 - Replacing `product-copy` with this skill, or running it first.
+- Stripping natural human transitions and explanations under the guise of deslopping, leaving behind robotic telegrams.
 - Restyling the page. Copy lists what the screenshot shows and sends it to Design.
 - Importing a copy-editing catalog, scoring rubric, or multi-pass edit ritual.
 - Synonym-swapping a tell and calling it done.

@@ -69,11 +69,11 @@ describe("public package readiness", () => {
     expect(html).toContain("Run ship");
     expect(html).toContain("Reject LGTM, ship it");
     expect(html).toContain("Reject guessing from the stack trace alone");
-    expect(html).toMatch(/Reject restoring the\s+17-doc OS/);
+    expect(html).toMatch(/Reject restoring\s+the 17-doc OS/);
     expect(html).toMatch(/Reject\s+<code>init --force<\/code>\s+as the upgrade path/);
     expect(html).toMatch(/Reject using polish as a second design system/);
     expect(html).toContain("Reject optimizing from a guess");
-    expect(html).toContain("The session launches that owner");
+    expect(html).toMatch(/The session launches that\s+owner/);
     expect(html).toContain("Act as the security agent. Review auth, RLS, IDOR, and secrets");
     expect(html).toContain("Act as the copy agent. Review the rendered words in screenshots");
     expect(html).toContain("Copy if public words changed");

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.3
+
+- Humanize user guide narrative and core copy skills, eliminating staccato fragments, AI lecture tropes, and em dashes.
+
 ## 0.5.2
 
 - Refine product-copy, deslop, and frontend-design with fail-closed CTA-intent, desktop button wrap, design-read, and error microcopy rules inspired by public skill research.

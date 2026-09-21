@@ -3,23 +3,73 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>User guide — name the specialist, then prove the screen</title>
+    <title>User guide: name the specialist, then prove the screen</title>
     <meta
       name="description"
-      content="How to ask Planner, App engineer, Security, Design, QA, and Copy in Cursor, Claude, Codex, Copilot, and Antigravity. QA is two screenshots, not a file diff."
+      content="Say the change once. Planner scopes it, App engineer builds it, Security, Design, or Copy steps in for that part, and QA proves the running UI with desktop and mobile screenshots."
     />
     <style>
       :root {
         color-scheme: dark;
-        --paper: #10100e;
-        --ink: #eceae4;
-        --muted: #9b968c;
-        --frame: #070706;
-        --safelight: #ff5a2a;
-        --pass: #5ea37a;
-        --line: #2a2823;
-        --display: "Helvetica Neue", Helvetica, Arial, ui-sans-serif, system-ui, sans-serif;
-        --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+        --bg: #0b0f19;
+        --surface: #111827;
+        --panel: #161f32;
+        --panel-hover: #1b263d;
+        --well: #0a0e1a;
+        --border: #26354f;
+        --border-subtle: #1e2a3f;
+        --line: #26354f;
+        --ink: #f8fafc;
+        --muted: #94a3b8;
+        --subtle: #64748b;
+
+        /* Accents & Status */
+        --accent: #f59e0b;
+        --accent-glow: rgba(245, 158, 11, 0.15);
+        --accent-bg: #221606;
+        --accent-border: #78350f;
+        --pass: #10b981;
+        --pass-bg: #042f24;
+        --pass-border: #065f46;
+        --reject: #f43f5e;
+        --reject-bg: #380714;
+        --reject-border: #881337;
+        --copied: #10b981;
+
+        /* Role Badges */
+        --planner-fg: #d8b4fe;
+        --planner-bg: #3b0764;
+        --planner-border: #6b21a8;
+
+        --engineer-fg: #93c5fd;
+        --engineer-bg: #172554;
+        --engineer-border: #1d4ed8;
+
+        --security-fg: #fde68a;
+        --security-bg: #451a03;
+        --security-border: #b45309;
+
+        --design-fg: #fbcfe8;
+        --design-bg: #500724;
+        --design-border: #be185d;
+
+        --qa-fg: #6ee7b7;
+        --qa-bg: #064e3b;
+        --qa-border: #047857;
+
+        --copy-fg: #7dd3fc;
+        --copy-bg: #082f49;
+        --copy-border: #0284c7;
+
+        --ide-fg: #e2e8f0;
+        --ide-bg: #1e293b;
+        --ide-border: #334155;
+
+        --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        --mono: ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+        --radius-lg: 12px;
+        --radius-md: 8px;
+        --radius-sm: 6px;
       }
 
       * {
@@ -28,288 +78,633 @@
 
       html {
         scroll-behavior: smooth;
+        background: var(--bg);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
       }
 
       body {
         margin: 0;
-        background: var(--paper);
+        background: var(--bg);
         color: var(--ink);
-        font-family: var(--display);
-        font-size: 1.05rem;
-        line-height: 1.5;
-        letter-spacing: -0.011em;
+        font-family: var(--sans);
+        font-size: 1rem;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
       }
 
       code {
         font-family: var(--mono);
         font-size: 0.88em;
+        background: var(--well);
+        border: 1px solid var(--border-subtle);
+        padding: 0.15em 0.35em;
+        border-radius: 4px;
+        color: #e2e8f0;
       }
 
-      /* Short CLI flags must not break after the leading dashes on narrow screens. */
       code.flag {
         white-space: nowrap;
       }
 
       a {
-        color: inherit;
+        color: #38bdf8;
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 2px;
+      }
+
+      a:hover {
+        color: #7dd3fc;
       }
 
       a:focus-visible,
       button:focus-visible {
-        outline: 3px solid var(--safelight);
+        outline: 3px solid var(--accent);
         outline-offset: 3px;
       }
 
       .skip {
         position: absolute;
-        left: 0.75rem;
-        top: 0.75rem;
-        padding: 0.4rem 0.7rem;
-        background: var(--ink);
-        color: var(--paper);
+        left: 1rem;
+        top: 1rem;
+        padding: 0.5rem 1rem;
+        background: var(--accent);
+        color: #0f172a;
+        font-weight: 700;
         text-decoration: none;
-        transform: translateY(-140%);
+        border-radius: var(--radius-sm);
+        transform: translateY(-200%);
+        transition: transform 0.15s ease;
+        z-index: 50;
       }
 
       .skip:focus,
       .skip:focus-visible {
         transform: none;
-        z-index: 20;
       }
 
+      /* Top Masthead */
       .mast {
-        background: var(--frame);
-        color: var(--ink);
-        padding: 0.75rem 1.25rem;
+        position: sticky;
+        top: 0;
+        z-index: 30;
+        background: rgba(11, 15, 25, 0.88);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        padding: 0.75rem 1.5rem;
         display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem 1.5rem;
-        align-items: baseline;
+        align-items: center;
         justify-content: space-between;
       }
 
       .wordmark {
+        margin: 0;
         font-family: var(--mono);
-        font-size: 0.88rem;
-      }
-
-      .mast nav {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.75rem 1.1rem;
-        font-family: var(--mono);
-        font-size: 0.88rem;
-      }
-
-      .mast a {
-        color: var(--ink);
-        text-decoration: none;
-        border-bottom: 1px solid transparent;
-      }
-
-      .mast a:hover {
-        border-bottom-color: var(--safelight);
-      }
-
-      main {
-        max-width: 42rem;
-        margin: 0 auto;
-        padding: 1.35rem 1.25rem 3.5rem;
-      }
-
-      h1 {
-        font-size: 1.75rem;
-        line-height: 1.2;
+        font-size: 0.92rem;
         font-weight: 700;
-        letter-spacing: -0.02em;
-        margin: 0 0 0.55rem;
+        color: var(--ink);
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+      }
+
+      .wordmark::before {
+        content: "";
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--accent);
+        box-shadow: 0 0 10px var(--accent);
+      }
+
+      .mast-sub {
+        font-size: 0.82rem;
+        color: var(--muted);
+      }
+
+      /* Shell layout */
+      .shell {
+        display: block;
+        min-width: 0;
+      }
+
+      /* Sticky Navigation */
+      .toc {
+        position: sticky;
+        top: 3.1rem;
+        z-index: 20;
+        display: flex;
+        gap: 0.5rem;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        padding: 0.6rem 1rem;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        scrollbar-width: none;
+        mask-image: linear-gradient(to right, black 88%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to right, black 88%, transparent 100%);
+      }
+
+      .toc::-webkit-scrollbar {
+        display: none;
+      }
+
+      .toc a {
+        flex: 0 0 auto;
+        min-height: 2.35rem;
+        display: inline-flex;
+        align-items: center;
+        padding: 0.35rem 0.85rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        background: var(--panel);
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 500;
+        white-space: nowrap;
+        transition: all 0.15s ease;
+      }
+
+      .toc a:hover {
+        background: var(--panel-hover);
+        color: var(--ink);
+        border-color: #3b4e6b;
+      }
+
+      .toc a[aria-current="true"] {
+        background: #1e293b;
+        color: var(--ink);
+        border-color: var(--accent);
+        font-weight: 600;
+      }
+
+      .roster {
+        display: none;
+      }
+
+      .sheet {
+        min-width: 0;
+        padding: 1.5rem 1rem 4rem;
+        max-width: 56rem;
+        margin: 0 auto;
+      }
+
+      /* Typography */
+      h1 {
+        font-size: 2.1rem;
+        line-height: 1.2;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        margin: 0 0 0.75rem;
+        color: var(--ink);
       }
 
       .lede {
-        margin: 0 0 1rem;
+        font-size: 1.12rem;
+        line-height: 1.6;
         color: var(--muted);
+        margin: 0 0 1.5rem;
       }
 
+      /* Fail-Closed Callout */
       .rule {
-        margin: 0 0 1.35rem;
+        margin: 0 0 2rem;
+        padding: 1.1rem 1.35rem;
+        background: var(--accent-bg);
+        border: 1px solid var(--accent-border);
+        border-radius: var(--radius-lg);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+      }
+
+      .rule p {
+        margin: 0;
+        color: #fef3c7;
+        font-size: 0.98rem;
+        line-height: 1.55;
       }
 
       .rule strong {
-        color: var(--safelight);
-      }
-
-      h2 {
-        font-size: 1.2rem;
-        letter-spacing: -0.02em;
+        color: var(--accent);
         font-weight: 700;
-        margin: 2.1rem 0 0.65rem;
       }
 
-      h3 {
-        font-size: 1.02rem;
-        margin: 1.45rem 0 0.4rem;
+      /* Panel Cards */
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 1.75rem;
+        margin: 0 0 2rem;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
       }
 
-      p {
-        margin: 0 0 0.75rem;
-      }
-
-      .paste {
-        margin: 0 0 1rem;
-      }
-
-      .paste p {
-        margin: 0 0 0.35rem;
-        font-family: var(--mono);
-        font-size: 0.82rem;
-        color: var(--muted);
-      }
-
-      pre,
-      .prompt {
-        margin: 0;
-        padding: 0.7rem 0.75rem;
-        background: var(--frame);
+      .panel h2 {
+        font-size: 1.45rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        margin: 0 0 0.85rem;
         color: var(--ink);
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+      }
+
+      .panel h3 {
+        font-size: 1.12rem;
+        font-weight: 600;
+        margin: 1.5rem 0 0.65rem;
+        color: var(--ink);
+      }
+
+      .panel p {
+        margin: 0 0 1rem;
+        color: #cbd5e1;
+      }
+
+      /* Command Wells */
+      .cmd {
+        margin: 1rem 0 1.25rem;
+        background: var(--well);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+      }
+
+      .cmd-label {
+        margin: 0;
+        padding: 0.5rem 0.85rem;
         font-family: var(--mono);
-        font-size: 0.82rem;
-        line-height: 1.45;
+        font-size: 0.78rem;
+        color: var(--subtle);
+        background: rgba(255, 255, 255, 0.02);
+        border-bottom: 1px solid var(--border-subtle);
+        text-transform: none;
+      }
+
+      pre {
+        margin: 0;
+        padding: 0.85rem 1rem;
+        background: transparent;
+        color: #e2e8f0;
+        font-family: var(--mono);
+        font-size: 0.86rem;
+        line-height: 1.5;
         overflow-x: auto;
         white-space: pre-wrap;
+        overflow-wrap: anywhere;
+      }
+
+      pre code {
+        background: transparent;
+        border: none;
+        padding: 0;
+        color: inherit;
+        font-size: inherit;
       }
 
       .copy-row {
         display: flex;
         justify-content: flex-start;
-        margin-top: 0.4rem;
+        padding: 0.5rem 0.85rem 0.65rem;
+        background: rgba(255, 255, 255, 0.015);
+        border-top: 1px solid rgba(255, 255, 255, 0.04);
       }
 
       button.copy {
         font-family: var(--mono);
-        font-size: 0.78rem;
-        background: transparent;
+        font-size: 0.8rem;
+        font-weight: 600;
+        background: var(--surface);
         color: var(--ink);
-        border: 1px solid var(--ink);
-        padding: 0.4rem 0.7rem;
-        min-height: 2.25rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 0.45rem 0.85rem;
+        min-height: 2.35rem;
         white-space: nowrap;
         cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        transition: all 0.15s ease;
+      }
+
+      button.copy:hover {
+        background: #1e293b;
+        border-color: #475569;
+        color: #fff;
       }
 
       button.copy[data-copied="true"] {
-        background: var(--pass);
-        color: #08140d;
-        border-color: var(--pass);
+        background: var(--pass-bg);
+        color: var(--pass);
+        border-color: var(--pass-border);
       }
 
+      /* Role Badges */
+      .role,
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.2rem 0.55rem;
+        border-radius: 4px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        line-height: 1.4;
+        border: 1px solid transparent;
+        letter-spacing: -0.01em;
+      }
+
+      .role-planner {
+        background: var(--planner-bg);
+        color: var(--planner-fg);
+        border-color: var(--planner-border);
+      }
+
+      .role-engineer {
+        background: var(--engineer-bg);
+        color: var(--engineer-fg);
+        border-color: var(--engineer-border);
+      }
+
+      .role-security {
+        background: var(--security-bg);
+        color: var(--security-fg);
+        border-color: var(--security-border);
+      }
+
+      .role-design {
+        background: var(--design-bg);
+        color: var(--design-fg);
+        border-color: var(--design-border);
+      }
+
+      .role-qa {
+        background: var(--qa-bg);
+        color: var(--qa-fg);
+        border-color: var(--qa-border);
+      }
+
+      .role-copy {
+        background: var(--copy-bg);
+        color: var(--copy-fg);
+        border-color: var(--copy-border);
+      }
+
+      .tag-ide {
+        font-family: var(--mono);
+        font-size: 0.8rem;
+        background: var(--ide-bg);
+        color: var(--ide-fg);
+        border-color: var(--ide-border);
+      }
+
+      /* Tables */
       table {
         width: 100%;
         border-collapse: collapse;
-        font-size: 0.98rem;
+        font-size: 0.95rem;
+        margin: 1rem 0 1.25rem;
+        background: var(--well);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-md);
+        overflow: hidden;
       }
 
       th,
       td {
         text-align: left;
         vertical-align: top;
-        padding: 0.5rem 0.5rem 0.5rem 0;
-        border-top: 1px solid var(--line);
+        padding: 0.75rem 1rem;
+        border-top: 1px solid var(--border-subtle);
       }
 
       th {
         font-family: var(--mono);
         font-size: 0.78rem;
         color: var(--muted);
-        font-weight: 500;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.02);
+        border-top: none;
       }
 
+      td code {
+        white-space: nowrap;
+      }
+
+      /* IDE Grid */
       .ides {
         display: grid;
-        gap: 1.1rem;
-      }
-
-      @media (min-width: 800px) {
-        .ides {
-          grid-template-columns: 1fr 1fr;
-          gap: 1.1rem 1.5rem;
-        }
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin: 1.25rem 0;
       }
 
       .ide {
-        border-top: 1px solid var(--line);
-        padding-top: 0.55rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: 1.15rem;
+        background: var(--surface);
       }
 
       .ide h3 {
         margin-top: 0;
+        margin-bottom: 0.5rem;
       }
 
-      .ide p,
       .ide ul {
-        font-size: 0.98rem;
+        margin: 0.5rem 0 0;
+        padding-left: 1.25rem;
       }
 
-      ul,
-      ol {
-        margin: 0 0 0.85rem;
-        padding-left: 1.15rem;
+      .ide li {
+        margin: 0 0 0.45rem;
+        color: #cbd5e1;
       }
 
+      /* Workflow Stepper */
+      .stepper {
+        list-style: none;
+        margin: 1.25rem 0;
+        padding: 0;
+        display: grid;
+        gap: 1rem;
+      }
+
+      .step-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: 1.15rem;
+      }
+
+      .step-header {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        margin-bottom: 0.65rem;
+      }
+
+      .step-num {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: #1e293b;
+        color: var(--ink);
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        font-weight: 700;
+        border: 1px solid var(--border);
+      }
+
+      .step-desc {
+        margin: 0 0 0.75rem;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      /* Verdicts */
       .pair {
         display: grid;
-        gap: 0.85rem;
-      }
-
-      @media (min-width: 800px) {
-        .pair {
-          grid-template-columns: 1fr 1fr;
-        }
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin: 1rem 0;
       }
 
       .verdict {
-        border: 1px solid var(--line);
-        padding: 0.75rem;
+        border-radius: var(--radius-md);
+        padding: 1rem;
       }
 
       .verdict.reject {
-        border-color: var(--safelight);
+        background: var(--reject-bg);
+        border: 1px solid var(--reject-border);
       }
 
       .verdict.accept {
-        border-color: var(--pass);
+        background: var(--pass-bg);
+        border: 1px solid var(--pass-border);
       }
 
       .verdict strong {
         display: block;
-        font-family: var(--mono);
-        font-size: 0.78rem;
-        margin-bottom: 0.4rem;
+        margin-bottom: 0.5rem;
+        font-size: 0.92rem;
       }
 
       .verdict.reject strong {
-        color: var(--safelight);
+        color: #fca5a5;
       }
 
       .verdict.accept strong {
-        color: var(--pass);
+        color: #6ee7b7;
+      }
+
+      .verdict pre {
+        padding: 0;
+        color: #f1f5f9;
       }
 
       footer {
-        max-width: 42rem;
-        margin: 0 auto;
-        padding: 0 1.25rem 2.5rem;
+        padding: 1.5rem 0 0;
         font-family: var(--mono);
-        font-size: 0.78rem;
-        color: var(--muted);
+        font-size: 0.8rem;
+        color: var(--subtle);
+        border-top: 1px solid var(--border-subtle);
+        margin-top: 2rem;
       }
 
-      @media (max-width: 520px) {
-        main {
-          padding-top: 1.1rem;
+      /* Desktop 2-column layout */
+      @media (min-width: 960px) {
+        .toc {
+          mask-image: none;
+          -webkit-mask-image: none;
         }
 
+        .shell {
+          display: grid;
+          grid-template-columns: 16rem minmax(0, 1fr);
+          align-items: start;
+        }
+
+        .toc {
+          position: sticky;
+          top: 3.5rem;
+          flex-direction: column;
+          align-items: stretch;
+          max-height: calc(100vh - 4.5rem);
+          overflow-y: auto;
+          border-bottom: none;
+          border-right: 1px solid var(--border);
+          padding: 1.5rem 1rem;
+          background: transparent;
+          gap: 0.4rem;
+        }
+
+        .toc a {
+          white-space: normal;
+        }
+
+        .roster {
+          display: block;
+          margin-top: 1.5rem;
+          padding-top: 1.25rem;
+          border-top: 1px solid var(--border-subtle);
+        }
+
+        .roster p {
+          margin: 0 0 0.65rem;
+          font-family: var(--mono);
+          font-size: 0.75rem;
+          color: var(--muted);
+          font-weight: 600;
+        }
+
+        .roster ul {
+          list-style: none;
+          margin: 0;
+          padding: 0;
+          display: grid;
+          gap: 0.45rem;
+        }
+
+        .sheet {
+          padding: 2rem 2.5rem 4rem;
+          max-width: 58rem;
+          margin: 0;
+        }
+
+        .ides {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .pair {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        h2,
+        h3 {
+          scroll-margin-top: 4.5rem;
+        }
+      }
+
+      @media (max-width: 600px) {
         h1 {
-          font-size: 1.55rem;
+          font-size: 1.65rem;
+        }
+
+        .panel {
+          padding: 1.25rem;
         }
 
         table,
@@ -327,489 +722,617 @@
 
         td {
           border-top: none;
-          padding: 0.15rem 0;
+          padding: 0.35rem 0.5rem;
         }
 
         td:first-child {
-          padding-top: 0.7rem;
-          font-weight: 650;
+          padding-top: 0.75rem;
+          font-weight: 700;
+          color: var(--ink);
         }
 
         tr {
-          border-top: 1px solid var(--line);
-          padding-bottom: 0.55rem;
+          border-top: 1px solid var(--border-subtle);
+          padding-bottom: 0.65rem;
         }
       }
     </style>
   </head>
   <body data-view="user-guide">
     <a class="skip" href="#start">Skip to start</a>
+
     <header class="mast">
       <p class="wordmark">Agents and skills</p>
-      <nav aria-label="On this page">
-        <a href="#start">Start</a>
-        <a href="#flows">Workflows</a>
-        <a href="#qa">Screenshot QA</a>
-      </nav>
+      <span class="mast-sub">Next.js & Supabase Agent Kit</span>
     </header>
 
-    <main>
-      <h1 id="title">Say the change. Then open the running UI.</h1>
-      <p class="lede">
-        This session launches Planner, then the owner. App engineer ships the route. Security owns RLS. Design and Copy read pixels. QA does not review
-        <code>page.tsx</code>.
-      </p>
-      <p class="rule">
-        <strong>Fail-closed.</strong> Do not review code alone. A user-visible change is not done until someone opened the running UI, captured desktop and
-        mobile screenshots, and reviewed those images. Evidence is <code>qa-evidence/&lt;date&gt;-&lt;slug&gt;/desktop.png</code> and <code>mobile.png</code>.
-      </p>
+    <div class="shell">
+      <nav class="toc" aria-label="On this page">
+        <a href="#start">Start</a>
+        <a href="#ask">Specialists</a>
+        <a href="#invoke">IDEs</a>
+        <a href="#flows">Workflows</a>
+        <a href="#design-setup">Design setup</a>
+        <a href="#qa">Screenshot QA</a>
+        <a href="#more">Updating</a>
 
-      <section id="start">
-        <h2>Start</h2>
-        <p>Install the pack, open the repo, then say the change.</p>
-        <div class="paste">
-          <p>Init — every IDE this team uses</p>
-          <pre id="init-cmd">npx --yes @appsforgood/next-supabase-kit init --activate all</pre>
-          <div class="copy-row">
-            <button class="copy" type="button" data-copy-from="init-cmd">Copy init command</button>
+        <div class="roster" aria-hidden="true">
+          <p>Specialist Team</p>
+          <ul>
+            <li><span class="role role-planner">Planner</span></li>
+            <li><span class="role role-engineer">App engineer</span></li>
+            <li><span class="role role-security">Security</span></li>
+            <li><span class="role role-design">Design</span></li>
+            <li><span class="role role-qa">QA</span></li>
+            <li><span class="role role-copy">Copy</span></li>
+          </ul>
+        </div>
+      </nav>
+
+      <div class="sheet">
+        <main>
+          <h1 id="title">Say the change. Then open the running UI.</h1>
+          <p class="lede">
+            Describe what you need once in this chat. Planner scopes the work, App engineer builds it, and Security, Design, or Copy steps in only when their
+            layer is touched. QA verifies the running UI with desktop and mobile screenshots before anything ships. One conversation thread never plays every
+            role.
+          </p>
+
+          <div class="rule">
+            <p>
+              <strong>Fail-closed.</strong> Do not review code alone. A user-visible change is not done until someone opened the running UI, captured desktop
+              and mobile screenshots, and reviewed those images. Evidence is <code>qa-evidence/&lt;date&gt;-&lt;slug&gt;/desktop.png</code> and
+              <code>mobile.png</code>.
+            </p>
           </div>
-        </div>
-        <p>
-          Open the project. You should see <code>AGENTS.md</code>, this guide, and skills under <code>.agents/skills/</code>, and native agents under
-          <code>.cursor/</code>, <code>.claude/</code>, <code>.codex/</code>, <code>.github/agents/</code>, or <code>.agents/agents/</code>.
-        </p>
-        <p>
-          Then say the change. This session launches Planner, then the named owner, then extra reviewers, then QA. You do not copy a prompt. You should get a
-          named owner (<code>app-engineer</code>, <code>security</code>, <code>design</code>, <code>qa</code>, or <code>copy</code>) and, if the work is
-          user-visible, a desktop + mobile shot list. The session launches that owner.
-        </p>
-        <p>New repo with no product <code>DESIGN.md</code>? The session launches Design setup under <a href="#design-setup">Workflows</a>.</p>
-      </section>
 
-      <section id="ask">
-        <h2>Which agent do I ask?</h2>
-        <p>Do not ask one chat to be all six. Planner names the next specialist. The session launches them.</p>
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">You need</th>
-              <th scope="col">Ask</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>A plan and an owner</td>
-              <td>Planner</td>
-            </tr>
-            <tr>
-              <td>Routes, actions, data loading</td>
-              <td>App engineer</td>
-            </tr>
-            <tr>
-              <td>Auth, RLS, secrets</td>
-              <td>Security</td>
-            </tr>
-            <tr>
-              <td>It looks wrong</td>
-              <td>Design</td>
-            </tr>
-            <tr>
-              <td>Style guide / first UI / no DESIGN.md</td>
-              <td>Design (<code>setup</code>)</td>
-            </tr>
-            <tr>
-              <td>Is this done?</td>
-              <td>QA</td>
-            </tr>
-            <tr>
-              <td>Landing / CTA words</td>
-              <td>Copy</td>
-            </tr>
-          </tbody>
-        </table>
+          <section class="panel" id="start">
+            <h2>Start</h2>
+            <p>Install the pack, open the repo, then say the change.</p>
+            <div class="cmd">
+              <p class="cmd-label">Init for every IDE this team uses</p>
+              <pre id="init-cmd"><code>npx --yes @appsforgood/next-supabase-kit init --activate all</code></pre>
+              <div class="copy-row">
+                <button class="copy" type="button" data-copy-from="init-cmd">Copy init command</button>
+              </div>
+            </div>
+            <p>
+              Open the project. You should see <code>AGENTS.md</code>, this guide, and skills under <code>.agents/skills/</code>, and native agents under
+              <code>.cursor/</code>, <code>.claude/</code>, <code>.codex/</code>, <code>.github/agents/</code>, or <code>.agents/agents/</code>.
+            </p>
+            <p>
+              Say the change in this chat. Planner scopes the work and names an owner (<code>app-engineer</code>, <code>security</code>, <code>design</code>,
+              <code>qa</code>, or <code>copy</code>). If the work is user-visible, the plan lists desktop and mobile screenshots. The session launches that
+              owner. It does not stop after a plan. App engineer builds the change. Security, Design, or Copy review when the change touches auth, the UI, or
+              public words. QA opens the running UI.
+            </p>
+            <p>
+              A repo with no product <code>DESIGN.md</code> goes to Design setup under <a href="#design-setup">Workflows</a>. Do not paste a second start
+              prompt.
+            </p>
+          </section>
 
-        <h3>Which skill?</h3>
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Skill</th>
-              <th scope="col">Use when</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>planning</code></td>
-              <td>Ambiguous work; pick an owner and which skill they run</td>
-            </tr>
-            <tr>
-              <td><code>nextjs-app-router</code></td>
-              <td>App Router, Server vs Client, actions, <code>proxy.ts</code></td>
-            </tr>
-            <tr>
-              <td><code>supabase-auth-rls</code></td>
-              <td>Auth, RLS, service role, Storage</td>
-            </tr>
-            <tr>
-              <td><code>postgres-migrations</code></td>
-              <td>Schema, constraints, RLS in the same change</td>
-            </tr>
-            <tr>
-              <td><code>owasp-security-review</code></td>
-              <td>Mutations, uploads, SSRF, secrets</td>
-            </tr>
-            <tr>
-              <td><code>frontend-design</code></td>
-              <td>Setup, build, review, or detect UI. Derive tokens from the product. Owns the visual fail list</td>
-            </tr>
-            <tr>
-              <td><code>accessibility-wcag</code></td>
-              <td>Keyboard pass in the running browser. Contrast, labels. Not a screenshot guess</td>
-            </tr>
-            <tr>
-              <td><code>browser-qa</code></td>
-              <td>Any screen. Required for QA of UI</td>
-            </tr>
-            <tr>
-              <td><code>testing-qa</code></td>
-              <td>Unit / regression / smoke. List commands run. Not screenshots</td>
-            </tr>
-            <tr>
-              <td><code>product-copy</code></td>
-              <td>Headlines, CTAs, empty states. Confirm Reader / Job / One action / Proof</td>
-            </tr>
-            <tr>
-              <td><code>deslop</code></td>
-              <td>Last copy pass. Word and structure tells. Copy always runs this</td>
-            </tr>
-            <tr>
-              <td><code>ship</code></td>
-              <td>Go / no-go. Env, rollback, commands. UI needs screenshot paths</td>
-            </tr>
-          </tbody>
-        </table>
-        <p>
-          QA of a screen always uses <code>browser-qa</code>, not <code>testing-qa</code> alone. User-facing screens also run
-          <code>accessibility-wcag</code> (keyboard in the browser, not a contrast guess from the screenshot). Each agent file names the skills it must run,
-          then points at <code>catalog.json</code> for the rest.
-        </p>
-      </section>
+          <section class="panel" id="ask">
+            <h2>Which agent do I ask?</h2>
+            <p>Do not ask one chat to be all six. Planner names the next specialist. The session launches them.</p>
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">You need</th>
+                  <th scope="col">Ask</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>A plan and an owner</td>
+                  <td><span class="role role-planner">Planner</span></td>
+                </tr>
+                <tr>
+                  <td>Build the change</td>
+                  <td><span class="role role-engineer">App engineer</span></td>
+                </tr>
+                <tr>
+                  <td>Auth, RLS, secrets</td>
+                  <td><span class="role role-security">Security</span></td>
+                </tr>
+                <tr>
+                  <td>It looks wrong</td>
+                  <td><span class="role role-design">Design</span></td>
+                </tr>
+                <tr>
+                  <td>Style guide / first UI / no DESIGN.md</td>
+                  <td><span class="role role-design">Design</span> (<code>setup</code>)</td>
+                </tr>
+                <tr>
+                  <td>Is this done?</td>
+                  <td><span class="role role-qa">QA</span></td>
+                </tr>
+                <tr>
+                  <td>Landing / CTA words</td>
+                  <td><span class="role role-copy">Copy</span></td>
+                </tr>
+              </tbody>
+            </table>
 
-      <section id="invoke">
-        <h2>How to invoke in each IDE</h2>
-        <p>
-          Every host gets the same six agents as native subagents, launched by id. Skills live once in <code>.agents/skills/</code>; Claude reads its own copy
-          at <code>.claude/skills/</code>.
-        </p>
-        <div class="ides">
-          <article class="ide">
-            <h3>Cursor</h3>
-            <p><code>.cursor/agents/</code>, <code>.agents/skills/</code>, <code>.cursor/rules/</code></p>
-            <ul>
-              <li>
-                Describe the change. This session launches <code>@planner</code> as a Task, then the owner. You do not have to mention
-                <code>@app-engineer</code>, <code>@security</code>, <code>@design</code>, <code>@qa</code>, or <code>@copy</code>.
-              </li>
-              <li>Planner is <code>readonly</code>; it cannot implement.</li>
-              <li>Force a skill with <code>/browser-qa</code>. Use the built-in browser first. Playwright is backup.</li>
-            </ul>
-          </article>
-          <article class="ide">
-            <h3>Claude Code</h3>
-            <p><code>.claude/agents/</code>, <code>.claude/skills/</code>, <code>CLAUDE.md</code></p>
-            <ul>
-              <li>
-                This session launches the matching subagent by id. Each one preloads its skills, so Design and QA start with <code>browser-qa</code> in context.
-              </li>
-              <li>Planner, Security, and Design run at <code>effort: high</code>. If there is no browser, use the Playwright commands in that skill.</li>
-            </ul>
-          </article>
-          <article class="ide">
-            <h3>Codex</h3>
-            <p><code>.codex/agents/</code>, <code>.agents/skills/</code>, <code>AGENTS.md</code></p>
-            <ul>
-              <li>This session spawns the named custom agent. Planner, Security, and Design use high reasoning effort.</li>
-              <li>Codex discovers the skills from <code>.agents/skills/</code>. Use Playwright if Codex cannot see the page.</li>
-            </ul>
-          </article>
-          <article class="ide">
-            <h3>GitHub Copilot</h3>
-            <p><code>.github/agents/</code>, <code>.agents/skills/</code>, <code>.github/copilot-instructions.md</code></p>
-            <ul>
-              <li>
-                Launch each specialist with <code>/agent planner</code>, <code>/agent app-engineer</code>, <code>/agent qa</code> (CLI:
-                <code class="flag">copilot --agent=qa</code>) and its payload from <code>AGENTS.md</code>.
-              </li>
-              <li>
-                If this Copilot surface has no custom agents, run the sequence in this thread under “now Planner” / “now App engineer” / “now QA”. To prove a
-                screen:
-              </li>
-            </ul>
-            <pre id="copilot-prompt">
-Act as the QA agent. Use the browser-qa skill. Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.</pre>
-            <div class="copy-row">
-              <button class="copy" type="button" data-copy-from="copilot-prompt">Copy Copilot prompt</button>
-            </div>
-          </article>
-          <article class="ide">
-            <h3>Antigravity</h3>
-            <p><code>.agents/agents/</code>, <code>.agents/skills/</code>, <code>.agents/rules/</code></p>
-            <ul>
-              <li>
-                Each agent is a custom subagent with its skills attached. Say the change; the main agent calls <code>invoke_subagent</code> for Planner, then
-                the owner, then QA.
-              </li>
-              <li>
-                Pick an agent directly from <code>/agents</code>. If subagents are unavailable, continue in this thread under a “now App engineer” header.
-              </li>
-            </ul>
-          </article>
-        </div>
-      </section>
+            <h3>Which skill?</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Skill</th>
+                  <th scope="col">Use when</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>planning</code></td>
+                  <td>Ambiguous work; pick an owner and which skill they run</td>
+                </tr>
+                <tr>
+                  <td><code>nextjs-app-router</code></td>
+                  <td>App Router, Server vs Client, actions, <code>proxy.ts</code></td>
+                </tr>
+                <tr>
+                  <td><code>supabase-auth-rls</code></td>
+                  <td>Auth, RLS, service role, Storage</td>
+                </tr>
+                <tr>
+                  <td><code>postgres-migrations</code></td>
+                  <td>Schema, constraints, RLS in the same change</td>
+                </tr>
+                <tr>
+                  <td><code>owasp-security-review</code></td>
+                  <td>Mutations, uploads, SSRF, secrets</td>
+                </tr>
+                <tr>
+                  <td><code>frontend-design</code></td>
+                  <td>Setup, build, review, or detect. Take tokens from the product, and name what fails on screen</td>
+                </tr>
+                <tr>
+                  <td><code>accessibility-wcag</code></td>
+                  <td>Keyboard pass in the running browser. Contrast, labels. Not a screenshot guess</td>
+                </tr>
+                <tr>
+                  <td><code>browser-qa</code></td>
+                  <td>Any screen. Required for QA of UI</td>
+                </tr>
+                <tr>
+                  <td><code>testing-qa</code></td>
+                  <td>Unit / regression / smoke. List commands run. Not screenshots</td>
+                </tr>
+                <tr>
+                  <td><code>product-copy</code></td>
+                  <td>Headlines, CTAs, empty states. Confirm Reader / Job / One action / Proof</td>
+                </tr>
+                <tr>
+                  <td><code>deslop</code></td>
+                  <td>Last copy pass. Word and structure tells. Copy always runs this</td>
+                </tr>
+                <tr>
+                  <td><code>ship</code></td>
+                  <td>Go / no-go. Env, rollback, commands. UI needs screenshot paths</td>
+                </tr>
+              </tbody>
+            </table>
+            <p>
+              QA of a screen always uses <code>browser-qa</code>, not <code>testing-qa</code> alone. User-facing screens also run
+              <code>accessibility-wcag</code> (keyboard in the browser, not a contrast guess from the screenshot). Each agent file names the skills it must run,
+              then points at <code>catalog.json</code> for the rest.
+            </p>
+          </section>
 
-      <section id="flows">
-        <h2>Standard workflows</h2>
-        <h3>New feature</h3>
-        <p>
-          Launch in this order. Skip Security, Design, or Copy when that specialist is not needed. The session launches each specialist; you do not copy these
-          blocks.
-        </p>
-        <ol>
-          <li>
-            Planner — spawn payload:
-            <pre id="plan-prompt">Plan this change. Name the owning agent, extra reviewers, and which screenshots QA must capture. Do not write code.</pre>
-            <div class="copy-row">
-              <button class="copy" type="button" data-copy-from="plan-prompt">Copy Planner prompt</button>
+          <section class="panel" id="invoke">
+            <h2>How to start them in each IDE</h2>
+            <p>
+              Cursor, Claude Code, Codex, Copilot, and Antigravity each get the same six agents. Start them by name (<code>planner</code>,
+              <code>app-engineer</code>, <code>security</code>, <code>design</code>, <code>qa</code>, <code>copy</code>). Skills live once in
+              <code>.agents/skills/</code>; Claude reads its own copy at <code>.claude/skills/</code>.
+            </p>
+            <div class="ides">
+              <article class="ide">
+                <h3><span class="tag tag-ide">Cursor</span></h3>
+                <p><code>.cursor/agents/</code>, <code>.agents/skills/</code>, <code>.cursor/rules/</code></p>
+                <ul>
+                  <li>
+                    Describe the change. This session launches <code>@planner</code> as a Task, then the owner. You do not have to mention
+                    <code>@app-engineer</code>, <code>@security</code>, <code>@design</code>, <code>@qa</code>, or <code>@copy</code>.
+                  </li>
+                  <li>Planner is <code>readonly</code>; it cannot implement.</li>
+                  <li>To run a skill by name, type <code>/browser-qa</code>. Use the built-in browser first. Playwright is backup.</li>
+                </ul>
+              </article>
+              <article class="ide">
+                <h3><span class="tag tag-ide">Claude Code</span></h3>
+                <p><code>.claude/agents/</code>, <code>.claude/skills/</code>, <code>CLAUDE.md</code></p>
+                <ul>
+                  <li>
+                    This session launches the matching subagent by id. Each one preloads its skills, so Design and QA start with <code>browser-qa</code> in
+                    context.
+                  </li>
+                  <li>Planner, Security, and Design run at <code>effort: high</code>. If there is no browser, use the Playwright commands in that skill.</li>
+                </ul>
+              </article>
+              <article class="ide">
+                <h3><span class="tag tag-ide">Codex</span></h3>
+                <p><code>.codex/agents/</code>, <code>.agents/skills/</code>, <code>AGENTS.md</code></p>
+                <ul>
+                  <li>This session starts the named custom agent. Planner, Security, and Design use high reasoning effort.</li>
+                  <li>Codex discovers the skills from <code>.agents/skills/</code>. Use Playwright if Codex cannot see the page.</li>
+                </ul>
+              </article>
+              <article class="ide">
+                <h3><span class="tag tag-ide">GitHub Copilot</span></h3>
+                <p><code>.github/agents/</code>, <code>.agents/skills/</code>, <code>.github/copilot-instructions.md</code></p>
+                <ul>
+                  <li>
+                    Launch each specialist with <code>/agent planner</code>, <code>/agent app-engineer</code>, <code>/agent qa</code> (CLI:
+                    <code class="flag">copilot --agent=qa</code>) and the prompt from <code>AGENTS.md</code>.
+                  </li>
+                  <li>
+                    If Copilot here has no custom agents, run the sequence in this thread under “now Planner” / “now App engineer” / “now QA”. To prove a
+                    screen:
+                  </li>
+                </ul>
+                <div class="cmd">
+                  <pre
+                    id="copilot-prompt"
+                  ><code>Act as the QA agent. Use the browser-qa skill. Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.</code></pre>
+                  <div class="copy-row">
+                    <button class="copy" type="button" data-copy-from="copilot-prompt">Copy Copilot prompt</button>
+                  </div>
+                </div>
+              </article>
+              <article class="ide">
+                <h3><span class="tag tag-ide">Antigravity</span></h3>
+                <p><code>.agents/agents/</code>, <code>.agents/skills/</code>, <code>.agents/rules/</code></p>
+                <ul>
+                  <li>
+                    Each agent is a custom subagent with its skills attached. Say the change; the main agent calls <code>invoke_subagent</code> for Planner,
+                    then the owner, then QA.
+                  </li>
+                  <li>
+                    Pick an agent directly from <code>/agents</code>. If subagents are unavailable, continue in this thread under a “now App engineer” header
+                    with the same prompt.
+                  </li>
+                </ul>
+              </article>
             </div>
-          </li>
-          <li>
-            App engineer — spawn payload:
-            <pre id="implement-prompt">Implement the plan. Smoke the changed route in the browser before you hand off.</pre>
-            <div class="copy-row">
-              <button class="copy" type="button" data-copy-from="implement-prompt">Copy App engineer prompt</button>
-            </div>
-          </li>
-          <li>
-            Security if data, auth, or secrets changed — spawn payload:
-            <pre id="security-prompt">
-Act as the security agent. Review auth, RLS, IDOR, and secrets. Exercise login or denied states in the browser when they are user-visible.</pre>
-            <div class="copy-row">
-              <button class="copy" type="button" data-copy-from="security-prompt">Copy Security prompt</button>
-            </div>
-          </li>
-          <li>
-            Design if the UI changed — spawn payload:
-            <pre id="design-review-prompt">
-Act as design. Name the mode (setup, build, review, or detect). Review the running UI from screenshots first. Desktop and mobile. Reject generic AI-looking layout.</pre>
-            <div class="copy-row">
-              <button class="copy" type="button" data-copy-from="design-review-prompt">Copy Design prompt</button>
-            </div>
-            If <code>DESIGN.md</code> is missing, run setup first.
-          </li>
-          <li>
-            Copy if public words changed — spawn payload:
-            <pre id="copy-feature-prompt">
-Act as the copy agent. Review the rendered words in screenshots, not just strings in source. Run product-copy first, then deslop last. Always.</pre>
-            <div class="copy-row">
-              <button class="copy" type="button" data-copy-from="copy-feature-prompt">Copy the copy prompt</button>
-            </div>
-          </li>
-          <li>
-            QA — spawn payload:
-            <pre id="qa-feature-prompt">
-Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.</pre>
-            <div class="copy-row">
-              <button class="copy" type="button" data-copy-from="qa-feature-prompt">Copy QA prompt</button>
-            </div>
-            For screens, also run <code>accessibility-wcag</code>.
-          </li>
-        </ol>
-        <p>Done when QA attaches both frames plus a verdict, and the changed flow passed a keyboard-only check.</p>
-        <h3>Auth / RLS</h3>
-        <p>
-          Planner → App engineer → Security → QA. QA must open login, logout, and denied in the browser. Screenshots still required when the finding is
-          user-visible.
-        </p>
-        <h3 id="design-setup">New repo design setup</h3>
-        <p>After <code>init</code>, before the first product CSS, the session launches Design with:</p>
-        <pre id="design-setup-flow">
-Act as design. This is a new repo. Scan what is already here, then ask me what we need to set up: who it is for, what they must get done, and what you should produce. Recommend from my answers. Write the style guide and principles with me before any CSS.</pre>
-        <div class="copy-row">
-          <button class="copy" type="button" data-copy-from="design-setup-flow">Copy Design setup prompt</button>
-        </div>
-        <p>
-          Design scans the stack, then asks what you need. Recommendations come from those answers. It writes a short product <code>DESIGN.md</code> and
-          frontend <code>STYLE_GUIDE.md</code> rules only after that. It does not paste this kit’s charcoal desk onto the app. Screenshots wait until there is a
-          screen to capture.
-        </p>
-        <h3>UI polish</h3>
-        <p>
-          Design + <code>frontend-design</code> + <code>accessibility-wcag</code> + <code>browser-qa</code>. Name setup, build, review, or detect. Desktop and
-          mobile once a screen exists. One happy-path shot is a fail. A contrast guess from the screenshot is a fail.
-        </p>
-        <h3>Accessibility pass</h3>
-        <p>On any user-facing screen, launch Design or QA with:</p>
-        <pre id="a11y-prompt">Run accessibility-wcag. Open the changed flow. Keyboard-only pass. Do not accept contrast from the screenshot alone.</pre>
-        <div class="copy-row">
-          <button class="copy" type="button" data-copy-from="a11y-prompt">Copy accessibility prompt</button>
-        </div>
-        <h3>Copy pass</h3>
-        <p>
-          Copy reviews the <em>rendered</em> words in screenshots, not strings in TSX. Confirm Reader / Job / One action / Proof, run <code>product-copy</code>,
-          then <code>deslop</code> last. Spawn payload:
-        </p>
-        <pre id="copy-prompt">
-Act as the copy agent. Review the rendered words in screenshots, not just strings in source. Run product-copy first, then deslop last. Always.</pre>
-        <div class="copy-row">
-          <button class="copy" type="button" data-copy-from="copy-prompt">Copy the copy prompt</button>
-        </div>
-        <h3>Release / ship</h3>
-        <p>Before you promote or deploy, launch QA with:</p>
-        <pre id="ship-prompt">
-Run ship. Go or no-go. Name env, migration order, rollback, commands run. User-visible needs browser-qa screenshot paths. Reject LGTM, ship it.</pre>
-        <div class="copy-row">
-          <button class="copy" type="button" data-copy-from="ship-prompt">Copy ship prompt</button>
-        </div>
-        <p>
-          QA names the verdict. App engineer names env and the app rollback. Security names secrets and RLS. Missing screenshot paths on a user-visible release
-          is a no-go.
-        </p>
-      </section>
+          </section>
 
-      <section id="qa">
-        <h2>QA screenshot loop</h2>
-        <div class="pair">
-          <article class="verdict reject">
-            <strong>Reject this</strong>
-            <pre>Review the new settings page in page.tsx and tell me if the layout looks right.</pre>
-          </article>
-          <article class="verdict accept">
-            <strong>Ask this</strong>
-            <pre id="qa-prompt">
-Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.</pre>
-            <div class="copy-row">
-              <button class="copy" type="button" data-copy-from="qa-prompt">Copy QA prompt</button>
-            </div>
-          </article>
-        </div>
-        <ol>
-          <li>Start or find the app (<code>next dev</code> or preview).</li>
-          <li>Open the changed route with the real auth, role, and data.</li>
-          <li>Capture desktop (~1280) and mobile (~390) into <code>qa-evidence/&lt;yyyy-mm-dd&gt;-&lt;slug&gt;/</code>.</li>
-          <li><strong>Read the images.</strong> List blockers from what is on screen.</li>
-          <li>Keyboard-only the changed flow (<code>accessibility-wcag</code>). Do not accept contrast from the screenshot alone.</li>
-          <li>Run applicable tests (<code>testing-qa</code>). List the commands. <code>toBeVisible</code> is not a screenshot.</li>
-          <li>Write <code>notes.md</code> with route, viewports, auth state, keyboard result, commands run, verdict.</li>
-        </ol>
-        <p>Cursor: built-in browser first. Claude, Codex, Copilot, Antigravity: host browser if present, otherwise:</p>
-        <pre id="pw-cmd">
-npx playwright screenshot --viewport-size=1280,720 "$URL" qa-evidence/&lt;slug&gt;/desktop.png
-npx playwright screenshot --viewport-size=390,844 "$URL" qa-evidence/&lt;slug&gt;/mobile.png</pre>
-        <div class="copy-row">
-          <button class="copy" type="button" data-copy-from="pw-cmd">Copy Playwright commands</button>
-        </div>
-      </section>
+          <section class="panel" id="flows">
+            <h2>Standard workflows</h2>
+            <h3>New feature</h3>
+            <p>
+              Launch in this order. Skip Security, Design, or Copy when that specialist is not needed. The session launches each specialist with the prompt
+              under their name. The wording matches <code>AGENTS.md</code>. Paste one only when that IDE cannot start a subagent.
+            </p>
+            <ol class="stepper">
+              <li class="step-card">
+                <div class="step-header">
+                  <span class="step-num">1</span>
+                  <span class="role role-planner">Planner</span>
+                </div>
+                <p class="step-desc">Scopes architectural boundaries, selects the owning specialist, and lists required QA screenshots. Strictly read-only.</p>
+                <div class="cmd">
+                  <p class="cmd-label">Planner Prompt</p>
+                  <pre
+                    id="plan-prompt"
+                  ><code>Plan this change. Name the owning agent, extra reviewers, and which screenshots QA must capture. Do not write code.</code></pre>
+                  <div class="copy-row">
+                    <button class="copy" type="button" data-copy-from="plan-prompt">Copy Planner prompt</button>
+                  </div>
+                </div>
+              </li>
+              <li class="step-card">
+                <div class="step-header">
+                  <span class="step-num">2</span>
+                  <span class="role role-engineer">App engineer</span>
+                </div>
+                <p class="step-desc">Implements Next.js App Router and Supabase logic, smoking the changed route in the browser before handoff.</p>
+                <div class="cmd">
+                  <p class="cmd-label">App Engineer Prompt</p>
+                  <pre id="implement-prompt"><code>Implement the plan. Smoke the changed route in the browser before you hand off.</code></pre>
+                  <div class="copy-row">
+                    <button class="copy" type="button" data-copy-from="implement-prompt">Copy App engineer prompt</button>
+                  </div>
+                </div>
+              </li>
+              <li class="step-card">
+                <div class="step-header">
+                  <span class="step-num">3</span>
+                  <span class="role role-security">Security</span>
+                </div>
+                <p class="step-desc">Reviews auth boundaries, RLS policies, and secrets whenever auth or data mutations change.</p>
+                <div class="cmd">
+                  <p class="cmd-label">Security Prompt (if data, auth, or secrets changed)</p>
+                  <pre
+                    id="security-prompt"
+                  ><code>Act as the security agent. Review auth, RLS, IDOR, and secrets. Exercise login or denied states in the browser when they are user-visible.</code></pre>
+                  <div class="copy-row">
+                    <button class="copy" type="button" data-copy-from="security-prompt">Copy Security prompt</button>
+                  </div>
+                </div>
+              </li>
+              <li class="step-card">
+                <div class="step-header">
+                  <span class="step-num">4</span>
+                  <span class="role role-design">Design</span>
+                </div>
+                <p class="step-desc">Audits visual layout, contrast, and responsive behavior from live screenshots. Rejects generic AI templates.</p>
+                <div class="cmd">
+                  <p class="cmd-label">Design Prompt (if the UI changed)</p>
+                  <pre
+                    id="design-review-prompt"
+                  ><code>Act as design. Name the mode (setup, build, review, or detect). Review the running UI from screenshots first. Desktop and mobile. Reject generic AI-looking layout.</code></pre>
+                  <div class="copy-row">
+                    <button class="copy" type="button" data-copy-from="design-review-prompt">Copy Design prompt</button>
+                  </div>
+                </div>
+                <p>If <code>DESIGN.md</code> is missing, run setup first.</p>
+              </li>
+              <li class="step-card">
+                <div class="step-header">
+                  <span class="step-num">5</span>
+                  <span class="role role-copy">Copy if public words changed</span>
+                </div>
+                <p class="step-desc">Reviews rendered words in screenshots. Ensures natural human phrasing and strips robotic machine tells.</p>
+                <div class="cmd">
+                  <p class="cmd-label">Copy Prompt</p>
+                  <pre
+                    id="copy-feature-prompt"
+                  ><code>Act as the copy agent. Review the rendered words in screenshots, not just strings in source. Run product-copy first, then deslop last. Always.</code></pre>
+                  <div class="copy-row">
+                    <button class="copy" type="button" data-copy-from="copy-feature-prompt">Copy the Copy prompt</button>
+                  </div>
+                </div>
+              </li>
+              <li class="step-card">
+                <div class="step-header">
+                  <span class="step-num">6</span>
+                  <span class="role role-qa">QA</span>
+                </div>
+                <p class="step-desc">Opens the running application, captures desktop and mobile screenshots, and conducts a keyboard accessibility pass.</p>
+                <div class="cmd">
+                  <p class="cmd-label">QA Prompt</p>
+                  <pre
+                    id="qa-feature-prompt"
+                  ><code>Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.</code></pre>
+                  <div class="copy-row">
+                    <button class="copy" type="button" data-copy-from="qa-feature-prompt">Copy QA prompt</button>
+                  </div>
+                </div>
+                <p>For screens, also run <code>accessibility-wcag</code>.</p>
+              </li>
+            </ol>
+            <p>
+              Done means the change works in the running UI. QA attaches <code>qa-evidence/&lt;date&gt;-&lt;slug&gt;/desktop.png</code> and
+              <code>mobile.png</code> with a verdict, after a keyboard-only pass of the changed flow.
+            </p>
 
-      <section id="more">
-        <h2>Adding more, updating, unblocking</h2>
-        <pre id="add-cmd">
-npx agent-kit add agent lead-architect
+            <h3>Auth / RLS</h3>
+            <p>
+              Planner, then App engineer, then Security, then QA. QA must open login, logout, and denied in the browser and still run tests. Screenshots are
+              required when the finding is user-visible.
+            </p>
+
+            <h3 id="design-setup">New repo design setup</h3>
+            <p>After <code>init</code>, before the first product CSS, the session launches Design with:</p>
+            <div class="cmd">
+              <pre
+                id="design-setup-flow"
+              ><code>Act as design. This is a new repo. Scan what is already here, then ask me what we need to set up: who it is for, what they must get done, and what you should produce. Recommend from my answers. Write the style guide and principles with me before any CSS.</code></pre>
+              <div class="copy-row">
+                <button class="copy" type="button" data-copy-from="design-setup-flow">Copy Design setup prompt</button>
+              </div>
+            </div>
+            <p>
+              Design scans the stack, then asks what you need. It recommends from your answers, and only then writes a short product <code>DESIGN.md</code> and
+              frontend <code>STYLE_GUIDE.md</code> rules. It does not copy this guide’s colors or layout onto the app. Skip screenshots until there is a screen
+              to capture.
+            </p>
+
+            <h3>UI polish</h3>
+            <p>
+              Run Design with <code>frontend-design</code>, <code>accessibility-wcag</code>, and <code>browser-qa</code>. Name the mode: setup, build, review,
+              or detect. Capture desktop and mobile once a screen exists. One happy-path screenshot fails. Guessing contrast from the screenshot fails. Reject
+              using polish as a second design system.
+            </p>
+
+            <h3>Accessibility pass</h3>
+            <p>On any user-facing screen, launch Design or QA with:</p>
+            <div class="cmd">
+              <pre
+                id="a11y-prompt"
+              ><code>Run accessibility-wcag. Open the changed flow. Keyboard-only pass. Do not accept contrast from the screenshot alone.</code></pre>
+              <div class="copy-row">
+                <button class="copy" type="button" data-copy-from="a11y-prompt">Copy accessibility prompt</button>
+              </div>
+            </div>
+
+            <h3>Copy pass</h3>
+            <p>
+              Copy reviews the rendered words in screenshots, not strings in TSX. Confirm Reader / Job / One action / Proof, run <code>product-copy</code>, then
+              <code>deslop</code> last. Do not hand off after the first draft. Prompt:
+            </p>
+            <div class="cmd">
+              <pre
+                id="copy-prompt"
+              ><code>Act as the copy agent. Review the rendered words in screenshots, not just strings in source. Run product-copy first, then deslop last. Always.</code></pre>
+              <div class="copy-row">
+                <button class="copy" type="button" data-copy-from="copy-prompt">Copy the Copy prompt</button>
+              </div>
+            </div>
+
+            <h3>Release / ship</h3>
+            <p>Before you promote or deploy, launch QA with:</p>
+            <div class="cmd">
+              <pre
+                id="ship-prompt"
+              ><code>Run ship. Go or no-go. Name env, migration order, rollback, commands run. User-visible needs browser-qa screenshot paths. Reject LGTM, ship it.</code></pre>
+              <div class="copy-row">
+                <button class="copy" type="button" data-copy-from="ship-prompt">Copy ship prompt</button>
+              </div>
+            </div>
+            <p>
+              QA names the verdict. App engineer names env and the app rollback. Security names secrets and RLS. Missing screenshot paths on a user-visible
+              release is a no-go.
+            </p>
+          </section>
+
+          <section class="panel" id="qa">
+            <h2>QA screenshot loop</h2>
+            <div class="pair">
+              <div class="verdict reject">
+                <strong>Bad request: reject code-only reviews</strong>
+                <pre><code>Review the new settings page in page.tsx and tell me if the layout looks right.</code></pre>
+              </div>
+              <div class="verdict accept">
+                <strong>Good request: automated visual proof</strong>
+                <pre
+                  id="qa-prompt"
+                ><code>Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.</code></pre>
+                <div class="copy-row">
+                  <button class="copy" type="button" data-copy-from="qa-prompt">Copy QA prompt</button>
+                </div>
+              </div>
+            </div>
+            <p>Steps the QA agent must follow on every user-facing change:</p>
+            <ol>
+              <li>Start or find the app (<code>next dev</code> or preview).</li>
+              <li>Open the changed route with the real auth, role, and data.</li>
+              <li>Capture desktop (~1280) and mobile (~390) into <code>qa-evidence/&lt;yyyy-mm-dd&gt;-&lt;slug&gt;/</code>.</li>
+              <li>Read the images. List blockers from what is on screen.</li>
+              <li>Keyboard-only the changed flow (<code>accessibility-wcag</code>). Do not accept contrast from the screenshot alone.</li>
+              <li>Run applicable tests (<code>testing-qa</code>). List commands run. <code>toBeVisible</code> is not a screenshot.</li>
+              <li>Write <code>notes.md</code> with route, viewports, auth state, keyboard result, commands run, verdict.</li>
+            </ol>
+            <p>Cursor: built-in browser first. Claude, Codex, Copilot, Antigravity: host browser if present, otherwise Playwright:</p>
+            <div class="cmd">
+              <pre id="pw-cmd"><code>npx playwright screenshot --viewport-size=1280,720 "$URL" qa-evidence/&lt;slug&gt;/desktop.png
+npx playwright screenshot --viewport-size=390,844 "$URL" qa-evidence/&lt;slug&gt;/mobile.png</code></pre>
+              <div class="copy-row">
+                <button class="copy" type="button" data-copy-from="pw-cmd">Copy Playwright commands</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel" id="more">
+            <h2>Add, update, and troubleshoot</h2>
+            <div class="cmd">
+              <p class="cmd-label">Add and update commands</p>
+              <pre id="add-cmd"><code>npx agent-kit add agent lead-architect
 npx agent-kit add skill debug
-npx agent-kit update</pre>
-        <div class="copy-row">
-          <button class="copy" type="button" data-copy-from="add-cmd">Copy add / update commands</button>
-        </div>
-        <p>
-          Optional agents: <code>lead-architect</code>, <code>docs</code>, <code>deploy</code>, <code>research</code>. Optional skills: <code>ui-polish</code>,
-          <code>docs</code>, <code>upgrade</code>, <code>debug</code>, <code>web-performance</code>. Do not add them unless that specialist has a repeating job.
-        </p>
-        <p>
-          Add <code>debug</code> when the same failure keeps coming back. Reproduce → localize → reduce → fix → guard. User-visible bugs need before/after
-          <code>browser-qa</code>. Reject guessing from the stack trace alone. Not on default <code>init</code>.
-        </p>
-        <p>
-          Add <code>docs</code> when <code>USER_GUIDE</code>, <code>CHANGELOG</code>, or the living file this change moved needs an update. Reject restoring the
-          17-doc OS.
-        </p>
-        <p>
-          Add <code>upgrade</code> when bumping this pack or frameworks. Run <code>agent-kit update</code> on a branch. Read <code>UPGRADE.md</code>. Reject
-          <code>init --force</code> as the upgrade path.
-        </p>
-        <p>
-          Add <code>ui-polish</code> after the main <code>frontend-design</code> pass, not instead of it. If <code>DESIGN.md</code> is missing, Design
-          <code>setup</code> first. Still desktop + mobile. Reject using polish as a second design system.
-        </p>
-        <p>
-          Add <code>web-performance</code> when the ask is LCP / INP / CLS / “this page is slow.” Measure → identify → fix → re-measure. Map onto
-          <code>next/image</code>, RSC payload, and PostgREST N+1. Reject optimizing from a guess. Not on default <code>init</code>.
-        </p>
-        <p>
-          <code>update</code> refreshes pristine files. Local edits win or land in <code>.agent-kit/conflicts/</code>. It never deletes your old docs unless you
-          pass <code class="flag">--prune-legacy</code>, which lists the 0.3 council leftovers and asks before removing them.
-        </p>
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Problem</th>
-              <th scope="col">Fix</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Agent missing in an IDE</td>
-              <td>
-                Re-run <code>init --activate &lt;ide&gt;</code> or <code>all</code>. Agents render to <code>.cursor/agents/</code>,
-                <code>.claude/agents/</code>, <code>.codex/agents/</code>, <code>.github/agents/</code>, <code>.agents/agents/</code>.
-              </td>
-            </tr>
-            <tr>
-              <td>Skill not triggering</td>
-              <td>Name it or type <code>/browser-qa</code>. Skills live in <code>.agents/skills/</code> (Claude: <code>.claude/skills/</code>).</td>
-            </tr>
-            <tr>
-              <td>No browser in Copilot / Codex</td>
-              <td>Use the Playwright commands above.</td>
-            </tr>
-            <tr>
-              <td>Cursor lists an agent twice</td>
-              <td>
-                Cursor also reads <code>.claude/agents/</code> and <code>.codex/agents/</code>. Keep one host activated in Cursor-only repos, or pick the
-                <code>.cursor</code> entry.
-              </td>
-            </tr>
-            <tr>
-              <td>Claude subagent refuses to launch</td>
-              <td>
-                Its <code>tools:</code> must be real Claude tool names. Run <code class="flag">update --force</code> to re-render; <code>doctor</code> fails on
-                a stale file.
-              </td>
-            </tr>
-            <tr>
-              <td>QA finished from the diff</td>
-              <td>Reject it. Re-run with the good QA prompt.</td>
-            </tr>
-            <tr>
-              <td>GitHub shows this page as code</td>
-              <td>Open <code>USER_GUIDE.html</code> in a browser, or run <code>npx agent-kit guide</code>. GitHub does not render the layout.</td>
-            </tr>
-            <tr>
-              <td><code>doctor</code> fails the guide</td>
-              <td>The screenshot fail-closed sentence must stay in <code>USER_GUIDE.md</code> and this page.</td>
-            </tr>
-            <tr>
-              <td>Still have <code>QUALITY_GATES.md</code> / <code>COUNCIL.md</code></td>
-              <td>
-                <code>doctor</code> lists them. Run <code class="flag">update --prune-legacy</code> on a branch to remove them and any 0.3 agent shadowing a 0.4
-                one.
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
-    </main>
+npx agent-kit update</code></pre>
+              <div class="copy-row">
+                <button class="copy" type="button" data-copy-from="add-cmd">Copy add / update commands</button>
+              </div>
+            </div>
+            <p>
+              Optional agents: <code>lead-architect</code>, <code>docs</code>, <code>deploy</code>, <code>research</code>. Optional skills:
+              <code>ui-polish</code>, <code>docs</code>, <code>upgrade</code>, <code>debug</code>, <code>web-performance</code>. Do not add them unless you have
+              a repeating job for that specialist.
+            </p>
+            <p>
+              Add <code>debug</code> when the same failure keeps coming back. Reproduce → localize → reduce → fix → guard. User-visible bugs need before/after
+              <code>browser-qa</code>. Reject guessing from the stack trace alone. Not on default <code>init</code>.
+            </p>
+            <p>
+              Add <code>docs</code> when <code>USER_GUIDE</code>, <code>CHANGELOG</code>, or the living file this change moved needs an update. Reject restoring
+              the 17-doc OS.
+            </p>
+            <p>
+              Add <code>upgrade</code> when bumping this pack or frameworks. Run <code>agent-kit update</code> on a branch. Read <code>UPGRADE.md</code>. Reject
+              <code>init --force</code> as the upgrade path.
+            </p>
+            <p>
+              Add <code>ui-polish</code> after the main <code>frontend-design</code> pass, not instead of it. If <code>DESIGN.md</code> is missing, Design
+              <code>setup</code> first. Still desktop + mobile. Reject using polish as a second design system.
+            </p>
+            <p>
+              Add <code>web-performance</code> when the ask is LCP / INP / CLS / “this page is slow.” Measure, identify the cause, fix it, and measure again.
+              Check <code>next/image</code>, the RSC payload, and PostgREST N+1. Reject optimizing from a guess. Not on default <code>init</code>.
+            </p>
+            <p>
+              <code>update</code> refreshes pristine files automatically using recorded install hashes. Local edits win or land in
+              <code>.agent-kit/conflicts/</code>. Do not re-init. <code>update</code> never deletes your old files unless you pass
+              <code class="flag">--prune-legacy</code>, which lists 0.3 council leftovers and 0.4 duplicate skill copies and asks before removing them.
+            </p>
+            <p>When upgrading from 0.4 or earlier:</p>
+            <div class="cmd">
+              <pre id="upgrade-04-cmd"><code>git switch -c agent-kit-0.5
+npx agent-kit update --prune-legacy
+npx agent-kit doctor</code></pre>
+              <div class="copy-row">
+                <button class="copy" type="button" data-copy-from="upgrade-04-cmd">Copy upgrade commands</button>
+              </div>
+            </div>
 
-    <footer>
-      <p>Markdown twin: <a href="USER_GUIDE.md">USER_GUIDE.md</a>. Same rules. This page is how you judge the copy and the layout.</p>
-    </footer>
+            <h3>Troubleshooting</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Problem</th>
+                  <th scope="col">Fix</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Agent missing in an IDE</td>
+                  <td>
+                    Re-run <code>init --activate &lt;ide&gt;</code> or <code>all</code>. Agents render to <code>.cursor/agents/</code>,
+                    <code>.claude/agents/</code>, <code>.codex/agents/</code>, <code>.github/agents/</code>, <code>.agents/agents/</code>.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Skill not triggering</td>
+                  <td>Name it or type <code>/browser-qa</code>. Skills live in <code>.agents/skills/</code> (Claude: <code>.claude/skills/</code>).</td>
+                </tr>
+                <tr>
+                  <td>No browser in Copilot / Codex</td>
+                  <td>Use the Playwright commands above.</td>
+                </tr>
+                <tr>
+                  <td>Cursor lists an agent twice</td>
+                  <td>
+                    Cursor also reads <code>.claude/agents/</code> and <code>.codex/agents/</code>. Keep one host activated in Cursor-only repos, or pick the
+                    <code>.cursor</code> entry.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Claude subagent refuses to launch</td>
+                  <td>
+                    Its <code>tools:</code> must be real Claude tool names. Run <code>update --force</code> to re-render; <code>doctor</code> fails on a stale
+                    file.
+                  </td>
+                </tr>
+                <tr>
+                  <td>QA finished from the diff alone</td>
+                  <td>Reject it. Re-run with the QA prompt above.</td>
+                </tr>
+                <tr>
+                  <td>GitHub shows <code>USER_GUIDE.html</code> as code</td>
+                  <td>Open the file in a browser. Run <code>npx agent-kit guide</code> to print the path. GitHub does not render the layout.</td>
+                </tr>
+                <tr>
+                  <td><code>doctor</code> fails USER_GUIDE</td>
+                  <td>The screenshot fail-closed sentence must stay in this file.</td>
+                </tr>
+                <tr>
+                  <td>Still have <code>QUALITY_GATES.md</code> / <code>COUNCIL.md</code></td>
+                  <td>
+                    <code>doctor</code> lists them. Run <code class="flag">update --prune-legacy</code> on a branch to remove them and any 0.3 agent shadowing a
+                    0.4 one.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <footer>
+            <p>Same rules in <a href="USER_GUIDE.md">USER_GUIDE.md</a>. Judge the copy and the layout on this page.</p>
+          </footer>
+        </main>
+      </div>
+    </div>
 
     <script>
       document.querySelectorAll("button.copy").forEach((button) => {
@@ -827,13 +1350,38 @@ npx agent-kit update</pre>
               button.textContent = label;
             }, 1600);
           } catch {
-            button.textContent = "Copy failed — select the text";
+            button.textContent = "Copy failed. Select the text manually.";
             window.setTimeout(() => {
               button.textContent = label;
             }, 2400);
           }
         });
       });
+
+      const tocLinks = Array.from(document.querySelectorAll(".toc a"));
+      const targets = tocLinks
+        .map((link) => {
+          const id = (link.getAttribute("href") || "").slice(1);
+          const el = id ? document.getElementById(id) : null;
+          return el ? { link, el } : null;
+        })
+        .filter(Boolean);
+
+      function markCurrent() {
+        let current = targets[0];
+        for (const item of targets) {
+          if (item.el.getBoundingClientRect().top <= 140) current = item;
+        }
+        for (const item of targets) {
+          if (item === current) item.link.setAttribute("aria-current", "true");
+          else item.link.removeAttribute("aria-current");
+        }
+      }
+
+      if (targets.length) {
+        markCurrent();
+        document.addEventListener("scroll", markCurrent, { passive: true });
+      }
     </script>
   </body>
 </html>

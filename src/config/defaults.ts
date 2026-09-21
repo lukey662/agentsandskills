@@ -1,5 +1,5 @@
 export const PACKAGE_NAME = "@appsforgood/next-supabase-kit";
-export const PACKAGE_VERSION = "0.5.2";
+export const PACKAGE_VERSION = "0.5.3";
 
 export const ROOT_DOCS = ["AGENTS.md", "USER_GUIDE.md", "USER_GUIDE.html"] as const;
 

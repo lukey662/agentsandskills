@@ -30,9 +30,15 @@ One idea per section. A feature that does not say why the Reader cares is cut or
 
 ## Voice
 
-Direct, specific, slightly dry. Prefer verbs the Reader uses for the job. Avoid everywhere: supercharge, seamless, unlock, copilot for X, 10x, enterprise-grade, magic, revolutionize. The product's `MESSAGING.md` may add its own lists.
+Write with the voice of an articulate Staff Product Manager or technical lead: clear, conversational, empathetic, and direct. Explain the mental model and why the product works the way it does, rather than barking compressed commands or robotic fragments. Treat the reader as an intelligent peer.
+
+Avoid buzzwords everywhere: supercharge, seamless, unlock, copilot for X, 10x, enterprise-grade, magic, revolutionize. The product's `MESSAGING.md` may add its own lists.
+
+Vary cadence and sentence length. Natural human prose combines clear short takeaways with thoughtful, well-reasoned explanatory sentences. Do not write staccato military-telegram fragments (“App engineer builds route. Security owns RLS.”) where a cohesive, natural sentence explains the workflow with far greater clarity.
 
 One copy register per page. Do not mix technical telemetry (“0.4 ctx-switches/day”), editorial prose, and SaaS marketing punch unless `MESSAGING.md` calls for it.
+
+Zero em dashes (—). Cut them. Break compound thoughts into distinct, natural sentences using periods or commas. Do not lecture the reader with dramatic hypothetical setups (“When a single developer tries to...”). Explain what the tool does plainly.
 
 Form errors and status messages are copy: state the fact or the fix plainly; no cheerful “Oops!”, excited exclamation marks, or blaming the user.
 
@@ -53,12 +59,14 @@ Lock CTA intent across the page: two buttons with the same goal (e.g. “Contact
 - Headlines could not fit a competitor.
 - CTAs say what happens next, share one label per intent, and do not wrap on desktop.
 - Form errors and toasts state the fact or fix plainly without “Oops!” or exclamation marks.
+- Words sound natural and human when spoken aloud (no robotic staccato fragments).
 - Words are reviewed on a screenshot for truncation, wrapping, and hierarchy. Copy that only exists in markdown is not approved for a public HTML page.
 
 ## Reject
 
 - Drafting without naming Reader / Job / One action / Proof or marking the gaps `assumption`.
 - Invented stats, logos, or testimonials.
+- Robotic staccato telegrams or compressed sentence fragments in place of articulate human explanation.
 - Duplicate CTA intents on one page with competing labels, or a primary CTA that wraps on desktop.
 - AIDA / PAS / BAB dumps as the page.
 - Importing a copy catalog or writing a second voice file.

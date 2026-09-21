@@ -90,8 +90,8 @@ describe("deslop last and frontend-design install", () => {
 
   it("this repo's DESIGN.md carries the kit tokens the skill no longer does", () => {
     const design = readFileSync(join(process.cwd(), "DESIGN.md"), "utf8");
-    expect(design).toContain("#10100e");
-    expect(design).toContain("#ff5a2a");
+    expect(design).toContain("#12161d");
+    expect(design).toContain("#f0c36a");
     expect(design).toContain("## Tokens");
     expect(design).toContain("## Anti-references");
   });

@@ -87,7 +87,7 @@ Two worked examples. These are examples of the method, not a menu to pick from.
 
 ## Color
 
-One field, one ink, one accent, one line. That is enough. Do not spread six mid-chroma colors evenly, use purple→blue or untouched shadcn `zinc` as the identity, or recolor as decoration. Prefer CSS variables. Self-contained HTML: no Google Fonts, no CDN CSS.
+One field, one ink, one accent, one line. Differentiate cheap AI slop (glowing purple neon, unmotivated gradient text, decorative sparkles) from high-craft UI engineering (purposeful semantic accents, crisp contrast, thoughtful surface tinting). One dominant field, readable ink, one primary accent for actions, and subtle semantic tints for distinct roles or statuses (e.g. error, pass, warning). Do not spread six mid-chroma colors evenly across unrelated elements or recolor as random decoration. Prefer CSS variables. Self-contained HTML: no Google Fonts, no CDN CSS.
 
 ## Type and rhythm
 
@@ -99,7 +99,8 @@ One field, one ink, one accent, one line. That is enough. Do not spread six mid-
 
 - First viewport is the characteristic thing: a command, a table, a form, a named owner.
 - Mobile (~390): the primary CTA still fits above the fold.
-- Hierarchy from size, weight, and space, not from cards.
+- Information architecture chunking: when documentation or product screens exceed three viewports of content, chunk the information into tabs, segmented views, or structured card grids rather than dumping an unbroken, exhausting vertical scroll.
+- High-craft grouping: use subtle borders, elevated surface panels, and generous breathing room to group related actions and data. Do not confuse deliberate visual structure with clutter.
 - Do not mark selection or severity with a left edge stroke. Use radio or check + light tint, or weight and space. One accent for the primary CTA, not a row edge.
 - Motion: none, or one moment that answers a click. Respect `prefers-reduced-motion`.
 
@@ -126,6 +127,7 @@ Flat AI/SaaS chrome. One is a smell; two or more is a reject; a left stroke on a
 - Left accent bars or `border-left` strokes on selected rows, list items, cards, or success/error/warn wells
 - Thick one-sided colored borders, glow rails, or gradient borders as the main state cue
 - Glass navbar, four-column empty footer, broadsheet hairlines over dense newsprint columns
+- Monolithic single-column text walls with no visual grouping, card containers, or scannable chunking (visual fatigue)
 
 Acceptance fixture: a pick-list row and a “verified” well pass with zero left border accents. Status wells use a flat tint fill.
 
@@ -146,6 +148,7 @@ Name the three self-tests: **Swap** (would another product’s first screen drop
 - Approving UI from TSX or HTML alone.
 - CSS on a new product before `setup`, or a `DESIGN.md` written from a template without asking what this setup is for.
 - Picking a named style pack (glassmorphism, claymorphism, bento, brutalism, “AI-native UI”) off a theme menu instead of deriving from the object.
+- Dogmatic minimalism that eliminates visual structure, card containers, or scannable layout, producing unreadable monolithic text walls.
 - Quizzing them on hex, fonts, or motion before you know the need.
 - Overwriting a mature `STYLE_GUIDE.md`, or a full rebuild inside an existing design system when a surgical pass would do.
 - Installing a design MCP, canvas CLI, or slash-command pack to “do design.”

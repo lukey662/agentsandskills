@@ -2,6 +2,37 @@
 
 This file records package-level architectural and research decisions for the agent kit.
 
+## 2026-09-22 - Humanize Kit Copy, Design, and User Guide
+
+### Context
+
+The kit overcorrected against AI slop into hostile minimalism ("one field, one ink, one accent, no cards") and clipped military-telegram copy ("App engineer builds route. Security owns RLS."). As a result, the user guide and generated output collapsed into a monochromatic, exhausting wall of text that felt robotic rather than human.
+
+### Decision
+
+- **Human product voice**: Update `product-copy`, `deslop`, and `copy` agent to write with the articulate, empathetic voice of a Staff Product Manager or technical lead. Mandate explaining the mental model and value proposition while rejecting staccato telegram fragments, over-compressed shorthand, dramatic lecture setups, and all em dashes (`—`).
+- **High-craft UI engineering**: Update `frontend-design` and `design` agent to differentiate cheap AI slop (glowing purple neon, unmotivated gradients) from high-craft UI engineering (elevated cards, purposeful semantic accents, scannable navigation, information architecture chunking).
+- **QA scannability & cognitive load gates**: Update `browser-qa` and `qa` agent to check for visual fatigue and reject monolithic, unbroken single-column text walls or robotic machine copy.
+- **User guide overhaul**: Redesign `USER_GUIDE.html` and `USER_GUIDE.md` with modern elevated cards, sticky navigation, visual 6-step workflow stepper, and warm PM narrative without em dashes or lecture tropes, while strictly preserving locked test contracts and spawn payloads.
+
+### Consequences
+
+The kit produces software and documentation that look and read like an experienced human team built them, while all automated tests and release gates remain green.
+
+## 2026-09-21 - Slate Operations Board For The User Guide
+
+### Context
+
+`USER_GUIDE.html` was a monochrome charcoal column: one ink, a safelight accent, and no index. The assignment (init, then say the change) was correct, and the page was still a wall of text. Role and status were indistinguishable except by reading every line.
+
+### Decision
+
+Keep one field (`#12161d`), one ink (`#e8eef6`), one accent (`#f0c36a` for the fail-closed rule and focus), and one line. Put role color only on badges (Planner violet, App engineer blue, Security amber, Design rose, QA emerald, Copy sky). Desktop is a sticky index plus panels. Mobile is a horizontal jump bar plus stacked panels. No left rails, no shadows, no gradients, no CDN fonts. Downstream apps still do not copy these tokens; `frontend-design` stays product-neutral.
+
+### Consequences
+
+`DESIGN.md` is the token record. The deslop install test asserts the new field and accent live in `DESIGN.md`, not in the shipped skill. The guide’s required phrases and spawn payloads stay verbatim.
+
 ## 2026-09-21 - Extract Leaderboard Structure, Reject Skill Bloat
 
 ### Context

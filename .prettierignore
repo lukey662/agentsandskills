@@ -16,5 +16,6 @@ assistant-adapters/
 profiles/
 dogfood/
 package-lock.json
+qa-evidence/
 *.md
 *.mdc

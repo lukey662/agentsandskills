@@ -1,0 +1,335 @@
+{
+  "console": [],
+  "failed": [],
+  "responses": [],
+  "keyboard": [
+    {
+      "tag": "A",
+      "id": "",
+      "cls": "",
+      "text": "Start",
+      "outline": "3px solid rgb(240, 195, 106)",
+      "top": 60,
+      "inView": true
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "cls": "",
+      "text": "Agents",
+      "outline": "3px solid rgb(240, 195, 106)",
+      "top": 110,
+      "inView": true
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "cls": "",
+      "text": "IDEs",
+      "outline": "3px solid rgb(240, 195, 106)",
+      "top": 160,
+      "inView": true
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "cls": "",
+      "text": "Workflows",
+      "outline": "3px solid rgb(240, 195, 106)",
+      "top": 209,
+      "inView": true
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "cls": "",
+      "text": "Design setup",
+      "outline": "3px solid rgb(240, 195, 106)",
+      "top": 259,
+      "inView": true
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "cls": "",
+      "text": "Screenshot QA",
+      "outline": "3px solid rgb(240, 195, 106)",
+      "top": 308,
+      "inView": true
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "cls": "",
+      "text": "Updating",
+      "outline": "3px solid rgb(240, 195, 106)",
+      "top": 358,
+      "inView": true
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "cls": "copy",
+      "text": "Copy init command",
+      "outline": "3px solid rgb(240, 195, 106)",
+      "top": 489,
+      "inView": true
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "cls": "",
+      "text": "Workflows",
+      "outline": "3px solid rgb(240, 195, 106)",
+      "top": 753,
+      "inView": true
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "cls": "copy",
+      "text": "Copy Copilot prompt",
+      "outline": "3px solid rgb(240, 195, 106)",
+      "top": 3187,
+      "inView": false
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "cls": "copy",
+      "text": "Copy Planner prompt",
+      "outline": "3px solid rgb(240, 195, 106)",
+      "top": 3805,
+      "inView": false
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "cls": "copy",
+      "text": "Copy App engineer prompt",
+      "outline": "3px solid rgb(240, 195, 106)",
+      "top": 3959,
+      "inView": false
+    }
+  ],
+  "overflow": {
+    "desktop": {
+      "vw": 1280,
+      "vh": 800,
+      "scrollW": 1280,
+      "docOverflow": false,
+      "clipCount": 0,
+      "clipped": [],
+      "failCount": 0,
+      "worst": [
+        {
+          "text": "You need",
+          "tag": "TH",
+          "cls": "",
+          "ratio": 8.12,
+          "need": 4.5,
+          "size": 12.48,
+          "fail": false
+        },
+        {
+          "text": "Ask",
+          "tag": "TH",
+          "cls": "",
+          "ratio": 8.12,
+          "need": 4.5,
+          "size": 12.48,
+          "fail": false
+        },
+        {
+          "text": "Skill",
+          "tag": "TH",
+          "cls": "",
+          "ratio": 8.12,
+          "need": 4.5,
+          "size": 12.48,
+          "fail": false
+        },
+        {
+          "text": "Use when",
+          "tag": "TH",
+          "cls": "",
+          "ratio": 8.12,
+          "need": 4.5,
+          "size": 12.48,
+          "fail": false
+        },
+        {
+          "text": "Problem",
+          "tag": "TH",
+          "cls": "",
+          "ratio": 8.12,
+          "need": 4.5,
+          "size": 12.48,
+          "fail": false
+        },
+        {
+          "text": "Fix",
+          "tag": "TH",
+          "cls": "",
+          "ratio": 8.12,
+          "need": 4.5,
+          "size": 12.48,
+          "fail": false
+        },
+        {
+          "text": "Specialists",
+          "tag": "P",
+          "cls": "",
+          "ratio": 8.8,
+          "need": 4.5,
+          "size": 12,
+          "fail": false
+        },
+        {
+          "text": "You say the change once. Planner scopes it, App engineer builds it, an",
+          "tag": "P",
+          "cls": "lede",
+          "ratio": 8.8,
+          "need": 4.5,
+          "size": 16,
+          "fail": false
+        },
+        {
+          "text": "Same rules in",
+          "tag": "P",
+          "cls": "",
+          "ratio": 8.8,
+          "need": 4.5,
+          "size": 12.48,
+          "fail": false
+        },
+        {
+          "text": ". Judge the copy and the layout on this page.",
+          "tag": "P",
+          "cls": "",
+          "ratio": 8.8,
+          "need": 4.5,
+          "size": 12.48,
+          "fail": false
+        }
+      ],
+      "h1": "Say the change. Then open the running UI."
+    },
+    "mobile": {
+      "vw": 390,
+      "vh": 844,
+      "scrollW": 390,
+      "docOverflow": false,
+      "clipCount": 0,
+      "clipped": [],
+      "failCount": 0,
+      "worst": [
+        {
+          "text": "You say the change once. Planner scopes it, App engineer builds it, an",
+          "tag": "P",
+          "cls": "lede",
+          "ratio": 8.8,
+          "need": 4.5,
+          "size": 16,
+          "fail": false
+        },
+        {
+          "text": "Same rules in",
+          "tag": "P",
+          "cls": "",
+          "ratio": 8.8,
+          "need": 4.5,
+          "size": 12.48,
+          "fail": false
+        },
+        {
+          "text": ". Judge the copy and the layout on this page.",
+          "tag": "P",
+          "cls": "",
+          "ratio": 8.8,
+          "need": 4.5,
+          "size": 12.48,
+          "fail": false
+        },
+        {
+          "text": "Init for every IDE this team uses",
+          "tag": "P",
+          "cls": "cmd-label",
+          "ratio": 8.89,
+          "need": 4.5,
+          "size": 12.48,
+          "fail": false
+        },
+        {
+          "text": "Fail-closed.",
+          "tag": "STRONG",
+          "cls": "",
+          "ratio": 9.43,
+          "need": 4.5,
+          "size": 16,
+          "fail": false
+        },
+        {
+          "text": "Workflows",
+          "tag": "A",
+          "cls": "",
+          "ratio": 10.13,
+          "need": 4.5,
+          "size": 16,
+          "fail": false
+        },
+        {
+          "text": "Cursor",
+          "tag": "SPAN",
+          "cls": "tag tag-ide",
+          "ratio": 10.13,
+          "need": 4.5,
+          "size": 12.48,
+          "fail": false
+        },
+        {
+          "text": "Claude Code",
+          "tag": "SPAN",
+          "cls": "tag tag-ide",
+          "ratio": 10.13,
+          "need": 4.5,
+          "size": 12.48,
+          "fail": false
+        },
+        {
+          "text": "Codex",
+          "tag": "SPAN",
+          "cls": "tag tag-ide",
+          "ratio": 10.13,
+          "need": 4.5,
+          "size": 12.48,
+          "fail": false
+        },
+        {
+          "text": "GitHub Copilot",
+          "tag": "SPAN",
+          "cls": "tag tag-ide",
+          "ratio": 10.13,
+          "need": 4.5,
+          "size": 12.48,
+          "fail": false
+        }
+      ],
+      "h1": "Say the change. Then open the running UI."
+    }
+  },
+  "shiftTab": {
+    "tag": "BUTTON",
+    "text": "Copy Planner prompt"
+  },
+  "afterEnter": {
+    "hash": "",
+    "y": 4
+  },
+  "sticky": {
+    "scrollY": 1800,
+    "navTop": 42,
+    "navPos": "sticky",
+    "headerTop": 0
+  }
+}

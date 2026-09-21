@@ -36,6 +36,8 @@ Allowed: `repo`, `terminal`, `test-runner`, `browser`, `screenshot`, `image-revi
 - “Tests pass” with no command list (`testing-qa`).
 - “LGTM, ship it” without env names, rollback, kill switch, commands, and `browser-qa` paths for UI (`ship`).
 - Screenshots that pass while unexpected console errors or failed same-origin requests go unnamed (`browser-qa`).
+- Accepting monolithic walls of text that cause severe visual fatigue, lacking visual chunking or scannable structure.
+- Accepting visible copy that reads like robotic telegram fragments instead of natural human explanation.
 
 ## Done when
 

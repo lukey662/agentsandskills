@@ -52,10 +52,10 @@
 
 ## Design Tokens And States For This Repo
 
-`DESIGN.md` at the repo root is the short design contract for this repo's surfaces (`USER_GUIDE.html`, CLI output, `README.md`): need, who, first-screen job, principles, the charcoal desk tokens, and anti-references. Read it before changing any of those surfaces. Nothing in it is pasted onto a downstream app; the shipped `frontend-design` skill derives tokens from the product instead.
+`DESIGN.md` at the repo root is the short design contract for this repo's surfaces (`USER_GUIDE.html`, CLI output, `README.md`): need, who, first-screen job, principles, the slate operations-board tokens, and anti-references. Read it before changing any of those surfaces. Nothing in it is pasted onto a downstream app; the shipped `frontend-design` skill derives tokens from the product instead.
 
 - CLI: semantic ANSI colour with the level word always printed, monochrome when not a TTY or `NO_COLOR`, one blank line between sections, two-space remediation indents, no spinners.
-- `USER_GUIDE.html`: self-contained, skip link, safelight `:focus-visible`, `lang` on `<html>`, flat tint wells, no `border-left`. Any change to it needs `browser-qa` desktop and mobile shots under `qa-evidence/`.
+- `USER_GUIDE.html`: self-contained, skip link, accent `:focus-visible`, `lang` on `<html>`, flat tint wells, no `border-left`. Any change to it needs `browser-qa` desktop and mobile shots under `qa-evidence/`.
 
 ## Front-End Guidance For Installed Projects
 

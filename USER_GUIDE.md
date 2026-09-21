@@ -1,10 +1,16 @@
 # User Guide
 
-How to use the agents and skills in this repo. Open **[USER_GUIDE.html](USER_GUIDE.html)** to read this as a designed page — that is the copy and layout to judge.
+A practical guide to orchestrating specialized AI agents in Next.js and Supabase projects. For the interactive reference guide with live workflow steppers, open **[USER_GUIDE.html](USER_GUIDE.html)**. That page is how you judge the layout, scannability, and presentation.
 
-**Agent** = who you ask. **Skill** = the workflow they follow. **Tool** = what they must use. For QA and UI, that tool is a **live browser plus screenshots**, not a file diff.
+## Why Specialized Agents?
 
-A user-visible change is not done until someone opened the running UI, captured desktop and mobile screenshots, and reviewed those images.
+Running one generic AI chat across your whole stack leads to missed regressions, skipped security reviews, and uninspected screens. This kit assigns each task to a focused specialist with clear handoffs:
+
+- **Agent** = who you ask (`@planner`, `@app-engineer`, `@security`, `@design`, `@qa`, `@copy`).
+- **Skill** = the workflow and quality gates they follow.
+- **Tool** = what they must use to verify their work. For user-facing changes, that means a **live browser plus desktop and mobile screenshot capture**.
+
+Do not review code alone. A user-visible change is not done until someone opened the running UI, captured desktop and mobile screenshots, and reviewed those images.
 
 ## 5-minute start
 
@@ -15,15 +21,13 @@ npx --yes @appsforgood/next-supabase-kit init --activate all
 ```
 
 2. Open the project in your IDE.
-3. Say the change. This session launches Planner, then the named owner, then extra reviewers, then QA. You do not copy a prompt.
+3. Say the change once in this chat. Planner scopes it and names an owner (`app-engineer`, `security`, `design`, `qa`, or `copy`). If the work is user-visible, the plan lists desktop and mobile screenshots. The session launches that owner. It does not stop after a plan. App engineer builds the change. Security, Design, or Copy review when the change touches auth, the UI, or public words. QA opens the running UI.
 
-You should get a named owner (`app-engineer`, `security`, `design`, `qa`, or `copy`) and, if the work is user-visible, a desktop + mobile screenshot list. The session launches that owner. It does not stop after a plan.
+A repo with no product `DESIGN.md` yet goes to Design setup (see Workflows). Do not paste a second start prompt.
 
-If this repo has no product `DESIGN.md` yet, the session launches Design setup (see Workflows). Do not paste a second start prompt.
+## How to start them in each IDE
 
-## How to invoke in each IDE
-
-Every host gets the same six agents as native subagents, launched by id. Skills live once in `.agents/skills/<id>/SKILL.md`; Claude reads its own copy at `.claude/skills/`.
+Cursor, Claude Code, Codex, Copilot, and Antigravity each get the same six agents. Start them by name (`planner`, `app-engineer`, `security`, `design`, `qa`, `copy`). Skills live once in `.agents/skills/<id>/SKILL.md`; Claude reads its own copy at `.claude/skills/`.
 
 ### Cursor
 
@@ -31,7 +35,7 @@ Files: `.cursor/agents/<id>.md`, `.agents/skills/<id>/SKILL.md`, `.cursor/rules/
 
 - Describe the change in chat. This session launches `@planner` as a Task, then the owner (`@app-engineer`, `@security`, `@design`, `@qa`, or `@copy`). You do not have to @mention them.
 - Planner is `readonly`; it cannot implement.
-- Skills apply from their descriptions. To force one, type `/browser-qa` or name it.
+- Skills apply from their descriptions. To run one by name, type `/browser-qa`.
 - Prefer the built-in browser for QA. Playwright is backup.
 
 ### Claude Code
@@ -46,29 +50,29 @@ Files: `.claude/agents/<id>.md`, `.claude/skills/<id>/SKILL.md`, `CLAUDE.md`
 
 Files: `.codex/agents/<id>.toml`, `.agents/skills/<id>/SKILL.md`, `AGENTS.md`
 
-- This session spawns the named custom agent from `.codex/agents/`. Planner, Security, and Design use high reasoning effort.
+- This session starts the named custom agent from `.codex/agents/`. Planner, Security, and Design use high reasoning effort.
 - Codex discovers the skills from `.agents/skills/`. Use Playwright if Codex cannot see the page.
 
 ### GitHub Copilot
 
 Files: `.github/agents/<id>.agent.md`, `.agents/skills/<id>/SKILL.md`, `.github/copilot-instructions.md`
 
-- Launch each specialist with `/agent planner`, `/agent app-engineer`, `/agent qa` (CLI: `copilot --agent=qa`) and its payload from `AGENTS.md`.
-- If the Copilot surface you are in has no custom agents, run the same sequence in this thread under a “now Planner” / “now App engineer” / “now QA” header. Do not stop after printing a prompt.
+- Launch each specialist with `/agent planner`, `/agent app-engineer`, `/agent qa` (CLI: `copilot --agent=qa`) and the prompt from `AGENTS.md`.
+- If Copilot here has no custom agents, run the same sequence in this thread under a “now Planner” / “now App engineer” / “now QA” header. Do not stop after printing a prompt.
 
 ### Antigravity
 
 Files: `.agents/agents/<id>/agent.md`, `.agents/skills/<id>/SKILL.md`, `.agents/rules/agent-kit.md`
 
 - Each agent is a custom subagent (`subagent: true`) with its skills attached. Say the change; the main agent calls `invoke_subagent` for Planner, then the owner, then QA. You can also pick an agent directly from `/agents`.
-- If subagents are unavailable, continue in this thread under a “now App engineer” header with the same payload.
+- If subagents are unavailable, continue in this thread under a “now App engineer” header with the same prompt.
 
 ## Which agent do I ask?
 
 | You need | Ask |
 | --- | --- |
 | A plan and an owner | Planner |
-| Implementation | App engineer |
+| Build the change | App engineer |
 | Auth / RLS / secrets | Security |
 | It looks wrong | Design |
 | Style guide / first UI / no DESIGN.md | Design (`setup`) |
@@ -86,7 +90,7 @@ Do not ask one chat to be all six. Planner names the next specialist. The sessio
 | `supabase-auth-rls` | Auth, RLS, service role, Storage |
 | `postgres-migrations` | Schema, constraints, RLS in the same change |
 | `owasp-security-review` | Mutations, uploads, SSRF, secrets |
-| `frontend-design` | Setup, build, review, or detect UI. Derive tokens from the product. Owns the visual fail list |
+| `frontend-design` | Setup, build, review, or detect. Take tokens from the product, and name what fails on screen |
 | `accessibility-wcag` | Keyboard pass in the running browser. Contrast, labels. Not a screenshot guess |
 | `browser-qa` | Any screen. Required for QA of UI |
 | `testing-qa` | Unit / regression / smoke. List commands run. Not screenshots |
@@ -100,25 +104,25 @@ QA of a screen always uses `browser-qa`, not `testing-qa` alone. User-facing scr
 
 ### New feature
 
-Launch in this order. Skip Security, Design, or Copy when that specialist is not needed. The session launches each specialist; you do not copy these blocks.
+Launch in this order. Skip Security, Design, or Copy when that specialist is not needed. The session launches each specialist with the prompt under their name. The wording matches `AGENTS.md`. Paste one only when that IDE cannot start a subagent.
 
-1. **Planner** — spawn payload: `Plan this change. Name the owning agent, extra reviewers, and which screenshots QA must capture. Do not write code.`
-2. **App engineer** — spawn payload: `Implement the plan. Smoke the changed route in the browser before you hand off.`
-3. **Security** if data/auth/secrets changed — spawn payload:
+1. **Planner.** Prompt: `Plan this change. Name the owning agent, extra reviewers, and which screenshots QA must capture. Do not write code.`
+2. **App engineer.** Prompt: `Implement the plan. Smoke the changed route in the browser before you hand off.`
+3. **Security** if data, auth, or secrets changed. Prompt:
 
 ```text
 Act as the security agent. Review auth, RLS, IDOR, and secrets. Exercise login or denied states in the browser when they are user-visible.
 ```
 
-4. **Design** if the UI changed — spawn payload: `Act as design. Name the mode (setup, build, review, or detect). Review the running UI from screenshots first. Desktop and mobile. Reject generic AI-looking layout.` If `DESIGN.md` is missing, run setup first.
-5. **Copy** if public words changed — spawn payload: `Act as the copy agent. Review the rendered words in screenshots, not just strings in source. Run product-copy first, then deslop last. Always.`
-6. **QA** — spawn payload: `Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.` For screens, also run `accessibility-wcag`.
+4. **Design** if the UI changed. Prompt: `Act as design. Name the mode (setup, build, review, or detect). Review the running UI from screenshots first. Desktop and mobile. Reject generic AI-looking layout.` If `DESIGN.md` is missing, run setup first.
+5. **Copy** if public words changed. Prompt: `Act as the copy agent. Review the rendered words in screenshots, not just strings in source. Run product-copy first, then deslop last. Always.`
+6. **QA.** Prompt: `Do not review code alone. Open the app, capture desktop and mobile screenshots, read the images, then give accept / accept-with-nits / reject.` For screens, also run `accessibility-wcag`.
 
-Done when QA attaches `qa-evidence/<date>-<slug>/desktop.png` and `mobile.png` plus a verdict, and the changed flow passed a keyboard-only check.
+Done means the change works in the running UI. QA attaches `qa-evidence/<date>-<slug>/desktop.png` and `mobile.png` with a verdict, after a keyboard-only pass of the changed flow.
 
 ### Auth / RLS change
 
-Planner → App engineer → Security → QA. QA must open login/logout/denied in the browser and still run tests. Screenshots required when the finding is user-visible.
+Planner, then App engineer, then Security, then QA. QA must open login, logout, and denied in the browser and still run tests. Screenshots are required when the finding is user-visible.
 
 ### New repo design setup
 
@@ -128,11 +132,11 @@ After `init`, before the first product CSS, the session launches Design with:
 Act as design. This is a new repo. Scan what is already here, then ask me what we need to set up: who it is for, what they must get done, and what you should produce. Recommend from my answers. Write the style guide and principles with me before any CSS.
 ```
 
-Design scans the stack, then asks what you need. Recommendations come from those answers. It writes a short product `DESIGN.md` and frontend `STYLE_GUIDE.md` rules only after that. It does not paste this kit’s charcoal desk onto the app. Screenshots wait until there is a screen to capture.
+Design scans the stack, then asks what you need. It recommends from your answers, and only then writes a short product `DESIGN.md` and frontend `STYLE_GUIDE.md` rules. It does not copy this guide’s colors or layout onto the app. Skip screenshots until there is a screen to capture.
 
 ### UI polish
 
-Design + `frontend-design` + `accessibility-wcag` + `browser-qa`. Name setup, build, review, or detect. Desktop and mobile required once a screen exists. One happy-path shot is a fail. A contrast guess from the screenshot is a fail.
+Run Design with `frontend-design`, `accessibility-wcag`, and `browser-qa`. Name the mode: setup, build, review, or detect. Capture desktop and mobile once a screen exists. One happy-path screenshot fails. Guessing contrast from the screenshot fails.
 
 ### Accessibility pass
 
@@ -144,7 +148,7 @@ Run accessibility-wcag. Open the changed flow. Keyboard-only pass. Do not accept
 
 ### Copy pass
 
-Copy reviews **rendered** screenshots, not just strings in TSX. Confirm Reader / Job / One action / Proof, run `product-copy`, then **`deslop` last**. Do not hand off after the first draft. Spawn payload:
+Copy reviews the rendered words in screenshots, not just strings in TSX. Confirm Reader / Job / One action / Proof, run `product-copy`, then **`deslop` last**. Do not hand off after the first draft. Prompt:
 
 ```text
 Act as the copy agent. Review the rendered words in screenshots, not just strings in source. Run product-copy first, then deslop last. Always.
@@ -211,7 +215,7 @@ Add `upgrade` when bumping this pack or frameworks. Run `agent-kit update` on a 
 
 Add `ui-polish` after the main `frontend-design` pass, not instead of it. If `DESIGN.md` is missing, Design `setup` first. Still desktop + mobile. Reject using polish as a second design system.
 
-Add `web-performance` when the ask is LCP / INP / CLS / “this page is slow.” Measure → identify → fix → re-measure. Map onto `next/image`, RSC payload, and PostgREST N+1. Reject optimizing from a guess. Not on default `init`.
+Add `web-performance` when the ask is LCP / INP / CLS / “this page is slow.” Measure, identify the cause, fix it, and measure again. Check `next/image`, the RSC payload, and PostgREST N+1. Reject optimizing from a guess. Not on default `init`.
 
 ## Updating
 
@@ -241,4 +245,4 @@ npx agent-kit doctor
 | QA finished from the diff | Reject it. Re-run with the good QA prompt above. |
 | GitHub shows `USER_GUIDE.html` as code | Open the file in a browser. Run `npx agent-kit guide` to print the path. GitHub does not render the layout. |
 | `doctor` fails USER_GUIDE | The screenshot fail-closed sentence must stay in this file. |
-| Still have `QUALITY_GATES.md` / `COUNCIL.md` | `doctor` lists them. Run `update --prune-legacy` on a branch to remove them and any 0.3 agent shadowing a 0.4 one. |
+| Still have `QUALITY_GATES.md` / `COUNCIL.md` | `doctor` lists them. Run `update --prune-legacy` on a branch to remove them and any 0.3 agent that overrides a 0.4 one. |
