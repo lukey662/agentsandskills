@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.4
+
+- Update development dependencies and the CodeQL GitHub Action pins.
+
 ## 0.5.3
 
 - Humanize user guide narrative and core copy skills, eliminating staccato fragments, AI lecture tropes, and em dashes.
